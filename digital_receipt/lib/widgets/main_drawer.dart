@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
-class mainDrawer extends StatelessWidget {
+class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        padding: EdgeInsets.only(top: 30.0, left: 2.0),
+        padding: EdgeInsets.only(top: 50.0, left: 2.0),
         child: ListView(
           children: <Widget>[
             ListTile(
@@ -15,12 +15,13 @@ class mainDrawer extends StatelessWidget {
                 'Reecpy',
                 style: TextStyle(
                     fontFamily: 'LibreBaskerville',
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    letterSpacing: 0.6
+                    letterSpacing: 0.3
                 ),
               ),
+              contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
             ),
             ListTile(
               leading: Icon(
@@ -33,7 +34,7 @@ class mainDrawer extends StatelessWidget {
                 style: TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 16,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w300,
                     color: Colors.white,
                     letterSpacing: 0.5
                 ),
@@ -51,7 +52,7 @@ class mainDrawer extends StatelessWidget {
                 style: TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 16,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w300,
                     color: Colors.white,
                     letterSpacing: 0.5
                 ),
@@ -69,7 +70,7 @@ class mainDrawer extends StatelessWidget {
                 style: TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 16,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w300,
                     color: Colors.white,
                     letterSpacing: 0.5
                 ),
@@ -87,7 +88,7 @@ class mainDrawer extends StatelessWidget {
                 style: TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 16,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w300,
                     color: Colors.white,
                     letterSpacing: 0.5
                 ),
@@ -105,7 +106,7 @@ class mainDrawer extends StatelessWidget {
                 style: TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 16,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w300,
                     color: Colors.white,
                     letterSpacing: 0.5
                 ),
@@ -123,7 +124,7 @@ class mainDrawer extends StatelessWidget {
                 style: TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 16,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w300,
                     color: Colors.white,
                     letterSpacing: 0.5
                 ),
