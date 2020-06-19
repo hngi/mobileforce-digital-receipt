@@ -7,22 +7,22 @@ class MainDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        padding: EdgeInsets.only(top: 50.0, left: 2.0),
+        padding: EdgeInsets.only(top: 60.0),
         child: ListView(
           children: <Widget>[
-            ListTile(
-              title: Text(
-                'Reecpy',
+            Container(
+              padding: EdgeInsets.only(left: 12),
+              child: Text('Reecpy',
                 style: TextStyle(
                     fontFamily: 'LibreBaskerville',
-                    fontSize: 20.0,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    letterSpacing: 0.3
+                    letterSpacing: 0.6
                 ),
               ),
-              contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
             ),
+            SizedBox(height: 25),
             ListTile(
               leading: Icon(
                 Icons.account_circle,
@@ -137,4 +137,3 @@ class MainDrawer extends StatelessWidget {
     );
   }
 }
-
