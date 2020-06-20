@@ -61,6 +61,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 30,
                 ),
                 TextField(
+                  style: TextStyle(
+                    color: Color(0xFF2B2B2B),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Montserrat',
+                  ),
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(15),
                     enabledBorder: OutlineInputBorder(
@@ -82,6 +88,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 SizedBox(height: 30),
                 TextField(
+                   style: TextStyle(
+                    color: Color(0xFF2B2B2B),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Montserrat',
+                  ),
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(15),
@@ -106,6 +118,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 30,
                 ),
                 TextField(
+                  style: TextStyle(
+                    color: Color(0xFF2B2B2B),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Montserrat',
+                  ),
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(15),
                     enabledBorder: OutlineInputBorder(
