@@ -11,7 +11,7 @@ class HomePage extends StatelessWidget {
           iconTheme: IconThemeData(color: Colors.black),
         ),
         drawer: Theme(
-          data: Theme.of(context).copyWith(canvasColor: Colors.blue[800]),
+          data: Theme.of(context).copyWith(canvasColor: Colors.blue[900]),
           child: MainDrawer(),
         ),
         body: Stack(
