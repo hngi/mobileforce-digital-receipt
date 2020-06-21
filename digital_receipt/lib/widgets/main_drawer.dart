@@ -17,13 +17,14 @@ class MainDrawer extends StatelessWidget {
                 children: <Widget>[
                   Container(
                     padding: EdgeInsets.only(left: 15.0),
-                    child: Text('Reecpy',
-                      style: TextStyle(
-                          fontFamily: 'MuseoModerno',
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 0.6
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Image(
+                        image: AssetImage(
+                            'assets/images/degeit_1.png'
+                        ),
+                        height: 36.0,
+                        width: 134.0,
                       ),
                     ),
                   ),
