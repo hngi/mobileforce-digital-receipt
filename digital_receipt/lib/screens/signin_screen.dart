@@ -43,7 +43,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 5,
                 ),
                 Text(
-                  'Welcome to reepcy',
+                  'Welcome to degeit',
                   style: TextStyle(
                     color: Color(0xFF0C0C0C),
                     fontSize: 14,
