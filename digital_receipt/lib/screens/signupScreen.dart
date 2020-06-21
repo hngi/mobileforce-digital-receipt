@@ -82,9 +82,14 @@ class _SignupScreenState extends State<SignupScreen> {
                         TextFormField(
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
-                              border: OutlineInputBorder(
+                              enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5),
+                                borderSide: BorderSide(
+                                  color: Color(0xFFC8C8C8),
+                                  width: 1.5,
+                                ),
                               ),
+                              focusedBorder: OutlineInputBorder(),
                             ),
                             validator: (value) {
                               if (value.isEmpty) {
@@ -124,9 +129,14 @@ class _SignupScreenState extends State<SignupScreen> {
                                       () => passwordVisible = !passwordVisible);
                                 },
                               ),
-                              border: OutlineInputBorder(
+                              enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5),
+                                borderSide: BorderSide(
+                                  color: Color(0xFFC8C8C8),
+                                  width: 1.5,
+                                ),
                               ),
+                              focusedBorder: OutlineInputBorder(),
                             ),
                             validator: (value) {
                               if (value.isEmpty) {
@@ -257,35 +267,33 @@ class _SignupScreenState extends State<SignupScreen> {
           if (_formKey.currentState.validate()) {}
         },
         child:
-        //  isloading
-        //     ? CircularProgressIndicator(
-        //         backgroundColor: Color(0xffE5E5E5),
-        //       )
-        //     : 
+            //  isloading
+            //     ? CircularProgressIndicator(
+            //         backgroundColor: Color(0xffE5E5E5),
+            //       )
+            //     :
             Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    iconPath == ""
-                        ? Container()
-                        : Padding(
-                            padding: EdgeInsets.only(right: 8.0),
-                            child: Image.asset("$iconPath", height: 25),
-                          ),
-                    Text(
-                      "$name",
-                      style: TextStyle(
-                        color: textColor,
-                        fontSize: 15,
-                      ),
+          padding: EdgeInsets.all(12.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              iconPath == ""
+                  ? Container()
+                  : Padding(
+                      padding: EdgeInsets.only(right: 8.0),
+                      child: Image.asset("$iconPath", height: 25),
                     ),
-                  ],
+              Text(
+                "$name",
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: 15,
                 ),
               ),
+            ],
+          ),
+        ),
       ),
     );
   }
-
-  
 }
