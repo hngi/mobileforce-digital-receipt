@@ -9,7 +9,6 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  bool _loadingSpinner = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,18 +20,10 @@ class _SignInScreenState extends State<SignInScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                SizedBox(
-                  height: 20,
-                ),
                 Center(
-                  child: Text(
-                    'Reepcy',
-                    style: TextStyle(
-                      color: Color(0xFF226EBE),
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Montserrat',
-                    ),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    height: 50,
                   ),
                 ),
                 SizedBox(
@@ -55,13 +46,25 @@ class _SignInScreenState extends State<SignInScreen> {
                   'Welcome to reepcy',
                   style: TextStyle(
                     color: Color(0xFF0C0C0C),
-                    fontSize: 12,
+                    fontSize: 14,
                     fontWeight: FontWeight.w300,
                     fontFamily: 'Montserrat',
                   ),
                 ),
                 SizedBox(
                   height: 30,
+                ),
+                Text(
+                  'Email Address',
+                  style: TextStyle(
+                    color: Color(0xFF0C0C0C),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'Montserrat',
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
                 ),
                 TextField(
                   style: TextStyle(
@@ -77,21 +80,26 @@ class _SignInScreenState extends State<SignInScreen> {
                       borderRadius: BorderRadius.circular(5),
                       borderSide: BorderSide(
                         color: Color(0xFFC8C8C8),
-                        width: 1.5,
+                        width: 1,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(),
-                    hintText: 'Email address',
-                    hintStyle: TextStyle(
-                      color: Color(0xFF979797),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Montserrat',
-                    ),
                   ),
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 20,
+                ),
+                Text(
+                  'Password',
+                  style: TextStyle(
+                    color: Color(0xFF0C0C0C),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'Montserrat',
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
                 ),
                 TextField(
                   style: TextStyle(
@@ -102,38 +110,34 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                   decoration: InputDecoration(
                     suffixIcon:
-                        Icon(FontAwesomeIcons.eye, color: Color(0xFFC8C8C8)),
+                        Icon(Icons.remove_red_eye, color: Color(0xFFC8C8C8)),
                     contentPadding: EdgeInsets.all(15),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
                       borderSide: BorderSide(
                         color: Color(0xFFC8C8C8),
-                        width: 1.5,
+                        width: 1,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(),
-                    hintText: 'Password',
-                    hintStyle: TextStyle(
-                      color: Color(0xFF979797),
+                  ),
+                  obscureText: true,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    "Forgotten Password?",
+                    style: TextStyle(
+                      color: Colors.black,
                       fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.02,
+                      fontWeight: FontWeight.w300,
                       fontFamily: 'Montserrat',
                     ),
                   ),
-                  obscureText: true,
-                  //keyboardType: TextInputType.p,
-                ),
-                SizedBox(height: 15),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Text("Forgotten Password?",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12,
-                        letterSpacing: 0.02,
-                        fontWeight: FontWeight.w300,
-                        fontFamily: 'Montserrat',
-                      )),
                 ),
                 SizedBox(
                   height: 30,
@@ -152,11 +156,11 @@ class _SignInScreenState extends State<SignInScreen> {
                       'Log In',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    color: Color(0xFF226EB2),
+                    color: Color(0xFF226EBE),
                   ),
                 ),
                 SizedBox(
@@ -174,7 +178,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           text: "Don't have an account?",
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 12,
+                            fontSize: 14,
                             letterSpacing: 0.02,
                             fontWeight: FontWeight.w300,
                             fontFamily: 'Montserrat',
@@ -184,9 +188,9 @@ class _SignInScreenState extends State<SignInScreen> {
                               text: '  Sign up',
                               style: TextStyle(
                                 color: Color(0xFF25CCB3),
-                                fontSize: 12,
+                                fontSize: 14,
                                 letterSpacing: 0.02,
-                                fontWeight: FontWeight.w300,
+                                fontWeight: FontWeight.bold,
                                 fontFamily: 'Montserrat',
                               ),
                             ),
@@ -202,21 +206,20 @@ class _SignInScreenState extends State<SignInScreen> {
                       Expanded(
                         flex: 2,
                         child: Divider(
-                          thickness: 2.0,
+                          thickness: 1.0,
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
                           'OR',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600, color: Colors.grey),
+                          style: TextStyle(color: Colors.grey),
                         ),
                       ),
                       Expanded(
                         flex: 2,
                         child: Divider(
-                          thickness: 2.0,
+                          thickness: 1.0,
                         ),
                       ),
                     ],
@@ -226,11 +229,11 @@ class _SignInScreenState extends State<SignInScreen> {
                 SizedBox(
                   height: 15,
                 ),
-                _buildFacebookLogin(),
+                _buildGoogleLogin(),
                 SizedBox(
                   height: 15,
                 ),
-                _buildGoogleLogin(),
+                _buildFacebookLogin(),
               ],
             ),
           ),
@@ -257,8 +260,9 @@ class _SignInScreenState extends State<SignInScreen> {
           ),
           label: Text(
             'Continue with Facebook',
+            style: TextStyle(fontSize: 16.0),
           ),
-          color: Colors.blue[600],
+          color: Color(0xFF3b5998),
         ),
       ),
     );
@@ -280,8 +284,8 @@ class _SignInScreenState extends State<SignInScreen> {
           icon: Image.asset('assets/images/google_logo.png'),
           label: Text(
             'Continue with Google',
+            style: TextStyle(fontSize: 16.0),
           ),
-          color: Colors.white,
         ),
       ),
     );
@@ -294,8 +298,8 @@ class _SignInScreenState extends State<SignInScreen> {
         height: 45,
         child: FlatButton.icon(
             textColor: Colors.white,
-            icon: Image.asset(
-              'assets/images/apple_logo.png',
+            icon: FaIcon(
+              FontAwesomeIcons.apple,
               color: Colors.white,
             ),
             onPressed: () {},
@@ -305,6 +309,7 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
             label: Text(
               'Continue with Apple',
+              style: TextStyle(fontSize: 16.0),
             ),
             color: Colors.black),
       ),
