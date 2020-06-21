@@ -1,3 +1,4 @@
+import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -141,7 +142,8 @@ class _SignInScreenState extends State<SignInScreen> {
                   width: double.infinity,
                   height: 45,
                   child: FlatButton(
-                    onPressed: () {},
+                    onPressed: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomePage())),
                     padding: EdgeInsets.all(10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
