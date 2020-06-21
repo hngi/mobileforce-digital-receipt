@@ -171,10 +171,10 @@ class MainDrawer extends StatelessWidget {
             ),
           ),
           Align(
-            alignment: Alignment(0.0, -1.1),
+            alignment: Alignment(0.0, -1.0),
             child: Container(
-              width:55,
-              height: 110,
+              width:55.0,
+              height: 55.0,
               color: Color(0xFF0000),
               alignment: Alignment.center,
               child: FlatButton(
@@ -183,7 +183,7 @@ class MainDrawer extends StatelessWidget {
                 },
                 child: Icon(
                   Icons.close,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
             ),
