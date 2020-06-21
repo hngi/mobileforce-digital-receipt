@@ -208,7 +208,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                       );
                     },
-                    padding: EdgeInsets.all(10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
@@ -224,9 +223,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
+                        color: Colors.white,
                       ),
                     ),
-                    color: Color(0xFF25CCB3),
+                    color: Color(0xFF226EBE),
                   ),
                 ),
               ],
