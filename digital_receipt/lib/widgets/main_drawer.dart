@@ -5,14 +5,26 @@ import 'package:flutter/material.dart';
 class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              color: Color(0xFF0B57A7),
-              padding: EdgeInsets.only(top: 60.0, left: 5.0),
-              child: ListView(
+    return Drawer(
+      child: Container(
+        padding: EdgeInsets.only(top: 80.0, left: 5.0),
+        child: ListView(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(left: 15.0),
+              child: Text('Reecpy',
+                style: TextStyle(
+                    fontFamily: 'LibreBaskerville',
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    letterSpacing: 0.6
+                ),
+              ),
+            ),
+            SizedBox(height: 41.0),
+            ListTile(
+              title: Row(
                 children: <Widget>[
                   Container(
                     padding: EdgeInsets.only(left: 15.0),
