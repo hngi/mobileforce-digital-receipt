@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/screens/home_page.dart';
+//import 'package:digital_receipt/screens/preference_page.dart';
 
 void main() => runApp (MaterialApp(
   title: 'Reepcy',
@@ -8,4 +9,6 @@ void main() => runApp (MaterialApp(
   ),
   debugShowCheckedModeBanner: false,
   home: HomePage(),
+  //home: PreferencePage(),
 ));
+
