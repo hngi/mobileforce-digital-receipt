@@ -2,19 +2,19 @@ import 'package:digital_receipt/screens/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class SignInScreen extends StatefulWidget {
+class LogInScreen extends StatefulWidget {
   @override
-  _SignInScreenState createState() => _SignInScreenState();
+  _LogInScreenState createState() => _LogInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _LogInScreenState extends State<LogInScreen> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _passwordObscureText = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF2F8FF),
+      //backgroundColor: Color(0xFFF2F8FF),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -24,6 +24,9 @@ class _SignInScreenState extends State<SignInScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  SizedBox(
+                    height: 34,
+                  ),
                   Center(
                     child: Image.asset(
                       'assets/images/logo.png',
@@ -190,11 +193,13 @@ class _SignInScreenState extends State<SignInScreen> {
                         'Log In',
                         style: TextStyle(
                           color: Colors.white,
+                          fontFamily: 'Montserrat',
                           fontSize: 16,
+                          letterSpacing: 0.3,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      color: Color(0xFF226EBE),
+                      color: Color(0xFF0B57A7),
                     ),
                   ),
                   SizedBox(
@@ -258,11 +263,11 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                   _buildAppleLogin(),
                   SizedBox(
-                    height: 15,
+                    height: 20,
                   ),
                   _buildGoogleLogin(),
                   SizedBox(
-                    height: 15,
+                    height: 20,
                   ),
                   _buildFacebookLogin(),
                 ],
@@ -278,7 +283,7 @@ class _SignInScreenState extends State<SignInScreen> {
     return Container(
       child: SizedBox(
         width: double.infinity,
-        height: 45,
+        height: 50,
         child: FlatButton.icon(
           textColor: Colors.white,
           icon: FaIcon(
@@ -292,7 +297,13 @@ class _SignInScreenState extends State<SignInScreen> {
           ),
           label: Text(
             'Continue with Facebook',
-            style: TextStyle(fontSize: 16.0),
+            style: TextStyle(
+              color: Color.fromRGBO(255, 255, 255, 1),
+              fontFamily: 'Montserrat',
+              fontSize: 15,
+              letterSpacing: 0.3,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           color: Color(0xFF3b5998),
         ),
@@ -308,7 +319,7 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
       child: SizedBox(
         width: double.infinity,
-        height: 45,
+        height: 50,
         child: FlatButton.icon(
           textColor: Colors.black,
           onPressed: () {},
@@ -316,7 +327,13 @@ class _SignInScreenState extends State<SignInScreen> {
           icon: Image.asset('assets/images/google_logo.png'),
           label: Text(
             'Continue with Google',
-            style: TextStyle(fontSize: 16.0),
+            style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'Montserrat',
+              fontSize: 15,
+              letterSpacing: 0.3,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
       ),
@@ -327,7 +344,7 @@ class _SignInScreenState extends State<SignInScreen> {
     return Container(
       child: SizedBox(
         width: double.infinity,
-        height: 45,
+        height: 50,
         child: FlatButton.icon(
             textColor: Colors.white,
             icon: FaIcon(
@@ -341,7 +358,13 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
             label: Text(
               'Continue with Apple',
-              style: TextStyle(fontSize: 16.0),
+              style: TextStyle(
+                color: Color.fromRGBO(255, 255, 255, 0.87),
+                fontFamily: 'Montserrat',
+                fontSize: 15,
+                letterSpacing: 0.3,
+                fontWeight: FontWeight.w500,
+              ),
             ),
             color: Colors.black),
       ),
