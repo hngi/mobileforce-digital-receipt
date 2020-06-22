@@ -1,4 +1,5 @@
 import 'package:digital_receipt/screens/home_page.dart';
+import './notification_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -180,9 +181,11 @@ class _LogInScreenState extends State<LogInScreen> {
                           _formKey.currentState.save();
 
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NotificationPage(),
+                            ),
+                          );
                         }
                       },
                       padding: EdgeInsets.all(10),
