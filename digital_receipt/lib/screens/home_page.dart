@@ -7,25 +7,15 @@ class HomePage extends StatelessWidget {
     return SafeArea (
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.teal[50],
-          iconTheme: IconThemeData(color: Colors.black),
+          //backgroundColor: Color(0xFF226EBE),
+          
         ),
         drawer: Theme(
-          data: Theme.of(context).copyWith(canvasColor: Colors.blue[800]),
+          data: Theme.of(context).copyWith(canvasColor: Color(0xFF226EBE)),
           child: MainDrawer(),
         ),
-        body: Stack(
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.teal[50]
-              ),
-            ),
-            Column(
-              children: <Widget>[
-              ],
-            ),
-          ],
+        body: Column(
+          children: <Widget>[],
         ),
       ),
     );
