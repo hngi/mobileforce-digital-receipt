@@ -29,18 +29,9 @@ class _PreferencePageState extends State<PreferencePage>{
         brightness: _getBrightness(),
       ),
       child: Scaffold(
-        backgroundColor: Color(0xFFF2F8FF),
+        //backgroundColor: Color(0xFFF2F8FF),
         appBar: AppBar(
-          backgroundColor: Color(0xFFF2F8FF),
-          leading: GestureDetector(
-            onTap: () {
-              //Action to be taken
-            },
-            child: Icon(
-              Icons.menu,
-              color: Colors.black,
-            ),
-          ),
+          //backgroundColor: Color(0xFFF2F8FF),
         ),
 
         body: Stack(

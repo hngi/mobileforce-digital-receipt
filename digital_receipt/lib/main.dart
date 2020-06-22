@@ -3,9 +3,6 @@ import 'package:digital_receipt/screens/home_page.dart';
 
 import './screens/onboarding.dart';
 
-
-import 'package:digital_receipt/screens/signin_screen.dart';
-
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -20,7 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Reepcy',
       theme: ThemeData(
-        primaryColor: Colors.blue[800],
+        primaryColor: Color(0xFF0B57A7),
         scaffoldBackgroundColor: Color(0xFFF2F8FF),
         textTheme: TextTheme(
           bodyText1: TextStyle(
