@@ -53,6 +53,7 @@ class _CreateReceiptPageState extends State<CreateReceiptPage> {
                     autoPlay: false,
                     viewportFraction: 1.0,
                     enableInfiniteScroll: false,
+                    scrollPhysics: NeverScrollableScrollPhysics(),
                     onPageChanged: (index, reason) {
                       setState(() {
                         currentIndex.setIndex(index);

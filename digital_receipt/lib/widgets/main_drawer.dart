@@ -1,6 +1,7 @@
+import 'package:digital_receipt/screens/create_receipt_page.dart';
+import 'package:digital_receipt/screens/preference_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 
 class MainDrawer extends StatelessWidget {
   @override
@@ -12,13 +13,14 @@ class MainDrawer extends StatelessWidget {
           children: <Widget>[
             Container(
               padding: EdgeInsets.only(left: 15.0),
-              child: Text('Reecpy',
+              child: Text(
+                'Reecpy',
                 style: TextStyle(
-                    fontFamily: 'LibreBaskerville',
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 0.6
+                  fontFamily: 'LibreBaskerville',
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  letterSpacing: 0.6,
                 ),
               ),
             ),
@@ -26,34 +28,26 @@ class MainDrawer extends StatelessWidget {
             ListTile(
               title: Row(
                 children: <Widget>[
-                  Icon(
-                      Icons.account_circle,
-                      color: Colors.white,
-                      size: 20.0
-                  ),
+                  Icon(Icons.account_circle, color: Colors.white, size: 20.0),
                   SizedBox(width: 15.0),
                   Text(
                     'Profile',
                     style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.white,
-                        letterSpacing: 0.5
+                      fontFamily: 'Montserrat',
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w300,
+                      color: Colors.white,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ],
               ),
-              onTap: (){},
+              onTap: () {},
             ),
             ListTile(
               title: Row(
                 children: <Widget>[
-                  Icon(
-                      Icons.receipt,
-                      color: Colors.white,
-                      size: 20.0
-                  ),
+                  Icon(Icons.receipt, color: Colors.white, size: 20.0),
                   SizedBox(width: 15.0),
                   Text(
                     'Receipts',
@@ -62,21 +56,23 @@ class MainDrawer extends StatelessWidget {
                         fontSize: 16.0,
                         fontWeight: FontWeight.w300,
                         color: Colors.white,
-                        letterSpacing: 0.5
-                    ),
+                        letterSpacing: 0.5),
                   ),
                 ],
               ),
-              onTap: (){},
+              onTap: () {
+                Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreateReceiptPage(),
+                            ),
+                          );
+              },
             ),
             ListTile(
               title: Row(
                 children: <Widget>[
-                  Icon(
-                      Icons.history,
-                      color: Colors.white,
-                      size: 20.0
-                  ),
+                  Icon(Icons.history, color: Colors.white, size: 20.0),
                   SizedBox(width: 15.0),
                   Text(
                     'History',
@@ -85,21 +81,16 @@ class MainDrawer extends StatelessWidget {
                         fontSize: 16.0,
                         fontWeight: FontWeight.w300,
                         color: Colors.white,
-                        letterSpacing: 0.5
-                    ),
+                        letterSpacing: 0.5),
                   ),
                 ],
               ),
-              onTap: (){},
+              onTap: () {},
             ),
             ListTile(
               title: Row(
                 children: <Widget>[
-                  Icon(
-                      Icons.show_chart,
-                      color: Colors.white,
-                      size: 20.0
-                  ),
+                  Icon(Icons.show_chart, color: Colors.white, size: 20.0),
                   SizedBox(width: 15.0),
                   Text(
                     'Analytics',
@@ -108,21 +99,16 @@ class MainDrawer extends StatelessWidget {
                         fontSize: 16.0,
                         fontWeight: FontWeight.w300,
                         color: Colors.white,
-                        letterSpacing: 0.5
-                    ),
+                        letterSpacing: 0.5),
                   ),
                 ],
               ),
-              onTap: (){},
+              onTap: () {},
             ),
             ListTile(
               title: Row(
                 children: <Widget>[
-                  Icon(
-                      Icons.description,
-                      color: Colors.white,
-                      size: 20.0
-                  ),
+                  Icon(Icons.description, color: Colors.white, size: 20.0),
                   SizedBox(width: 15.0),
                   Text(
                     'Drafts',
@@ -131,35 +117,36 @@ class MainDrawer extends StatelessWidget {
                         fontSize: 16.0,
                         fontWeight: FontWeight.w300,
                         color: Colors.white,
-                        letterSpacing: 0.5
-                    ),
+                        letterSpacing: 0.5),
                   ),
                 ],
               ),
-              onTap: (){},
+              onTap: () {},
             ),
             ListTile(
               title: Row(
                 children: <Widget>[
-                  Icon(
-                      Icons.settings,
-                      color: Colors.white,
-                      size: 20.0
-                  ),
+                  Icon(Icons.settings, color: Colors.white, size: 20.0),
                   SizedBox(width: 15.0),
                   Text(
                     'Settings',
                     style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.white,
-                        letterSpacing: 0.5
+                      fontFamily: 'Montserrat',
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w300,
+                      color: Colors.white,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ],
               ),
-              onTap: (){},
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => PreferencePage(),
+                  ),
+                );
+              },
             ),
           ],
         ),
