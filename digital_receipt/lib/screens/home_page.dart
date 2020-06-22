@@ -9,7 +9,6 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
             //backgroundColor: Color(0xFF226EBE),
-
             ),
         drawer: Theme(
           data: Theme.of(context).copyWith(canvasColor: Color(0xFF0B57A7)),
