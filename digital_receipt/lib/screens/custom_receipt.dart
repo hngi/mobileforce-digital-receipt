@@ -76,6 +76,7 @@ class _CustomReceiptState extends State<CustomReceipt> {
                       style: TextStyle(fontSize: 19),
                     ),
                     Checkbox(
+                      onChanged: (value){},
                       checkColor: Colors.black,
                       value: false,
                     ),
@@ -186,6 +187,7 @@ class _CustomReceiptState extends State<CustomReceipt> {
                       style: TextStyle(fontSize: 17),
                     ),
                     Checkbox(
+                      onChanged: (value){},
                       checkColor: Colors.black,
                       value: false,
                     ),
