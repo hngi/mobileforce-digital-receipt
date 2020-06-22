@@ -22,7 +22,7 @@ class MainDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 25.0),
+            SizedBox(height: 41.0),
             ListTile(
               title: Row(
                 children: <Widget>[
