@@ -6,7 +6,7 @@ import 'device_info_service.dart';
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
-  static String _urlEndpoint = "https://gentle-dusk-67310.herokuapp.com";
+  static String _urlEndpoint = "https://frozen-island-67494.herokuapp.com/v1";
 
   final Dio _dio = Dio(
     BaseOptions(
@@ -26,11 +26,13 @@ class ApiService {
     };
     String deviceId = await deviceInfoService.getId();
     try {
+      print(email_address);
+      print(password);
       Response response = await _dio.post(
-        "/auth/token/login/",
+        "/user/login",
         data: {
           "password": '$password',
-          "email": '$email_address',
+          "email_address": '$email_address',
           "deviceId": deviceId
         },
         options: Options(
@@ -42,11 +44,12 @@ class ApiService {
         ),
       );
 
-      if (response.statusCode == 200) {
+      if (response.data["status"] == 200) {
+        print(response.data["status"]);
         return "true";
       } else {
         print(response.data);
-        return "false";
+        return response.data["error"];
       }
     } on DioError catch (error) {
       print(error);
