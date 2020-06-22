@@ -1,4 +1,5 @@
 import 'package:digital_receipt/widgets/main_drawer.dart';
+import '../screens/products.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {

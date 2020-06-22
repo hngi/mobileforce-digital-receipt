@@ -1,4 +1,4 @@
-import 'package:digital_receipt/screens/create_receipt_page.dart';
+//import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:flutter/material.dart';
 
