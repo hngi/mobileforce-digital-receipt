@@ -1,28 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:digital_receipt/screens/receipt_history.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        padding: EdgeInsets.only(top: 80.0, left: 5.0),
+        padding: EdgeInsets.only(top: 60.0, left: 5.0),
         child: ListView(
           children: <Widget>[
             Container(
               padding: EdgeInsets.only(left: 15.0),
-              child: Text('Reecpy',
+              child: Text(
+                'Reecpy',
                 style: TextStyle(
-                    fontFamily: 'LibreBaskerville',
-                    fontSize: 20.0,
+                    fontFamily: 'MuseoModerno',
+                    fontSize: 30.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    letterSpacing: 0.6
-                ),
+                    letterSpacing: 0.6),
               ),
             ),
-            SizedBox(height: 41.0),
+
+            SizedBox(height: 20.0),
+
             ListTile(
               title: Row(
                 children: <Widget>[
@@ -198,6 +200,7 @@ class MainDrawer extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
+
             ),
           ),
         ],
