@@ -1,5 +1,4 @@
 import 'package:digital_receipt/screens/home_page.dart';
-import 'package:digital_receipt/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -203,10 +202,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                   Center(
                     child: InkWell(
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SignUpScreen())),
+                      onTap: () {},
                       child: RichText(
                         textAlign: TextAlign.center,
                         text: TextSpan(

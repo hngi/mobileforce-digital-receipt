@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:digital_receipt/onboardingdata/data.dart';
 import 'package:flutter/material.dart';
-import 'package:chart/onboardingdata/data.dart';
 
 class Onboarding extends StatefulWidget {
   @override
