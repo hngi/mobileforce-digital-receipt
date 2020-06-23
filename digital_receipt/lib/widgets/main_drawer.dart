@@ -1,32 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:digital_receipt/screens/receipt_history.dart';
+
+import '../screens/custom_receipt.dart';
+import '../screens/preference_page.dart';
+import '../screens/receipt_history.dart';
+
 
 class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: Container(
-        padding: EdgeInsets.only(top: 60.0, left: 5.0),
-        child: ListView(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 15.0),
-              child: Text(
-                'Reecpy',
-                style: TextStyle(
-                    fontFamily: 'MuseoModerno',
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 0.6),
-              ),
-            ),
-
-            SizedBox(height: 20.0),
-
-            ListTile(
-              title: Row(
+    return SafeArea(
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              color: Color(0xFF0B57A7),
+              padding: EdgeInsets.only(top: 60.0, left: 5.0),
+              child: ListView(
                 children: <Widget>[
                   Container(
                     padding: EdgeInsets.only(left: 15.0),
@@ -109,7 +99,9 @@ class MainDrawer extends StatelessWidget {
                         ),
                       ],
                     ),
-                    onTap: (){},
+                    onTap: (){
+                       Navigator.push(context, MaterialPageRoute(builder: (context) => ReceiptHistory()));
+                    },
                   ),
                   ListTile(
                     title: Row(
@@ -178,7 +170,9 @@ class MainDrawer extends StatelessWidget {
                         ),
                       ],
                     ),
-                    onTap: (){},
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PreferencePage()));
+                    },
                   ),
                 ],
               ),
@@ -200,7 +194,6 @@ class MainDrawer extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
-
             ),
           ),
         ],

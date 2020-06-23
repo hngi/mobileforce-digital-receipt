@@ -73,7 +73,7 @@ Future<DateTime> _selectDate(DateTime selectedDate) async {
                 Icons.arrow_back,
                 color: Colors.white,
               ),
-              onPressed: null,
+              onPressed: () => Navigator.pop(context),
             ),
             title: Text('Create Receipt'),
           ),

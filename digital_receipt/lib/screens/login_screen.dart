@@ -2,6 +2,10 @@ import 'package:digital_receipt/screens/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'dashboard.dart';
+import 'signupScreen.dart';
+import 'signupScreen.dart';
+
 class LogInScreen extends StatefulWidget {
   @override
   _LogInScreenState createState() => _LogInScreenState();
@@ -207,7 +211,9 @@ class _LogInScreenState extends State<LogInScreen> {
                   ),
                   Center(
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen()));
+                      },
                       child: RichText(
                         textAlign: TextAlign.center,
                         text: TextSpan(
