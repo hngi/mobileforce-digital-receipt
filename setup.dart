@@ -1,7 +1,6 @@
-// import 'dart:html';
 import 'dart:io';
 import 'package:digital_receipt/screens/home_page.dart';
-// import 'package:image_picker/image_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 
 
@@ -18,23 +17,27 @@ String businessName;
 String address;
 String slogan;
 String phoneNumber;
-// File image;
-//  final picker = ImagePicker();
+File image;
+final picker = ImagePicker();
 
-  // Future getImage() async {
-  //   final pickedFile = await picker.getImage(source: ImageSource.camera);
+  Future getImage() async {
+    var ImageSource;
+        final pickedFile = await picker.getImage(source: ImageSource.camera);
 
-  //   setState(() {
-  //     _image = File(pickedFile.path);
-  //   });
-  // }
+    setState(() {
+      image = File(pickedFile.path);
+    });
+  }
 
 Widget _buildBusinesssName(formLabel){
   return Column(
     children: <Widget>[
-      Padding(padding:  const EdgeInsets.all(10)),
-    Text(formLabel, 
-    style: TextStyle(fontFamily: 'Montserrat', fontSize: 15.0, color: Colors.grey, fontWeight: FontWeight.w700),
+      Padding(padding:  const EdgeInsets.all(3)),
+    Container(
+      alignment: Alignment.bottomLeft,
+      child: Text(formLabel, 
+      style: TextStyle(fontFamily: 'Montserrat', fontSize: 15.0, color: Colors.grey, fontWeight: FontWeight.w700),
+      ),
     ),
     TextFormField(
       decoration: InputDecoration(border: OutlineInputBorder()),
@@ -54,9 +57,12 @@ Widget _buildBusinesssName(formLabel){
 Widget _buildSlogan(formLabel){
   return Column(
     children: <Widget>[
-      Padding(padding:  const EdgeInsets.all(5)),
-    Text(formLabel, 
-    style: TextStyle(fontFamily: 'Montserrat', fontSize: 15.0, color: Colors.grey, fontWeight: FontWeight.w700),
+      Padding(padding:  const EdgeInsets.all(3)),
+    Container(
+      alignment: Alignment.bottomLeft,
+      child: Text(formLabel, 
+      style: TextStyle(fontFamily: 'Montserrat', fontSize: 15.0, color: Colors.grey, fontWeight: FontWeight.w700),
+      ),
     ),
     TextFormField(
       decoration: InputDecoration(border: OutlineInputBorder()
@@ -68,9 +74,12 @@ Widget _buildSlogan(formLabel){
 Widget _buildPhoneNumber(formLabel){
   return Column(
     children: <Widget>[
-      Padding(padding:  const EdgeInsets.all(5)),
-    Text(formLabel, 
-    style: TextStyle(fontFamily: 'Montserrat', fontSize: 15.0, color: Colors.grey, fontWeight: FontWeight.w700),
+      Padding(padding:  const EdgeInsets.all(3)),
+    Container(
+      alignment: Alignment.bottomLeft,
+      child: Text(formLabel, 
+      style: TextStyle(fontFamily: 'Montserrat', fontSize: 15.0, color: Colors.grey, fontWeight: FontWeight.w700),
+      ),
     ),
     TextFormField(
       decoration: InputDecoration(border: OutlineInputBorder()),
@@ -92,10 +101,13 @@ Widget _buildPhoneNumber(formLabel){
 Widget _buildAddress(formLabel){
   return Column(
     children: <Widget>[
-    Padding(padding:  const EdgeInsets.all(5)),
-    Text(formLabel, 
-    style: 
-    TextStyle(fontFamily: 'Montserrat', fontSize: 15.0, color: Colors.grey, fontWeight: FontWeight.w700),
+    Padding(padding:  const EdgeInsets.all(3)),
+    Container(
+      alignment: Alignment.bottomLeft,
+      child: Text(formLabel, 
+      style: 
+      TextStyle(fontFamily: 'Montserrat', fontSize: 15.0, color: Colors.grey, fontWeight: FontWeight.w700),
+      ),
     ),
     TextFormField(
       decoration: InputDecoration(border: OutlineInputBorder(),),
@@ -117,26 +129,32 @@ Widget _buildAddress(formLabel){
     return Scaffold(
       backgroundColor: Colors.lightBlue[30],
           body: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 15),
             child: SingleChildScrollView(
               child: Form(
                 key: _setupKey,
-                child: Padding(padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                child: Padding(padding: const EdgeInsets.all(8),
                 child: Column(
                   children: <Widget>[
                   Column(children: <Widget> [
-                    Text('Lets help you\nset up', 
-                    style: TextStyle(fontSize: 23.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w800, color: Colors.black54),
-                    textAlign: TextAlign.justify,),
-                    Text(
-                    '\nTell us about your business. This information\nwill show up in the receipt.',
-                    style: TextStyle(fontSize: 15.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w500, color: Colors.grey),
-                    textAlign: TextAlign.justify,
+                    Container(
+                      alignment: Alignment.bottomLeft,
+                      child: Text('Lets help you\nset up', 
+                      style: TextStyle(fontSize: 23.0, fontFamily: 'Montserrat', fontWeight: FontWeight.bold, color: Colors.black),
+                      textAlign: TextAlign.justify,),
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                      '\nTell us about your business. This\ninformation will show up in the receipt.',
+                      style: TextStyle(fontSize: 16.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w500, color: Colors.grey),
+                      textAlign: TextAlign.justify,
+                      ),
                     )
                   ],
                     ),
 
-                  SizedBox(height: 30.0),
+                  SizedBox(height: 25.0),
 
                   Align(
                     alignment: Alignment.centerLeft,
@@ -145,51 +163,50 @@ Widget _buildAddress(formLabel){
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         _buildBusinesssName('Business name'),
-                        SizedBox(height: 15),
+                        SizedBox(height: 10),
                         _buildPhoneNumber('Phone Number'),
-                        SizedBox(height: 15),
+                        SizedBox(height: 10),
                         _buildAddress('Address'),
-                        SizedBox(height: 15),
+                        SizedBox(height: 10),
                         _buildSlogan('Business Slogan (optional)')
                       ]
                     ),
                   ),
                     
-                    SizedBox(height: 30.0), //Spacing
+                    SizedBox(height: 40), //Spacing
 
-                    FlatButton(
-                      onPressed: () => {},
+                    OutlineButton(
+                      onPressed: () => {getImage()},
+                      borderSide: BorderSide(color: Colors.blue[900]),
                       textColor: Colors.black,
                       //shape: ShapeBorder(),
-                      color: Colors.white,
-                      padding: EdgeInsets.only(left: 130.0, right: 130.0, top: 15.0, bottom: 15.0),
-                      child: Center(
-                        child: Row(
-                          children: <Widget>[
-                            Text('Upload your logo', style: TextStyle(fontWeight: FontWeight.w300, fontSize: 20.0),
-                            ),
-                            Icon(Icons.file_upload)
-                              ],
-                            ),
-                      ),
+                      color: Colors.lightBlue[30],
+                      padding: EdgeInsets.only(left: 150.0, right: 150.0, top: 15.0, bottom: 15.0),
+                      child: Row(
+                        children: <Widget>[
+                          Text('Upload your logo', style: TextStyle(fontWeight: FontWeight.w300, fontSize: 16.0),
+                          ),
+                          // Icon(Icons.file_upload, size: 10.0,)
+                            ],
+                          ),
                     ),
+                    SizedBox(height: 8),
                       Text('Your logo should be in PNG format and have\na max size of 3MB (Optional)',
                          style: TextStyle(fontSize: 16, fontFamily: 'Montserrat', fontWeight: FontWeight.w300, color: Colors.grey),
                          textAlign: TextAlign.center,),
                     
-                    SizedBox(height: 30),
+                    SizedBox(height: 40),
 
                     FlatButton( onPressed: () => {
                       if (! _setupKey.currentState.validate()) {
                       } else {
-                        _setupKey.currentState.save()
-                      },
-
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()))  
+                        _setupKey.currentState.save(),
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()))
+                      }, 
                     },
                     textColor: Colors.white,
                     color: Colors.blue[900],
-                    padding: EdgeInsets.only(left: 130.0, right: 130.0, top: 15.0, bottom: 15.0),
+                    padding: EdgeInsets.only(left: 150.0, right: 150.0, top: 15.0, bottom: 15.0),
                     child: Text('Proceed', style: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.w600))
                     ),
                   ],),
