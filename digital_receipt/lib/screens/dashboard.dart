@@ -27,8 +27,8 @@ class _DashBoardState extends State<DashBoard> {
               crossAxisCount: 2,
               children: <Widget>[
                 _singleCard(
-                  leading: 'Whatsapp',
-                  subtitle: '\u{20A6}80,000',
+                  leading: 'No of receipts',
+                  subtitle: '15',
                   color: Color(0xFF25CCB3),
                 ),
                 _singleCard(
