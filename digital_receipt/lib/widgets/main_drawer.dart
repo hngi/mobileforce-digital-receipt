@@ -1,39 +1,34 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:digital_receipt/screens/receipt_history.dart';
+
+import '../screens/custom_receipt.dart';
+import '../screens/preference_page.dart';
+import '../screens/receipt_history.dart';
+
 
 class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-        child: Container(
-      padding: EdgeInsets.only(top: 60.0, left: 5.0),
-      child: ListView(
+    return SafeArea(
+      child: Row(
         children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(left: 15.0),
-            child: Text(
-              'Reecpy',
-              style: TextStyle(
-                  fontFamily: 'MuseoModerno',
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 0.6),
-            ),
-          ),
-          SizedBox(height: 20.0),
-          ListTile(
-            title: Row(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(left: 15.0),
-                  child: Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Image(
-                      image: AssetImage('assets/images/degeit_1.png'),
-                      height: 36.0,
-                      width: 134.0,
+          Expanded(
+            child: Container(
+              color: Color(0xFF0B57A7),
+              padding: EdgeInsets.only(top: 60.0, left: 5.0),
+              child: ListView(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(left: 15.0),
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Image(
+                        image: AssetImage(
+                            'assets/images/degeit_1.png'
+                        ),
+                        height: 36.0,
+                        width: 134.0,
+                      ),
                     ),
                   ),
                 ),
@@ -87,9 +82,25 @@ class MainDrawer extends StatelessWidget {
                             fontSize: 16.0,
                             fontWeight: FontWeight.w300,
                             color: Colors.white,
-                            letterSpacing: 0.5),
-                      ),
-                    ],
+                            size: 20.0
+                        ),
+                        SizedBox(width: 15.0),
+                        Text(
+                          'History',
+                          style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.white,
+                              letterSpacing: 0.5
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: (){
+                       Navigator.push(context, MaterialPageRoute(builder: (context) => ReceiptHistory()));
+                    },
+
                   ),
                   onTap: () {},
                 ),
@@ -141,10 +152,24 @@ class MainDrawer extends StatelessWidget {
                             fontSize: 16.0,
                             fontWeight: FontWeight.w300,
                             color: Colors.white,
-                            letterSpacing: 0.5),
-                      ),
-                    ],
-                  ),
+                            size: 20.0
+                        ),
+                        SizedBox(width: 15.0),
+                        Text(
+                          'Preferences',
+                          style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.white,
+                              letterSpacing: 0.5
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PreferencePage()));
+                    },                  ),
                   onTap: () {},
                 ),
               ],

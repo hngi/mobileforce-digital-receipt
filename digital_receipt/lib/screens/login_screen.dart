@@ -6,6 +6,10 @@ import 'package:digital_receipt/widgets/loading.dart';
 
 import '../services/api_service.dart';
 
+import 'dashboard.dart';
+import 'signupScreen.dart';
+import 'signupScreen.dart';
+
 class LogInScreen extends StatefulWidget {
   @override
   _LogInScreenState createState() => _LogInScreenState();
@@ -115,6 +119,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         SizedBox(
                           height: 20,
                         ),
+
                         Text(
                           'Password',
                           style: TextStyle(
