@@ -31,7 +31,6 @@ class MainDrawer extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
                 SizedBox(height: 20.0),
                 ListTile(
                   title: Row(
@@ -46,7 +45,8 @@ class MainDrawer extends StatelessWidget {
                             fontSize: 16.0,
                             fontWeight: FontWeight.w300,
                             color: Colors.white,
-                            letterSpacing: 0.5),
+                            letterSpacing: 0.5
+                        ),
                       ),
                     ],
                   ),
@@ -68,23 +68,14 @@ class MainDrawer extends StatelessWidget {
                       ),
                     ],
                   ),
-                  onTap: () {},
+                  onTap: () {
+				  },
                 ),
                 ListTile(
                   title: Row(
                     children: <Widget>[
                       Icon(Icons.history, color: Colors.white, size: 20.0),
                       SizedBox(width: 15.0),
-                      Text(
-                        'History',
-                        style: TextStyle(
-                            fontFamily: 'Montserrat',
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w300,
-                            color: Colors.white,
-                            size: 20.0
-                        ),
-                        SizedBox(width: 15.0),
                         Text(
                           'History',
                           style: TextStyle(
@@ -100,10 +91,7 @@ class MainDrawer extends StatelessWidget {
                     onTap: (){
                        Navigator.push(context, MaterialPageRoute(builder: (context) => ReceiptHistory()));
                     },
-
                   ),
-                  onTap: () {},
-                ),
                 ListTile(
                   title: Row(
                     children: <Widget>[
@@ -116,7 +104,8 @@ class MainDrawer extends StatelessWidget {
                             fontSize: 16.0,
                             fontWeight: FontWeight.w300,
                             color: Colors.white,
-                            letterSpacing: 0.5),
+                            letterSpacing: 0.5
+                        ),
                       ),
                     ],
                   ),
@@ -134,23 +123,18 @@ class MainDrawer extends StatelessWidget {
                             fontSize: 16.0,
                             fontWeight: FontWeight.w300,
                             color: Colors.white,
-                            letterSpacing: 0.5),
+                            letterSpacing: 0.5
+                        ),
                       ),
                     ],
                   ),
                   onTap: () {},
                 ),
-                ListTile(
-                  title: Row(
-                    children: <Widget>[
-                      Icon(Icons.settings, color: Colors.white, size: 20.0),
-                      SizedBox(width: 15.0),
-                      Text(
-                        'Preferences',
-                        style: TextStyle(
-                            fontFamily: 'Montserrat',
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w300,
+                  ListTile(
+                    title: Row(
+                      children: <Widget>[
+                        Icon(
+                            Icons.settings,
                             color: Colors.white,
                             size: 20.0
                         ),
@@ -168,33 +152,50 @@ class MainDrawer extends StatelessWidget {
                       ],
                     ),
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => PreferencePage()));
-                    },                  ),
-                  onTap: () {},
-                ),
-              ],
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => PreferencePage()));
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
           Align(
             alignment: Alignment(0.0, -1.0),
             child: Container(
-              width: 55.0,
-              height: 55.0,
+              width:50.0,
+              height:100.0,
               color: Color(0xFF0000),
               alignment: Alignment.center,
               child: FlatButton(
-                onPressed: () {
+                onPressed: (){
                   Navigator.pop(context);
                 },
-                child: Icon(
-                  Icons.close,
-                  color: Colors.white,
-                ),
+                child: Icon(Icons.close, color: Colors.white,),
               ),
             ),
           ),
         ],
       ),
-    ));
+    );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                      //  Navigator.push(context, MaterialPageRoute(builder: (context) => ReceiptHistory()));
+                      // Navigator.push(context, MaterialPageRoute(builder: (context) => PreferencePage()));

@@ -246,7 +246,9 @@ class _LogInScreenState extends State<LogInScreen> {
                         ),
                         Center(
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen()));
+                            },
                             child: RichText(
                               textAlign: TextAlign.center,
                               text: TextSpan(
