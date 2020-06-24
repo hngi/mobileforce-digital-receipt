@@ -1,9 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
-import 'home_page.dart';
-
+import 'package:digital_receipt/screens/home_page.dart';
 class SignupScreen extends StatefulWidget {
   @override
   _SignupScreenState createState() => _SignupScreenState();
@@ -26,7 +24,7 @@ class _SignupScreenState extends State<SignupScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Center(
-                  child: Image.asset('assets/images/logo.png',height: 50),
+                  child: Image.asset('assets/images/logo.png',height:50),
              
                 ),
                 SizedBox(height: 40.0),
@@ -101,8 +99,10 @@ class _SignupScreenState extends State<SignupScreen> {
                               RegExp regex = new RegExp(pattern);
                               if (!regex.hasMatch(value))
                                 return 'Enter Valid Email';
-                              else
-                                return null;
+                              else {
+ Navigator.push(context,MaterialPageRoute(builder: (context) => HomePage()));
+}
+                                
                             }),
                         SizedBox(height: 15),
                         Padding(
@@ -145,12 +145,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               } else if (value.length < 5) {
                                 return "Password too short";
                               }
-                              else {
-                                Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage()));
-                              }
+                              return null;
                             }),
                       ],
                     ),
