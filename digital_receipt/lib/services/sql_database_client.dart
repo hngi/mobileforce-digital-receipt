@@ -57,11 +57,25 @@ class SqlDbClient {
           'DELETE FROM notifications WHERE id = ?', [notifications.first.id]);
 
       id = await _database.insert("notifications", notification.toJson());
+      print("                                                                                     ");
+      print("                                                                                     ");
+      print("                                                                                     ");
+      print("Flutter is inserting notification in Shared Preference with id $id and details: ${notification.toJson()}");
+      print("                                                                                     ");
+      print("                                                                                     ");
+      print("                                                                                     ");
 
     } else {
       
       // Just insert the notification since we have not reached the 100th mark
       id = await _database.insert("notifications", notification.toJson());
+      print("                                                                                     ");
+      print("                                                                                     ");
+      print("                                                                                     ");
+      print("Flutter is inserting notification in Shared Preference with id $id and details: ${notification.toJson()}");
+      print("                                                                                     ");
+      print("                                                                                     ");
+      print("                                                                                     ");
     }
 
     return id;
