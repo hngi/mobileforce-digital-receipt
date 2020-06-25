@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/custom_receipt.dart';
+import '../screens/customerList.dart';
 import '../screens/preference_page.dart';
 import '../screens/receipt_history.dart';
-
 
 class MainDrawer extends StatelessWidget {
   @override
@@ -23,9 +23,7 @@ class MainDrawer extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.bottomLeft,
                       child: Image(
-                        image: AssetImage(
-                            'assets/images/degeit_1.png'
-                        ),
+                        image: AssetImage('assets/images/degeit_1.png'),
                         height: 36.0,
                         width: 134.0,
                       ),
@@ -35,11 +33,8 @@ class MainDrawer extends StatelessWidget {
                   ListTile(
                     title: Row(
                       children: <Widget>[
-                        Icon(
-                            Icons.account_circle,
-                            color: Colors.white,
-                            size: 20.0
-                        ),
+                        Icon(Icons.account_circle,
+                            color: Colors.white, size: 20.0),
                         SizedBox(width: 15.0),
                         Text(
                           'Account',
@@ -48,21 +43,16 @@ class MainDrawer extends StatelessWidget {
                               fontSize: 16.0,
                               fontWeight: FontWeight.w300,
                               color: Colors.white,
-                              letterSpacing: 0.5
-                          ),
+                              letterSpacing: 0.5),
                         ),
                       ],
                     ),
-                    onTap: (){},
+                    onTap: () {},
                   ),
                   ListTile(
                     title: Row(
                       children: <Widget>[
-                        Icon(
-                            Icons.receipt,
-                            color: Colors.white,
-                            size: 20.0
-                        ),
+                        Icon(Icons.receipt, color: Colors.white, size: 20.0),
                         SizedBox(width: 15.0),
                         Text(
                           'Receipts',
@@ -71,21 +61,16 @@ class MainDrawer extends StatelessWidget {
                               fontSize: 16.0,
                               fontWeight: FontWeight.w300,
                               color: Colors.white,
-                              letterSpacing: 0.5
-                          ),
+                              letterSpacing: 0.5),
                         ),
                       ],
                     ),
-                    onTap: (){},
+                    onTap: () {},
                   ),
                   ListTile(
                     title: Row(
                       children: <Widget>[
-                        Icon(
-                            Icons.history,
-                            color: Colors.white,
-                            size: 20.0
-                        ),
+                        Icon(Icons.history, color: Colors.white, size: 20.0),
                         SizedBox(width: 15.0),
                         Text(
                           'History',
@@ -94,23 +79,21 @@ class MainDrawer extends StatelessWidget {
                               fontSize: 16.0,
                               fontWeight: FontWeight.w300,
                               color: Colors.white,
-                              letterSpacing: 0.5
-                          ),
+                              letterSpacing: 0.5),
                         ),
                       ],
                     ),
-                    onTap: (){
-                       Navigator.push(context, MaterialPageRoute(builder: (context) => ReceiptHistory()));
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ReceiptHistory()));
                     },
                   ),
                   ListTile(
                     title: Row(
                       children: <Widget>[
-                        Icon(
-                            Icons.show_chart,
-                            color: Colors.white,
-                            size: 20.0
-                        ),
+                        Icon(Icons.show_chart, color: Colors.white, size: 20.0),
                         SizedBox(width: 15.0),
                         Text(
                           'Analytics',
@@ -119,21 +102,17 @@ class MainDrawer extends StatelessWidget {
                               fontSize: 16.0,
                               fontWeight: FontWeight.w300,
                               color: Colors.white,
-                              letterSpacing: 0.5
-                          ),
+                              letterSpacing: 0.5),
                         ),
                       ],
                     ),
-                    onTap: (){},
+                    onTap: () {},
                   ),
                   ListTile(
                     title: Row(
                       children: <Widget>[
-                        Icon(
-                            Icons.description,
-                            color: Colors.white,
-                            size: 20.0
-                        ),
+                        Icon(Icons.description,
+                            color: Colors.white, size: 20.0),
                         SizedBox(width: 15.0),
                         Text(
                           'Drafts',
@@ -142,21 +121,21 @@ class MainDrawer extends StatelessWidget {
                               fontSize: 16.0,
                               fontWeight: FontWeight.w300,
                               color: Colors.white,
-                              letterSpacing: 0.5
-                          ),
+                              letterSpacing: 0.5),
                         ),
                       ],
                     ),
-                    onTap: (){},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CustomerList()));
+                    },
                   ),
                   ListTile(
                     title: Row(
                       children: <Widget>[
-                        Icon(
-                            Icons.settings,
-                            color: Colors.white,
-                            size: 20.0
-                        ),
+                        Icon(Icons.settings, color: Colors.white, size: 20.0),
                         SizedBox(width: 15.0),
                         Text(
                           'Preferences',
@@ -165,14 +144,15 @@ class MainDrawer extends StatelessWidget {
                               fontSize: 16.0,
                               fontWeight: FontWeight.w300,
                               color: Colors.white,
-                              letterSpacing: 0.5
-                          ),
+                              letterSpacing: 0.5),
                         ),
                       ],
                     ),
-
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => PreferencePage()));
-
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PreferencePage()));
                     },
                   ),
                 ],
@@ -182,17 +162,18 @@ class MainDrawer extends StatelessWidget {
           Align(
             alignment: Alignment(0.0, -1.0),
             child: Container(
-
-              width:50.0,
-              height:100.0,
-
+              width: 50.0,
+              height: 100.0,
               color: Color(0xFF0000),
               alignment: Alignment.center,
               child: FlatButton(
-                onPressed: (){
+                onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Icon(Icons.close, color: Colors.white,),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -201,4 +182,3 @@ class MainDrawer extends StatelessWidget {
     );
   }
 }
-
