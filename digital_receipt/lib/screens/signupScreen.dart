@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
+import 'package:digital_receipt/screens/home_page.dart';
 class SignupScreen extends StatefulWidget {
   @override
   _SignupScreenState createState() => _SignupScreenState();
@@ -16,7 +16,7 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Color(0xffE5E5E5),
+        backgroundColor: Color(0xffF2F8FF),
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(20.0),
@@ -24,15 +24,8 @@ class _SignupScreenState extends State<SignupScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Center(
-                  child: Text(
-                    'Reepcy',
-                    style: TextStyle(
-                      color: Color(0xFF226EBE),
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Montserrat',
-                    ),
-                  ),
+                  child: Image.asset('assets/images/logo.png',height:50),
+             
                 ),
                 SizedBox(height: 40.0),
                 Padding(
@@ -89,7 +82,13 @@ class _SignupScreenState extends State<SignupScreen> {
                                   width: 1.5,
                                 ),
                               ),
-                              focusedBorder: OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                                borderSide: BorderSide(
+                                  color: Color(0xFFC8C8C8),
+                                  width: 1.5,
+                                ),
+                              ),
                             ),
                             validator: (value) {
                               if (value.isEmpty) {
@@ -100,8 +99,10 @@ class _SignupScreenState extends State<SignupScreen> {
                               RegExp regex = new RegExp(pattern);
                               if (!regex.hasMatch(value))
                                 return 'Enter Valid Email';
-                              else
-                                return null;
+                              else {
+ Navigator.push(context,MaterialPageRoute(builder: (context) => HomePage()));
+}
+                                
                             }),
                         SizedBox(height: 15),
                         Padding(
@@ -234,7 +235,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   name: "Sign in with Google",
                   textColor: Color(0xff121212),
                   iconPath: "assets/logos/google-logo.png",
-                  buttonColor: Color(0xffE5E5E5),
+                  buttonColor: Color(0xffF2F8FF),
+                  border: true,
                 ),
                 button(
                     name: "Sign in with Facebook",
@@ -249,11 +251,15 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget button(
-      {String name,
-      Color textColor = const Color(0xffE5E5E5),
-      String iconPath = "",
-      Color buttonColor = const Color(0xff226EBE)}) {
+  Widget button({
+    String name,
+    Color textColor = const Color(0xffE5E5E5),
+    String iconPath = "",
+    Color buttonColor = const Color(0xff226EBE),
+    bool border = false,
+    // Function onPressed,
+  }) {
+    // bool loadingSpinner = false;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(10.0),
@@ -261,13 +267,16 @@ class _SignupScreenState extends State<SignupScreen> {
         color: buttonColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
+          side: border
+              ? BorderSide(color: Colors.black, width: 1.5)
+              : BorderSide(color: buttonColor, width: 0),
         ),
         onPressed: () {
           // setState(() => isloading = true);
           if (_formKey.currentState.validate()) {}
         },
         child:
-            //  isloading
+            //  loadingSpinner
             //     ? CircularProgressIndicator(
             //         backgroundColor: Color(0xffE5E5E5),
             //       )
