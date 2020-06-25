@@ -160,6 +160,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+
+  flutter_slidable:
+    dependency: "direct main"
+    description:
+      name: flutter_slidable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.4"
+
   flutter_device_type:
     dependency: "direct main"
     description:
@@ -167,11 +176,16 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0"
+
   flutter_test:
     dependency: "direct dev"
     description: flutter
     source: sdk
     version: "0.0.0"
+
+    dependency: "direct main"
+    description:
+
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -194,6 +208,7 @@ packages:
   http:
     dependency: transitive
     description:
+
       name: http
       url: "https://pub.dartlang.org"
     source: hosted
@@ -254,6 +269,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.4"
+
   path_provider:
     dependency: "direct main"
     description:
@@ -282,6 +298,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+
   pedantic:
     dependency: transitive
     description:
