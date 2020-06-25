@@ -1,3 +1,5 @@
+import 'package:digital_receipt/models/customer.dart';
+import 'package:digital_receipt/screens/customer_list_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -183,15 +185,17 @@ class _CustomerListState extends State<CustomerList> {
           ],
           child: InkWell(
             onTap: () {
-              // Navigator.of(context).push(
-              //   MaterialPageRoute(
-              //     builder: (context) => CustomerDetail(
-              //       customerName: customerName,
-              //       email: customerEmail,
-              //       phoneNumber: phoneNumber,
-              //     ),
-              //   ),
-              // );
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => CustomerDetail(
+                    customer : Customer(
+                    name: customerName,
+                    email: customerEmail,
+                    phoneNumber: phoneNumber,
+                    address: ''
+                  ),
+                )),
+              );
             },
             child: Container(
               width: double.infinity,
