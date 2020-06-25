@@ -170,8 +170,9 @@ class MainDrawer extends StatelessWidget {
                         ),
                       ],
                     ),
-                    onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PreferencePage()));
+
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PreferencePage()));
+
                     },
                   ),
                 ],
@@ -181,8 +182,10 @@ class MainDrawer extends StatelessWidget {
           Align(
             alignment: Alignment(0.0, -1.0),
             child: Container(
+
               width:50.0,
               height:100.0,
+
               color: Color(0xFF0000),
               alignment: Alignment.center,
               child: FlatButton(
@@ -199,22 +202,3 @@ class MainDrawer extends StatelessWidget {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                      //  Navigator.push(context, MaterialPageRoute(builder: (context) => ReceiptHistory()));
-                      // Navigator.push(context, MaterialPageRoute(builder: (context) => PreferencePage()));

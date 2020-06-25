@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../services/email_service.dart';
 
 class DashBoard extends StatefulWidget {
   DashBoard({Key key}) : super(key: key);
@@ -41,6 +45,29 @@ class _DashBoardState extends State<DashBoard> {
                   subtitle: '15',
                   color: Color(0xFF25CCB3),
                 ),
+               /*  FlatButton(
+                  onPressed: () async {
+                    print('canSend');
+                    final EmailService emailService = EmailService();
+                    //final bool canSend = await FlutterMailer.canSendMail();
+
+                    //print(canSend);
+                    emailService.setMail(
+                      body:
+                          '<h1>a long body for the email<h1> <br> with a subset of HTML',
+                      subject: 'Degeit',
+                      recipients: ['2amafav3@gmail.com'],
+                      isHTML: true,
+                      ccRecipients: [],
+                      bccRecipients: [],
+                      attachments: <String>[
+                        '/storage/emulated/0/Download/Outliers.pdf'
+                      ],
+                    );
+                    await emailService.sendMail();
+                  },
+                  child: Text('Test mail'),
+                ), */
               ],
             ),
           ),
