@@ -29,6 +29,7 @@ dependencies:
   dio: ^3.0.9
   fluttertoast: ^4.0.1
   device_info: ^0.4.2+4
+  flutter_email_sender: ^3.0.1
   firebase_core: ^0.4.5
   firebase_auth: ^0.16.1
   firebase_messaging: ^6.0.16
@@ -43,6 +44,7 @@ dependencies:
   carousel_pro: ^1.0.0
   carousel_slider: ^2.1.0
   font_awesome_flutter: ^8.8.1
+  flutter_mailer: ^0.5.1
   
 
 dev_dependencies:
@@ -86,7 +88,7 @@ flutter:
           
     - family: Montserrat
       fonts:
-        - asset: assets/fonts/MuseoModerno/static/MuseoModerno-Regular.ttf
+        - asset: assets/fonts/Montserrat/Montserrat-Regular.ttf
           weight: 700
 
 

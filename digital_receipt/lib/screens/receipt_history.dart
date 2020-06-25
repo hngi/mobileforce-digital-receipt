@@ -18,7 +18,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffE5E5E5),
+     // backgroundColor: Color(0xffE5E5E5),
       appBar: AppBar(
         backgroundColor: Color(0xff226EBE),
         leading: IconButton(
@@ -64,7 +64,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                     padding: EdgeInsets.all(15.0),
                     child: Column(
                       children: <Widget>[
-                        SizedBox(height: 30.0),
+                        SizedBox(height: 10.0),
                         TextFormField(
                           decoration: InputDecoration(
                             hintText: "Type a keyword",

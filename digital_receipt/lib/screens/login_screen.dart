@@ -119,7 +119,6 @@ class _LogInScreenState extends State<LogInScreen> {
                         SizedBox(
                           height: 20,
                         ),
-
                         Text(
                           'Password',
                           style: TextStyle(
@@ -202,17 +201,20 @@ class _LogInScreenState extends State<LogInScreen> {
                                 });
                                 String api_response =
                                     await _apiService.loginUser(
-                                        _emailController.text,
-                                        _passwordController.text);
+                                  _emailController.text,
+                                  _passwordController.text,
+                                );
                                 if (api_response == "true") {
                                   Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => HomePage()));
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => HomePage(),
+                                    ),
+                                  );
                                 } else {
-                                   setState(() {
-                                  isLoading = false;
-                                });
+                                  setState(() {
+                                    isLoading = false;
+                                  });
                                   Fluttertoast.showToast(
                                       msg: api_response,
                                       toastLength: Toast.LENGTH_LONG,
@@ -247,7 +249,10 @@ class _LogInScreenState extends State<LogInScreen> {
                         Center(
                           child: InkWell(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SignupScreen()));
                             },
                             child: RichText(
                               textAlign: TextAlign.center,

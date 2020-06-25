@@ -36,7 +36,7 @@ class SqlDbClient {
     return notifications;
   }
 
-  /// This function takes a parameter of type Notification and returns a 
+  /// This function takes a parameter of type Notification and returns a
   /// Future of int which is the id of the notification added
   Future<int> insertNotification(NotificationModel notification) async {
     int id;
@@ -49,7 +49,6 @@ class SqlDbClient {
     });
 
     if (notifications.length == 100) {
-      
       // delete the oldest notification and insert the latest notification to
       //make the notification 100 in number
 
@@ -57,25 +56,37 @@ class SqlDbClient {
           'DELETE FROM notifications WHERE id = ?', [notifications.first.id]);
 
       id = await _database.insert("notifications", notification.toJson());
-      print("                                                                                     ");
-      print("                                                                                     ");
-      print("                                                                                     ");
-      print("Flutter is inserting notification in Shared Preference with id $id and details: ${notification.toJson()}");
-      print("                                                                                     ");
-      print("                                                                                     ");
-      print("                                                                                     ");
-
+      print(
+          "                                                                                     ");
+      print(
+          "                                                                                     ");
+      print(
+          "                                                                                     ");
+      print(
+          "Flutter is inserting notification in Shared Preference with id $id and details: ${notification.toJson()}");
+      print(
+          "                                                                                     ");
+      print(
+          "                                                                                     ");
+      print(
+          "                                                                                     ");
     } else {
-      
       // Just insert the notification since we have not reached the 100th mark
       id = await _database.insert("notifications", notification.toJson());
-      print("                                                                                     ");
-      print("                                                                                     ");
-      print("                                                                                     ");
-      print("Flutter is inserting notification in Shared Preference with id $id and details: ${notification.toJson()}");
-      print("                                                                                     ");
-      print("                                                                                     ");
-      print("                                                                                     ");
+      print(
+          "                                                                                     ");
+      print(
+          "                                                                                     ");
+      print(
+          "                                                                                     ");
+      print(
+          "Flutter is inserting notification in Shared Preference with id $id and details: ${notification.toJson()}");
+      print(
+          "                                                                                     ");
+      print(
+          "                                                                                     ");
+      print(
+          "                                                                                     ");
     }
 
     return id;
