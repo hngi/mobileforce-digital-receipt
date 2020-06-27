@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
 
+import 'package:image_picker/image_picker.dart';
+
 class CustomReceipt extends StatefulWidget {
   @override
   _CustomReceiptState createState() => _CustomReceiptState();
@@ -9,7 +11,17 @@ class CustomReceipt extends StatefulWidget {
 
 class _CustomReceiptState extends State<CustomReceipt> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  File gallery;
+  File image;
+
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      image = File(pickedFile.path);
+    });
+  }
+
   String color = 'No Color';
   var _customReceipt = CustomRecipeModel(
       receiptNo: null,
@@ -24,33 +36,34 @@ class _CustomReceiptState extends State<CustomReceipt> {
   String _validateItemRequired(String value) {
     return value.isEmpty ? 'This field is required' : null;
   }
-DateTime selectedDate = DateTime.now();
-// Date Picker
-Future<DateTime> _selectDate(DateTime selectedDate) async {
- DateTime _initialDate = selectedDate;
- final DateTime _pickedDate = await showDatePicker(
- context: context,
- initialDate: _initialDate,
- firstDate: DateTime.now().subtract(Duration(days: 365)),
- lastDate: DateTime.now().add(Duration(days: 365)),
- );
- if (_pickedDate != null) {
- selectedDate = DateTime(
- _pickedDate.year,
- _pickedDate.month,
- _pickedDate.day,
- _initialDate.hour,
- _initialDate.minute,
- _initialDate.second,
- _initialDate.millisecond,
- _initialDate.microsecond);
- }
 
- setState(() {
-   _customReceipt.date = selectedDate;
- });
- return selectedDate;
-}
+  DateTime selectedDate = DateTime.now();
+// Date Picker
+  Future<DateTime> _selectDate(DateTime selectedDate) async {
+    DateTime _initialDate = selectedDate;
+    final DateTime _pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _initialDate,
+      firstDate: DateTime.now().subtract(Duration(days: 365)),
+      lastDate: DateTime.now().add(Duration(days: 365)),
+    );
+    if (_pickedDate != null) {
+      selectedDate = DateTime(
+          _pickedDate.year,
+          _pickedDate.month,
+          _pickedDate.day,
+          _initialDate.hour,
+          _initialDate.minute,
+          _initialDate.second,
+          _initialDate.millisecond,
+          _initialDate.microsecond);
+    }
+
+    setState(() {
+      _customReceipt.date = selectedDate;
+    });
+    return selectedDate;
+  }
 
   void _submitOrder() {
     /*
@@ -171,20 +184,20 @@ Future<DateTime> _selectDate(DateTime selectedDate) async {
                   ),
                 ),
                 GestureDetector(
-                                  child: Container(
+                  child: Container(
                     height: 40,
-                    
                     margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
                     padding: EdgeInsets.all(8),
-                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.teal)),
-                    child:Text('Current Date - ${_customReceipt.date}',
-                     style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      color: Colors.black,
-                      fontSize: 17,
-                    ),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: Colors.teal)),
+                    child: Text(
+                      'Current Date - ${_customReceipt.date}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        color: Colors.black,
+                        fontSize: 17,
+                      ),
                     ),
                     /*
                     child: TextFormField(
@@ -208,22 +221,25 @@ Future<DateTime> _selectDate(DateTime selectedDate) async {
                   onTap: () => _selectDate(selectedDate),
                 ),
                 DropDown(),
-                Container(
-                  margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
-                  height: 40,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.teal)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text('Upload Signature'),
-                      Icon(
-                        Icons.file_download,
-                        color: Colors.black,
-                      )
-                    ],
+                InkWell(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
+                    height: 40,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: Colors.teal)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('Upload Signature'),
+                        Icon(
+                          Icons.file_download,
+                          color: Colors.black,
+                        )
+                      ],
+                    ),
                   ),
+                  onTap: getImage,
                 ),
                 Column(
                   children: <Widget>[
@@ -417,7 +433,6 @@ class _DropDownState extends State<DropDown> {
             margin: EdgeInsets.only(left: 10, right: 50),
             width: mywidth - 100,
             child: Text('$text')),
-      
         items:
             <String>['Default', 'Arial', 'Roman', 'Lucida'].map((String value) {
           return new DropdownMenuItem<String>(
@@ -425,13 +440,12 @@ class _DropDownState extends State<DropDown> {
             child: Text(value),
           );
         }).toList(),
-          onChanged: (value) {
+        onChanged: (value) {
           setState(() {
             text = value;
           });
         },
       ),
-      
     );
   }
 }
