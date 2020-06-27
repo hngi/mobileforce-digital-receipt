@@ -30,7 +30,6 @@ class _AccountPageState extends State<AccountPage> {
     var screenWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.blue[50],
         appBar: AppBar(
           backgroundColor: Colors.blue[700],
           leading: IconButton(
@@ -55,13 +54,13 @@ class _AccountPageState extends State<AccountPage> {
                   width: screenWidth * 0.781,
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                      color: Colors.teal,
                       gradient: LinearGradient(
-                        colors: [Colors.teal[200], Colors.teal[300]],
+                        colors: [Colors.teal[100], Colors.teal[300]],
                         begin: Alignment.topRight,
                         end: Alignment.bottomLeft,
                       )),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Center(
                         child: Column(
@@ -69,7 +68,7 @@ class _AccountPageState extends State<AccountPage> {
                           children: <Widget>[
                             Text(
                               'Unlock Amazing Features',
-                              style: CustomText.display2,
+                              style: CustomText.displayn,
                             ),
                             Text(
                               'Upgrade to premium',
@@ -90,11 +89,11 @@ class _AccountPageState extends State<AccountPage> {
                       alignment: Alignment.topCenter,
                       child: InkWell(
                         child: Container(
-                          height: 70,
-                          width: 70,
+                          height: 65,
+                          width: 65,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
-                            border: Border.all(color: Colors.tealAccent),
+   
                           ),
                           child: image == null
                               ? Icon(Icons.verified_user)
@@ -108,17 +107,17 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                   ),
                   Positioned(
-                      left: 165,
-                      top: 50,
+                      left: screenWidth*0.486,
+                      top: screenHeight*0.0732,
                       child: Container(
-                        height: 25,
-                        width: 25,
+                        height: 20,
+                        width: 20,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12.5),
-                            color: Colors.white),
+                            color: Colors.white38),
                         child: Center(
                           child: Icon(Icons.edit,
-                              color: Colors.tealAccent, size: 17),
+                              color: Colors.teal, size: 15),
                         ),
                       )),
                 ],
@@ -137,18 +136,22 @@ class _AccountPageState extends State<AccountPage> {
                 label: 'Email Address',
                 detail: 'myemail@mail.com',
               ),
+              Divider(color: Colors.black45),
               InformationData(
                 label: 'Phone No',
                 detail: '892-983-240',
               ),
+              Divider(color: Colors.black45),
               InformationData(
                 label: 'Address',
                 detail: '5, Amphitheatre Railway Street Degit',
               ),
+              Divider(color: Colors.black45),
               InformationData(
                 label: 'Bussiness Slogan',
                 detail: 'We are taking over',
               ),
+              Divider(color: Colors.black45),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -163,7 +166,7 @@ class _AccountPageState extends State<AccountPage> {
                     children: <Widget>[
                       Container(
                           padding: EdgeInsets.all(8),
-                          color: Colors.blue[50],
+                          
                           child: Row(
                             children: <Widget>[
                               Text(
@@ -197,33 +200,19 @@ class InformationData extends StatelessWidget {
   InformationData({this.label, this.detail});
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
+    return  Row(
         children: <Widget>[
-          Expanded(
-            child: Row(
-              children: <Widget>[
-                Text(
-                  '$label',
-                  style: CustomText.display3,
-                ),
-                Text(' : '),
-                Expanded(
-                  child: Text(
-                    '$detail',
-                    style: CustomText.display2,
-                    softWrap: true,
-                    overflow: TextOverflow.visible,
-                  ),
-                )
-              ],
+          Text(
+              '$label : ',
+              style: CustomText.displayn,
             ),
-          ),
-          Divider(
-            color: Colors.black45,
-          ),
+          Expanded(
+            child: Text(
+              '$detail',
+              style: CustomText.display2,
+            ),
+          )
         ],
-      ),
     );
   }
 }
