@@ -12,18 +12,9 @@ class HomePage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.notifications),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NotificationPage()));
-                }),
-          ],
-          //backgroundColor: Color(0xFF226EBE),
-        ),
+
+            //backgroundColor: Color(0xFF226EBE),
+            ),
         drawer: Theme(
           data: Theme.of(context).copyWith(canvasColor: Color(0xFF0B57A7)),
           child: MainDrawer(),
