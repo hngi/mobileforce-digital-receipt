@@ -122,7 +122,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5)),
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) => LogInScreen(),

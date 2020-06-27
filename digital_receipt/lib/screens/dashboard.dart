@@ -16,7 +16,7 @@ class _DashBoardState extends State<DashBoard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: EdgeInsets.only(top: 16.0, left: 16, right: 16),
       child: Column(
         children: <Widget>[
           _buildInfo(),
@@ -45,7 +45,7 @@ class _DashBoardState extends State<DashBoard> {
                   subtitle: '15',
                   color: Color(0xFF25CCB3),
                 ),
-               /*  FlatButton(
+                /*  FlatButton(
                   onPressed: () async {
                     print('canSend');
                     final EmailService emailService = EmailService();
