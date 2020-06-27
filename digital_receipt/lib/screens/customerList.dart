@@ -24,14 +24,8 @@ class _CustomerListState extends State<CustomerList> {
     return Scaffold(
       // backgroundColor: Color(0xffE5E5E5),
       appBar: AppBar(
-        backgroundColor: Color(0xff226EBE),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
+        //backgroundColor: Color(0xff226EBE),
+
         title: Text(
           "Customer List",
           style: TextStyle(
@@ -42,7 +36,7 @@ class _CustomerListState extends State<CustomerList> {
             letterSpacing: 0.03,
           ),
         ),
-        centerTitle: true,
+        //centerTitle: true,
       ),
       body: FutureBuilder(
         future: null, // receipts from API
@@ -65,17 +59,17 @@ class _CustomerListState extends State<CustomerList> {
                   TextFormField(
                     decoration: InputDecoration(
                       hintText: "Type a keyword",
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.38),),
                       prefixIcon: IconButton(
                         icon: Icon(Icons.search),
-                        color: Colors.grey,
+                        color: Color.fromRGBO(0, 0, 0, 0.38),
                         onPressed: () {},
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
                         borderSide: BorderSide(
-                          color: Color(0xFFC8C8C8),
-                          width: 1.5,
+                          color: Color.fromRGBO(0, 0, 0, 0.12),
+                          width: 1,
                         ),
                       ),
                       contentPadding: EdgeInsets.all(15),
@@ -142,10 +136,11 @@ class _CustomerListState extends State<CustomerList> {
                       itemBuilder: (context, index) {
                         // HardCoded Receipt details
                         return customer(
-                            customerName: "Carole Froschauer",
-                            customerEmail: "caroFro@gmail.com",
-                            phoneNumber: "741-142-4459",
-                            numberOfReceipts: 4);
+                          customerName: "Carole Froschauer",
+                          customerEmail: "caroFro@gmail.com",
+                          phoneNumber: "741-142-4459",
+                          numberOfReceipts: 4,
+                        );
                       },
                     ),
                   ),
@@ -161,136 +156,165 @@ class _CustomerListState extends State<CustomerList> {
 
   Widget customer(
       {String customerName, customerEmail, phoneNumber, int numberOfReceipts}) {
-    return SizedBox(
-      height: 99,
-      child: Column(
-        children: <Widget>[
-          Slidable(
-            actionPane: SlidableDrawerActionPane(),
-            actionExtentRatio: 0.25,
-            secondaryActions: <Widget>[
-              IconSlideAction(
-                  caption: "Call Customer",
-                  color: Color(0xffB3E2F4),
-                  icon: Icons.phone,
-                  onTap: () {}),
-              Container(
-                color: Color(0xffBFEDC7),
-                child: InkWell(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Image.asset("assets/gmail.png", height: 25, width: 25),
-                      Text("Mail Customer"),
-                    ],
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          height: 99,
+          child: Center(
+            child: Slidable(
+              actionPane: SlidableDrawerActionPane(),
+              actionExtentRatio: 0.25,
+              secondaryActions: <Widget>[
+                Container(
+                  color: Color(0xFFB3E2F4),
+                  child: InkWell(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.call,
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Call Customer",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-
-              ),
-            )
-          ],
-          child: InkWell(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => CustomerDetail(
-                    customer : Customer(
-                    name: customerName,
-                    email: customerEmail,
-                    phoneNumber: phoneNumber,
-                    address: ''
+                Container(
+                  color: Color(0xffBFEDC7),
+                  child: InkWell(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Image.asset("assets/gmail.png", height: 24, width: 24),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Mail Customer",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                )),
-              );
-            },
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Color(0xff539C30),
-                borderRadius: BorderRadius.circular(10),
-              ),
-
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Color(0xff539C30),
-                  borderRadius: BorderRadius.circular(10),
                 ),
+              ],
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => CustomerDetail(
+                              customer: Customer(
+                                  name: customerName,
+                                  email: customerEmail,
+                                  phoneNumber: phoneNumber,
+                                  address: ''),
+                            )),
+                  );
+                },
                 child: Container(
-                  margin: EdgeInsets.only(left: 5.0),
+                  width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Color(0xffE8F1FB),
+                    color: Color(0xff539C30),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              "$customerName",
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.6),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'Montserrat',
-                                letterSpacing: 0.03,
-                              ),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Color(0xff539C30),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Container(
+                      margin: EdgeInsets.only(left: 5.0),
+                      decoration: BoxDecoration(
+                        color: Color(0xffE8F1FB),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text(
+                                  "$customerName",
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(0, 0, 0, 0.6),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'Montserrat',
+                                    letterSpacing: 0.03,
+                                  ),
+                                ),
+                                Text(
+                                  "$numberOfReceipts Receipts",
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(0, 0, 0, 0.6),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w300,
+                                    fontFamily: 'Montserrat',
+                                    letterSpacing: 0.03,
+                                  ),
+                                ),
+                              ],
                             ),
-                            Text(
-                              "$numberOfReceipts Receipts",
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
+                            child: Text(
+                              "$customerEmail",
                               style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.6),
+                                color: Color.fromRGBO(0, 0, 0, 0.87),
                                 fontSize: 14,
                                 fontWeight: FontWeight.w300,
                                 fontFamily: 'Montserrat',
                                 letterSpacing: 0.03,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
-                        child: Text(
-                          "$customerEmail",
-                          style: TextStyle(
-                            color: Color.fromRGBO(0, 0, 0, 0.87),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w300,
-                            fontFamily: 'Montserrat',
-                            letterSpacing: 0.03,
                           ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
-                        child: Text(
-                          "$phoneNumber",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w300,
-                            fontFamily: 'Montserrat',
-                            letterSpacing: 0.03,
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
+                            child: Text(
+                              "$phoneNumber",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w300,
+                                fontFamily: 'Montserrat',
+                                letterSpacing: 0.03,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-          SizedBox(
-            height: 30,
-          ),
-        ],
-      ),
+        ),
+        SizedBox(
+          height: 19,
+        ),
+      ],
     );
   }
 }
