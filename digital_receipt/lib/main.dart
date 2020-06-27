@@ -65,6 +65,9 @@ class MyApp extends StatelessWidget {
             bodyText2: TextStyle(
               fontFamily: 'Montserrat',
             ),
+            button: TextStyle(
+              fontFamily: 'Montserrat',
+            ),
           ),
         ),
         debugShowCheckedModeBanner: false,

@@ -18,9 +18,9 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     // backgroundColor: Color(0xffE5E5E5),
+      // backgroundColor: Color(0xffE5E5E5),
       appBar: AppBar(
-        backgroundColor: Color(0xff226EBE),
+        //backgroundColor: Color(0xff226EBE),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
@@ -38,7 +38,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
             letterSpacing: 0.03,
           ),
         ),
-        centerTitle: true,
+        //centerTitle: true,
         actions: <Widget>[],
       ),
       body: FutureBuilder(
@@ -284,6 +284,8 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
 
   Widget _showAlertDialog() {
     return AlertDialog(
+      elevation: 0,
+      backgroundColor: Color(0xFFF2F8FF),
       contentPadding: EdgeInsets.all(0.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -369,7 +371,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                   width: double.infinity,
                   padding: EdgeInsets.all(10.0),
                   child: RaisedButton(
-                    color: Color(0xff226EBE),
+                    color: Color(0xFF0B57A7),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
@@ -385,6 +387,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                         style: TextStyle(
                           color: Color(0xffE5E5E5),
                           fontSize: 15,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
@@ -401,6 +404,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                       style: TextStyle(
                         // color: Color(0xffE5E5E5),
                         fontSize: 15,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
