@@ -3,10 +3,8 @@ import 'dart:io';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/screens/home_page.dart';
-
 import 'package:fluttertoast/fluttertoast.dart';
 import '../services/api_service.dart';
-
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -29,56 +27,59 @@ ApiService _apiService = ApiService();
           ? LoadingIndicator()
           :SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                SizedBox(
-                  height: 34,
-                ),
                 Center(
                   child: Image.asset('assets/images/logo.png', height: 50),
                 ),
                 SizedBox(height: 40.0),
-                Text(
-                  "Sign Up",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Montserrat',
-                    letterSpacing: 0.03,
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text(
+                    "Sign Up",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Montserrat',
+                      letterSpacing: 0.03,
+                    ),
                   ),
                 ),
-                SizedBox(height: 5,),
-                Text(
-                  "Create an account",
-                  style: TextStyle(
-                    color: Color(0xff606060),
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                    fontFamily: 'Montserrat',
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text(
+                    "Create an account",
+                    style: TextStyle(
+                      color: Color(0xff606060),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w300,
+                      fontFamily: 'Montserrat',
+                    ),
                   ),
                 ),
-
-                SizedBox(height: 22,),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        "Email Address",
-                        style: TextStyle(
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: 'Montserrat',
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                          child: Text(
+                            "Name",
+                            style: TextStyle(
+                              color: Color(0xff606060),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Montserrat',
+                            ),
+                          ),
                         ),
-                      ),
-                       SizedBox(height: 5,),
-                      TextFormField(
-
+                        TextFormField(
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
@@ -129,7 +130,6 @@ ApiService _apiService = ApiService();
                           ),
                         ),
                         TextFormField(
-
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
@@ -137,19 +137,16 @@ ApiService _apiService = ApiService();
                               borderSide: BorderSide(
                                 color: Color(0xFFC8C8C8),
                                 width: 1.5,
-
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),
                               borderSide: BorderSide(
-                                color: Color.fromRGBO(0, 0, 0, 0.12),
+                                color: Color(0xFFC8C8C8),
                                 width: 1.5,
                               ),
-
-                              ),
                             ),
-                          
+                          ),
                           validator: (value) {
                             if (value.isEmpty) {
                               return "Enter Email Address";
@@ -177,41 +174,10 @@ ApiService _apiService = ApiService();
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                               fontFamily: 'Montserrat',
-
                             ),
                           ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Enter Email Address";
-                            }
-                            Pattern pattern =
-                                r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                            RegExp regex = new RegExp(pattern);
-                            if (!regex.hasMatch(value))
-                              return 'Enter Valid Email';
-                            else {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HomePage()));
-                            }
-                          }),
-                      SizedBox(height: 15),
-                      Padding(
-                        padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                        child: Text(
-                          "Password",
-                          style: TextStyle(
-                            color: Color(0xff606060),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'Montserrat',
-                          ),
                         ),
-
-                      ),
-                      TextFormField(
-
+                        TextFormField(
                           obscureText: !passwordVisible ? true : false,
                           decoration: InputDecoration(
                             suffixIcon: IconButton(
@@ -240,10 +206,6 @@ ApiService _apiService = ApiService();
                               return "Password too short";
                             }
                             return null;
-
-                          }),
-                    ],
-
                           },
                           onSaved: (value) {
                             setState(() {
@@ -253,7 +215,6 @@ ApiService _apiService = ApiService();
                         ),
                       ],
                     ),
-
                   ),
                 ),
                 Center(
@@ -366,17 +327,15 @@ ApiService _apiService = ApiService();
     Function onPressed,
   }) {
     // bool loadingSpinner = false;
-    return SizedBox(
+    return Container(
       width: double.infinity,
-      child: FlatButton(
+      padding: EdgeInsets.all(10.0),
+      child: RaisedButton(
         color: buttonColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
           side: border
-              ? BorderSide(
-                  color: Colors.black,
-                  width: 1,
-                )
+              ? BorderSide(color: Colors.black, width: 1.5)
               : BorderSide(color: buttonColor, width: 0),
         ),
         onPressed: () {
