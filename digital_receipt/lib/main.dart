@@ -1,7 +1,6 @@
 //import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'dart:io';
 
-import 'package:digital_receipt/screens/account_page.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -69,7 +68,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         debugShowCheckedModeBanner: false,
-        home: AccountPage(),
+        home: ScreenController(),
       ),
     );
   }
