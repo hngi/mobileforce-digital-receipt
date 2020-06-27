@@ -136,7 +136,7 @@ class _DashBoardState extends State<DashBoard> {
                         fontWeight: FontWeight.bold,
                       ),
                       children: [
-                        TextSpan(text: ' Tutor'),
+                        TextSpan(text: 'Tutor'),
                       ],
                     ),
                   )
