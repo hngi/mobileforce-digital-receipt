@@ -8,6 +8,7 @@ import '../screens/custom_receipt.dart';
 import '../screens/customerList.dart';
 import '../screens/preference_page.dart';
 import '../screens/receipt_history.dart';
+import '../screens/account_page.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
@@ -236,7 +237,7 @@ class MainDrawer extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => PreferencePage()));
+                                builder: (context) => AccountPage()));
                       },
                       child: Row(
                         children: <Widget>[
