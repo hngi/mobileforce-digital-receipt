@@ -162,7 +162,7 @@ class _CustomerListState extends State<CustomerList> {
   Widget customer(
       {String customerName, customerEmail, phoneNumber, int numberOfReceipts}) {
     return SizedBox(
-      height: 99,
+      height: 110,
       child: Column(
         children: <Widget>[
           Slidable(
@@ -277,9 +277,6 @@ class _CustomerListState extends State<CustomerList> {
                 ),
               ),
             ),
-          ),
-          SizedBox(
-            height: 30,
           ),
         ],
       ),
