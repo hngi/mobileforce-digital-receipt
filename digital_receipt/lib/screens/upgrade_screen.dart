@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UpgradeScreen extends StatelessWidget {
@@ -20,10 +21,6 @@ class UpgradeScreen extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-//              Container(
-//                decoration: BoxDecoration(
-//                ),
-//              ),
               Column(
                 children: <Widget>[
                   Container(
@@ -66,10 +63,9 @@ class UpgradeScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 20.0),
                   Container(
-                    width: 360,
                     height: 83.0,
-                    padding: EdgeInsets.only(left:16.0, right: 16.0),
                     child: Container(
+                      width: MediaQuery.of(context).size.width - 32,
                       decoration: BoxDecoration(
                           image: DecorationImage(image: AssetImage('assets/images/frame55.png',),
                               fit: BoxFit.fitHeight
@@ -105,14 +101,12 @@ class UpgradeScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 30.0),
                   Container(
-                    width: 328,
+                    width: MediaQuery.of(context).size.width - 32,
                     height: 89.0,
                     padding: EdgeInsets.only(left: 0.0, right: 0.0),
                     child: Container(
                       decoration: BoxDecoration(
-                          image: DecorationImage(image: AssetImage('assets/images/rectangle48.png',),
-                              fit: BoxFit.fitHeight
-                          ),
+                          color: Color(0xFFDFF6F3),
                           borderRadius: BorderRadius.circular(5.0)
                       ),
                       child: Row(
@@ -136,7 +130,7 @@ class UpgradeScreen extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    width: 328,
+                    width: MediaQuery.of(context).size.width - 32,
                     height: 89.0,
                     padding: EdgeInsets.only(left: 0.0, right: 0.0),
                     child: Container(
@@ -173,14 +167,12 @@ class UpgradeScreen extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    width: 328,
+                    width: MediaQuery.of(context).size.width - 32,
                     height: 43.0,
                     padding: EdgeInsets.only(left: 0.0, right: 0.0),
                     child: Container(
                       decoration: BoxDecoration(
-                          image: DecorationImage(image: AssetImage('assets/images/rectangle48.png',),
-                              fit: BoxFit.fitWidth
-                          ),
+                          color: Color(0xFFDFF6F3),
                           borderRadius: BorderRadius.circular(5.0)
                       ),
                       child: Row(
@@ -208,7 +200,7 @@ class UpgradeScreen extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    width: 328,
+                    width: MediaQuery.of(context).size.width - 32,
                     height: 89.0,
                     padding: EdgeInsets.only(left: 0.0, right: 0.0),
                     child: Container(
@@ -241,14 +233,12 @@ class UpgradeScreen extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    width: 328,
+                    width: MediaQuery.of(context).size.width - 32,
                     height: 43.0,
                     padding: EdgeInsets.only(left: 0.0, right: 0.0),
                     child: Container(
                       decoration: BoxDecoration(
-                          image: DecorationImage(image: AssetImage('assets/images/rectangle48.png',),
-                              fit: BoxFit.fitWidth
-                          ),
+                          color: Color(0xFFDFF6F3),
                           borderRadius: BorderRadius.circular(5.0)
                       ),
                       child: Row(
