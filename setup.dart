@@ -22,6 +22,7 @@ final picker = ImagePicker();
 
   Future getImage() async {
     var ImageSource;
+
         final pickedFile = await picker.getImage(source: ImageSource.camera);
 
     setState(() {
@@ -127,20 +128,20 @@ Widget _buildAddress(formLabel){
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.lightBlue[50],
+      backgroundColor: Colors.teal[50],
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: SingleChildScrollView(
               child: Form(
                 key: _setupKey,
-                child: Padding(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 30),
+                child: Padding(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 80),
                 child: Column(
                   children: <Widget>[
                   Column(children: <Widget> [
                     Container(
                       alignment: Alignment.bottomLeft,
                       child: Text('Lets help you\nset up', 
-                      style: TextStyle(fontSize: 23.0, fontFamily: 'Montserrat', fontWeight: FontWeight.bold, color: Colors.black),
+                      style: TextStyle(fontSize: 23.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w900, color: Colors.black),
                       textAlign: TextAlign.justify,),
                     ),
                     Container(
