@@ -15,16 +15,16 @@ class _ReminderPageState extends State<ReminderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffE5E5E5),
+      //backgroundColor: Color(0xffE5E5E5),
       appBar: AppBar(
-        backgroundColor: Color(0xff226EBE),
-        leading: IconButton(
+        // backgroundColor: Color(0xff226EBE),
+        /* leading: IconButton(
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () {
             Navigator.of(context).pop();
           },
-        ),
+        ), */
         title: Text(
           "Reminders",
           style: TextStyle(
@@ -35,8 +35,8 @@ class _ReminderPageState extends State<ReminderPage> {
             letterSpacing: 0.03,
           ),
         ),
-        centerTitle: true,
-        actions: <Widget>[],
+        //centerTitle: true,
+        //actions: <Widget>[],
       ),
       body: FutureBuilder(
         future: null, // receipts from API
@@ -46,29 +46,31 @@ class _ReminderPageState extends State<ReminderPage> {
               child: CircularProgressIndicator(),
             );
           } else {
-            return Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 20.0),
-                  Flexible(
-                    child: ListView.builder(
-                      itemCount: 25,
-                      itemBuilder: (context, index) {
-                        // HardCoded Receipt details
-                        return reminderCard(
-                          total: "80,000",
-                          date: "12-06-2020",
-                          reminderTitle: "Carole Froschauer",
-                          subtitle:
-                              "Crptocurrency, intro to after effects ",
-                          dueDate: "In 1 month time",
-                        );
-                      },
+            return Column(
+              children: <Widget>[
+                //SizedBox(height: 20.0),
+                Flexible(
+                  child: ListView.builder(
+                    padding: EdgeInsets.only(
+                      left: 16.0,
+                      right: 16,
+                      bottom: 16.0,
+                      top: 30,
                     ),
+                    itemCount: 25,
+                    itemBuilder: (context, index) {
+                      // HardCoded Receipt details
+                      return reminderCard(
+                        total: "80,000",
+                        date: "12-06-2020",
+                        reminderTitle: "Carole Froschauer",
+                        subtitle: "Crptocurrency, intro to after effects ",
+                        dueDate: "In 1 month time",
+                      );
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           }
           // }
@@ -87,6 +89,7 @@ class _ReminderPageState extends State<ReminderPage> {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Container(
+            padding: EdgeInsets.all(10),
             margin: EdgeInsets.only(left: 5.0),
             decoration: BoxDecoration(
               color: Color(0xffE8F1FB),
@@ -95,116 +98,111 @@ class _ReminderPageState extends State<ReminderPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              "$reminderTitle",
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.87),
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: 'Montserrat',
-                                letterSpacing: 0.03,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.fromLTRB(0.0, 10.0, 5.0, 5.0),
-                              child: Text(
-                                "$subtitle",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w300,
-                                  fontFamily: 'Montserrat',
-                                  letterSpacing: 0.03,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(left: 10.0),
-                        child: Text(
-                          "$date",
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          "$reminderTitle",
                           style: TextStyle(
-                            color: Color.fromRGBO(0, 0, 0, 0.6),
+                            color: Color.fromRGBO(0, 0, 0, 0.87),
                             fontSize: 14,
-                            fontWeight: FontWeight.w300,
+                            fontWeight: FontWeight.w500,
                             fontFamily: 'Montserrat',
                             letterSpacing: 0.03,
                           ),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          "$subtitle",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w300,
+                            height: 1.43,
+                            fontFamily: 'Montserrat',
+                            letterSpacing: 0.03,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      "$date",
+                      style: TextStyle(
+                        color: Color.fromRGBO(0, 0, 0, 0.6),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w300,
+                        fontFamily: 'Montserrat',
+                        letterSpacing: 0.03,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                RichText(
+                  //textAlign: TextAlign.right,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Due Date: ',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w300,
+                          fontFamily: 'Montserrat',
+                          letterSpacing: 0.03,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '$dueDate',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Montserrat',
+                          letterSpacing: 0.03,
                         ),
                       ),
                     ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: RichText(
-                    textAlign: TextAlign.right,
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Due Date: ',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w300,
-                            fontFamily: 'Montserrat',
-                            letterSpacing: 0.03,
-                          ),
-                        ),
-                        TextSpan(
-                          text: '$dueDate ',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w300,
-                            fontFamily: 'Montserrat',
-                            letterSpacing: 0.03,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                SizedBox(
+                  height: 9,
                 ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: RichText(
-                    textAlign: TextAlign.right,
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Balance: ',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w300,
-                            fontFamily: 'Montserrat',
-                            letterSpacing: 0.03,
-                          ),
+                RichText(
+                 // textAlign: TextAlign.right,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Balance: ',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w300,
+                          fontFamily: 'Montserrat',
+                          letterSpacing: 0.03,
                         ),
-                        TextSpan(
-                          text: ' N$total ',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            fontFamily: 'Montserrat',
-                            letterSpacing: 0.03,
-                          ),
+                      ),
+                      TextSpan(
+                        text: 'N$total ',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Montserrat',
+                          letterSpacing: 0.03,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -212,7 +210,7 @@ class _ReminderPageState extends State<ReminderPage> {
           ),
         ),
         SizedBox(
-          height: 30,
+          height: 15,
         ),
       ],
     );

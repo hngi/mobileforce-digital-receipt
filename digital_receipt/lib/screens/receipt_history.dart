@@ -370,7 +370,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                 Container(
                   width: double.infinity,
                   padding: EdgeInsets.all(10.0),
-                  child: RaisedButton(
+                  child: FlatButton(
                     color: Color(0xFF0B57A7),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
@@ -386,7 +386,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                         "Upgrade",
                         style: TextStyle(
                           color: Color(0xffE5E5E5),
-                          fontSize: 15,
+                          fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -403,7 +403,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                       "Skip",
                       style: TextStyle(
                         // color: Color(0xffE5E5E5),
-                        fontSize: 15,
+                        fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
