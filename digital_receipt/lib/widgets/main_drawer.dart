@@ -1,4 +1,5 @@
 import 'package:digital_receipt/constant.dart';
+import 'package:digital_receipt/screens/analytics.dart';
 import 'package:digital_receipt/screens/drafts.dart';
 import 'package:digital_receipt/screens/notification_page.dart';
 import 'package:digital_receipt/screens/setup.dart';
@@ -188,7 +189,11 @@ class MainDrawer extends StatelessWidget {
                   width: double.maxFinite,
                   child: FlatButton(
                     highlightColor: Colors.transparent,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => Analytics()
+                              ));
+                    },
                     child: Row(
                       children: <Widget>[
                         Icon(
