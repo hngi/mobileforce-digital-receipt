@@ -9,18 +9,20 @@ import 'notification_page.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
+    return Scaffold(
+      appBar: AppBar(
 
-            //backgroundColor: Color(0xFF226EBE),
-            ),
-        drawer: Theme(
-          data: Theme.of(context).copyWith(canvasColor: Color(0xFF0B57A7)),
-          child: MainDrawer(),
-        ),
-        body: DashBoard(),
-        floatingActionButton: FloatingActionButton(
+          //backgroundColor: Color(0xFF226EBE),
+          ),
+      drawer: Theme(
+        data: Theme.of(context).copyWith(canvasColor: Color(0xFF0B57A7)),
+        child: MainDrawer(),
+      ),
+      body: SafeArea(
+        child: DashBoard(),
+      ),
+      floatingActionButton: SafeArea(
+        child: FloatingActionButton(
           onPressed: () {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => CreateReceiptPage()));
