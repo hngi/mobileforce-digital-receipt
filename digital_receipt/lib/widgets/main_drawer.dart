@@ -1,8 +1,10 @@
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/screens/drafts.dart';
 import 'package:digital_receipt/screens/notification_page.dart';
+import 'package:digital_receipt/screens/upgrade_screen.dart';
 import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/screens/reminderPage.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -34,32 +36,31 @@ class MainDrawer extends StatelessWidget {
                       child: kLogo,
                     ),
                   ),
-                ),
-                SizedBox(height: 20.0),
-                SizedBox(
-                  height: 50.0,
-                  width: double.maxFinite,
-                  child: FlatButton(
-                    highlightColor: Colors.transparent,
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AccountPage()));
-                    },
-                    child: Row(
-                      children: <Widget>[
-                        Icon(Icons.account_circle,
-                            size: 20.0, color: Colors.white),
-                        SizedBox(width: 15.0),
-                        Text(
-                          'Account',
-                          style: TextStyle(
-                            fontFamily: 'Montserrat',
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                            letterSpacing: 0.5,
+                  SizedBox(height: 20.0),
+                  SizedBox(
+                    height: 50.0,
+                    width: double.maxFinite,
+                    child: FlatButton(
+                      highlightColor: Colors.transparent,
+                      onPressed: () {
+                        Navigator.push(
+                            context, MaterialPageRoute(
+                            builder: (context) => UpgradeScreen()));
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.account_circle,
+                              size: 20.0, color: Colors.white),
+                          SizedBox(width: 15.0),
+                          Text(
+                            'Account',
+                            style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              letterSpacing: 0.5,
+                            ),
                           ),
                         ),
                       ],
