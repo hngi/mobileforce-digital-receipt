@@ -1,5 +1,6 @@
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/screens/notification_page.dart';
+import 'package:digital_receipt/screens/setup.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -237,7 +238,7 @@ class MainDrawer extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AccountPage()));
+                                builder: (context) => Setup()));
                       },
                       child: Row(
                         children: <Widget>[
