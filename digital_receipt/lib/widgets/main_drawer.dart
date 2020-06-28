@@ -1,5 +1,6 @@
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/screens/notification_page.dart';
+import 'package:digital_receipt/screens/reminderPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -39,7 +40,12 @@ class MainDrawer extends StatelessWidget {
                     width: double.maxFinite,
                     child: FlatButton(
                       highlightColor: Colors.transparent,
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AccountPage()));
+                      },
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.account_circle,
@@ -126,7 +132,9 @@ class MainDrawer extends StatelessWidget {
                     width: double.maxFinite,
                     child: FlatButton(
                       highlightColor: Colors.transparent,
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_)=> ReminderPage()));
+                      },
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.access_time,
@@ -237,7 +245,7 @@ class MainDrawer extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AccountPage()));
+                                builder: (context) => PreferencePage())); //PreferencePage
                       },
                       child: Row(
                         children: <Widget>[
