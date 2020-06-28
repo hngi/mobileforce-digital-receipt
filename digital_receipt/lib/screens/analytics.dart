@@ -19,33 +19,36 @@ class Analytics extends StatelessWidget {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(20 , 20, 20, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            AnalyticsCard(),
-            SizedBox(height: 20,),
-            Text(
-          'Sales via categories',
-          style: TextStyle(color: Color(0xFF0C0C0C), fontSize: 16, fontWeight: FontWeight.w300, fontFamily: 'Montserrat',
+      body:  SingleChildScrollView(
+              child: Padding(
+          padding: const EdgeInsets.fromLTRB(20 , 20, 20, 50),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              AnalyticsCard(),
+              SizedBox(height: 20,),
+              Text(
+            'Sales via categories',
+            style: TextStyle(color: Color(0xFF0C0C0C), fontSize: 16, fontWeight: FontWeight.w300, fontFamily: 'Montserrat',
+            ),
           ),
-        ),
-         SizedBox(height: 20,),
+           SizedBox(height: 20,),
 
-         GridView.count(
-          crossAxisSpacing: 16.0,
-          mainAxisSpacing: 16.0,
-          shrinkWrap: true,
-          crossAxisCount: 2,
-          children: <Widget>[
+           GridView.count(
+            crossAxisSpacing: 16.0,
+            mainAxisSpacing: 16.0,
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            crossAxisCount: 2,
+            children: <Widget>[
 
-        buildCard('WhatsApp', 'N80,000', Color(0xFF25CCB3)),
-        buildCard('Instagram', 'N50,000', Color(0xFFE897A0)),
-        buildCard('Twitter', 'N20,000', Color(0xFF00B6FF)),
-          ]
-         )
-          ],
+          buildCard('WhatsApp', 'N80,000', Color(0xFF25CCB3)),
+          buildCard('Instagram', 'N50,000', Color(0xFFE897A0)),
+          buildCard('Twitter', 'N20,000', Color(0xFF00B6FF)),
+            ]
+           )
+            ],
+          ),
         ),
       ),
     );
