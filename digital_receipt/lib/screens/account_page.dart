@@ -1,3 +1,4 @@
+import 'package:digital_receipt/screens/change_password_screen.dart';
 import 'package:digital_receipt/utils/customtext.dart';
 import "package:flutter/material.dart";
 import 'dart:async';
@@ -169,7 +170,14 @@ class _AccountPageState extends State<AccountPage> {
                 height: 35,
               ),
               RawMaterialButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChangePasswordScreen(),
+                    ),
+                  );
+                },
                 highlightColor: Colors.transparent,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

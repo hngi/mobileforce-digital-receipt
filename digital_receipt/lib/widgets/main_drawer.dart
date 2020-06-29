@@ -46,7 +46,8 @@ class MainDrawer extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => UpgradeScreen()));
+                              //TODO: Change this back to UpgradeScreen()
+                              builder: (context) => AccountPage()));
                     },
                     child: Row(
                       children: <Widget>[
@@ -190,9 +191,8 @@ class MainDrawer extends StatelessWidget {
                   child: FlatButton(
                     highlightColor: Colors.transparent,
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => Analytics()
-                              ));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Analytics()));
                     },
                     child: Row(
                       children: <Widget>[
