@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
-  static String _urlEndpoint = "https://frozen-island-67494.herokuapp.com/v1";
+  static String _urlEndpoint = "https://digital-receipt-07.herokuapp.com/v1";
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();
@@ -25,6 +25,7 @@ class ApiService {
   );
 
   Future<String> loginUser(String email_address, String password) async {
+
     (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
       client.badCertificateCallback =
@@ -87,7 +88,9 @@ class ApiService {
       print(error);
     }
   }
+
     
+
     Future<String> signinUser(String email, String password, String name) async {
     var uri = 'https://frozen-island-67494.herokuapp.com/v1/user/register';
     var response = await http.post(uri,body: {"email_address":"$email","password":"$password","name":"$name"},);
@@ -96,4 +99,7 @@ class ApiService {
     }
     return response.body;
   }
+
+
+
 }
