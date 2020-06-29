@@ -25,7 +25,6 @@ class ApiService {
   );
 
   Future<String> loginUser(String email_address, String password) async {
-
     (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
       client.badCertificateCallback =
@@ -40,7 +39,7 @@ class ApiService {
 
     //Check deviceType
     if (Device.get().isAndroid) {
-      deviceType = 'android';
+      deviceType = 'andriod';
     } else if (Device.get().isIos) {
       deviceType = 'ios';
     }
@@ -89,17 +88,37 @@ class ApiService {
     }
   }
 
-    
+  Future<bool> logOutUser(String token) async {
+    var uri = '$_urlEndpoint/user/logout';
+    print(uri);
+    var response = await http.post(uri, headers: <String, String>{
+      "token": token,
+    });
+    print('code: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      //set the token to null
+      _sharedPreferenceService.addStringToSF("AUTH_TOKEN", null);
+      print('done');
 
-    Future<String> signinUser(String email, String password, String name) async {
-    var uri = 'https://frozen-island-67494.herokuapp.com/v1/user/register';
-    var response = await http.post(uri,body: {"email_address":"$email","password":"$password","name":"$name"},);
-    if (response.statusCode == 200){
+      return true;
+    }
+    print(response.body);
+    return false;
+  }
+
+  Future<String> signinUser(String email, String password, String name) async {
+    var uri = '$_urlEndpoint/user/register';
+    var response = await http.post(
+      uri,
+      body: {
+        "email_address": "$email",
+        "password": "$password",
+        "name": "$name"
+      },
+    );
+    if (response.statusCode == 200) {
       return "true";
     }
     return response.body;
   }
-
-
-
 }
