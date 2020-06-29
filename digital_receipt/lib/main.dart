@@ -186,13 +186,15 @@ class _ScreenControllerState extends State<ScreenController> {
         future: _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN"),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // await _pushNotificationService.initialise();
+          
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(
               color: Colors.white,
               child: Center(child: CircularProgressIndicator()),
             );
             // TODO Reverse if-condition to show OnBoarding
-          } else if (!snapshot.hasData) {
+          } else if (snapshot.data != null) {
+            // print('snapshots: ${snapshot.data}');
             return HomePage();
           } else {
             return OnboardingPage();
