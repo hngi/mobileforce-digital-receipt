@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/screens/home_page.dart';
@@ -428,14 +429,13 @@ class _SignupScreenState extends State<SignupScreen> {
           textColor: Colors.white,
           fontSize: 16.0);
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
+          context, MaterialPageRoute(builder: (context) => Setup()));
     } else {
       setState(() {
         isloading = false;
       });
       var res = jsonDecode(response);
       print('${res['email_address'][0]}');
-
       Fluttertoast.showToast(
         msg: '${res['email_address'][0]}',
         toastLength: Toast.LENGTH_LONG,

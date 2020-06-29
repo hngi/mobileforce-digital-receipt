@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Setup extends StatefulWidget {
   @override
@@ -9,23 +11,33 @@ class Setup extends StatefulWidget {
 }
 
 class _SetupState extends State<Setup> {
-  final _setupKey = GlobalKey<FormState>();
-
   String businessName;
   String address;
   String slogan;
   String phoneNumber;
-  File image;
+  File _image;
   final picker = ImagePicker();
+  var status;
 
   Future getImage() async {
-    var ImageSource;
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    PermissionStatus status = await Permission.storage.status;
+    //print(status);
+    /*  if (status == PermissionStatus.granted) { */
+    final pickedFile = await picker.getImage(
+      source: ImageSource.gallery,
+    );
+    if (_image != null) {
+      print(pickedFile.path);
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+      print('image: $_image');
+    }
 
-    setState(() {
-      image = File(pickedFile.path);
-    });
+    //}
   }
+
+  final _setupKey = GlobalKey<FormState>();
 
   Widget _buildBusinesssName(formLabel) {
     return Column(
@@ -36,24 +48,44 @@ class _SetupState extends State<Setup> {
           child: Text(
             formLabel,
             style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 15.0,
-                color: Colors.grey,
-                fontWeight: FontWeight.w700),
+              fontFamily: 'Montserrat',
+              fontSize: 13.0,
+              color: Color.fromRGBO(0, 0, 0, 0.6),
+              fontWeight: FontWeight.normal,
+            ),
           ),
         ),
+        SizedBox(
+          height: 5,
+        ),
         TextFormField(
-            decoration: InputDecoration(border: OutlineInputBorder()),
-            validator: (String value) {
-              if (value.isEmpty) {
-                return ('Business Name is Required');
-              } else {
-                onSaved:
-                (String value) {
-                  businessName = value;
-                };
-              }
-            })
+          style: TextStyle(
+            color: Color(0xFF2B2B2B),
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            height: 1.43,
+            fontFamily: 'Montserrat',
+          ),
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.all(15),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: BorderSide(
+                width: 1,
+                color: Color.fromRGBO(0, 0, 0, 0.12),
+              ),
+            ),
+          ),
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Business name empty';
+            }
+            return null;
+          },
+           onSaved: (String value) {
+            businessName = value;
+          },
+        )
       ],
     );
   }
@@ -61,20 +93,49 @@ class _SetupState extends State<Setup> {
   Widget _buildSlogan(formLabel) {
     return Column(
       children: <Widget>[
-        Padding(padding: const EdgeInsets.all(3)),
+        Padding(padding: const EdgeInsets.all(8)),
         Container(
           alignment: Alignment.bottomLeft,
           child: Text(
             formLabel,
             style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 15.0,
-                color: Colors.grey,
-                fontWeight: FontWeight.w700),
+              fontFamily: 'Montserrat',
+              fontSize: 13.0,
+              color: Color.fromRGBO(0, 0, 0, 0.6),
+              fontWeight: FontWeight.normal,
+            ),
           ),
         ),
+        SizedBox(
+          height: 5,
+        ),
         TextFormField(
-          decoration: InputDecoration(border: OutlineInputBorder()),
+          style: TextStyle(
+            color: Color(0xFF2B2B2B),
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            height: 1.43,
+            fontFamily: 'Montserrat',
+          ),
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.all(15),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: BorderSide(
+                width: 1,
+                color: Color.fromRGBO(0, 0, 0, 0.12),
+              ),
+            ),
+          ),
+         /*  validator: (value) {
+            if (value.isEmpty) {
+              return 'Invalid Email Address';
+            }
+            return null;
+          }, */
+           onSaved: (String value) {
+            slogan = value;
+          },
         )
       ],
     );
@@ -89,25 +150,44 @@ class _SetupState extends State<Setup> {
           child: Text(
             formLabel,
             style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 15.0,
-                color: Colors.grey,
-                fontWeight: FontWeight.w700),
+              fontFamily: 'Montserrat',
+              fontSize: 13.0,
+              color: Color.fromRGBO(0, 0, 0, 0.6),
+              fontWeight: FontWeight.normal,
+            ),
           ),
         ),
+        SizedBox(
+          height: 5,
+        ),
         TextFormField(
-            decoration: InputDecoration(border: OutlineInputBorder()),
-            validator: (String value) {
-              // return
-              if (value.isEmpty) {
-                return ('PhoneNumber is Required');
-              } else {
-                onSaved:
-                (String value) {
-                  phoneNumber = value;
-                };
-              }
-            })
+          style: TextStyle(
+            color: Color(0xFF2B2B2B),
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            height: 1.43,
+            fontFamily: 'Montserrat',
+          ),
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.all(15),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: BorderSide(
+                width: 1,
+                color: Color.fromRGBO(0, 0, 0, 0.12),
+              ),
+            ),
+          ),
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Phone number empty';
+            }
+            return null;
+          },
+           onSaved: (String value) {
+            phoneNumber = value;
+          },
+        )
       ],
     );
   }
@@ -121,25 +201,42 @@ class _SetupState extends State<Setup> {
           child: Text(
             formLabel,
             style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 15.0,
-                color: Colors.grey,
-                fontWeight: FontWeight.w700),
+              fontFamily: 'Montserrat',
+              fontSize: 13.0,
+              color: Color.fromRGBO(0, 0, 0, 0.6),
+              fontWeight: FontWeight.normal,
+            ),
           ),
         ),
+        SizedBox(
+          height: 5,
+        ),
         TextFormField(
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
+          style: TextStyle(
+            color: Color(0xFF2B2B2B),
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            height: 1.43,
+            fontFamily: 'Montserrat',
           ),
-          validator: (String value) {
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.all(15),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: BorderSide(
+                width: 1,
+                color: Color.fromRGBO(0, 0, 0, 0.12),
+              ),
+            ),
+          ),
+          validator: (value) {
             if (value.isEmpty) {
-              return ('Business Address is Required');
-            } else {
-              onSaved:
-              (String value) {
-                address = value;
-              };
+              return 'Address empty';
             }
+            return null;
+          },
+           onSaved: (String value) {
+            address = value;
           },
         )
       ],
@@ -149,135 +246,146 @@ class _SetupState extends State<Setup> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.lightBlue[30],
+        // backgroundColor: Colors.teal[50],
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: SingleChildScrollView(
-              child: Form(
-                  key: _setupKey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: 16,
+            right: 16,
+            bottom: 40,
+          ),
+          child: Form(
+            key: _setupKey,
+            child: Column(
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Container(
+                      alignment: Alignment.bottomLeft,
+                      child: Text(
+                        'Lets help you\nset up',
+                        style: TextStyle(
+                            fontSize: 23.0,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.w900,
+                            color: Colors.black),
+                        textAlign: TextAlign.justify,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Tell us about your business. This\ninformation will show up in the receipt.',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey),
+                        textAlign: TextAlign.justify,
+                      ),
+                    )
+                  ],
+                ),
+
+                SizedBox(height: 22.0),
+
+                Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      _buildBusinesssName('Business name'),
+                      SizedBox(height: 22),
+                      _buildPhoneNumber('Phone Number'),
+                      SizedBox(height: 22),
+                      _buildAddress('Address'),
+                      SizedBox(height: 22),
+                      _buildSlogan('Business Slogan (optional)')
+                    ]),
+
+                SizedBox(
+                  height: 50,
+                ), //Spacing
+
+                Container(
+                  width: 450,
+                  height: 50,
+                  child: FlatButton(
+                    onPressed: getImage,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                      side: BorderSide(color: Color(0xFF25CCB3), width: 1.5),
+                    ),
+                    textColor: Colors.black,
+                    color: Colors.lightBlue[30],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Container(
-                              alignment: Alignment.bottomLeft,
-                              child: Text(
-                                'Lets help you\nset up',
-                                style: TextStyle(
-                                    fontSize: 23.0,
-                                    fontFamily: 'Montserrat',
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                                textAlign: TextAlign.justify,
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                '\nTell us about your business. This\ninformation will show up in the receipt.',
-                                style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontFamily: 'Montserrat',
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey),
-                                textAlign: TextAlign.justify,
-                              ),
-                            )
-                          ],
-                        ),
-
-                        SizedBox(height: 25.0),
-
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                _buildBusinesssName('Business name'),
-                                SizedBox(height: 10),
-                                _buildPhoneNumber('Phone Number'),
-                                SizedBox(height: 10),
-                                _buildAddress('Address'),
-                                SizedBox(height: 10),
-                                _buildSlogan('Business Slogan (optional)')
-                              ]),
-                        ),
-
-                        SizedBox(height: 40), //Spacing
-
-                        OutlineButton(
-                          onPressed: () => {getImage()},
-                          borderSide:
-                              BorderSide(color: Colors.lightBlue, width: 2),
-                          textColor: Colors.black,
-                          //shape: ShapeBorder(),
-                          color: Colors.lightBlue[30],
-                          padding: EdgeInsets.only(
-                              left: 150.0,
-                              right: 150.0,
-                              top: 15.0,
-                              bottom: 15.0),
-                          child: Row(
-                            children: <Widget>[
-                              Text(
-                                'Upload your logo',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 16.0),
-                              ),
-                              Icon(
-                                Icons.file_upload,
-                                size: 5.0,
-                              )
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 8),
                         Text(
-                          'Your logo should be in PNG format and have\na max size of 3MB (Optional)',
+                          'Upload your logo',
                           style: TextStyle(
-                              fontSize: 16,
-                              fontFamily: 'Montserrat',
                               fontWeight: FontWeight.w300,
-                              color: Colors.grey),
-                          textAlign: TextAlign.center,
+                              fontSize: 16.0,
+                              color: Colors.black),
                         ),
-
-                        SizedBox(height: 40),
-
-                        FlatButton(
-                            onPressed: () => {
-                                  if (!_setupKey.currentState.validate())
-                                    {}
-                                  else
-                                    {
-                                      _setupKey.currentState.save(),
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => HomePage()))
-                                    },
-                                },
-                            textColor: Colors.white,
-                            color: Colors.blue[900],
-                            padding: EdgeInsets.only(
-                                left: 150.0,
-                                right: 150.0,
-                                top: 15.0,
-                                bottom: 15.0),
-                            child: Text('Proceed',
-                                style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    fontWeight: FontWeight.w600))),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Icon(Icons.file_upload),
                       ],
                     ),
-                  )),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                    'Your logo should be in PNG format and have\na max size of 3MB (Optional)',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.w300,
+                        color: Color.fromRGBO(0, 0, 0, 0.6)),
+                    textAlign: TextAlign.center),
+
+                SizedBox(height: 45),
+
+                SizedBox(
+                  height: 45,
+                  width: double.infinity,
+                  child: FlatButton(
+                      onPressed: () => {
+                            if (_setupKey.currentState.validate())
+                              {
+                                _setupKey.currentState.save(),
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HomePage(),
+                                  ),
+                                )
+                              },
+                          },
+                      textColor: Colors.white,
+                      color: Color(0xFF0B57A7),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Text('Proceed',
+                          style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600))),
+                ),
+              ],
             ),
           ),
-        ));
+        ),
+      ),
+    ));
   }
 }
