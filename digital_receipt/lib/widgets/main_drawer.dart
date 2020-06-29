@@ -259,7 +259,7 @@ class MainDrawer extends StatelessWidget {
                     highlightColor: Colors.transparent,
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Setup()));
+                          MaterialPageRoute(builder: (context) => PreferencePage()));
                     },
                     child: Row(
                       children: <Widget>[
