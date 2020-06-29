@@ -89,6 +89,8 @@ class ApiService {
     }
   }
 
+    
+
     Future<String> signinUser(String email, String password, String name) async {
     var uri = 'https://frozen-island-67494.herokuapp.com/v1/user/register';
     var response = await http.post(uri,body: {"email_address":"$email","password":"$password","name":"$name"},);
