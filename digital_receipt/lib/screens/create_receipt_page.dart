@@ -14,8 +14,6 @@ class CreateReceiptPage extends StatefulWidget {
 }
 
 class _CreateReceiptPageState extends State<CreateReceiptPage> {
-  
-
   CarouselIndex currentIndex = CarouselIndex();
 
   CarouselController _carouselController = CarouselController();
@@ -32,14 +30,13 @@ class _CreateReceiptPageState extends State<CreateReceiptPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        
         title: Text(
           'Create a Receipt',
           style: TextStyle(
             fontFamily: 'Montserrat',
             fontWeight: FontWeight.w600,
             letterSpacing: 0.3,
-            //fontSize: 22,
+            fontSize: 16,
             //color: Colors.white,
           ),
         ),
@@ -55,6 +52,7 @@ class _CreateReceiptPageState extends State<CreateReceiptPage> {
                     height: double.infinity,
                     autoPlay: false,
                     viewportFraction: 1.0,
+                    scrollPhysics: NeverScrollableScrollPhysics(),
                     enableInfiniteScroll: false,
                     onPageChanged: (index, reason) {
                       setState(() {

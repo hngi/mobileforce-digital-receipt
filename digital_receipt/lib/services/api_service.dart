@@ -2,11 +2,18 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_device_type/flutter_device_type.dart';
 import 'device_info_service.dart';
+import 'shared_preference_service.dart';
+import 'package:http/http.dart' as http;
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
-  static String _urlEndpoint = "https://gentle-dusk-67310.herokuapp.com";
+  static String _urlEndpoint = "https://digital-receipt-07.herokuapp.com/v1";
+  static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  static SharedPreferenceService _sharedPreferenceService =
+      SharedPreferenceService();
 
   final Dio _dio = Dio(
     BaseOptions(
@@ -18,6 +25,7 @@ class ApiService {
   );
 
   Future<String> loginUser(String email_address, String password) async {
+
     (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
       client.badCertificateCallback =
@@ -25,13 +33,30 @@ class ApiService {
       return client;
     };
     String deviceId = await deviceInfoService.getId();
+    String fcmToken = await _firebaseMessaging.getToken();
+    String deviceType;
+    String auth_token;
+    String userId;
+
+    //Check deviceType
+    if (Device.get().isAndroid) {
+      deviceType = 'android';
+    } else if (Device.get().isIos) {
+      deviceType = 'ios';
+    }
+
     try {
+      print(email_address);
+      print(password);
+      print(fcmToken);
+      print(deviceType);
       Response response = await _dio.post(
-        "/auth/token/login/",
+        "/user/login",
         data: {
           "password": '$password',
-          "email": '$email_address',
-          "deviceId": deviceId
+          "email_address": '$email_address',
+          "deviceType": deviceType,
+          "registration_id": fcmToken,
         },
         options: Options(
           followRedirects: false,
@@ -42,14 +67,39 @@ class ApiService {
         ),
       );
 
-      if (response.statusCode == 200) {
+      if (response.data["status"] == 200) {
+        print(response.data["status"]);
+
+        userId = response.data["data"]["_id"];
+        auth_token = response.data["data"]["auth_token"];
+
+        //Save details to Shared Preference
+        _sharedPreferenceService.addStringToSF("USER_ID", userId);
+        _sharedPreferenceService.addStringToSF("AUTH_TOKEN", auth_token);
+        //
+        print(auth_token);
+        print(userId);
         return "true";
       } else {
         print(response.data);
-        return "false";
+        return response.data["error"];
       }
     } on DioError catch (error) {
       print(error);
     }
   }
+
+    
+
+    Future<String> signinUser(String email, String password, String name) async {
+    var uri = 'https://frozen-island-67494.herokuapp.com/v1/user/register';
+    var response = await http.post(uri,body: {"email_address":"$email","password":"$password","name":"$name"},);
+    if (response.statusCode == 200){
+      return "true";
+    }
+    return response.body;
+  }
+
+
+
 }
