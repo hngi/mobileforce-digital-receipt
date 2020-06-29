@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
 class Setup extends StatefulWidget {
@@ -11,24 +13,27 @@ class Setup extends StatefulWidget {
 
 class _SetupState extends State<Setup> {
 
-final _setupKey = GlobalKey<FormState>(); 
-
 String businessName;
 String address;
 String slogan;
 String phoneNumber;
-File image;
-final picker = ImagePicker();
+File _image;
+  final picker = ImagePicker();
+var status;
 
   Future getImage() async {
-    var ImageSource;
+    status = await Permission.camera.status;
+    if(status.isGranted){
+      final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
-        final pickedFile = await picker.getImage(source: ImageSource.camera);
-
-    setState(() {
-      image = File(pickedFile.path);
-    });
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
   }
+
+final _setupKey = GlobalKey<FormState>(); 
+
 
 Widget _buildBusinesssName(formLabel){
   return Column(
@@ -180,7 +185,7 @@ Widget _buildAddress(formLabel){
                       width: 450,
                       height: 50,
                         child: OutlineButton.icon(
-                          onPressed: () => {getImage()},
+                          onPressed: getImage,
                           borderSide: BorderSide(color: Colors.teal, width: 2),
                           textColor: Colors.black,
                           color: Colors.lightBlue[30],
