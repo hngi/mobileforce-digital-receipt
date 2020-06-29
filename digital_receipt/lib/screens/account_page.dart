@@ -6,6 +6,16 @@ import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 
+import '../services/api_service.dart';
+import '../services/api_service.dart';
+import '../services/shared_preference_service.dart';
+import 'login_screen.dart';
+
+final SharedPreferenceService _sharedPreferenceService =
+    SharedPreferenceService();
+
+final ApiService _apiService = ApiService();
+
 class AccountPage extends StatefulWidget {
   @override
   _AccountPageState createState() => _AccountPageState();
@@ -191,7 +201,25 @@ class _AccountPageState extends State<AccountPage> {
                 height: 47,
               ),
               FlatButton(
-                onPressed: () {},
+                onPressed: () async {
+                  print('in');
+                  String token = await _sharedPreferenceService
+                      .getStringValuesSF('AUTH_TOKEN');
+                  // print('token: $token');
+                  if (token != null) {
+                    var res = await _apiService.logOutUser(token);
+                    print(res);
+                    if (res == true) {
+                      print('logged out');
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => LogInScreen(),
+                        ),
+                      );
+                    }
+                  }
+                },
                 highlightColor: Colors.transparent,
                 splashColor: Colors.transparent,
                 child: Row(
