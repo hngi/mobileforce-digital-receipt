@@ -1,9 +1,6 @@
-
 import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/preference_page.dart';
-
-
 //import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'dart:io';
 
@@ -12,7 +9,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 import './screens/onboarding.dart';
-
 
 import 'package:flutter/material.dart';
 
@@ -76,7 +72,6 @@ class MyApp extends StatelessWidget {
             button: TextStyle(
               fontFamily: 'Montserrat',
             ),
-            
           ),
         ),
         debugShowCheckedModeBanner: false,
@@ -188,14 +183,14 @@ class _ScreenControllerState extends State<ScreenController> {
         future: _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN"),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // await _pushNotificationService.initialise();
-          
+
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(
               color: Colors.white,
               child: Center(child: CircularProgressIndicator()),
             );
             // TODO Reverse if-condition to show OnBoarding
-          } else if (snapshot.data != null) {
+          } else if (snapshot.data == null) {
             // print('snapshots: ${snapshot.data}');
             return HomePage();
           } else {
