@@ -1,4 +1,5 @@
 import 'package:digital_receipt/screens/change_password_screen.dart';
+import 'package:digital_receipt/screens/edit_account_information.dart';
 import 'package:digital_receipt/utils/customtext.dart';
 import "package:flutter/material.dart";
 import 'dart:async';
@@ -6,7 +7,6 @@ import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 
-import '../services/api_service.dart';
 import '../services/api_service.dart';
 import '../services/shared_preference_service.dart';
 import 'login_screen.dart';
@@ -41,8 +41,6 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Colors.blue[700],
-
         title: Text(
           'Account',
           style: TextStyle(
@@ -149,13 +147,27 @@ class _AccountPageState extends State<AccountPage> {
               SizedBox(
                 height: 25,
               ),
-              Text(
-                'Edit',
-                style: TextStyle(
-                  color: Color(0xFF0B57A7),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+              InkWell(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(2, 10, 20, 10),
+                  child: Text(
+                    'Edit',
+                    style: TextStyle(
+                      color: Color(0xFF0B57A7),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          EditAccountInfoScreen(),
+                    ),
+                  );
+                },
               ),
               SizedBox(
                 height: 4,
