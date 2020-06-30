@@ -24,6 +24,8 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   final String username = "Geek Tutor";
 
+  bool _loading = false;
+
   File image;
 
   final picker = ImagePicker();
@@ -37,8 +39,6 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         // backgroundColor: Colors.blue[700],
@@ -200,9 +200,22 @@ class _AccountPageState extends State<AccountPage> {
               SizedBox(
                 height: 47,
               ),
+              /* _loading
+                  ? Center(
+                      child: SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 1.5,
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(), */
               FlatButton(
                 onPressed: () async {
-                  print('in');
+                  setState(() {
+                    _loading = true;
+                  });
                   String token = await _sharedPreferenceService
                       .getStringValuesSF('AUTH_TOKEN');
                   // print('token: $token');
@@ -227,25 +240,35 @@ class _AccountPageState extends State<AccountPage> {
                   children: <Widget>[
                     Container(
                         padding: EdgeInsets.all(8),
-                        child: Row(
-                          children: <Widget>[
-                            Icon(
-                              Icons.exit_to_app,
-                              color: Colors.red,
-                              size: 20,
-                            ),
-                            SizedBox(
-                              width: 15,
-                            ),
-                            Text(
-                              'Logout',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ],
-                        )),
+                        child: _loading
+                            ? Center(
+                                child: SizedBox(
+                                  height: 30,
+                                  width: 30,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 1.5,
+                                  ),
+                                ),
+                              )
+                            : Row(
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.exit_to_app,
+                                    color: Colors.red,
+                                    size: 20,
+                                  ),
+                                  SizedBox(
+                                    width: 15,
+                                  ),
+                                  Text(
+                                    'Logout',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                ],
+                              )),
                   ],
                 ),
               ),

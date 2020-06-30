@@ -88,30 +88,34 @@ class _DashBoardState extends State<DashBoard> {
         children: <Widget>[
           Expanded(
             flex: 3,
-            child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'Geek Tutor',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                  Text(
-                    '218 thonbridge cir, cyprus ...',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  Text(
-                    'johntompson@ucoz.com',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  Text(
-                    '(603) 555-6034',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Geek Tutor',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                Text(
+                  '218 thonbridge cir, cyprus',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'johntompson@ucoz.com',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  '(603) 555-6034',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
             ),
           ),
           Expanded(
