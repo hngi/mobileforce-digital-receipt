@@ -2,6 +2,7 @@ import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/screens/analytics.dart';
 import 'package:digital_receipt/screens/drafts.dart';
 import 'package:digital_receipt/screens/notification_page.dart';
+import 'package:digital_receipt/screens/receipt_screen.dart';
 import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/screens/reminderPage.dart';
 import 'package:flutter/cupertino.dart';
@@ -261,7 +262,7 @@ class MainDrawer extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Setup(),
+                          builder: (context) => ReceiptScreen(),
                         ),
                       );
                     },
