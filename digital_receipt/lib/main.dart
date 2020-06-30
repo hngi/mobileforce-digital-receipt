@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Color(0xFF0B57A7),
           scaffoldBackgroundColor: Color(0xFFF2F8FF),
+          accentColor: Color(0xFF25CCB3),
           textTheme: TextTheme(
             bodyText1: TextStyle(
               fontFamily: 'Montserrat',
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
             button: TextStyle(
               fontFamily: 'Montserrat',
             ),
+            
           ),
         ),
         debugShowCheckedModeBanner: false,
