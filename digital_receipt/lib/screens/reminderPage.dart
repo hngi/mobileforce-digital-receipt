@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'edit_reminder_screen.dart';
+
 /// This code displays only the UI
 class ReminderPage extends StatefulWidget {
   @override
@@ -60,12 +62,21 @@ class _ReminderPageState extends State<ReminderPage> {
                     itemCount: 25,
                     itemBuilder: (context, index) {
                       // HardCoded Receipt details
-                      return reminderCard(
-                        total: "80,000",
-                        date: "12-06-2020",
-                        reminderTitle: "Carole Froschauer",
-                        subtitle: "Crptocurrency, intro to after effects ",
-                        dueDate: "In 1 month time",
+                      return GestureDetector(
+                        child: reminderCard(
+                          total: "80,000",
+                          date: "12-06-2020",
+                          reminderTitle: "Carole Froschauer",
+                          subtitle: "Crptocurrency, intro to after effects ",
+                          dueDate: "In 1 month time",
+                        ),
+                        onTap: () {
+                          print('object');
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditReminderScreen()));
+                        },
                       );
                     },
                   ),
@@ -179,7 +190,7 @@ class _ReminderPageState extends State<ReminderPage> {
                   height: 9,
                 ),
                 RichText(
-                 // textAlign: TextAlign.right,
+                  // textAlign: TextAlign.right,
                   text: TextSpan(
                     children: [
                       TextSpan(

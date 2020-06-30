@@ -1,3 +1,7 @@
+import 'package:digital_receipt/screens/create_receipt_page.dart';
+import 'package:digital_receipt/screens/home_page.dart';
+import 'package:digital_receipt/screens/login_screen.dart';
+import 'package:digital_receipt/screens/preference_page.dart';
 //import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'dart:io';
 
@@ -58,6 +62,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Color(0xFF0B57A7),
           scaffoldBackgroundColor: Color(0xFFF2F8FF),
+          accentColor: Color(0xFF25CCB3),
           textTheme: TextTheme(
             bodyText1: TextStyle(
               fontFamily: 'Montserrat',
@@ -179,13 +184,17 @@ class _ScreenControllerState extends State<ScreenController> {
         future: _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN"),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // await _pushNotificationService.initialise();
+
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(
               color: Colors.white,
               child: Center(child: CircularProgressIndicator()),
             );
             // TODO Reverse if-condition to show OnBoarding
-          } else if (!snapshot.hasData) {
+          } else if (snapshot.data == 'empty') {
+            return LogInScreen();
+          } else if (snapshot.hasData && snapshot.data != null) {
+            print('snapshots: ${snapshot.data}');
             return HomePage();
           } else {
             return OnboardingPage();

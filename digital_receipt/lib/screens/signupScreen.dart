@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/screens/home_page.dart';
@@ -283,8 +284,8 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       button(
                           name: "Sign Up",
-                          textColor: Color(0xffE5E5E5),
-                          buttonColor: Color(0xff0B57A7),
+                          textColor: Colors.white,
+                          buttonColor: Color(0xFF0B57A7),
                           height: 45,
                           onPressed: () {}),
                       Container(
@@ -343,7 +344,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           name: "Sign in with Facebook",
                           textColor: Color(0xffE5E5E5),
                           iconPath: "assets/logos/facebook.png",
-                          buttonColor: Color(0xff4267B2)),
+                          buttonColor: Color(0xFF3b5998)),
                     ],
                   ),
                 ),
@@ -428,14 +429,13 @@ class _SignupScreenState extends State<SignupScreen> {
           textColor: Colors.white,
           fontSize: 16.0);
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
+          context, MaterialPageRoute(builder: (context) => Setup()));
     } else {
       setState(() {
         isloading = false;
       });
       var res = jsonDecode(response);
       print('${res['email_address'][0]}');
-
       Fluttertoast.showToast(
         msg: '${res['email_address'][0]}',
         toastLength: Toast.LENGTH_LONG,

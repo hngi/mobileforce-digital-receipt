@@ -1,9 +1,20 @@
+import 'package:digital_receipt/screens/change_password_screen.dart';
+import 'package:digital_receipt/screens/edit_account_information.dart';
 import 'package:digital_receipt/utils/customtext.dart';
 import "package:flutter/material.dart";
 import 'dart:async';
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
+
+import '../services/api_service.dart';
+import '../services/shared_preference_service.dart';
+import 'login_screen.dart';
+
+final SharedPreferenceService _sharedPreferenceService =
+    SharedPreferenceService();
+
+final ApiService _apiService = ApiService();
 
 class AccountPage extends StatefulWidget {
   @override
@@ -12,6 +23,8 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   final String username = "Geek Tutor";
+
+  bool _loading = false;
 
   File image;
 
@@ -26,12 +39,8 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Colors.blue[700],
-
         title: Text(
           'Account',
           style: TextStyle(
@@ -138,13 +147,27 @@ class _AccountPageState extends State<AccountPage> {
               SizedBox(
                 height: 25,
               ),
-              Text(
-                'Edit',
-                style: TextStyle(
-                  color: Color(0xFF0B57A7),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+              InkWell(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(2, 10, 20, 10),
+                  child: Text(
+                    'Edit',
+                    style: TextStyle(
+                      color: Color(0xFF0B57A7),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          EditAccountInfoScreen(),
+                    ),
+                  );
+                },
               ),
               SizedBox(
                 height: 4,
@@ -169,7 +192,14 @@ class _AccountPageState extends State<AccountPage> {
                 height: 35,
               ),
               RawMaterialButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChangePasswordScreen(),
+                    ),
+                  );
+                },
                 highlightColor: Colors.transparent,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -182,8 +212,39 @@ class _AccountPageState extends State<AccountPage> {
               SizedBox(
                 height: 47,
               ),
+              /* _loading
+                  ? Center(
+                      child: SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 1.5,
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(), */
               FlatButton(
-                onPressed: () {},
+                onPressed: () async {
+                  setState(() {
+                    _loading = true;
+                  });
+                  String token = await _sharedPreferenceService
+                      .getStringValuesSF('AUTH_TOKEN');
+                  // print('token: $token');
+                  if (token != null) {
+                    var res = await _apiService.logOutUser(token);
+                    print(res);
+                    if (res == true) {
+                      print('logged out');
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => LogInScreen(),
+                        ),
+                      );
+                    }
+                  }
+                },
                 highlightColor: Colors.transparent,
                 splashColor: Colors.transparent,
                 child: Row(
@@ -191,25 +252,35 @@ class _AccountPageState extends State<AccountPage> {
                   children: <Widget>[
                     Container(
                         padding: EdgeInsets.all(8),
-                        child: Row(
-                          children: <Widget>[
-                            Icon(
-                              Icons.exit_to_app,
-                              color: Colors.red,
-                              size: 20,
-                            ),
-                            SizedBox(
-                              width: 15,
-                            ),
-                            Text(
-                              'Logout',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ],
-                        )),
+                        child: _loading
+                            ? Center(
+                                child: SizedBox(
+                                  height: 30,
+                                  width: 30,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 1.5,
+                                  ),
+                                ),
+                              )
+                            : Row(
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.exit_to_app,
+                                    color: Colors.red,
+                                    size: 20,
+                                  ),
+                                  SizedBox(
+                                    width: 15,
+                                  ),
+                                  Text(
+                                    'Logout',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                ],
+                              )),
                   ],
                 ),
               ),

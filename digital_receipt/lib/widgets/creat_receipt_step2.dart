@@ -1,4 +1,6 @@
 import 'package:carousel_slider/carousel_controller.dart';
+import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/screens/receipt_screen.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
@@ -379,7 +381,14 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             ),
             SizedBox(height: 25),
             SubmitButton(
-              onPressed: () {},
+              onPressed: () {
+                 Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ReceiptScreen(),
+                        ),
+                      );
+              },
               title: 'Generate Receipt',
               textColor: Colors.white,
               backgroundColor: Color(0xFF0B57A7),
