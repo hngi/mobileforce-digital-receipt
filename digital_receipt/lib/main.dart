@@ -1,5 +1,6 @@
 import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'package:digital_receipt/screens/home_page.dart';
+import 'package:digital_receipt/screens/login_screen.dart';
 import 'package:digital_receipt/screens/preference_page.dart';
 //import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'dart:io';
@@ -190,8 +191,10 @@ class _ScreenControllerState extends State<ScreenController> {
               child: Center(child: CircularProgressIndicator()),
             );
             // TODO Reverse if-condition to show OnBoarding
-          } else if (snapshot.data == null) {
-            // print('snapshots: ${snapshot.data}');
+          } else if (snapshot.data == 'empty') {
+            return LogInScreen();
+          } else if (snapshot.hasData && snapshot.data != null) {
+            print('snapshots: ${snapshot.data}');
             return HomePage();
           } else {
             return OnboardingPage();

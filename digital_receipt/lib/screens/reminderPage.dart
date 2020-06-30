@@ -71,6 +71,7 @@ class _ReminderPageState extends State<ReminderPage> {
                           dueDate: "In 1 month time",
                         ),
                         onTap: () {
+                          print('object');
                           Navigator.push(
                               context,
                               MaterialPageRoute(
