@@ -6,7 +6,8 @@ class AppTextField extends StatelessWidget {
     this.keyboardType,
     this.obscureText,
     this.controller,
-    this.hintColor, this.borderWidth,
+    this.hintColor,
+    this.borderWidth,
   });
 
   final String hintText;
