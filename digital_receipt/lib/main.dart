@@ -1,3 +1,9 @@
+
+import 'package:digital_receipt/screens/create_receipt_page.dart';
+import 'package:digital_receipt/screens/home_page.dart';
+import 'package:digital_receipt/screens/preference_page.dart';
+
+import 'package:digital_receipt/screens/signin_screen.dart';
 //import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'dart:io';
 
@@ -6,6 +12,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 import './screens/onboarding.dart';
+
 
 import 'package:flutter/material.dart';
 
@@ -58,6 +65,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Color(0xFF0B57A7),
           scaffoldBackgroundColor: Color(0xFFF2F8FF),
+          accentColor: Color(0xFF25CCB3),
           textTheme: TextTheme(
             bodyText1: TextStyle(
               fontFamily: 'Montserrat',
@@ -68,6 +76,7 @@ class MyApp extends StatelessWidget {
             button: TextStyle(
               fontFamily: 'Montserrat',
             ),
+            
           ),
         ),
         debugShowCheckedModeBanner: false,

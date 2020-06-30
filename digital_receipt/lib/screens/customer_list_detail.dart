@@ -18,14 +18,27 @@ class _CustomerDetailState extends State<CustomerDetail> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Customer List'),
+          title: Text(
+            'Customer List',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Montserrat',
+              letterSpacing: 0.03,
+            ),
+          ),
           backgroundColor: Color(0xFF0B57A7),
         ),
-        body: Container(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            children: <Widget>[
-              TabBar(
+        body: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 16,
+                left: 16,
+                right: 16,
+              ),
+              child: TabBar(
                 labelColor: Colors.grey[700],
                 unselectedLabelColor: Colors.black,
                 labelStyle: TextStyle(
@@ -42,21 +55,27 @@ class _CustomerDetailState extends State<CustomerDetail> {
                   ),
                 ],
               ),
-              SizedBox(
-                height: 24.0,
-              ), 
-              Expanded(
-                child: TabBarView(
-                  children: <Widget>[
-                    DetailTab(
+            ),
+            SizedBox(
+              height: 24.0,
+            ),
+            Expanded(
+              child: TabBarView(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(16.0, 0, 16, 16),
+                    child: DetailTab(
                       customer: widget.customer,
                     ),
-                    SingleChildScrollView(child: ReceiptTab()),
-                  ],
-                ),
+                  ),
+                  Padding(
+                     padding: EdgeInsets.fromLTRB(16.0, 0, 16, 16),
+                    child: SingleChildScrollView(child: ReceiptTab()),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -153,15 +172,11 @@ class ReceiptTab extends StatelessWidget {
               children: <Widget>[
                 Text(
                   'Receipt No: ${receipt.receiptNo}',
-                  style: TextStyle(
-                    color: Colors.grey[600]
-                  ),
+                  style: TextStyle(color: Colors.grey[600]),
                 ),
                 Text(
                   receipt.issuedDate,
-                  style: TextStyle(
-                    color: Colors.grey[600]
-                  ),
+                  style: TextStyle(color: Colors.grey[600]),
                 ),
               ],
             ),

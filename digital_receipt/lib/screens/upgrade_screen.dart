@@ -71,7 +71,7 @@ class UpgradeScreen extends StatelessWidget {
                     SizedBox(height: 20.0),
                     Container(
                       width: double.infinity,
-                      height: 83,
+                      height: 100,
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               image: AssetImage(
@@ -80,6 +80,7 @@ class UpgradeScreen extends StatelessWidget {
                               fit: BoxFit.cover),
                           borderRadius: BorderRadius.circular(5.0)),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           SizedBox(height: 12.0),
                           Text(
@@ -128,10 +129,9 @@ class UpgradeScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(width: 32.0),
-                          Image(
-                            image: AssetImage('assets/icons/check.png'),
-                            height: 25,
-                            width: 25,
+                          Icon(
+                            Icons.check,
+                            color: Color(0xFF25CCB3),
                           )
                         ],
                       ),
@@ -161,12 +161,11 @@ class UpgradeScreen extends StatelessWidget {
                           Container(
                             width: 24,
                             height: 24,
-                            child: Image(
-                              image: AssetImage('assets/icons/check.png'),
-                              height: 24,
-                              width: 24,
-                            ),
+                            child:Icon(
+                            Icons.check,
+                            color: Color(0xFF25CCB3),
                           ),
+                          )
                         ],
                       ),
                     ),
@@ -194,11 +193,10 @@ class UpgradeScreen extends StatelessWidget {
                           Container(
                             width: 24,
                             height: 24,
-                            child: Image(
-                              image: AssetImage('assets/icons/check.png'),
-                              height: 24,
-                              width: 24,
-                            ),
+                            child: Icon(
+                            Icons.check,
+                            color: Color(0xFF25CCB3),
+                          )
                           ),
                         ],
                       ),
@@ -227,11 +225,10 @@ class UpgradeScreen extends StatelessWidget {
                           Container(
                             width: 24,
                             height: 24,
-                            child: Image(
-                              image: AssetImage('assets/icons/check.png'),
-                              height: 24,
-                              width: 24,
-                            ),
+                            child: Icon(
+                            Icons.check,
+                            color: Color(0xFF25CCB3),
+                          )
                           ),
                         ],
                       ),
@@ -264,11 +261,10 @@ class UpgradeScreen extends StatelessWidget {
                           Container(
                             width: 24,
                             height: 24,
-                            child: Image(
-                              image: AssetImage('assets/icons/check.png'),
-                              height: 24,
-                              width: 24,
-                            ),
+                            child: Icon(
+                            Icons.check,
+                            color: Color(0xFF25CCB3),
+                          ),
                           ),
                         ],
                       ),
