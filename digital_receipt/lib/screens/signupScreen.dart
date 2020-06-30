@@ -284,8 +284,8 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       button(
                           name: "Sign Up",
-                          textColor: Color(0xffE5E5E5),
-                          buttonColor: Color(0xff0B57A7),
+                          textColor: Colors.white,
+                          buttonColor: Color(0xFF0B57A7),
                           height: 45,
                           onPressed: () {}),
                       Container(
@@ -344,7 +344,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           name: "Sign in with Facebook",
                           textColor: Color(0xffE5E5E5),
                           iconPath: "assets/logos/facebook.png",
-                          buttonColor: Color(0xff4267B2)),
+                          buttonColor: Color(0xFF3b5998)),
                     ],
                   ),
                 ),

@@ -114,7 +114,7 @@ class ApiService {
     print('code: ${response.statusCode}');
     if (response.statusCode == 200) {
       //set the token to null
-      _sharedPreferenceService.addStringToSF("AUTH_TOKEN", null);
+      _sharedPreferenceService.addStringToSF("AUTH_TOKEN", 'empty');
       print('done');
 
       return true;
