@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
-  static String _urlEndpoint = "https://frozen-island-67494.herokuapp.com/v1";
+  static String _urlEndpoint = "https://digital-receipt-07.herokuapp.com/v1";
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();
@@ -39,7 +39,7 @@ class ApiService {
 
     //Check deviceType
     if (Device.get().isAndroid) {
-      deviceType = 'android';
+      deviceType = 'andriod';
     } else if (Device.get().isIos) {
       deviceType = 'ios';
     }
@@ -87,13 +87,99 @@ class ApiService {
       print(error);
     }
   }
-    
-    Future<String> signinUser(String email, String password, String name) async {
-    var uri = 'https://frozen-island-67494.herokuapp.com/v1/user/register';
-    var response = await http.post(uri,body: {"email_address":"$email","password":"$password","name":"$name"},);
-    if (response.statusCode == 200){
+
+  Future<String> signinUser(String email, String password, String name) async {
+    var uri = '$_urlEndpoint/user/register';
+    var response = await http.post(
+      uri,
+      body: {
+        "email_address": "$email",
+        "password": "$password",
+        "name": "$name"
+      },
+    );
+    if (response.statusCode == 200) {
       return "true";
     }
     return response.body;
+  }
+
+  Future<bool> logOutUser(String token) async {
+    var uri = '$_urlEndpoint/user/logout';
+
+    //print(token);
+    var response = await http.post(uri, headers: <String, String>{
+      "token": token,
+    });
+    print('code: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      //set the token to null
+      _sharedPreferenceService.addStringToSF("AUTH_TOKEN", null);
+      print('done');
+
+      return true;
+    }
+    print(response.body);
+    return false;
+  }
+
+  /* Future userInfo(String email) async {
+    var uri = '$_urlEndpoint/user/email/exists?email_address=$email';
+    var response = await http.get(uri, body: {
+      "email_address": email,
+    });
+    print('code: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      //set the token to null
+
+      return jsonDecode(response.body);
+    }
+    return null;
+  } */
+
+  /*  Future<bool> changePassword(String token, String email, String password) async {
+    var uri = '$_urlEndpoint/user/change_password';
+    var response = await http.put(
+      uri,
+      headers: {
+        "token": token,
+      },
+      body: {
+        'email_address': email,
+        "password": password,
+      }
+    );
+    print('code: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      //set the token to null
+
+      return true;
+    }
+    return false;
+  } */
+
+  registerCustomer(String token, String email, String phoneNumber, String name,
+      String address,
+      {String slogan}) async {
+    var uri = '$_urlEndpoint/customer/register';
+    var response = await http.post(
+      uri,
+      body: {
+        "email_address": email,
+        'name': name,
+        "email": email,
+        "phoneNumber": phoneNumber,
+        "address": address,
+        "slogan": slogan
+      },
+      headers: {"token": token},
+    );
+    print('code: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      //set the token to null
+
+      return jsonDecode(response.body);
+    }
+    return null;
   }
 }
