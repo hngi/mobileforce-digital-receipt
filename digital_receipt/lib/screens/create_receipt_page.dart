@@ -4,9 +4,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/widgets/creat_receipt_step2.dart';
 import 'package:digital_receipt/widgets/create_receipt_step0.dart';
-import 'package:digital_receipt/widgets/create_receipt_step1.dart';
+//import 'package:digital_receipt/widgets/create_receipt_step1.dart';
 
 import 'package:flutter/material.dart';
+
+import 'products.dart';
 
 class CreateReceiptPage extends StatefulWidget {
   @override
@@ -64,7 +66,11 @@ class _CreateReceiptPageState extends State<CreateReceiptPage> {
                     carouselController: _carouselController,
                     carouselIndex: currentIndex,
                   ),
-                  CreateReceiptStep1(
+                  // CreateReceiptStep1(
+                  //   carouselController: _carouselController,
+                  //   carouselIndex: currentIndex,
+                  // ),
+                  ProductInformation(
                     carouselController: _carouselController,
                     carouselIndex: currentIndex,
                   ),
