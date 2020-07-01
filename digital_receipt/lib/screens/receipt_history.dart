@@ -1,4 +1,6 @@
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
+import 'package:digital_receipt/models/receipt.dart';
 
 /// This code displays only the UI
 class ReceiptHistory extends StatefulWidget {
@@ -7,8 +9,15 @@ class ReceiptHistory extends StatefulWidget {
 }
 
 class _ReceiptHistoryState extends State<ReceiptHistory> {
-  String dropdownValue = "Last Upadated";
+  TextEditingController _controller = TextEditingController();
+  String dropdownValue = "Receipt No";
   bool _showDialog = true;
+  //instead of dummyReceiptList use the future data gotten
+  static List<Receipt> receiptList =
+      ReceiptUtil.sortReceiptByReceiptNo(dummyReceiptList);
+  // the below is needed so as to create a copy of the list,
+  //for sorting and searching functionalities
+  List<Receipt> copyReceiptList = receiptList;
 
   @override
   void initState() {
@@ -41,7 +50,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
         //centerTitle: true,
         actions: <Widget>[],
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<List<Receipt>>(
         future: null, // receipts from API
         builder: (context, snapshot) {
           // If the API returns nothing it means the user has to upgrade to premium
@@ -66,13 +75,26 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                       children: <Widget>[
                         SizedBox(height: 10.0),
                         TextFormField(
+                          controller: _controller,
+                          onChanged: (value) async {
+                            await Future.delayed(Duration(milliseconds: 700));
+                            setState(() {
+                              receiptList = ReceiptUtil.filterReceipt(
+                                  copyReceiptList, _controller.text);
+                            });
+                          },
                           decoration: InputDecoration(
                             hintText: "Type a keyword",
                             hintStyle: TextStyle(color: Colors.grey),
                             prefixIcon: IconButton(
                               icon: Icon(Icons.search),
                               color: Colors.grey,
-                              onPressed: () {},
+                              onPressed: () {
+                                setState(() {
+                                  receiptList = ReceiptUtil.filterReceipt(
+                                      copyReceiptList, _controller.text);
+                                });
+                              },
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),
@@ -112,7 +134,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                                     value: dropdownValue,
                                     underline: Divider(),
                                     items: <String>[
-                                      "Last Upadated",
+                                      "Receipt No",
                                       "Date issued",
                                       "WhatsApp",
                                       "Instagram",
@@ -132,8 +154,42 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                                       },
                                     ).toList(),
                                     onChanged: (String value) {
-                                      setState(() => dropdownValue = value);
-                                      // No logic Implemented
+                                      setState(() {
+                                        dropdownValue = value;
+                                        switch (value) {
+                                          case "Date issued":
+                                            receiptList =
+                                                ReceiptUtil.sortReceiptByDate(
+                                                    copyReceiptList);
+                                            break;
+                                          case "WhatsApp":
+                                            receiptList = ReceiptUtil
+                                                .sortReceiptByCategory(
+                                                    copyReceiptList,
+                                                    byCategory: ReceiptCategory
+                                                        .WHATSAPP);
+                                            break;
+                                          case "Instagram":
+                                            receiptList = ReceiptUtil
+                                                .sortReceiptByCategory(
+                                                    copyReceiptList,
+                                                    byCategory: ReceiptCategory
+                                                        .INSTAGRAM);
+                                            break;
+                                          case "Twitter":
+                                            receiptList = ReceiptUtil
+                                                .sortReceiptByCategory(
+                                                    copyReceiptList,
+                                                    byCategory: ReceiptCategory
+                                                        .TWITTER);
+                                            break;
+                                          default:
+                                            receiptList = ReceiptUtil
+                                                .sortReceiptByReceiptNo(
+                                                    copyReceiptList);
+                                            break;
+                                        }
+                                      });
                                     },
                                   ),
                                 ),
@@ -142,16 +198,10 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                         SizedBox(height: 20.0),
                         Flexible(
                           child: ListView.builder(
-                            itemCount: 25,
+                            itemCount: receiptList.length,
                             itemBuilder: (context, index) {
                               // HardCoded Receipt details
-                              return receiptCard(
-                                  receiptNo: "0021",
-                                  total: "80,000",
-                                  date: "12-06-2020",
-                                  receiptTitle: "Carole",
-                                  subtitle:
-                                      "Crptocurrency, intro to after effects");
+                              return receiptCard(receiptList[index]);
                             },
                           ),
                         ),
@@ -165,7 +215,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
     );
   }
 
-  Widget receiptCard({String receiptNo, total, date, receiptTitle, subtitle}) {
+  Widget receiptCard(Receipt receipt) {
     return Column(
       children: <Widget>[
         Container(
@@ -189,7 +239,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        "Receipt No: $receiptNo",
+                        "Receipt No: ${receipt.receiptNo}",
                         style: TextStyle(
                           color: Color.fromRGBO(0, 0, 0, 0.6),
                           fontSize: 14,
@@ -199,7 +249,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                         ),
                       ),
                       Text(
-                        "$date",
+                        "${receipt.issuedDate}",
                         style: TextStyle(
                           color: Color.fromRGBO(0, 0, 0, 0.6),
                           fontSize: 14,
@@ -214,7 +264,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                   child: Text(
-                    "$receiptTitle",
+                    "${receipt.customerName}",
                     style: TextStyle(
                       color: Color.fromRGBO(0, 0, 0, 0.87),
                       fontSize: 14,
@@ -227,7 +277,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                   child: Text(
-                    "$subtitle",
+                    "${receipt.description}",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 14,
@@ -257,7 +307,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                             ),
                           ),
                           TextSpan(
-                            text: ' N$total ',
+                            text: ' N${receipt.totalAmount} ',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 14,
