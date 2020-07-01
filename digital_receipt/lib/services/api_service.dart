@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
-  static String _urlEndpoint = "https://digital-receipt-07.herokuapp.com/v1";
+  static String _urlEndpoint = "https://degeit-receipt.herokuapp.com/v1";
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();
@@ -158,28 +158,45 @@ class ApiService {
     return false;
   } */
 
-  registerCustomer(String token, String email, String phoneNumber, String name,
-      String address,
-      {String slogan}) async {
-    var uri = '$_urlEndpoint/customer/register';
-    var response = await http.post(
+  Future<bool> setUpBusiness({
+    String token,
+    String phoneNumber,
+    String name,
+    String address,
+    String slogan,
+    String logo,
+  }) async {
+    var uri = Uri.parse('$_urlEndpoint/business/info/create');
+    var request = http.MultipartRequest('POST', uri);
+    request.fields['name'] = name;
+    request.fields['phone_number'] = phoneNumber;
+    request.fields['address'] = address;
+    request.fields['slogan'] = slogan;
+
+    request.headers['token'] = token;
+    request.files.add(
+      await http.MultipartFile.fromPath("logo", logo),
+    );
+    /*  .post(
       uri,
       body: {
-        "email_address": email,
         'name': name,
-        "email": email,
-        "phoneNumber": phoneNumber,
+        "phone_number": phoneNumber,
         "address": address,
-        "slogan": slogan
+        "slogan": slogan,
+        "logo": logo
       },
       headers: {"token": token},
-    );
+    ); */
+    var response = await request.send();
     print('code: ${response.statusCode}');
+    var res = await response.stream.bytesToString();
+    print(res);
     if (response.statusCode == 200) {
       //set the token to null
-
-      return jsonDecode(response.body);
+      print(response.stream);
+      return true;
     }
-    return null;
+    return false;
   }
 }
