@@ -59,26 +59,35 @@ class _DraftsState extends State<Drafts> {
               return Center(
                 child: CircularProgressIndicator(),
               );
-            } else {
-              return ListView.builder(
-                padding: EdgeInsets.only(
-                  top: 30,
-                  left: 16,
-                  right: 16,
-                  bottom: 16,
-                ),
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, index) {
-                  Receipt receipt = snapshot.data[index];
-                  DateTime date = DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
-                  return receiptCard(
-                      receiptNo: receipt.receiptNo,
-                      total: receipt.totalAmount,
-                      date: "${date.day}/${date.month}/${date.year}",
-                      receiptTitle: "Title",
-                      subtitle: "Crptocurrency, intro to after effects");
-                },
-              );
+            } else if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  padding: EdgeInsets.only(
+                    top: 30,
+                    left: 16,
+                    right: 16,
+                    bottom: 16,
+                  ),
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) {
+                    Receipt receipt = snapshot.data[index];
+                    DateTime date =
+                        DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
+                    return receiptCard(
+                        receiptNo: receipt.receiptNo,
+                        total: receipt.totalAmount,
+                        date: "${date.day}/${date.month}/${date.year}",
+                        receiptTitle: "Title",
+                        subtitle: "Crptocurrency, intro to after effects");
+                  },
+                );
+              } else {
+                return Center(
+                  child: Text("There are no draft receipts created",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16.0)),
+                );
+              }
             }
             // }
           }),

@@ -113,12 +113,9 @@ class ApiService {
 
       if (response.statusCode == 200) {
         List<Receipt> draft_receipts = [];
-        // print(response.data["data"][0]["customer"]);
         response.data["data"].forEach((data) {
-        print(data["customer"]["name"]);
         Receipt receipt = Receipt.fromJson(data);
         draft_receipts.add(receipt);
-        print(receipt);
       });
         return draft_receipts;
       } else {
