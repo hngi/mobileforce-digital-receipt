@@ -82,11 +82,38 @@ class _DraftsState extends State<Drafts> {
                   },
                 );
               } else {
-                return Center(
-                  child: Text("There are no draft receipts created",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16.0)),
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image.asset("assets/images/heartbroken 1.png"),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Center(
+                        child: Text(
+                          "There are no draft receipts created!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 16,
+                            letterSpacing: 0.3,
+                            color: Color.fromRGBO(0, 0, 0, 0.87),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                    ],
+                  ),
                 );
+                // Center(
+                //   child: Text("There are no draft receipts created",
+                //       style: TextStyle(
+                //           fontWeight: FontWeight.bold, fontSize: 16.0)),
+                // );
               }
             }
             // }
