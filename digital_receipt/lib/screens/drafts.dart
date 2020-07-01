@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../models/receipt.dart';
+import '../services/api_service.dart';
 
 /// This code displays only the UI
 class Drafts extends StatefulWidget {
@@ -7,6 +11,7 @@ class Drafts extends StatefulWidget {
 }
 
 class _DraftsState extends State<Drafts> {
+  ApiService _apiService = ApiService();
   @override
   void initState() {
     super.initState();
@@ -38,44 +43,45 @@ class _DraftsState extends State<Drafts> {
         actions: <Widget>[],
       ),
       body: FutureBuilder(
-        future: null, // receipts from API
-        builder: (context, snapshot) {
-          // If the API returns nothing it means the user has to upgrade to premium
-          // for now it doesn't validate if the user has upgraded to premium
-          /// If the API returns nothing it shows the dialog box `JUST FOR TESTING`
-          ///
-          /// Uncomment the if statement
-          // if (!snapshot.hasData) {
-          //   return _showAlertDialog();
-          // }
-          // else {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            return ListView.builder(
-              padding: EdgeInsets.only(
-                top: 30,
-                left: 16,
-                right: 16,
-                bottom: 16,
-              ),
-              itemCount: 25,
-              itemBuilder: (context, index) {
-                // HardCoded Receipt details
-                return receiptCard(
-                    receiptNo: "0021",
-                    total: "80,000",
-                    date: "12-06-2020",
-                    receiptTitle: "Carole",
-                    subtitle: "Crptocurrency, intro to after effects");
-              },
-            );
-          }
-          // }
-        },
-      ),
+          future: _apiService.getDraftReciepts(), // receipts from API
+          builder: (context, snapshot) {
+            // If the API returns nothing it means the user has to upgrade to premium
+            // for now it doesn't validate if the user has upgraded to premium
+            /// If the API returns nothing it shows the dialog box `JUST FOR TESTING`
+            ///
+            /// Uncomment the if statement
+            // if (!snapshot.hasData) {
+            // return Center(
+            //   child: Text("There are no draft receipts created"),
+            // );
+            // } else {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              return ListView.builder(
+                padding: EdgeInsets.only(
+                  top: 30,
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
+                ),
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, index) {
+                  Receipt receipt = snapshot.data[index];
+                  DateTime date = DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
+                  return receiptCard(
+                      receiptNo: receipt.receiptNo,
+                      total: receipt.totalAmount,
+                      date: "${date.day}/${date.month}/${date.year}",
+                      receiptTitle: "Title",
+                      subtitle: "Crptocurrency, intro to after effects");
+                },
+              );
+            }
+            // }
+          }),
     );
   }
 
