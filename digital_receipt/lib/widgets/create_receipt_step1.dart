@@ -18,6 +18,9 @@ class CreateReceiptStep1 extends StatefulWidget {
 
 class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
   bool _partPayment = true;
+  int _productLenght = 3;
+
+  List product = [1, 3, 5, 2];
 
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
@@ -189,28 +192,39 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             SizedBox(
               height: 20,
             ),
-            Text(
-              'Product item/s',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.normal,
-                letterSpacing: 0.3,
-                fontSize: 16,
-                color: Colors.black,
-              ),
-            ),
+            product.length != 0
+                ? Text(
+                    'Product item/s',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.3,
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  )
+                : SizedBox.shrink(),
             SizedBox(
               height: 10,
             ),
             ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemBuilder: (BuildContext context, int index) => ProductItem(
-                title: 'After effect for dummies',
-                amount: '\$50000',
+              itemBuilder: (BuildContext context, int index) => Dismissible(
+                onDismissed: (direction) {
+                  setState(() {
+                    product.removeAt(index);
+                  });
+                },
+                key: Key('${index.toString() + product[index].toString()}'),
+                child: ProductItem(
+                  title: 'After effect for dummies',
+                  amount: '\$50000',
+                  index: index,
+                ),
               ),
-              itemCount: 3,
+              itemCount: product.length,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

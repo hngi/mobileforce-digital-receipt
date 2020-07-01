@@ -189,7 +189,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               height: 5,
             ),
             Text(
-              'This information is displayed in the receipt',
+              'This information is display on the receipt. If the customer is saved, select customer',
               style: TextStyle(
                 fontFamily: 'Montserrat',
                 fontWeight: FontWeight.normal,
@@ -199,7 +199,59 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
             ),
             SizedBox(
-              height: 13,
+              height: 10,
+            ),
+            DropdownButtonFormField(
+              items: [
+                DropdownMenuItem(
+                  child: Text(
+                    'Select customer',
+                    style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.normal,
+                      letterSpacing: 0.3,
+                      fontSize: 16,
+                      color: Color(0xFF1B1B1B),
+                    ),
+                  ),
+                ),
+              ],
+              iconEnabledColor: Color.fromRGBO(0, 0, 0, 0.87),
+              onChanged: (val) {},
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(15),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: BorderSide(
+                    color: Color(0xFFC8C8C8),
+                    width: 1.5,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(),
+                //hintText: hintText,
+                hintStyle: TextStyle(
+                  color: Color(0xFF979797),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Montserrat',
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            Text(
+              'Otherwise, enter customer information',
+              style: TextStyle(
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.normal,
+                letterSpacing: 0.3,
+                fontSize: 14,
+                color: Color.fromRGBO(0, 0, 0, 0.6),
+              ),
+            ),
+            SizedBox(
+              height: 7,
             ),
             Text(
               'Customer name',

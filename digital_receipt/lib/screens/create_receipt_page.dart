@@ -87,10 +87,12 @@ class ProductItem extends StatelessWidget {
     Key key,
     this.title,
     this.amount,
+    this.index,
   }) : super(key: key);
 
   final String title;
   final String amount;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +133,14 @@ class ProductItem extends StatelessWidget {
             ),
           ),
         ),
+        index == 0 ? SizedBox(height: 5) : SizedBox.shrink(),
+        index == 0 ? Text('Tap to edit. Swipe to delete',style: TextStyle(
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.normal,
+                    letterSpacing: 0.3,
+                    fontSize: 14,
+                    color: Color.fromRGBO(0, 0, 0, 0.6),
+                  ),) : SizedBox.shrink(),
         SizedBox(height: 25),
       ],
     );
