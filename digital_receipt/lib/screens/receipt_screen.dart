@@ -1,5 +1,11 @@
+import 'dart:io';
+
+import 'package:digital_receipt/screens/show_pdf.dart';
 import 'package:digital_receipt/widgets/receipt_item.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
 
 class ReceiptScreen extends StatelessWidget {
   @override
@@ -8,7 +14,7 @@ class ReceiptScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xFFF2F8FF),
       appBar: AppBar(
-      //  backgroundColor: Color(0xFF0b56a7),
+        //  backgroundColor: Color(0xFF0b56a7),
         automaticallyImplyLeading: true,
         title: Text(
           'Create Receipt',
@@ -20,17 +26,12 @@ class ReceiptScreen extends StatelessWidget {
             letterSpacing: 0.03,
           ),
         ),
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              //Implement code for back action here
-            }),
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            children: <Widget>[ReceiptScreenLayout()],
+            children: <Widget>[ReceiptScreenLayout(context)],
           ),
         ),
       ),
@@ -38,7 +39,7 @@ class ReceiptScreen extends StatelessWidget {
   }
 }
 
-Widget ReceiptScreenLayout() {
+Widget ReceiptScreenLayout([BuildContext context]) {
   return Column(children: <Widget>[
     SizedBox(
       height: 14,
@@ -362,8 +363,9 @@ Widget ReceiptScreenLayout() {
             fontWeight: FontWeight.w600,
           ),
         ),
-        onPressed: () {
+        onPressed: () async {
           //take this action
+          generatePdf(context);
         },
       ),
     ),
@@ -371,6 +373,27 @@ Widget ReceiptScreenLayout() {
       height: 15,
     ),
   ]);
+}
+
+void generatePdf(BuildContext context) async {
+  final String dir = (await getApplicationDocumentsDirectory()).path;
+  final String path = '$dir/receipt.pdf';
+  final File file = File(path);
+  final invoice = await generateInvoice(PdfPageFormat.a4);
+  await file.writeAsBytes(invoice);
+
+  await shareFile(invoice);
+//  Navigator.push(context,
+//      MaterialPageRoute(builder: (_) => PdfViewerScreen(path: path)));
+}
+
+Future<void> shareFile(file) async {
+  try {
+    await Share.file('Receipt', 'receipt.pdf', file, 'application/pdf',
+        text: 'My optional text.');
+  } catch (e) {
+    print('error: $e');
+  }
 }
 
 class DashedSeparator extends StatelessWidget {
