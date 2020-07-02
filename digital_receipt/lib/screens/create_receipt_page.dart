@@ -1,12 +1,14 @@
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/widgets/creat_receipt_step2.dart';
 import 'package:digital_receipt/widgets/create_receipt_step0.dart';
 import 'package:digital_receipt/widgets/create_receipt_step1.dart';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CreateReceiptPage extends StatefulWidget {
   @override
@@ -41,41 +43,44 @@ class _CreateReceiptPageState extends State<CreateReceiptPage> {
           ),
         ),
       ),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              child: CarouselSlider(
-                carouselController: _carouselController,
-                options: CarouselOptions(
-                    height: double.infinity,
-                    autoPlay: false,
-                    viewportFraction: 1.0,
-                    scrollPhysics: NeverScrollableScrollPhysics(),
-                    enableInfiniteScroll: false,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        currentIndex.setIndex(index);
-                      });
-                    }),
-                items: [
-                  CreateReceiptStep0(
-                    carouselController: _carouselController,
-                    carouselIndex: currentIndex,
-                  ),
-                  CreateReceiptStep1(
-                    carouselController: _carouselController,
-                    carouselIndex: currentIndex,
-                  ),
-                  CreateReceiptStep2(
-                    carouselController: _carouselController,
-                    carouselIndex: currentIndex,
-                  ),
-                ],
+      body: ChangeNotifierProvider(
+        create: (_) => Receipt(),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: CarouselSlider(
+                  carouselController: _carouselController,
+                  options: CarouselOptions(
+                      height: double.infinity,
+                      autoPlay: false,
+                      viewportFraction: 1.0,
+                      scrollPhysics: NeverScrollableScrollPhysics(),
+                      enableInfiniteScroll: false,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          currentIndex.setIndex(index);
+                        });
+                      }),
+                  items: [
+                    CreateReceiptStep0(
+                      carouselController: _carouselController,
+                      carouselIndex: currentIndex,
+                    ),
+                    CreateReceiptStep1(
+                      carouselController: _carouselController,
+                      carouselIndex: currentIndex,
+                    ),
+                    CreateReceiptStep2(
+                      carouselController: _carouselController,
+                      carouselIndex: currentIndex,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -99,24 +104,28 @@ class ProductItem extends StatelessWidget {
     return Column(
       children: <Widget>[
         Container(
-          height: 57,
+          padding: EdgeInsets.all(5),
           decoration: BoxDecoration(
             color: Color(0xFFEBF1F8),
             borderRadius: BorderRadius.circular(5),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.normal,
-                    letterSpacing: 0.3,
-                    fontSize: 16,
-                    color: Colors.black,
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.normal,
+                      letterSpacing: 0.3,
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                    softWrap: true,
                   ),
                 ),
                 Text(

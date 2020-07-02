@@ -3,11 +3,14 @@ import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/screens/receipt_screen.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
+import 'package:digital_receipt/widgets/date_time_input_textField.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class CreateReceiptStep2 extends StatefulWidget {
-  const CreateReceiptStep2({
+  CreateReceiptStep2({
     this.carouselController,
     this.carouselIndex,
   });
@@ -27,15 +30,25 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
     return result;
   }
 
+  TextEditingController _dateTextController = TextEditingController();
+  TextEditingController _receiptNumberController = TextEditingController();
+
+  DateTime date = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    _dateTextController.text = DateFormat('dd-MM-yyyy').format(date);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-           
             SizedBox(
               height: 14,
             ),
@@ -114,7 +127,9 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               ),
             ),
             SizedBox(height: 5),
-            AppTextField(),
+            AppTextFieldForm(
+              controller: _receiptNumberController,
+            ),
             SizedBox(
               height: 12,
             ),
@@ -151,7 +166,22 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               ),
             ),
             SizedBox(height: 5),
-            AppTextField(),
+            DateTimeInputTextField(
+                controller: _dateTextController,
+                onTap: () async {
+                  final DateTime picked = await showDatePicker(
+                    context: context,
+                    initialDate: date,
+                    firstDate: date.add(Duration(days: -20)),
+                    lastDate: date.add(Duration(days: 365)),
+                  );
+
+                  if (picked != null && picked != date) {
+                    setState(() {
+                      date = picked;
+                    });
+                  }
+                }),
             SizedBox(
               height: 30,
             ),
@@ -313,7 +343,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               ),
             ),
             SizedBox(height: 20),
-            AppTextField(
+            AppTextFieldForm(
               hintText: 'Enter Brand color hex code',
               hintColor: Color.fromRGBO(0, 0, 0, 0.38),
               borderWidth: 1.5,
@@ -382,12 +412,15 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             SizedBox(height: 25),
             SubmitButton(
               onPressed: () {
-                 Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ReceiptScreen(),
-                        ),
-                      );
+                Provider.of<Receipt>(context, listen: false).setNumber(int.parse(_receiptNumberController.text));
+                Provider.of<Receipt>(context, listen: false)
+                    .setIssueDate(_dateTextController.text);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ReceiptScreen(),
+                  ),
+                );
               },
               title: 'Generate Receipt',
               textColor: Colors.white,

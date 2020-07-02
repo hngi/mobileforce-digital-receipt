@@ -1,14 +1,21 @@
+import 'package:digital_receipt/models/customer.dart';
+import 'package:digital_receipt/models/product.dart';
+import 'package:digital_receipt/models/product.dart';
+import 'package:digital_receipt/models/product.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 enum ReceiptCategory { WHATSAPP, INSTAGRAM, FACEBOOK, TWITTER, OTHERS }
 
 class Receipt extends ChangeNotifier {
-  final String receiptNo;
-  final String issuedDate;
-  final String customerName;
-  final String description;
-  final ReceiptCategory category;
-  final String totalAmount;
+  String receiptNo;
+  String issuedDate;
+  String customerName;
+  String description;
+  ReceiptCategory category;
+  String totalAmount;
+  Customer customer;
+  List<Product> products;
 
   Receipt({
     this.receiptNo,
@@ -18,6 +25,23 @@ class Receipt extends ChangeNotifier {
     this.category,
     this.totalAmount,
   });
+
+  @override
+  String toString() {
+    return '$receiptNo : $issuedDate : $customerName : $description : $totalAmount : ($category) : $customer : $products';
+  }
+
+  void setCustomer(Customer customer) {
+    this.customer = customer;
+  }
+
+  void setCategory(ReceiptCategory category) => this.category = category;
+
+  void setProducts(List<Product> products) => this.products = products;
+
+  void setNumber(int receiptNo) {receiptNo = receiptNo;}
+
+  void setIssueDate(String date) {issuedDate = date;}
 }
 
 List<Receipt> dummyReceiptList = [
