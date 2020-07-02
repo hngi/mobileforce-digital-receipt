@@ -1,15 +1,9 @@
-import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/login_screen.dart';
-import 'package:digital_receipt/screens/preference_page.dart';
-//import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'dart:io';
 
-import 'package:digital_receipt/screens/home_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:overlay_support/overlay_support.dart';
-
-import './screens/onboarding.dart';
 
 import 'package:flutter/material.dart';
 
@@ -198,7 +192,7 @@ class _ScreenControllerState extends State<ScreenController> {
             print('snapshots: ${snapshot.data}');
             return HomePage();
           } else {
-            return OnboardingPage();
+            return HomePage();
           }
         });
   }

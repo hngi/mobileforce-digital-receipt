@@ -1,6 +1,8 @@
-enum ReceiptCategory { WHATSAPP, INSTAGRAM, TWITTER }
+import 'package:flutter/cupertino.dart';
 
-class Receipt {
+enum ReceiptCategory { WHATSAPP, INSTAGRAM, FACEBOOK, TWITTER, OTHERS }
+
+class Receipt extends ChangeNotifier {
   final String receiptNo;
   final String issuedDate;
   final String customerName;

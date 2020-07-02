@@ -23,6 +23,8 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
     return result;
   }
 
+  dynamic selectedCategory;
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -125,6 +127,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               height: 15,
             ),
             DropdownButtonFormField(
+              value: selectedCategory,
               items: [
                 DropdownMenuItem(
                   child: Text(
@@ -139,20 +142,27 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                   ),
                 ),
                 DropdownMenuItem(
-                  child: Text('Instergram'),
+                  child: Text('WhatsApp'),
+                ),
+                DropdownMenuItem(
+                  child: Text('Instagram'),
                 ),
                 DropdownMenuItem(
                   child: Text('Facebook'),
                 ),
                 DropdownMenuItem(
-                  child: Text('Tweeter'),
+                  child: Text('Twitter'),
                 ),
                 DropdownMenuItem(
-                  child: Text('Create cartegory'),
+                  child: Text('Others'),
                 ),
               ],
               iconEnabledColor: Color.fromRGBO(0, 0, 0, 0.87),
-              onChanged: (val) {},
+              onChanged: (val) {
+                setState(() {
+                  selectedCategory = val;
+                });
+              },
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(15),
                 enabledBorder: OutlineInputBorder(
