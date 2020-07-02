@@ -54,11 +54,11 @@ class Invoice {
     final doc = pw.Document();
 
     final font1 =
-    await rootBundle.load('assets/fonts/Montserrat/Montserrat-Regular.ttf');
+        await rootBundle.load('assets/fonts/Montserrat/Montserrat-Regular.ttf');
     final font2 =
-    await rootBundle.load('assets/fonts/Montserrat/Montserrat-Bold.ttf');
+        await rootBundle.load('assets/fonts/Montserrat/Montserrat-Bold.ttf');
     final font3 =
-    await rootBundle.load('assets/fonts/Montserrat/Montserrat-Italic.ttf');
+        await rootBundle.load('assets/fonts/Montserrat/Montserrat-Italic.ttf');
 
     _paidStamp = PdfImage.file(
       doc.document,
@@ -182,16 +182,16 @@ class Invoice {
           height: 15,
         ),
         pw.Container(
-          //padding: const EdgeInsets.all(10),
+            //padding: const EdgeInsets.all(10),
             child: pw.Center(
-              child: pw.Text(
-                'Geek Tutor',
-                style: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            )),
+          child: pw.Text(
+            'Geek Tutor',
+            style: pw.TextStyle(
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+        )),
         pw.SizedBox(
           height: 5,
         ),
@@ -267,14 +267,14 @@ class Invoice {
           receipt.receiptNo == null
               ? pw.SizedBox.shrink()
               : pw.Text(
-            'Reciept No: ${receipt.receiptNo}',
-            style: pw.TextStyle(
-                color: PdfColors.black,
-                fontSize: 13,
-                letterSpacing: 0.03,
-                fontWeight: pw.FontWeight.normal,
-                height: 1.43),
-          ),
+                  'Reciept No: ${receipt.receiptNo}',
+                  style: pw.TextStyle(
+                      color: PdfColors.black,
+                      fontSize: 13,
+                      letterSpacing: 0.03,
+                      fontWeight: pw.FontWeight.normal,
+                      height: 1.43),
+                ),
           pw.Container(
             padding: pw.EdgeInsets.fromLTRB(0, 8, 0, 8),
             child: pw.Text(
@@ -421,17 +421,17 @@ class Invoice {
             children: <pw.Widget>[
               pw.Expanded(
                   child: pw.Container(
-                    padding: const pw.EdgeInsets.fromLTRB(23, 0, 8, 0),
-                    child: pw.Text(
-                      'Qty',
-                      style: pw.TextStyle(
-                          color: PdfColors.black,
-                          fontSize: 10,
-                          letterSpacing: 0.03,
-                          fontWeight: pw.FontWeight.normal,
-                          height: 1.43),
-                    ),
-                  )),
+                padding: const pw.EdgeInsets.fromLTRB(23, 0, 8, 0),
+                child: pw.Text(
+                  'Qty',
+                  style: pw.TextStyle(
+                      color: PdfColors.black,
+                      fontSize: 10,
+                      letterSpacing: 0.03,
+                      fontWeight: pw.FontWeight.normal,
+                      height: 1.43),
+                ),
+              )),
               pw.Container(
                 child: pw.Text(
                   'Total',
@@ -456,18 +456,18 @@ class Invoice {
             children: <pw.Widget>[
               pw.Expanded(
                   child: pw.Container(
-                    padding: const pw.EdgeInsets.fromLTRB(23, 0, 8, 0),
-                    child: pw.Text(
-                      'X ${thisProduct.quantity}',
-                      style: pw.TextStyle(
-                        color: PdfColors.black,
-                        fontSize: 14,
-                        letterSpacing: 0.03,
-                        fontWeight: pw.FontWeight.normal,
-                        height: 1.43,
-                      ),
-                    ),
-                  )),
+                padding: const pw.EdgeInsets.fromLTRB(23, 0, 8, 0),
+                child: pw.Text(
+                  'X ${thisProduct.quantity}',
+                  style: pw.TextStyle(
+                    color: PdfColors.black,
+                    fontSize: 14,
+                    letterSpacing: 0.03,
+                    fontWeight: pw.FontWeight.normal,
+                    height: 1.43,
+                  ),
+                ),
+              )),
               pw.Container(
                 child: pw.Text(
                   '₦${thisProduct.amount}',
