@@ -57,7 +57,7 @@ class _DraftsState extends State<Drafts> {
             // } else {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(strokeWidth: 1.5,),
               );
             } else if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {
