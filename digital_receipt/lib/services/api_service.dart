@@ -4,9 +4,11 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
+import '../models/receipt.dart';
 import 'device_info_service.dart';
 import 'shared_preference_service.dart';
 import 'package:http/http.dart' as http;
+import 'package:digital_receipt/models/receipt.dart';
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
@@ -82,6 +84,42 @@ class ApiService {
       } else {
         print(response.data);
         return response.data["error"];
+      }
+    } on DioError catch (error) {
+      print(error);
+    }
+  }
+
+  Future<List<Receipt>> getDraftReciepts() async {
+    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (HttpClient client) {
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+      return client;
+    };
+
+    try {
+      String auth_token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+      Response response = await _dio.get(
+        "/business/receipt/draft",
+        options: Options(
+          followRedirects: false,
+          validateStatus: (status) {
+            return status < 500;
+          },
+          headers: {"token": auth_token},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        List<Receipt> draft_receipts = [];
+        response.data["data"].forEach((data) {
+        Receipt receipt = Receipt.fromJson(data);
+        draft_receipts.add(receipt);
+      });
+        return draft_receipts;
+      } else {
+        return null;
       }
     } on DioError catch (error) {
       print(error);
