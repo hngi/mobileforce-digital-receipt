@@ -77,6 +77,7 @@ class ApiService {
         //Save details to Shared Preference
         _sharedPreferenceService.addStringToSF("USER_ID", userId);
         _sharedPreferenceService.addStringToSF("AUTH_TOKEN", auth_token);
+        _sharedPreferenceService.addStringToSF("EMAIL", email_address);
         //
         print(auth_token);
         print(userId);
@@ -236,5 +237,38 @@ class ApiService {
       return true;
     }
     return false;
+  }
+
+  Future<String> changePassword(
+      String currentPassword, String newPassword) async {
+    var uri = '$_urlEndpoint/user/change_password';
+    var storedEmail = await _sharedPreferenceService.getStringValuesSF('EMAIL');
+    var storedToken =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    try {
+      final response = await http.put(
+        uri,
+        body: jsonEncode({
+          "email_address": storedEmail,
+          "password": newPassword,
+          "current_password": currentPassword,
+        }),
+        headers: <String, String>{
+          "token": storedToken,
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.acceptHeader: 'application/json',
+        },
+      );
+
+      var responseBody = json.decode(response.body.toString());
+      print(responseBody);
+      print('api post recieved!');
+      if (response.statusCode == 200) {
+        return "true";
+      }
+      return responseBody['message'] ?? responseBody['error'];
+    } on SocketException {
+      return "No network";
+    }
   }
 }
