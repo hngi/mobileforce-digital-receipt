@@ -23,6 +23,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  sqflite: ^1.3.1
+  path_provider: ^1.6.11
+  path:
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -66,15 +69,17 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+    - family: MuseoModerno
+      fonts:
+        - asset: assets/fonts/MuseoModerno/static/MuseoModerno-Regular.ttf
+          weight: 700
     - family: Montserrat
       fonts:
         - asset: assets/fonts/Montserrat/Montserrat-Regular.ttf
           weight: 700
 
-    - family: LibreBaskerville
-      fonts:
-        - asset: assets/fonts/LibreBaskerville/LibreBaskerville-Regular.ttf
-          weight: 700
+
+
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
