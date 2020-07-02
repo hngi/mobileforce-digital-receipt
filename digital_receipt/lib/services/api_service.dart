@@ -100,7 +100,8 @@ class ApiService {
     };
 
     try {
-      String auth_token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+      String auth_token =
+          await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
       Response response = await _dio.get(
         "/business/receipt/draft",
         options: Options(
@@ -115,9 +116,9 @@ class ApiService {
       if (response.statusCode == 200) {
         List<Receipt> draft_receipts = [];
         response.data["data"].forEach((data) {
-        Receipt receipt = Receipt.fromJson(data);
-        draft_receipts.add(receipt);
-      });
+          Receipt receipt = Receipt.fromJson(data);
+          draft_receipts.add(receipt);
+        });
         return draft_receipts;
       } else {
         return null;
@@ -197,6 +198,44 @@ class ApiService {
     return false;
   } */
 
+  Future<bool> updateBusinessInfo({
+    String phoneNumber,
+    String name,
+    String address,
+    String slogan,
+  }) async {
+    var uri = '$_urlEndpoint/business/info/update';
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    String businessId =
+        await _sharedPreferenceService.getStringValuesSF('Business_ID');
+    var response = await http.put(
+      uri,
+      headers: <String, String>{
+        "token": token,
+      },
+      body: {
+        "phoneNumber": phoneNumber,
+        "name": name,
+        "address": address,
+        "slogan": slogan,
+        "businessId": businessId,
+      },
+    );
+    print(jsonDecode(response.body));
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      print(jsonDecode(response.body));
+      return true;
+    }
+    return false;
+    // return responseBody['message'] ?? responseBody['error'];
+    /* } on SocketException {
+      return "No network";
+    }
+ */
+  }
+
   Future<bool> setUpBusiness({
     String token,
     String phoneNumber,
@@ -216,24 +255,18 @@ class ApiService {
     request.files.add(
       await http.MultipartFile.fromPath("logo", logo),
     );
-    /*  .post(
-      uri,
-      body: {
-        'name': name,
-        "phone_number": phoneNumber,
-        "address": address,
-        "slogan": slogan,
-        "logo": logo
-      },
-      headers: {"token": token},
-    ); */
+
     var response = await request.send();
     print('code: ${response.statusCode}');
     var res = await response.stream.bytesToString();
     print(res);
     if (response.statusCode == 200) {
+      var businessId = jsonDecode(res)['id'];
       //set the token to null
-      print(response.stream);
+      await _sharedPreferenceService.addStringToSF('Business_ID', businessId);
+
+      print(
+          'pref: ${await _sharedPreferenceService.getStringValuesSF('Business_ID')}');
       return true;
     }
     return false;
