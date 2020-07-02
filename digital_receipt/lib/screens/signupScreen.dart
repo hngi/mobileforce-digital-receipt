@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:digital_receipt/screens/otp_auth.dart';
 import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:flutter/material.dart';
@@ -418,37 +419,18 @@ class _SignupScreenState extends State<SignupScreen> {
       isloading = true;
     });
     print('im res');
-    String response = await _apiService.signinUser(_email, _password, _name);
-    if (response == 'true') {
-      Fluttertoast.showToast(
-          msg: 'Signup successful',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green[600],
-          textColor: Colors.white,
-          fontSize: 16.0);
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Setup()));
-    } else {
-      setState(() {
-        isloading = false;
-      });
-      var res = jsonDecode(response);
-      print('${res['email_address'][0]}');
-      Fluttertoast.showToast(
-        msg: '${res['email_address'][0]}',
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-    }
+    String response = await _apiService.otpVerification(_email, _password, _name);
+    var res = jsonDecode(response);
+    print(res['data']['otp']);
+    var otp  = res['data']['otp'];
+       Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => PinCodeVerificationScreen(otp:"$otp",email:"$_email",password:"$_password",name:"$_name")));
+
   }
-}
+
 
 dont() {
   print('check if to login or signup');
+}
+
 }

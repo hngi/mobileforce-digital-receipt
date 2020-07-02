@@ -182,4 +182,16 @@ class ApiService {
     }
     return null;
   }
+
+  Future<String> otpVerification(String email, password, name) async {
+    var uri = 'https://digital-receipt-07.herokuapp.com/v1/user/otp_register';
+    var response = await http.post(
+      uri,
+      body: {"email_address": "$email"},
+    );
+    if (response.statusCode == 200) {
+      return response.body;
+    }
+    return 'error';
+  }
 }
