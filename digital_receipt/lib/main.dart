@@ -1,5 +1,6 @@
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/login_screen.dart';
+import 'package:digital_receipt/screens/onboarding.dart';
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -194,10 +195,10 @@ class _ScreenControllerState extends State<ScreenController> {
           } else if (snapshot.data == 'empty') {
             return LogInScreen();
           } else if (snapshot.hasData && snapshot.data != null) {
-            print('snapshots: ${snapshot.data}');
+            print('snapshotss: ${snapshot.data}');
             return HomePage();
           } else {
-            return HomePage();
+            return OnboardingPage();
           }
         });
   }
