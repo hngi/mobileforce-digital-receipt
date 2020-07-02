@@ -43,44 +43,41 @@ class _CreateReceiptPageState extends State<CreateReceiptPage> {
           ),
         ),
       ),
-      body: ChangeNotifierProvider(
-        create: (_) => Receipt(),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                child: CarouselSlider(
-                  carouselController: _carouselController,
-                  options: CarouselOptions(
-                      height: double.infinity,
-                      autoPlay: false,
-                      viewportFraction: 1.0,
-                      scrollPhysics: NeverScrollableScrollPhysics(),
-                      enableInfiniteScroll: false,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          currentIndex.setIndex(index);
-                        });
-                      }),
-                  items: [
-                    CreateReceiptStep0(
-                      carouselController: _carouselController,
-                      carouselIndex: currentIndex,
-                    ),
-                    CreateReceiptStep1(
-                      carouselController: _carouselController,
-                      carouselIndex: currentIndex,
-                    ),
-                    CreateReceiptStep2(
-                      carouselController: _carouselController,
-                      carouselIndex: currentIndex,
-                    ),
-                  ],
-                ),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              child: CarouselSlider(
+                carouselController: _carouselController,
+                options: CarouselOptions(
+                    height: double.infinity,
+                    autoPlay: false,
+                    viewportFraction: 1.0,
+                    scrollPhysics: NeverScrollableScrollPhysics(),
+                    enableInfiniteScroll: false,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        currentIndex.setIndex(index);
+                      });
+                    }),
+                items: [
+                  CreateReceiptStep0(
+                    carouselController: _carouselController,
+                    carouselIndex: currentIndex,
+                  ),
+                  CreateReceiptStep1(
+                    carouselController: _carouselController,
+                    carouselIndex: currentIndex,
+                  ),
+                  CreateReceiptStep2(
+                    carouselController: _carouselController,
+                    carouselIndex: currentIndex,
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

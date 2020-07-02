@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/screens/receipt_screen.dart';
@@ -32,6 +34,9 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
 
   TextEditingController _dateTextController = TextEditingController();
   TextEditingController _receiptNumberController = TextEditingController();
+  TextEditingController _hexCodeController = TextEditingController();
+
+  bool autoReceiptNo = true;
 
   DateTime date = DateTime.now();
 
@@ -147,8 +152,13 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   ),
                 ),
                 Checkbox(
-                  value: true,
-                  onChanged: (val) {},
+                  value: Provider.of<Receipt>(context).shouldGenReceiptNo(),
+                  onChanged: (val) {
+                    setState(() {
+                      Provider.of<Receipt>(context, listen: false)
+                          .toggleAutoGenReceiptNo();
+                    });
+                  },
                 )
               ],
             ),
@@ -344,6 +354,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             ),
             SizedBox(height: 20),
             AppTextFieldForm(
+              controller: _hexCodeController,
               hintText: 'Enter Brand color hex code',
               hintColor: Color.fromRGBO(0, 0, 0, 0.38),
               borderWidth: 1.5,
@@ -412,15 +423,27 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             SizedBox(height: 25),
             SubmitButton(
               onPressed: () {
-                Provider.of<Receipt>(context, listen: false).setNumber(int.parse(_receiptNumberController.text));
+                if (Provider.of<Receipt>(context, listen: false)
+                    .shouldGenReceiptNo()) {
+                  Provider.of<Receipt>(context, listen: false)
+                      .setNumber(Random().nextInt(999) + 100);
+                } else {
+                  try {
+                    Provider.of<Receipt>(context, listen: false)
+                        .setNumber(int.parse(_receiptNumberController.text));
+                  } catch (e) {
+                    print(e);
+                  }
+                }
                 Provider.of<Receipt>(context, listen: false)
                     .setIssueDate(_dateTextController.text);
+                Provider.of<Receipt>(context, listen: false)
+                    .setColor(hexCode: _hexCodeController.text);
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ReceiptScreen(),
-                  ),
-                );
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ReceiptScreen(),
+                    ));
               },
               title: 'Generate Receipt',
               textColor: Colors.white,

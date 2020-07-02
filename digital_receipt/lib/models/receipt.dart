@@ -4,11 +4,13 @@ import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 enum ReceiptCategory { WHATSAPP, INSTAGRAM, FACEBOOK, TWITTER, OTHERS }
 
 class Receipt extends ChangeNotifier {
   String receiptNo;
+  bool autoGenReceiptNo = true;
   String issuedDate;
   String customerName;
   String description;
@@ -16,6 +18,7 @@ class Receipt extends ChangeNotifier {
   String totalAmount;
   Customer customer;
   List<Product> products;
+  String primaryColorHexCode;
 
   Receipt({
     this.receiptNo,
@@ -31,17 +34,38 @@ class Receipt extends ChangeNotifier {
     return '$receiptNo : $issuedDate : $customerName : $description : $totalAmount : ($category) : $customer : $products';
   }
 
+  bool shouldGenReceiptNo() {
+    return autoGenReceiptNo;
+  }
+
+  void toggleAutoGenReceiptNo() {
+    autoGenReceiptNo = !autoGenReceiptNo;
+    notifyListeners();
+  }
+
   void setCustomer(Customer customer) {
     this.customer = customer;
+  }
+
+  void setColor({@required String hexCode}) {
+    if (hexCode.isNotEmpty) {
+      this.primaryColorHexCode = hexCode;
+    } else {
+      this.primaryColorHexCode = null;
+    }
   }
 
   void setCategory(ReceiptCategory category) => this.category = category;
 
   void setProducts(List<Product> products) => this.products = products;
 
-  void setNumber(int receiptNo) {receiptNo = receiptNo;}
+  void setNumber(int receiptNo) {
+    receiptNo = receiptNo;
+  }
 
-  void setIssueDate(String date) {issuedDate = date;}
+  void setIssueDate(String date) {
+    issuedDate = date;
+  }
 }
 
 List<Receipt> dummyReceiptList = [
