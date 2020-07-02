@@ -194,8 +194,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                 decoration: InputDecoration(
                                   suffixIcon: IconButton(
                                     icon: passwordVisible
-                                        ? Icon(Icons.visibility_off)
-                                        : Icon(Icons.remove_red_eye),
+                                        ? Icon(Icons.remove_red_eye)
+                                        : Icon(Icons.visibility_off),
                                     color: Colors.grey,
                                     onPressed: () {
                                       setState(() =>
