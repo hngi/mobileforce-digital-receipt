@@ -134,13 +134,18 @@ class ProductItem extends StatelessWidget {
           ),
         ),
         index == 0 ? SizedBox(height: 5) : SizedBox.shrink(),
-        index == 0 ? Text('Tap to edit. Swipe to delete',style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.normal,
-                    letterSpacing: 0.3,
-                    fontSize: 14,
-                    color: Color.fromRGBO(0, 0, 0, 0.6),
-                  ),) : SizedBox.shrink(),
+        index == 0
+            ? Text(
+                'Tap to edit. Swipe to delete',
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.normal,
+                  letterSpacing: 0.3,
+                  fontSize: 14,
+                  color: Color.fromRGBO(0, 0, 0, 0.6),
+                ),
+              )
+            : SizedBox.shrink(),
         SizedBox(height: 25),
       ],
     );
