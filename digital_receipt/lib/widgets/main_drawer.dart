@@ -7,22 +7,22 @@ class MainDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        padding: EdgeInsets.only(top: 80.0, left: 5.0),
+        padding: EdgeInsets.only(top: 60.0, left: 5.0),
         child: ListView(
           children: <Widget>[
             Container(
               padding: EdgeInsets.only(left: 15.0),
               child: Text('Reecpy',
                 style: TextStyle(
-                    fontFamily: 'LibreBaskerville',
-                    fontSize: 20.0,
+                    fontFamily: 'MuseoModerno',
+                    fontSize: 30.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                     letterSpacing: 0.6
                 ),
               ),
             ),
-            SizedBox(height: 25.0),
+            SizedBox(height: 20.0),
             ListTile(
               title: Row(
                 children: <Widget>[
@@ -33,7 +33,7 @@ class MainDrawer extends StatelessWidget {
                   ),
                   SizedBox(width: 15.0),
                   Text(
-                    'Profile',
+                    'Account',
                     style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 16.0,
@@ -148,7 +148,7 @@ class MainDrawer extends StatelessWidget {
                   ),
                   SizedBox(width: 15.0),
                   Text(
-                    'Settings',
+                    'Preferences',
                     style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 16.0,
