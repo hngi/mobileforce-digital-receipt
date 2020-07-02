@@ -196,8 +196,10 @@ class _ScreenControllerState extends State<ScreenController> {
           } else if (snapshot.hasData && snapshot.data != null) {
             print('snapshots: ${snapshot.data}');
             return HomePage();
+            // return Otp(email: "francis@francis.francis",);
           } else {
-            return OnboardingPage();
+	    // return Otp(email: "francis@francis.francis",);
+           return OnboardingPage();
           }
         });
   }
