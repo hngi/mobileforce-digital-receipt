@@ -1,16 +1,61 @@
 import 'dart:io';
+import 'dart:typed_data';
 
-import 'package:digital_receipt/screens/show_pdf.dart';
+import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/screens/generate_pdf.dart';
 import 'package:digital_receipt/widgets/receipt_item.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
+import 'package:provider/provider.dart';
 
-class ReceiptScreen extends StatelessWidget {
+class ReceiptScreen extends StatefulWidget {
+  final Receipt receipt;
+
+  const ReceiptScreen({Key key, this.receipt}) : super(key: key);
+
+  @override
+  _ReceiptScreenState createState() => _ReceiptScreenState();
+}
+
+Uint8List receiptPdf;
+
+class _ReceiptScreenState extends State<ReceiptScreen> {
+  Future<Uint8List> receiptPdfFuture;
+
+  /*void generatePdf(BuildContext context) async {
+    final String dir = (await getApplicationDocumentsDirectory()).path;
+    final String path = '$dir/receipt.pdf';
+    final File file = File(path);
+    final invoice = await generateInvoice(PdfPageFormat.a4);
+    await file.writeAsBytes(invoice);
+
+    await shareFile(invoice);
+//  Navigator.push(context,
+//      MaterialPageRoute(builder: (_) => PdfViewerScreen(path: path)));
+  }*/
+
+  Future<void> savePdf(Uint8List pdf) async {
+    final String dir = (await getApplicationDocumentsDirectory()).path;
+    final String path = '$dir/receipt.pdf';
+    final File file = File(path);
+    await file.writeAsBytes(pdf);
+    receiptPdf = pdf;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    receiptPdfFuture = generatePdf(
+      pageFormat: PdfPageFormat.a4,
+      receipt: Provider.of<Receipt>(context, listen: false),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    Provider.of<Receipt>(context, listen: false);
     return Scaffold(
       backgroundColor: Color(0xFFF2F8FF),
       appBar: AppBar(
@@ -27,13 +72,51 @@ class ReceiptScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: <Widget>[ReceiptScreenLayout(context)],
-          ),
-        ),
+      body: FutureBuilder<Uint8List>(
+        future: receiptPdfFuture,
+        builder: (context, snapshot) {
+          Widget body;
+          if (snapshot.hasData) {
+            savePdf(snapshot.data);
+            body = SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: <Widget>[ReceiptScreenLayout(context)],
+                ),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            body = Column(
+              children: <Widget>[
+                Icon(
+                  Icons.error_outline,
+                  color: Colors.red,
+                  size: 60,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Text('Error: ${snapshot.error}'),
+                )
+              ],
+            );
+          } else {
+            body = Column(
+              children: <Widget>[
+                SizedBox(
+                  child: CircularProgressIndicator(),
+                  width: 60,
+                  height: 60,
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 16),
+                  child: Text('Awaiting result...'),
+                )
+              ],
+            );
+          }
+          return body;
+        },
       ),
     );
   }
@@ -365,7 +448,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
         ),
         onPressed: () async {
           //take this action
-          generatePdf(context);
+          shareFile();
         },
       ),
     ),
@@ -375,21 +458,9 @@ Widget ReceiptScreenLayout([BuildContext context]) {
   ]);
 }
 
-void generatePdf(BuildContext context) async {
-  final String dir = (await getApplicationDocumentsDirectory()).path;
-  final String path = '$dir/receipt.pdf';
-  final File file = File(path);
-  final invoice = await generateInvoice(PdfPageFormat.a4);
-  await file.writeAsBytes(invoice);
-
-  await shareFile(invoice);
-//  Navigator.push(context,
-//      MaterialPageRoute(builder: (_) => PdfViewerScreen(path: path)));
-}
-
-Future<void> shareFile(file) async {
+Future<void> shareFile() async {
   try {
-    await Share.file('Receipt', 'receipt.pdf', file, 'application/pdf',
+    await Share.file('Receipt', 'receipt.pdf', receiptPdf, 'application/pdf',
         text: 'My optional text.');
   } catch (e) {
     print('error: $e');
