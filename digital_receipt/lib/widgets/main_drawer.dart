@@ -7,7 +7,7 @@ import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/screens/reminderPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+
 
 import '../screens/upgrade_screen.dart';
 import '../screens/customerList.dart';
