@@ -2,12 +2,23 @@ import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:provider/provider.dart';
+import '../providers/business.dart';
+import '../models/account.dart';
+import '../services/shared_preference_service.dart';
+
 class EditAccountInfoScreen extends StatefulWidget {
   EditAccountInfoScreen({Key key}) : super(key: key);
   @override
   _EditAccountInfoScreenState createState() => _EditAccountInfoScreenState();
 }
 final ApiService _apiService = ApiService();
+
+final SharedPreferenceService _sharedPreferenceService =
+    SharedPreferenceService();
+
+
 class _EditAccountInfoScreenState extends State<EditAccountInfoScreen> {
   @override
   Widget build(BuildContext context) {
@@ -171,13 +182,28 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
                 number: $phoneNumber,
                 address: $address,
                 slogan: $slogan""");
+                var email =
+                    await _sharedPreferenceService.getStringValuesSF('EMAIL');
                 var res = await _apiService.updateBusinessInfo(
                   phoneNumber: phoneNumber,
                   name: name,
                   address: address,
                   slogan: slogan,
                 );
-                if (res == true) {
+                if (res != null) {
+                  print(res['data']['id']);
+
+                  Provider.of<Business>(context, listen: false).setAccountData =
+                      AccountData(
+                    id: res['data']['id'],
+                    name: res['data']['name'],
+                    phone: res['data']['phone_number'],
+                    address: res['data']['address'],
+                    slogan: res['data']['slogan'],
+                    logo:
+                        'https://degeit-receipt.herokuapp.com${res['data']['logo']}',
+                    email: email,
+                  );
                   setState(() {
                     loading = false;
                   });
@@ -216,3 +242,4 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
     );
   }
 }
+

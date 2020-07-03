@@ -17,7 +17,6 @@ import 'shared_preference_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:digital_receipt/models/receipt.dart';
 
-
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
   static String _urlEndpoint = "https://degeit-receipt.herokuapp.com/v1";
@@ -177,42 +176,7 @@ class ApiService {
     return false;
   }
 
-  /* Future userInfo(String email) async {
-    var uri = '$_urlEndpoint/user/email/exists?email_address=$email';
-    var response = await http.get(uri, body: {
-      "email_address": email,
-    });
-    print('code: ${response.statusCode}');
-    if (response.statusCode == 200) {
-      //set the token to null
-
-      return jsonDecode(response.body);
-    }
-    return null;
-  } */
-
-  /*  Future<bool> changePassword(String token, String email, String password) async {
-    var uri = '$_urlEndpoint/user/change_password';
-    var response = await http.put(
-      uri,
-      headers: {
-        "token": token,
-      },
-      body: {
-        'email_address': email,
-        "password": password,
-      }
-    );
-    print('code: ${response.statusCode}');
-    if (response.statusCode == 200) {
-      //set the token to null
-
-      return true;
-    }
-    return false;
-  } */
-
-  Future<bool> updateBusinessInfo({
+  Future updateBusinessInfo({
     String phoneNumber,
     String name,
     String address,
@@ -223,6 +187,7 @@ class ApiService {
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
     String businessId =
         await _sharedPreferenceService.getStringValuesSF('Business_ID');
+    print(businessId);
     var response = await http.put(
       uri,
       headers: <String, String>{
@@ -236,13 +201,11 @@ class ApiService {
         "businessId": businessId,
       },
     );
-    print(jsonDecode(response.body));
-    print(response.statusCode);
+
     if (response.statusCode == 200) {
-      print(jsonDecode(response.body));
-      return true;
+      return jsonDecode(response.body);
     }
-    return false;
+    return null;
     // return responseBody['message'] ?? responseBody['error'];
     /* } on SocketException {
       return "No network";
@@ -285,6 +248,7 @@ class ApiService {
     }
     return false;
   }
+
 
 
   AccountData user = AccountData(
@@ -342,6 +306,7 @@ class ApiService {
       }
   }
 
+
   Future<String> changePassword(
       String currentPassword, String newPassword) async {
     var uri = '$_urlEndpoint/user/change_password';
@@ -372,8 +337,43 @@ class ApiService {
       return responseBody['message'] ?? responseBody['error'];
     } on SocketException {
       return "No network";
-
     }
+  }
+
+  //Fetch users from db;
+  Future<AccountData> fetchAndSetUser() async {
+    var url = "$_urlEndpoint/business/info/all";
+
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+
+    String userID = await _sharedPreferenceService.getStringValuesSF('USER_ID');
+    print(token);
+    var response = await http.get(
+      url,
+      headers: <String, String>{
+        'token': token,
+      },
+    );
+
+    dynamic res = jsonDecode(response.body)['data'] as List<dynamic>;
+    //print(res.length);
+    var email = await _sharedPreferenceService.getStringValuesSF('EMAIL');
+
+    if (response.statusCode == 200) {
+      res = res.singleWhere((e) => e['user'] == userID);
+
+      return AccountData(
+        id: res['id'],
+        name: res['name'],
+        phone: res['phone_number'],
+        address: res['address'],
+        slogan: res['slogan'],
+        logo: 'https://degeit-receipt.herokuapp.com${res['logo']}',
+        email: email,
+      );
+    }
+    return null;
   }
 
     Future<String> otpVerification(String email, password, name) async {
