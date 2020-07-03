@@ -201,6 +201,7 @@ class _ScreenControllerState extends State<ScreenController> {
             return LogInScreen();
           } else if (snapshot.hasData && snapshot.data != null) {
             print('snapshotss: ${snapshot.data}');
+            // return HomePage();
             return HomePage();
           } else {
             return HomePage();

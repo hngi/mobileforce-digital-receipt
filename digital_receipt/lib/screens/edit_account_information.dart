@@ -1,30 +1,14 @@
-
-import 'package:digital_receipt/models/account.dart';
-import 'package:digital_receipt/screens/account_page.dart';
-import 'package:flutter/material.dart';
-import '../services/api_service.dart';
-
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-
 class EditAccountInfoScreen extends StatefulWidget {
   EditAccountInfoScreen({Key key}) : super(key: key);
-
   @override
   _EditAccountInfoScreenState createState() => _EditAccountInfoScreenState();
 }
-
 final ApiService _apiService = ApiService();
-
 class _EditAccountInfoScreenState extends State<EditAccountInfoScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  void submitOrder(){
-   print('submitted');
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,73 +28,19 @@ class _EditAccountInfoScreenState extends State<EditAccountInfoScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-
-            padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
-            child: Form(
-              key: _formKey,
-             child: Column(
-      children: [
-        SizedBox(height: 30),
-        Text(
-          'Tell us about your business. This information will show up in the receipt',
-          style: TextStyle(
-              color: Color(0xFF2B2B2B),
-              fontSize: 14,
-              fontFamily: 'Montserrat',
-              height: 1.43),
-
             padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 16.0),
             child: EditAccountInfoForm(),
           ),
-
         ),
-        Container(
-      padding: EdgeInsets.only(top: 22.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text('Bussiness name'),
-          SizedBox(
-            height: 5.0,
-          ),
-          TextFormField(
-            style: TextStyle(
-              color: Color(0xFF2B2B2B),
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Montserrat',
-            ),
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(17),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-                borderSide: BorderSide(
-                  color: Color(0xFFC8C8C8),
-                  width: 1,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(),
-              errorStyle: TextStyle(height: 0.5),
-            ),
-          ),
-        ],
       ),
-
-    ),
-      Container(
-
     );
   }
 }
-
 class EditAccountInfoForm extends StatefulWidget {
   const EditAccountInfoForm({Key key}) : super(key: key);
-
   @override
   _EditAccountInfoFormState createState() => _EditAccountInfoFormState();
 }
-
 class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String phoneNumber;
@@ -119,24 +49,21 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
   String slogan;
   String logo;
   bool loading = false;
-
   @override
   void initState() {
     super.initState();
   }
-
   Container _buildInputField(
       {String label,
       TextInputType keyboardType,
       Function onSaved,
       String initialValue}) {
     return Container(
-
       padding: EdgeInsets.only(top: 22.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text('Phone number'),
+          Text(label),
           SizedBox(
             height: 5.0,
           ),
@@ -147,16 +74,12 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
               fontWeight: FontWeight.w600,
               fontFamily: 'Montserrat',
             ),
-
-            keyboardType: TextInputType.phone,
-
             initialValue: initialValue,
             onSaved: onSaved,
             validator: (value) {
               /*  if (value.isEmpty $$ la) {
                 return 'Invalid New Password';
               } */
-
               switch (label) {
                 case 'Business name':
                   if (value.isEmpty) {
@@ -182,7 +105,6 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
               }
             },
             keyboardType: keyboardType,
-
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(17),
               border: OutlineInputBorder(
@@ -198,87 +120,8 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
           ),
         ],
       ),
-
-    ),
-      Container(
-      padding: EdgeInsets.only(top: 22.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text('Addresss'),
-          SizedBox(
-            height: 5.0,
-          ),
-          TextFormField(
-            style: TextStyle(
-              color: Color(0xFF2B2B2B),
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Montserrat',
-            ),
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(17),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-                borderSide: BorderSide(
-                  color: Color(0xFFC8C8C8),
-                  width: 1,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(),
-              errorStyle: TextStyle(height: 0.5),
-            ),
-          ),
-        ],
-      ),
-    ),
-      Container(
-      padding: EdgeInsets.only(top: 22.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text('Bussiness slogan(optional)'),
-          SizedBox(
-            height: 5.0,
-          ),
-          TextFormField(
-            style: TextStyle(
-              color: Color(0xFF2B2B2B),
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Montserrat',
-            ),
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(17),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-                borderSide: BorderSide(
-                  color: Color(0xFFC8C8C8),
-                  width: 1,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(),
-              errorStyle: TextStyle(height: 0.5),
-            ),
-          ),
-        ],
-      ),
-    ),
-     
-        SizedBox(height: 100),
-        MaterialButton(
-          height: 45,
-          minWidth: double.infinity,
-          onPressed: () => submitOrder(),
-          color: Theme.of(context).primaryColor,
-          child: Text(
-            'Update',
-
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -289,7 +132,6 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
           // SizedBox(height: 30),
           Text(
             'Tell us about your business. This information will show up in the receipt',
-
             style: TextStyle(
                 color: Color(0xFF2B2B2B),
                 fontSize: 14,
@@ -313,14 +155,6 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
             label: 'Business slogan (optional)',
             onSaved: (String value) => slogan = value,
           ),
-
-        )
-      ],
-    )
-            ),
-          ),
-        ),
-
           SizedBox(height: 100),
           SizedBox(
             height: 45,
@@ -378,9 +212,7 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
             ),
           )
         ],
-
       ),
     );
   }
 }
-

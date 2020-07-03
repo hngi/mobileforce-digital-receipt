@@ -339,6 +339,8 @@ class ApiService {
       print('fetched');
     } catch (error) {
       throw error;
+      }
+  }
 
   Future<String> changePassword(
       String currentPassword, String newPassword) async {
