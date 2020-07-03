@@ -114,6 +114,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                     context: context,
                     builder: (BuildContext context) => ProductDetail(),
                     backgroundColor: Colors.transparent,
+                    isScrollControlled: true,
+
                     //barrierColor: Colors.red
                   );
                 },

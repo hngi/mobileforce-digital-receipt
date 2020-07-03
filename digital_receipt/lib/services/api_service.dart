@@ -1,14 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:digital_receipt/services/send_receipt_service.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
+import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 import 'device_info_service.dart';
 import 'shared_preference_service.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
+  SendReceiptService srs;
   static DeviceInfoService deviceInfoService = DeviceInfoService();
   static String _urlEndpoint = "https://digital-receipt-07.herokuapp.com/v1";
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -194,4 +198,11 @@ class ApiService {
     }
     return 'error';
   }
+
+
+  // Future<String> saveReceipt() async{
+  //   var uri = "https://digital-receipt-07.herokuapp.com/v1/business/receipt/customize";
+  //   var response = await http.post(uri, body: srs.toJson,headers: <String,dynamic>{"token":token});
+  // }
+
 }

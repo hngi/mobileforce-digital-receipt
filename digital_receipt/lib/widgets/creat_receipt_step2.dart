@@ -1,10 +1,11 @@
 import 'package:carousel_slider/carousel_controller.dart';
-import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/services/send_receipt_service.dart';
 import 'package:digital_receipt/screens/receipt_screen.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CreateReceiptStep2 extends StatefulWidget {
   const CreateReceiptStep2({
@@ -27,8 +28,24 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
     return result;
   }
 
+    DateTime now = DateTime.now();
+// String formattedDate = DateFormat('kk:mm:ss \n EEE d MMM').format(DateTime.now());
+
+
+
+  final _date =TextEditingController()..text = DateTime.now().toUtc().toString();
+  final _customNumber =TextEditingController();
+  Color colorVal = Colors.red;
+  String colorName = "Red";
+
+  String fontVal = "100";
+  bool preset = false;
+  bool paidStamp = false;
+  bool autoGenId = false;
+
   @override
   Widget build(BuildContext context) {
+       SendReceiptService srs = Provider.of<SendReceiptService>(context);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -114,7 +131,10 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               ),
             ),
             SizedBox(height: 5),
-            AppTextField(),
+            AppTextField(
+                controller: _customNumber,
+              keyboardType: TextInputType.number,
+            ),
             SizedBox(
               height: 12,
             ),
@@ -132,8 +152,13 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   ),
                 ),
                 Checkbox(
-                  value: true,
-                  onChanged: (val) {},
+                  value: autoGenId,
+                  onChanged: (val) {
+                     setState(() {
+                      _customNumber.text.length < 1 ? 
+                      autoGenId = !autoGenId : autoGenId =false;
+                    });
+                  },
                 )
               ],
             ),
@@ -151,26 +176,28 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               ),
             ),
             SizedBox(height: 5),
-            AppTextField(),
+            AppTextField(
+              controller: _date,
+            ),
             SizedBox(
               height: 30,
             ),
-            DropdownButtonFormField(
+            DropdownButtonFormField<String>(
               items: [
-                DropdownMenuItem(
-                  child: Text(
-                    'Select font',
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.3,
-                      fontSize: 16,
-                      color: Color(0xFF1B1B1B),
-                    ),
-                  ),
-                ),
-              ],
-              onChanged: (val) {},
+                  '100',
+                '200',
+                '300',
+                '400',
+                '500'
+              ].map((val) => DropdownMenuItem(child: Text(val.toString()),
+              value: val,
+              )).toList(),
+
+              onChanged: (val) {
+                setState(() {
+                  fontVal = val;
+                });
+              },
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(15),
                 enabledBorder: OutlineInputBorder(
@@ -250,15 +277,21 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             SizedBox(
               height: 35,
             ),
-            Text(
-              'Choose a color (optional)',
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.w500,
-                letterSpacing: 0.3,
-                fontSize: 14,
-                color: Colors.black,
-              ),
+            Row(
+              children: <Widget>[
+                Text(
+                  'Choose a color (optional)',
+                  style: TextStyle(
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.3,
+                    fontSize: 14,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(width:12),
+                Text(colorName.toUpperCase()),
+              ],
             ),
             SizedBox(height: 20),
             SizedBox(
@@ -271,27 +304,57 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                     children: <Widget>[
                       ColorButton(
                         color: Colors.red,
-                        onPressed: () {},
+                        onPressed: () {
+                             setState(() {
+                            colorVal = Colors.red;
+                            colorName = "Red";
+                          });
+                        },
                       ),
-                      ColorButton(
+                              ColorButton(
                         color: Color(0xFF539C30),
-                        onPressed: () {},
+                        onPressed: () {
+                             setState(() {
+                            colorVal = Color(0xFF539C30);
+                            colorName = "Green";
+                          });
+                        },
                       ),
                       ColorButton(
                         color: Color(0xFF2C33D5),
-                        onPressed: () {},
+                        onPressed: () {
+                               setState(() {
+                            colorVal = Color(0xFF2C33D5);
+                            colorName = "Blue";
+                          });
+                        },
                       ),
                       ColorButton(
                         color: Color(0xFFE7D324),
-                        onPressed: () {},
+                        onPressed: () {
+                                setState(() {
+                            colorVal = Color(0xFFE7D324);
+                            colorName = "Yellow";
+                          });
+                        },
                       ),
                       ColorButton(
                         color: Color(0xFFC022B1),
-                        onPressed: () {},
+                        onPressed: () {
+                                 setState(() {
+                            colorVal = Color(0xFFC022B1);
+                            colorName = "Pink";
+                          });
+                        },
                       ),
                       ColorButton(
                         color: Color(0xFFE86C27),
-                        onPressed: () {},
+                        onPressed: () {
+                                 setState(() {
+                            colorVal = Color(0xFFE86C27);
+                            colorName = "Orange";
+                          });
+                        },
                       ),
                     ],
                   ),
@@ -299,25 +362,25 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               ),
             ),
             SizedBox(height: 20),
-            Center(
-              child: Text(
-                'Or type brand Hex code here',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.w300,
-                  letterSpacing: 0.3,
-                  fontSize: 14,
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            AppTextField(
-              hintText: 'Enter Brand color hex code',
-              hintColor: Color.fromRGBO(0, 0, 0, 0.38),
-              borderWidth: 1.5,
-            ),
+            // Center(
+            //   child: Text(
+            //     'Or type brand Hex code here',
+            //     textAlign: TextAlign.center,
+            //     style: TextStyle(
+            //       fontFamily: 'Montserrat',
+            //       fontWeight: FontWeight.w300,
+            //       letterSpacing: 0.3,
+            //       fontSize: 14,
+            //       color: Color.fromRGBO(0, 0, 0, 0.6),
+            //     ),
+            //   ),
+            // ),
+            // SizedBox(height: 20),
+            // AppTextField(
+            //   hintText: 'Enter Brand color hex code',
+            //   hintColor: Color.fromRGBO(0, 0, 0, 0.38),
+            //   borderWidth: 1.5,
+            // ),
             SizedBox(height: 37),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -333,8 +396,12 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   ),
                 ),
                 Checkbox(
-                  value: true,
-                  onChanged: (val) {},
+                  value: paidStamp,
+                  onChanged: (val) {
+                           setState(() {
+                      paidStamp = !paidStamp;
+                    });
+                  },
                 )
               ],
             ),
@@ -353,8 +420,12 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   ),
                 ),
                 Switch(
-                  value: false,
-                  onChanged: (val) {},
+                  value: preset,
+                  onChanged: (val) {
+                    setState(() {
+                      preset = !preset;
+                    });
+                  },
                 ),
               ],
             ),
@@ -382,6 +453,11 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             SizedBox(height: 25),
             SubmitButton(
               onPressed: () {
+                        String customNo = _customNumber.text;
+                print("so im here");
+                srs.setCustomization(fontVal, colorName,colorVal,paidStamp, preset, autoGenId,customNo);
+                Navigator.of(context).push(MaterialPageRoute(builder:(_) => ReceiptScreen()));
+             
                  Navigator.push(
                         context,
                         MaterialPageRoute(

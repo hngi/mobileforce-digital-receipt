@@ -8,12 +8,14 @@ import 'dart:io';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:provider/provider.dart';
 
 import './screens/onboarding.dart';
 
 import 'package:flutter/material.dart';
 
 import 'models/notification.dart';
+import 'services/send_receipt_service.dart';
 import 'services/sql_database_client.dart';
 import 'services/shared_preference_service.dart';
 import 'services/sql_database_repository.dart';
@@ -56,27 +58,31 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OverlaySupport(
-      child: MaterialApp(
-        title: 'Reepcy',
-        theme: ThemeData(
-          primaryColor: Color(0xFF0B57A7),
-          scaffoldBackgroundColor: Color(0xFFF2F8FF),
-          accentColor: Color(0xFF25CCB3),
-          textTheme: TextTheme(
-            bodyText1: TextStyle(
-              fontFamily: 'Montserrat',
-            ),
-            bodyText2: TextStyle(
-              fontFamily: 'Montserrat',
-            ),
-            button: TextStyle(
-              fontFamily: 'Montserrat',
+    return MultiProvider(
+       providers: [ChangeNotifierProvider<SendReceiptService>.value(value:SendReceiptService()),
+      ],
+          child: OverlaySupport(
+        child: MaterialApp(
+          title: 'Reepcy',
+          theme: ThemeData(
+            primaryColor: Color(0xFF0B57A7),
+            scaffoldBackgroundColor: Color(0xFFF2F8FF),
+            accentColor: Color(0xFF25CCB3),
+            textTheme: TextTheme(
+              bodyText1: TextStyle(
+                fontFamily: 'Montserrat',
+              ),
+              bodyText2: TextStyle(
+                fontFamily: 'Montserrat',
+              ),
+              button: TextStyle(
+                fontFamily: 'Montserrat',
+              ),
             ),
           ),
+          debugShowCheckedModeBanner: false,
+          home: ScreenController(),
         ),
-        debugShowCheckedModeBanner: false,
-        home: ScreenController(),
       ),
     );
   }

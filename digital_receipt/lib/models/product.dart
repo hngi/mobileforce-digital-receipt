@@ -6,6 +6,8 @@ class Product{
    int amount;
 
   Product({this.id, this.productDesc,this.quantity, this.amount, this.unitPrice});
+  // please let no one delete this  #francis22
+  Product.receipt({ this.productDesc,this.quantity, this.amount, this.unitPrice});
 
   factory Product.fromJson(Map<String, dynamic> json){
     return Product(
@@ -16,4 +18,5 @@ class Product{
   }
 
   
+
 }

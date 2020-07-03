@@ -1,9 +1,11 @@
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
+import 'package:digital_receipt/services/send_receipt_service.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CreateReceiptStep0 extends StatefulWidget {
   const CreateReceiptStep0({this.carouselController, this.carouselIndex});
@@ -23,8 +25,17 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
     return result;
   }
 
+    final cname = TextEditingController();
+  final cemail = TextEditingController();
+  final cphone = TextEditingController();
+  final caddress = TextEditingController();
+  bool _saveCustomer = false;
+
+  String platform = "Place of Business";
+
   @override
   Widget build(BuildContext context) {
+  SendReceiptService srs = Provider.of<SendReceiptService>(context);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -124,33 +135,22 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
             SizedBox(
               height: 15,
             ),
-            DropdownButtonFormField(
+            DropdownButtonFormField<String>(
+              value: platform,
               items: [
-                DropdownMenuItem(
-                  child: Text(
-                    'Category',
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.normal,
-                      letterSpacing: 0.3,
-                      fontSize: 16,
-                      color: Color(0xFF1B1B1B),
-                    ),
-                  ),
-                ),
-                DropdownMenuItem(
-                  child: Text('Instergram'),
-                ),
-                DropdownMenuItem(
-                  child: Text('Facebook'),
-                ),
-                DropdownMenuItem(
-                  child: Text('Tweeter'),
-                ),
-                DropdownMenuItem(
-                  child: Text('Create cartegory'),
-                ),
-              ],
+                  "Place of Business",
+                "Instagram",
+                "FaceBook",
+                "Twitter",
+                "Redit",
+                "Google+",
+                "Snapchat",
+                "Anonymous platform",
+                "other"
+              ].map((e) => DropdownMenuItem(child: Text(e.toString()),
+              value: e,
+              )).toList(),
+
               iconEnabledColor: Color.fromRGBO(0, 0, 0, 0.87),
               onChanged: (val) {},
               decoration: InputDecoration(
@@ -264,7 +264,9 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
             ),
             SizedBox(height: 5),
-            AppTextField(),
+            AppTextField(
+              controller: cname,
+            ),
             SizedBox(height: 22),
             Text(
               'Email address',
@@ -278,6 +280,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
             ),
             SizedBox(height: 5),
             AppTextField(
+              controller: cemail,
               keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(
@@ -294,7 +297,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
             ),
             SizedBox(height: 5),
-            AppTextField(),
+            AppTextField(controller: caddress,),
             SizedBox(
               height: 22,
             ),
@@ -310,7 +313,8 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
             ),
             SizedBox(height: 5),
             AppTextField(
-              keyboardType: TextInputType.number,
+              controller: cphone,
+              keyboardType: TextInputType.phone,
             ),
             SizedBox(
               height: 20,
@@ -329,8 +333,12 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                   ),
                 ),
                 Switch(
-                  value: false,
-                  onChanged: (val) {},
+                  value: _saveCustomer,
+                  onChanged: (val) {
+                    setState(() {
+                      _saveCustomer = !_saveCustomer;
+                    });
+                  }
                 ),
               ],
             ),
@@ -378,6 +386,13 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               textColor: Colors.white,
               backgroundColor: Color(0xFF0B57A7),
               onPressed: () {
+                 srs.setCustomers(
+                    cname.text, cemail.text, cphone.text, caddress.text, _saveCustomer,platform);
+                print(cname.text);
+                print(cphone.text);
+                print(caddress.text);
+                print(cemail.text);
+                print(_saveCustomer);
                 widget.carouselController.animateToPage(1);
               },
             )
