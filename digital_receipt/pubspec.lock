@@ -64,34 +64,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.14.12"
-  connectivity:
-    dependency: "direct main"
-    description:
-      name: connectivity
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.9"
-  connectivity_for_web:
-    dependency: transitive
-    description:
-      name: connectivity_for_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.0"
-  connectivity_macos:
-    dependency: transitive
-    description:
-      name: connectivity_macos
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.0+3"
-  connectivity_platform_interface:
-    dependency: transitive
-    description:
-      name: connectivity_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.6"
   convert:
     dependency: transitive
     description:
@@ -197,6 +169,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.0.16"
+  flare_dart:
+    dependency: transitive
+    description:
+      name: flare_dart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.4"
+  flare_flutter:
+    dependency: "direct main"
+    description:
+      name: flare_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.4"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -324,6 +310,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.2"
+  keyboard_actions:
+    dependency: "direct main"
+    description:
+      name: keyboard_actions
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.2.1+1"
   matcher:
     dependency: transitive
     description:
@@ -436,6 +429,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.0"
+  pin_code_fields:
+    dependency: "direct main"
+    description:
+      name: pin_code_fields
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.2"
+  pin_code_text_field:
+    dependency: "direct main"
+    description:
+      name: pin_code_text_field
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.6.0"
   platform:
     dependency: transitive
     description:

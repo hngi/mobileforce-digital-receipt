@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../services/api_service.dart';
+import 'no_internet_connection.dart';
+import 'otp_auth.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -381,11 +383,6 @@ class _SignupScreenState extends State<SignupScreen> {
           }
         },
         child:
-            //  loadingSpinner
-            //     ? CircularProgressIndicator(
-            //         backgroundColor: Color(0xffE5E5E5),
-            //       )
-            //     :
             Padding(
           padding: EdgeInsets.all(12.0),
           child: Row(
@@ -418,36 +415,16 @@ class _SignupScreenState extends State<SignupScreen> {
       isloading = true;
     });
     print('im res');
-    String response = await _apiService.signinUser(_email, _password, _name);
-    if (response == 'true') {
-      Fluttertoast.showToast(
-          msg: 'Signup successful',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green[600],
-          textColor: Colors.white,
-          fontSize: 16.0);
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Setup()));
-    } else {
-      setState(() {
-        isloading = false;
-      });
-      var res = jsonDecode(response);
-      print('${res['email_address'][0]}');
-      Fluttertoast.showToast(
-        msg: '${res['email_address'][0]}',
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-    }
+    String response = await _apiService.otpVerification(_email, _password, _name);
+    var res = jsonDecode(response);
+    print(res['data']['otp']);
+    var otp  = res['data']['otp'];
+       Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => PinCodeVerificationScreen(otp:"$otp",email:"$_email",password:"$_password",name:"$_name")));
+
   }
-}
+
+  }
 
 dont() {
   print('check if to login or signup');
