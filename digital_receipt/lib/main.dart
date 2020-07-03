@@ -198,7 +198,7 @@ class _ScreenControllerState extends State<ScreenController> {
             print('snapshotss: ${snapshot.data}');
             return HomePage();
           } else {
-            return OnboardingPage();
+            return HomePage();
           }
         });
   }

@@ -29,15 +29,15 @@ class Receipt extends ChangeNotifier {
     this.totalAmount,
   });
 
-
   factory Receipt.fromJson(Map<String, dynamic> json) => Receipt(
-        receiptNo: json["receipt_number"] == null ? null : json["receipt_number"],
+        receiptNo:
+            json["receipt_number"] == null ? null : json["receipt_number"],
         issuedDate: json["date"] == null ? null : json["date"],
-        customerName: json["customer"]["name"] == null ? null : json["customer"]["name"],
+        customerName:
+            json["customer"]["name"] == null ? null : json["customer"]["name"],
         category: json["category"] == null ? null : json["category"],
         totalAmount: json["total"] == null ? null : json["total"].toString(),
-
-    );
+      );
 
   @override
   String toString() {

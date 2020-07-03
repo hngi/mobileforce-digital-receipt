@@ -311,27 +311,43 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                     children: <Widget>[
                       ColorButton(
                         color: Colors.red,
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            _hexCodeController.text = '#F14C4C';
+                          });
+                        },
                       ),
                       ColorButton(
                         color: Color(0xFF539C30),
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            _hexCodeController.text = '#539C30';
+                          });
+                        },
                       ),
                       ColorButton(
                         color: Color(0xFF2C33D5),
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            _hexCodeController.text = '#2C33D5';
+                          });
+                        },
                       ),
                       ColorButton(
                         color: Color(0xFFE7D324),
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            _hexCodeController.text = '#E7D324';
+                          });
+                        },
                       ),
                       ColorButton(
                         color: Color(0xFFC022B1),
-                        onPressed: () {},
-                      ),
-                      ColorButton(
-                        color: Color(0xFFE86C27),
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            _hexCodeController.text = '#C022B1';
+                          });
+                        },
                       ),
                     ],
                   ),

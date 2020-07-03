@@ -35,14 +35,13 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
   Customer selectedCustomer;
 
   // Needed to decide weather to create a new customer or not
-  List<Customer> customers = [Customer(name: 'Select customer')];
+  List<Customer> customers = Customer.dummy();
 
   String _customerName, _customerEmail, _customerAddress, _customerPNumber;
 
   @override
   void initState() {
     super.initState();
-    customers.addAll(Customer.dummy());
   }
 
   @override
@@ -243,6 +242,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               SizedBox(
                 height: 10,
               ),
+/*
               DropdownButtonFormField<Customer>(
                 value: selectedCustomer,
                 onChanged: (Customer value) {
@@ -287,38 +287,46 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                   ),
                 ),
               ),
-              /*
+*/
               GestureDetector(
-              onTap: (){
-                _selectCustomerDropdown(context);
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Color(0xFFC8C8C8),
-                      width: 1.5,
-                    ),
-                    borderRadius: BorderRadius.circular(5.0)
-                ),
-                padding: EdgeInsets.symmetric(horizontal:13, vertical: 14),
-                child: Row(
-                  children: <Widget>[
-                    Text(
-                      'Select Customer',
-                      style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.w500, letterSpacing: 0.3,
-                        fontSize: 16,
-                        color: Colors.black,
+                onTap: () {
+                  _selectCustomerDropdown(
+                    context,
+                    onSubmit: (customer) {
+                      setState(() {
+                        selectedCustomer = customer;
+                      });
+                    },
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Color(0xFFC8C8C8),
+                        width: 1.5,
                       ),
-                    ),
-                    Spacer(),
-                    Icon(Icons.arrow_drop_down),
-                  ],
+                      borderRadius: BorderRadius.circular(5.0)),
+                  padding: EdgeInsets.symmetric(horizontal: 13, vertical: 14),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        selectedCustomer != null
+                            ? selectedCustomer.name
+                            : 'Select Customer',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.3,
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Spacer(),
+                      Icon(Icons.arrow_drop_down),
+                    ],
+                  ),
                 ),
               ),
-            ),
-              */
               SizedBox(
                 height: 25,
               ),
@@ -574,7 +582,8 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
     super.dispose();
   }
 
-  void _selectCustomerDropdown(BuildContext context) {
+  void _selectCustomerDropdown(BuildContext context,
+      {Function(Customer) onSubmit}) {
     Dialog simpleDialog = Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
@@ -620,11 +629,17 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               Expanded(
                 child: ListView.builder(
                   shrinkWrap: true,
-                  itemCount: 6,
+                  itemCount: customers.length,
                   itemBuilder: (context, index) {
-                    return ContactCard(
-                        receiptTitle: "Carole Froschauer",
-                        subtitle: "741-142-4459");
+                    return InkWell(
+                      onTap: () {
+                        onSubmit(customers[index]);
+                        Navigator.pop(context);
+                      },
+                      child: ContactCard(
+                          receiptTitle: customers[index].name,
+                          subtitle: customers[index].phoneNumber),
+                    );
                   },
                 ),
               ),
@@ -633,8 +648,10 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
         ),
       ),
     );
-    showDialog(context: context, builder: (BuildContext context) => simpleDialog);
+    showDialog(
+        context: context, builder: (BuildContext context) => simpleDialog);
   }
+
   Widget ContactCard({String receiptNo, total, date, receiptTitle, subtitle}) {
     return SizedBox(
       child: Column(
