@@ -4,11 +4,19 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
+
+import 'package:flutter/foundation.dart';
+import 'device_info_service.dart';
+import 'shared_preference_service.dart';
+import 'package:http/http.dart' as http;
+import '../models/account.dart';
+
 import '../models/receipt.dart';
 import 'device_info_service.dart';
 import 'shared_preference_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:digital_receipt/models/receipt.dart';
+
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
@@ -16,6 +24,11 @@ class ApiService {
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();
+
+  /* This is the user id of the logged in user. Please replace it with the userID that is returned
+    from the response when the user logs in. Thank you
+  */
+  String userID = "82c4e6bc-8923-4511-8b74-e85c05b34dff";
 
   final Dio _dio = Dio(
     BaseOptions(
@@ -72,6 +85,7 @@ class ApiService {
         print(response.data["status"]);
 
         userId = response.data["data"]["_id"];
+        userID = userId;
         auth_token = response.data["data"]["auth_token"];
 
         //Save details to Shared Preference
@@ -272,6 +286,60 @@ class ApiService {
     return false;
   }
 
+
+  AccountData user = AccountData(
+      id: '', name: '', phone: '', address: '', slogan: '', logo: '',email: '' );
+  List<AccountData> _users = [];
+
+  void setData(AccountData x) {
+    user.id = x.id;
+    user.name = x.name;
+    user.phone = x.phone;
+    user.address = x.address;
+    user.slogan = x.slogan;
+    user.logo = x.logo;
+    x.email != null ? user.email = x.email: user.email = 'custom@mail.com';
+    print(user.name);
+  }
+
+  //Get user by Id
+  Future<void> findById() async{
+    await fetchAndSetUser();
+    var x = _users.firstWhere((element) => element.id == userID);
+    setData(x);
+  }
+
+  //Fetch users from db;
+  Future<void> fetchAndSetUser() async {
+    print('call in');
+    const url = "https://degeit-receipt.herokuapp.com/v1/business/info/all";
+    var headers = {
+      'token':
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImNhODM4NDQ2LTQ4YjctNDg2Zi1hMzAyLTkyNDJjZDA5NDM1NCIsIm5hbWUiOiJmcm96ZW4iLCJlbWFpbF9hZGRyZXNzIjoiZnJvemVuQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiZnJvemVuIiwicmVnaXN0cmF0aW9uX2lkIjoiNTI3MjgyNTFmd3lldGhoZ2RhIiwiZGV2aWNlVHlwZSI6ImFuZHJpb2QiLCJhY3RpdmUiOnRydWUsImlzX3ByZW1pdW1fdXNlciI6ZmFsc2UsImV4cCI6MTU5NDEzNjEzOX0.0Z_pFd5c3VbOjtfUkvMQj-oEIvpwvQqj0tCWbwbdtCY'
+    };
+    try {
+      final response = await http.get(url, headers: headers);
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final List<AccountData> loadedData = [];
+      data.forEach((userId, accountInfo) {
+        var newData = accountInfo;
+        for (Map a in newData) {
+          loadedData.add(AccountData(
+            id: a['id'],
+            name: a['name'],
+            phone: a['phone_number'],
+            address: a['address'],
+            slogan: a['slogan'],
+            logo: a['logo'],
+            email: a['email_address']
+          ));
+        }
+      });
+      _users = loadedData;
+      print('fetched');
+    } catch (error) {
+      throw error;
+=======
   Future<String> changePassword(
       String currentPassword, String newPassword) async {
     var uri = '$_urlEndpoint/user/change_password';
@@ -302,6 +370,7 @@ class ApiService {
       return responseBody['message'] ?? responseBody['error'];
     } on SocketException {
       return "No network";
+
     }
   }
 }

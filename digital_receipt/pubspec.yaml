@@ -50,6 +50,10 @@ dependencies:
   image_picker: ^0.6.7+2
   permission_handler: ^5.0.1+1
 
+  provider:
+  
+
+
 # TO Generate PDF file
   pdf: ^1.9.0
   flutter_full_pdf_viewer: ^1.0.6
