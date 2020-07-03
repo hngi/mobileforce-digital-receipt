@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:digital_receipt/screens/change_password_screen.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';
 import 'package:digital_receipt/utils/customtext.dart';
@@ -9,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../services/api_service.dart';
 import '../services/shared_preference_service.dart';
+import '../models/account.dart';
 import 'login_screen.dart';
 
 final SharedPreferenceService _sharedPreferenceService =
@@ -23,8 +26,10 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   final String username = "Geek Tutor";
-
   bool _loading = false;
+  static String loading_text = "loading ...";
+  var x = AccountData(id: loading_text, name: loading_text, phone: loading_text, address: loading_text, slogan: loading_text, logo: '', email: loading_text);
+
 
   File image;
 
@@ -36,6 +41,28 @@ class _AccountPageState extends State<AccountPage> {
       image = File(pickedFile.path);
     });
   }
+
+  Future<void> callFetch() async{
+     await _apiService.findById();
+     setState(() {
+      x.id = _apiService.user.id;
+      x.name = _apiService.user.name;
+      x.phone = _apiService.user.phone;
+      x.address = _apiService.user.address;
+      x.slogan = _apiService.user.slogan;
+      x.logo = _apiService.user.logo;
+      x.email = _apiService.user.email;
+  });
+  return null;
+  }
+
+
+@override
+  void initState() {
+    callFetch();
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +140,7 @@ class _AccountPageState extends State<AccountPage> {
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: image == null
-                          ? Icon(Icons.verified_user)
+                          ? Image.network(x.logo)
                           : Image.file(
                               image,
                               fit: BoxFit.cover,
@@ -140,7 +167,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
               Center(
                 child: Text(
-                  '$username',
+                    x.name,
                   style: CustomText.display1,
                 ),
               ),
@@ -174,19 +201,19 @@ class _AccountPageState extends State<AccountPage> {
               ),
               InformationData(
                 label: 'Email Address',
-                detail: 'myemail@mail.com',
+                detail: x.email
               ),
               InformationData(
                 label: 'Phone No',
-                detail: '892-983-240',
+                detail: x.phone,
               ),
               InformationData(
                 label: 'Address',
-                detail: '5, Amphitheatre Railway Street Degit',
+                detail: x.address,
               ),
               InformationData(
                 label: 'Bussiness Slogan',
-                detail: 'We are taking over',
+                detail: x.slogan,
               ),
               SizedBox(
                 height: 35,
