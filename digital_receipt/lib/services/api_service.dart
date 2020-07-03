@@ -249,6 +249,64 @@ class ApiService {
     return false;
   }
 
+
+
+  AccountData user = AccountData(
+      id: '', name: '', phone: '', address: '', slogan: '', logo: '',email: '' );
+  List<AccountData> _users = [];
+
+  void setData(AccountData x) {
+    user.id = x.id;
+    user.name = x.name;
+    user.phone = x.phone;
+    user.address = x.address;
+    user.slogan = x.slogan;
+    user.logo = x.logo;
+    x.email != null ? user.email = x.email: user.email = 'custom@mail.com';
+    print(user.name);
+  }
+
+  //Get user by Id
+  Future<void> findById() async{
+    await fetchAndSetUser();
+    var x = _users.firstWhere((element) => element.id == userID);
+    setData(x);
+  }
+
+  //Fetch users from db;
+  Future<void> fetchAndSetUser() async {
+    print('call in');
+    const url = "https://degeit-receipt.herokuapp.com/v1/business/info/all";
+    var headers = {
+      'token':
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImNhODM4NDQ2LTQ4YjctNDg2Zi1hMzAyLTkyNDJjZDA5NDM1NCIsIm5hbWUiOiJmcm96ZW4iLCJlbWFpbF9hZGRyZXNzIjoiZnJvemVuQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiZnJvemVuIiwicmVnaXN0cmF0aW9uX2lkIjoiNTI3MjgyNTFmd3lldGhoZ2RhIiwiZGV2aWNlVHlwZSI6ImFuZHJpb2QiLCJhY3RpdmUiOnRydWUsImlzX3ByZW1pdW1fdXNlciI6ZmFsc2UsImV4cCI6MTU5NDEzNjEzOX0.0Z_pFd5c3VbOjtfUkvMQj-oEIvpwvQqj0tCWbwbdtCY'
+    };
+    try {
+      final response = await http.get(url, headers: headers);
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final List<AccountData> loadedData = [];
+      data.forEach((userId, accountInfo) {
+        var newData = accountInfo;
+        for (Map a in newData) {
+          loadedData.add(AccountData(
+            id: a['id'],
+            name: a['name'],
+            phone: a['phone_number'],
+            address: a['address'],
+            slogan: a['slogan'],
+            logo: a['logo'],
+            email: a['email_address']
+          ));
+        }
+      });
+      _users = loadedData;
+      print('fetched');
+    } catch (error) {
+      throw error;
+      }
+  }
+
+
   Future<String> changePassword(
       String currentPassword, String newPassword) async {
     var uri = '$_urlEndpoint/user/change_password';
@@ -316,5 +374,17 @@ class ApiService {
       );
     }
     return null;
+  }
+
+    Future<String> otpVerification(String email, password, name) async {
+    var uri = 'https://digital-receipt-07.herokuapp.com/v1/user/otp_register';
+    var response = await http.post(
+      uri,
+      body: {"email_address": "$email"},
+    );
+    if (response.statusCode == 200) {
+      return response.body;
+    }
+    return 'error';
   }
 }

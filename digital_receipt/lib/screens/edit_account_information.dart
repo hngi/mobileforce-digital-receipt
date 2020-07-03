@@ -2,6 +2,7 @@ import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:provider/provider.dart';
 import '../providers/business.dart';
 import '../models/account.dart';
@@ -9,14 +10,14 @@ import '../services/shared_preference_service.dart';
 
 class EditAccountInfoScreen extends StatefulWidget {
   EditAccountInfoScreen({Key key}) : super(key: key);
-
   @override
   _EditAccountInfoScreenState createState() => _EditAccountInfoScreenState();
 }
-
 final ApiService _apiService = ApiService();
+
 final SharedPreferenceService _sharedPreferenceService =
     SharedPreferenceService();
+
 
 class _EditAccountInfoScreenState extends State<EditAccountInfoScreen> {
   @override
@@ -46,14 +47,11 @@ class _EditAccountInfoScreenState extends State<EditAccountInfoScreen> {
     );
   }
 }
-
 class EditAccountInfoForm extends StatefulWidget {
   const EditAccountInfoForm({Key key}) : super(key: key);
-
   @override
   _EditAccountInfoFormState createState() => _EditAccountInfoFormState();
 }
-
 class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String phoneNumber;
@@ -62,12 +60,10 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
   String slogan;
   String logo;
   bool loading = false;
-
   @override
   void initState() {
     super.initState();
   }
-
   Container _buildInputField(
       {String label,
       TextInputType keyboardType,
@@ -95,7 +91,6 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
               /*  if (value.isEmpty $$ la) {
                 return 'Invalid New Password';
               } */
-
               switch (label) {
                 case 'Business name':
                   if (value.isEmpty) {
@@ -138,7 +133,6 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
       ),
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -248,3 +242,4 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
     );
   }
 }
+
