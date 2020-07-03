@@ -53,6 +53,7 @@ class _AccountPageState extends State<AccountPage> {
       });
     }
 
+  }
 
   callFetch() async {
     var res = await _apiService.fetchAndSetUser();
