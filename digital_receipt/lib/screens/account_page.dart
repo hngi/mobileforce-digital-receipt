@@ -5,7 +5,9 @@ import 'package:digital_receipt/screens/edit_account_information.dart';
 import 'package:digital_receipt/utils/customtext.dart';
 import "package:flutter/material.dart";
 import 'dart:async';
+import '../providers/business.dart';
 import 'dart:io';
+import 'package:provider/provider.dart';
 
 import 'package:image_picker/image_picker.dart';
 
@@ -28,41 +30,49 @@ class _AccountPageState extends State<AccountPage> {
   final String username = "Geek Tutor";
   bool _loading = false;
   static String loading_text = "loading ...";
-  var x = AccountData(id: loading_text, name: loading_text, phone: loading_text, address: loading_text, slogan: loading_text, logo: '', email: loading_text);
-
+  var x = AccountData(
+      id: loading_text,
+      name: loading_text,
+      phone: loading_text,
+      address: loading_text,
+      slogan: loading_text,
+      logo: '',
+      email: loading_text);
 
   File image;
 
   final picker = ImagePicker();
 
+  AccountData _accountData;
+
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    setState(() {
-      image = File(pickedFile.path);
-    });
+    if (pickedFile != null) {
+      setState(() {
+        image = File(pickedFile.path);
+      });
+    }
+
+
+  callFetch() async {
+    var res = await _apiService.fetchAndSetUser();
+    Provider.of<Business>(context, listen: false).setAccountData = res;
+    /* setState(() {
+       x.id = res?.id;
+      x.name = res?.name;
+      x.phone = res?.phone;
+      x.address = res?.address;
+      x.slogan = res?.slogan;
+      x.logo = res?.logo;
+      x.email = res?.email ?? '';
+    }); */
   }
 
-  Future<void> callFetch() async{
-     await _apiService.findById();
-     setState(() {
-      x.id = _apiService.user.id;
-      x.name = _apiService.user.name;
-      x.phone = _apiService.user.phone;
-      x.address = _apiService.user.address;
-      x.slogan = _apiService.user.slogan;
-      x.logo = _apiService.user.logo;
-      x.email = _apiService.user.email;
-  });
-  return null;
-  }
-
-
-@override
+  @override
   void initState() {
     callFetch();
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +150,8 @@ class _AccountPageState extends State<AccountPage> {
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: image == null
-                          ? Image.network(x.logo)
+                          ? Image.network(
+                              Provider.of<Business>(context).accountData.logo)
                           : Image.file(
                               image,
                               fit: BoxFit.cover,
@@ -167,7 +178,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
               Center(
                 child: Text(
-                    x.name,
+                  Provider.of<Business>(context).accountData.name,
                   style: CustomText.display1,
                 ),
               ),
@@ -199,21 +210,25 @@ class _AccountPageState extends State<AccountPage> {
               SizedBox(
                 height: 4,
               ),
-              InformationData(
-                label: 'Email Address',
-                detail: x.email
+              Column(
+                children: <Widget>[
+                  InformationData(
+                    label: 'Email Address',
+                    detail: Provider.of<Business>(context).accountData.email,
+                  ),
+                ],
               ),
               InformationData(
                 label: 'Phone No',
-                detail: x.phone,
+                detail: Provider.of<Business>(context).accountData.phone,
               ),
               InformationData(
                 label: 'Address',
-                detail: x.address,
+                detail: Provider.of<Business>(context).accountData.address,
               ),
               InformationData(
                 label: 'Bussiness Slogan',
-                detail: x.slogan,
+                detail: Provider.of<Business>(context).accountData.slogan,
               ),
               SizedBox(
                 height: 35,

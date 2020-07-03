@@ -1,4 +1,3 @@
-
 import 'package:digital_receipt/screens/account_page.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';
@@ -15,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'models/notification.dart';
+import './providers/business.dart';
 import 'models/receipt.dart';
 import 'services/sql_database_client.dart';
 import 'services/shared_preference_service.dart';
@@ -59,8 +59,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OverlaySupport(
-      child: ChangeNotifierProvider(
-        create: (_) => Receipt(),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => Business(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Receipt(),
+          ),
+        ],
         child: MaterialApp(
           title: 'Reepcy',
           theme: ThemeData(
@@ -203,7 +210,7 @@ class _ScreenControllerState extends State<ScreenController> {
             print('snapshotss: ${snapshot.data}');
             return HomePage();
           } else {
-            return HomePage();
+            return OnboardingPage();
           }
         });
   }
