@@ -1,14 +1,65 @@
-import 'package:digital_receipt/widgets/receipt_item.dart';
-import 'package:flutter/material.dart';
+import 'dart:io';
+import 'dart:typed_data';
 
-class ReceiptScreen extends StatelessWidget {
+import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/screens/generate_pdf.dart';
+import 'package:digital_receipt/widgets/receipt_item.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:provider/provider.dart';
+
+class ReceiptScreen extends StatefulWidget {
+  final Receipt receipt;
+
+  const ReceiptScreen({Key key, this.receipt}) : super(key: key);
+
+  @override
+  _ReceiptScreenState createState() => _ReceiptScreenState();
+}
+
+Uint8List receiptPdf;
+
+class _ReceiptScreenState extends State<ReceiptScreen> {
+  Future<Uint8List> receiptPdfFuture;
+
+  /*void generatePdf(BuildContext context) async {
+    final String dir = (await getApplicationDocumentsDirectory()).path;
+    final String path = '$dir/receipt.pdf';
+    final File file = File(path);
+    final invoice = await generateInvoice(PdfPageFormat.a4);
+    await file.writeAsBytes(invoice);
+
+    await shareFile(invoice);
+//  Navigator.push(context,
+//      MaterialPageRoute(builder: (_) => PdfViewerScreen(path: path)));
+  }*/
+
+  Future<void> savePdf(Uint8List pdf) async {
+    final String dir = (await getApplicationDocumentsDirectory()).path;
+    final String path = '$dir/receipt.pdf';
+    final File file = File(path);
+    await file.writeAsBytes(pdf);
+    receiptPdf = pdf;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    receiptPdfFuture = generatePdf(
+      pageFormat: PdfPageFormat.a4,
+      receipt: Provider.of<Receipt>(context, listen: false),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    Provider.of<Receipt>(context, listen: false);
     return Scaffold(
       backgroundColor: Color(0xFFF2F8FF),
       appBar: AppBar(
-      //  backgroundColor: Color(0xFF0b56a7),
+        //  backgroundColor: Color(0xFF0b56a7),
         automaticallyImplyLeading: true,
         title: Text(
           'Create Receipt',
@@ -20,25 +71,58 @@ class ReceiptScreen extends StatelessWidget {
             letterSpacing: 0.03,
           ),
         ),
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              //Implement code for back action here
-            }),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: <Widget>[ReceiptScreenLayout()],
-          ),
-        ),
+      body: FutureBuilder<Uint8List>(
+        future: receiptPdfFuture,
+        builder: (context, snapshot) {
+          Widget body;
+          if (snapshot.hasData) {
+            savePdf(snapshot.data);
+            body = SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: <Widget>[ReceiptScreenLayout(context)],
+                ),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            body = Column(
+              children: <Widget>[
+                Icon(
+                  Icons.error_outline,
+                  color: Colors.red,
+                  size: 60,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Text('Error: ${snapshot.error}'),
+                )
+              ],
+            );
+          } else {
+            body = Column(
+              children: <Widget>[
+                SizedBox(
+                  child: CircularProgressIndicator(),
+                  width: 60,
+                  height: 60,
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 16),
+                  child: Text('Awaiting result...'),
+                )
+              ],
+            );
+          }
+          return body;
+        },
       ),
     );
   }
 }
 
-Widget ReceiptScreenLayout() {
+Widget ReceiptScreenLayout([BuildContext context]) {
   return Column(children: <Widget>[
     SizedBox(
       height: 14,
@@ -362,8 +446,9 @@ Widget ReceiptScreenLayout() {
             fontWeight: FontWeight.w600,
           ),
         ),
-        onPressed: () {
+        onPressed: () async {
           //take this action
+          shareFile();
         },
       ),
     ),
@@ -371,6 +456,15 @@ Widget ReceiptScreenLayout() {
       height: 15,
     ),
   ]);
+}
+
+Future<void> shareFile() async {
+  try {
+    await Share.file('Receipt', 'receipt.pdf', receiptPdf, 'application/pdf',
+        text: 'My optional text.');
+  } catch (e) {
+    print('error: $e');
+  }
 }
 
 class DashedSeparator extends StatelessWidget {

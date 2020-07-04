@@ -7,7 +7,7 @@ import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/screens/reminderPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+
 
 import '../screens/upgrade_screen.dart';
 import '../screens/customerList.dart';
@@ -262,7 +262,7 @@ class MainDrawer extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PreferencePage(),
+                          builder: (context) => Setup(),
                         ),
                       );
                     },

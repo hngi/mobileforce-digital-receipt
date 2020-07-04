@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../services/api_service.dart';
+import 'no_internet_connection.dart';
+import 'otp_auth.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -195,8 +197,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                 decoration: InputDecoration(
                                   suffixIcon: IconButton(
                                     icon: passwordVisible
-                                        ? Icon(Icons.visibility_off)
-                                        : Icon(Icons.remove_red_eye),
+                                        ? Icon(Icons.remove_red_eye)
+                                        : Icon(Icons.visibility_off),
                                     color: Colors.grey,
                                     onPressed: () {
                                       setState(() =>
@@ -382,11 +384,6 @@ class _SignupScreenState extends State<SignupScreen> {
           }
         },
         child:
-            //  loadingSpinner
-            //     ? CircularProgressIndicator(
-            //         backgroundColor: Color(0xffE5E5E5),
-            //       )
-            //     :
             Padding(
           padding: EdgeInsets.all(12.0),
           child: Row(

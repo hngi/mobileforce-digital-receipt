@@ -1,14 +1,19 @@
+import 'dart:ffi';
+
 import 'package:digital_receipt/screens/change_password_screen.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';
 import 'package:digital_receipt/utils/customtext.dart';
 import "package:flutter/material.dart";
 import 'dart:async';
+import '../providers/business.dart';
 import 'dart:io';
+import 'package:provider/provider.dart';
 
 import 'package:image_picker/image_picker.dart';
 
 import '../services/api_service.dart';
 import '../services/shared_preference_service.dart';
+import '../models/account.dart';
 import 'login_screen.dart';
 
 final SharedPreferenceService _sharedPreferenceService =
@@ -23,18 +28,51 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   final String username = "Geek Tutor";
-
   bool _loading = false;
+  static String loading_text = "loading ...";
+  var x = AccountData(
+      id: loading_text,
+      name: loading_text,
+      phone: loading_text,
+      address: loading_text,
+      slogan: loading_text,
+      logo: '',
+      email: loading_text);
 
   File image;
 
   final picker = ImagePicker();
 
+  AccountData _accountData;
+
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    setState(() {
-      image = File(pickedFile.path);
-    });
+    if (pickedFile != null) {
+      setState(() {
+        image = File(pickedFile.path);
+      });
+    }
+
+  }
+
+  callFetch() async {
+    var res = await _apiService.fetchAndSetUser();
+    Provider.of<Business>(context, listen: false).setAccountData = res;
+    /* setState(() {
+       x.id = res?.id;
+      x.name = res?.name;
+      x.phone = res?.phone;
+      x.address = res?.address;
+      x.slogan = res?.slogan;
+      x.logo = res?.logo;
+      x.email = res?.email ?? '';
+    }); */
+  }
+
+  @override
+  void initState() {
+    callFetch();
+    super.initState();
   }
 
   @override
@@ -113,7 +151,8 @@ class _AccountPageState extends State<AccountPage> {
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: image == null
-                          ? Icon(Icons.verified_user)
+                          ? Image.network(
+                              Provider.of<Business>(context).accountData.logo)
                           : Image.file(
                               image,
                               fit: BoxFit.cover,
@@ -140,7 +179,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
               Center(
                 child: Text(
-                  '$username',
+                  Provider.of<Business>(context).accountData.name,
                   style: CustomText.display1,
                 ),
               ),
@@ -172,21 +211,25 @@ class _AccountPageState extends State<AccountPage> {
               SizedBox(
                 height: 4,
               ),
-              InformationData(
-                label: 'Email Address',
-                detail: 'myemail@mail.com',
+              Column(
+                children: <Widget>[
+                  InformationData(
+                    label: 'Email Address',
+                    detail: Provider.of<Business>(context).accountData.email,
+                  ),
+                ],
               ),
               InformationData(
                 label: 'Phone No',
-                detail: '892-983-240',
+                detail: Provider.of<Business>(context).accountData.phone,
               ),
               InformationData(
                 label: 'Address',
-                detail: '5, Amphitheatre Railway Street Degit',
+                detail: Provider.of<Business>(context).accountData.address,
               ),
               InformationData(
                 label: 'Bussiness Slogan',
-                detail: 'We are taking over',
+                detail: Provider.of<Business>(context).accountData.slogan,
               ),
               SizedBox(
                 height: 35,

@@ -3,7 +3,7 @@ import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:flutter/material.dart';
 import '../widgets/ProductList.dart';
-import '../widgets/borderButton.dart';
+import '../widgets/BorderButton.dart';
 import '../widgets/create_new_product.dart';
 
 

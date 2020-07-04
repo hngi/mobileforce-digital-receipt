@@ -1,21 +1,22 @@
+import 'package:digital_receipt/screens/account_page.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
-import 'package:digital_receipt/screens/home_page.dart';
-import 'package:digital_receipt/screens/login_screen.dart';
-import 'package:digital_receipt/screens/preference_page.dart';
-//import 'package:digital_receipt/screens/create_receipt_page.dart';
-import 'dart:io';
+import 'package:digital_receipt/screens/edit_account_information.dart';
 
 import 'package:digital_receipt/screens/home_page.dart';
+import 'package:digital_receipt/screens/login_screen.dart';
+import 'package:digital_receipt/screens/onboarding.dart';
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
-import './screens/onboarding.dart';
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'models/notification.dart';
-import 'services/send_receipt_service.dart';
+import './providers/business.dart';
+import 'models/receipt.dart';
 import 'services/sql_database_client.dart';
 import 'services/shared_preference_service.dart';
 import 'services/sql_database_repository.dart';
@@ -58,12 +59,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-       providers: [ChangeNotifierProvider<SendReceiptService>.value(value:SendReceiptService()),
-      ],
-          child: OverlaySupport(
+    return OverlaySupport(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => Business(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Receipt(),
+          ),
+        ],
         child: MaterialApp(
-          title: 'Reepcy',
+          title: 'Degeit',
           theme: ThemeData(
             primaryColor: Color(0xFF0B57A7),
             scaffoldBackgroundColor: Color(0xFFF2F8FF),
@@ -190,6 +197,7 @@ class _ScreenControllerState extends State<ScreenController> {
         future: _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN"),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // await _pushNotificationService.initialise();
+          print('snapshots: ${snapshot.data}');
 
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(
@@ -200,12 +208,13 @@ class _ScreenControllerState extends State<ScreenController> {
           } else if (snapshot.data == 'empty') {
             return LogInScreen();
           } else if (snapshot.hasData && snapshot.data != null) {
-            print('snapshots: ${snapshot.data}');
+            print('snapshotss: ${snapshot.data}');
+            // return HomePage();
             return HomePage();
             // return Otp(email: "francis@francis.francis",);
           } else {
 	    // return Otp(email: "francis@francis.francis",);
-           return OnboardingPage();
+           return HomePage();
           }
         });
   }

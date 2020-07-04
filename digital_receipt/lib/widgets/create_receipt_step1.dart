@@ -1,11 +1,14 @@
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:digital_receipt/models/product.dart';
+import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/product_detail.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CreateReceiptStep1 extends StatefulWidget {
   const CreateReceiptStep1({this.carouselController, this.carouselIndex});
@@ -18,9 +21,8 @@ class CreateReceiptStep1 extends StatefulWidget {
 
 class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
   bool _partPayment = true;
-  int _productLenght = 3;
 
-  List product = [1, 3, 5, 2];
+  List products = Product.dummy();
 
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
@@ -112,7 +114,11 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
-                    builder: (BuildContext context) => ProductDetail(),
+                    builder: (BuildContext context) => ProductDetail(
+                      onSubmit: (product) {
+                        setState(() => products.add(product));
+                      },
+                    ),
                     backgroundColor: Colors.transparent,
                     isScrollControlled: true,
 
@@ -194,7 +200,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             SizedBox(
               height: 20,
             ),
-            product.length != 0
+            products.length != 0
                 ? Text(
                     'Product item/s',
                     textAlign: TextAlign.center,
@@ -211,23 +217,25 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
               height: 10,
             ),
             ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (BuildContext context, int index) => Dismissible(
-                onDismissed: (direction) {
-                  setState(() {
-                    product.removeAt(index);
-                  });
-                },
-                key: Key('${index.toString() + product[index].toString()}'),
-                child: ProductItem(
-                  title: 'After effect for dummies',
-                  amount: '\$50000',
-                  index: index,
-                ),
-              ),
-              itemCount: product.length,
-            ),
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: products.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final Product thisProduct = products[index];
+                  return Dismissible(
+                    onDismissed: (direction) {
+                      setState(() {
+                        products.removeAt(index);
+                      });
+                    },
+                    key: Key(thisProduct.id),
+                    child: ProductItem(
+                      title: thisProduct.productDesc,
+                      amount: '\$${thisProduct.amount}',
+                      index: index,
+                    ),
+                  );
+                }),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -285,7 +293,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                         ),
                       ),
                       SizedBox(height: 5),
-                      AppTextField(),
+                      AppTextFieldForm(),
                       SizedBox(
                         height: 22,
                       ),
@@ -300,7 +308,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                         ),
                       ),
                       SizedBox(height: 5),
-                      AppTextField(),
+                      AppTextFieldForm(),
                     ],
                   )
                 : SizedBox.shrink(),
@@ -309,6 +317,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             ),
             SubmitButton(
               onPressed: () {
+                Provider.of<Receipt>(context, listen: false)
+                    .setProducts(products);
                 widget.carouselController.animateToPage(2);
               },
               title: 'Next',

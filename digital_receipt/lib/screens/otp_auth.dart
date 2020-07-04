@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/gestures.dart';
@@ -261,8 +262,16 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
        await _apiService.signinUser(
           widget.email, widget.password, widget.name);
        await _apiService.loginUser(widget.email, widget.password);
+             Fluttertoast.showToast(
+          msg: "signup successful",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green[600],
+          textColor: Colors.white,
+          fontSize: 13.0);
               Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
+            context, MaterialPageRoute(builder: (context) => Setup()));
       
     } catch (error) {
       setState(() {

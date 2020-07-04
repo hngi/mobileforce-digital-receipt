@@ -1,6 +1,8 @@
 PODS:
   - device_info (0.0.1):
     - Flutter
+  - esys_flutter_share (0.0.1):
+    - Flutter
   - Firebase/Auth (6.27.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 6.6.0)
@@ -70,6 +72,8 @@ PODS:
     - Protobuf (>= 3.9.2, ~> 3.9)
   - Flutter (1.0.0)
   - flutter_email_sender (0.0.1):
+    - Flutter
+  - flutter_full_pdf_viewer (1.0.1):
     - Flutter
   - flutter_mailer (0.0.1):
     - Flutter
@@ -141,6 +145,7 @@ PODS:
 
 DEPENDENCIES:
   - device_info (from `.symlinks/plugins/device_info/ios`)
+  - esys_flutter_share (from `.symlinks/plugins/esys_flutter_share/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_auth_web (from `.symlinks/plugins/firebase_auth_web/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -148,6 +153,7 @@ DEPENDENCIES:
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
   - flutter_email_sender (from `.symlinks/plugins/flutter_email_sender/ios`)
+  - flutter_full_pdf_viewer (from `.symlinks/plugins/flutter_full_pdf_viewer/ios`)
   - flutter_mailer (from `.symlinks/plugins/flutter_mailer/ios`)
   - flutter_plugin_android_lifecycle (from `.symlinks/plugins/flutter_plugin_android_lifecycle/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
@@ -185,6 +191,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
+  esys_flutter_share:
+    :path: ".symlinks/plugins/esys_flutter_share/ios"
   firebase_auth:
     :path: ".symlinks/plugins/firebase_auth/ios"
   firebase_auth_web:
@@ -199,6 +207,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_email_sender:
     :path: ".symlinks/plugins/flutter_email_sender/ios"
+  flutter_full_pdf_viewer:
+    :path: ".symlinks/plugins/flutter_full_pdf_viewer/ios"
   flutter_mailer:
     :path: ".symlinks/plugins/flutter_mailer/ios"
   flutter_plugin_android_lifecycle:
@@ -228,6 +238,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
+  esys_flutter_share: 403498dab005b36ce1f8d7aff377e81f0621b0b4
   Firebase: fc4cbf6f1592636431821ef9a3c557e4dfd9f268
   firebase_auth: af8784c4d8d87c36f730a305f97bfbcb24db024b
   firebase_auth_web: 0955c07bcc06e84af76b9d4e32e6f31518f2d7de
@@ -243,6 +254,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: ad9e1a80ea64905e01a0ce1b3eb76a2944544151
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_email_sender: f787522d0e82f50e5766c1213dbffff22fdcf009
+  flutter_full_pdf_viewer: 1b65139fc3236cde300ba6bea2a72669cb07f2e6
   flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
   flutter_plugin_android_lifecycle: dc0b544e129eebb77a6bfb1239d4d1c673a60a35
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
