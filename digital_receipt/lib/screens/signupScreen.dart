@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:digital_receipt/screens/otp_auth.dart';
 import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:flutter/material.dart';
@@ -424,8 +425,9 @@ class _SignupScreenState extends State<SignupScreen> {
 
   }
 
-  }
 
 dont() {
   print('check if to login or signup');
+}
+
 }

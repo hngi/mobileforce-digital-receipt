@@ -75,182 +75,179 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
               child: Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: ListView(
-                    children: <Widget>[
-                      SizedBox(height: 5),
-                      Padding(
-                          padding: EdgeInsets.only(bottom: 10),
-                          child: Image.asset(
-                            'assets/images/logo.png',
-                            height: 40,
-                          )),
-                      Padding(
-                        padding: EdgeInsets.only(top: 20, left: 14),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Verification',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 22),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 10, bottom: 10, left: 18, right: 10),
-                        child: RichText(
-                          text: TextSpan(
-                              text:
-                                  "An email was sent to you Enter the verification code contained in the email here",
-                              style:
-                                  TextStyle(color: Colors.black54, fontSize: 17)),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        child: Form(
-                          key: formKey,
-                          child: Container(
-                            // width: MediaQuery.of(context).size.width /3,
-                            child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 20, left: 20, right: 30, bottom: 50),
-                                child: Container(
-                                  child: PinCodeTextField(
-                                    length: 4,
-                                    obsecureText: true,
-                                    animationType: AnimationType.fade,
-                                    validator: (v) {
-                                      if (v.length < 3) {
-                                        return "I'm from validator";
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                    pinTheme: PinTheme(
-                                      shape: PinCodeFieldShape.box,
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          topRight: Radius.circular(10),
-                                          bottomLeft: Radius.circular(10),
-                                          bottomRight: Radius.circular(10)),
-                                      fieldHeight: 50,
-                                      fieldWidth: 50,
-                                    ),
-                                    animationDuration:
-                                        Duration(milliseconds: 300),
-                                    backgroundColor: Colors.blue.shade50,
-                                    errorAnimationController: errorController,
-                                    autoDisposeControllers: true,
-                                    controller: textEditingController,
-                                    onCompleted: (value) async {
-                                      value == widget.otp
-                                          ? otpValid()
-                                          : otpError();
-                                    },
-                                    onChanged: (value) {
-                                      print(value);
-                                      setState(() {
-                                        currentText = value;
-                                      });
-                                    },
-                                  ),
-                                )),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 0),
-                          child: Text(
-                            hasError
-                                ? "*Please fill up all the cells properly"
-                                : "",
-                            style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 16.0, horizontal: 30),
-                        child: ButtonTheme(
+                child: ListView(
+                  children: <Widget>[
+                    SizedBox(height: 5),
+                    Padding(
+                        padding: EdgeInsets.only(bottom: 10),
+                        child: Image.asset(
+                          'assets/images/logo.png',
                           height: 40,
-                          child: FlatButton(
-                            onPressed: () async {
-                              try {
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                String response =
-                                    await _apiService.otpVerification(
-                                        widget.email,
-                                        widget.password,
-                                        widget.name);
-                                var res = jsonDecode(response);
-                                print(res['data']['otp']);
-                                var otp = res['data']['otp'];
-                                Fluttertoast.showToast(
-                                    msg: 'OTP sent successfully',
-                                    toastLength: Toast.LENGTH_LONG,
-                                    gravity: ToastGravity.BOTTOM,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.green[600],
-                                    textColor: Colors.white,
-                                    fontSize: 13.0);
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            PinCodeVerificationScreen(
-                                                otp: otp,
-                                                email: widget.email,
-                                                password: widget.password,
-                                                name: widget.name)));
-                              } catch (error) {
-                                      Fluttertoast.showToast(
-                                    msg: 'error occured',
-                                    toastLength: Toast.LENGTH_LONG,
-                                    gravity: ToastGravity.BOTTOM,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.green[600],
-                                    textColor: Colors.white,
-                                    fontSize: 13.0);
-                              }
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 0, bottom: 30),
-                              child: Center(
-                                  child: Text(
-                                "Resend Email".toUpperCase(),
-                                style: TextStyle(
-                                    color: Colors.grey[700],
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold),
+                        )),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20, left: 14),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Verification',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 22),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: 10, bottom: 10, left: 18, right: 10),
+                      child: RichText(
+                        text: TextSpan(
+                            text:
+                                "An email was sent to you Enter the verification code contained in the email here",
+                            style:
+                                TextStyle(color: Colors.black54, fontSize: 17)),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      child: Form(
+                        key: formKey,
+                        child: Container(
+                          // width: MediaQuery.of(context).size.width /3,
+                          child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 20, left: 20, right: 30, bottom: 50),
+                              child: Container(
+                                child: PinCodeTextField(
+                                  length: 4,
+                                  obsecureText: true,
+                                  animationType: AnimationType.fade,
+                                  validator: (v) {
+                                    if (v.length < 3) {
+                                      return "I'm from validator";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  pinTheme: PinTheme(
+                                    shape: PinCodeFieldShape.box,
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        topRight: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10),
+                                        bottomRight: Radius.circular(10)),
+                                    fieldHeight: 50,
+                                    fieldWidth: 50,
+                                  ),
+                                  animationDuration:
+                                      Duration(milliseconds: 300),
+                                  backgroundColor: Colors.blue.shade50,
+                                  errorAnimationController: errorController,
+                                  autoDisposeControllers: true,
+                                  controller: textEditingController,
+                                  onCompleted: (value) async {
+                                    value == widget.otp
+                                        ? otpValid()
+                                        : otpError();
+                                  },
+                                  onChanged: (value) {
+                                    print(value);
+                                    setState(() {
+                                      currentText = value;
+                                    });
+                                  },
+                                ),
                               )),
-                            ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 0),
+                        child: Text(
+                          hasError
+                              ? "*Please fill up all the cells properly"
+                              : "",
+                          style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 30),
+                      child: ButtonTheme(
+                        height: 40,
+                        child: FlatButton(
+                          onPressed: () async {
+                            try {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              String response =
+                                  await _apiService.otpVerification(
+                                      widget.email,
+                                      widget.password,
+                                      widget.name);
+                              var res = jsonDecode(response);
+                              print(res['data']['otp']);
+                              var otp = res['data']['otp'];
+                              Fluttertoast.showToast(
+                                  msg: 'OTP sent successfully',
+                                  toastLength: Toast.LENGTH_LONG,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.green[600],
+                                  textColor: Colors.white,
+                                  fontSize: 13.0);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PinCodeVerificationScreen(
+                                              otp: otp,
+                                              email: widget.email,
+                                              password: widget.password,
+                                              name: widget.name)));
+                            } catch (error) {
+                                    Fluttertoast.showToast(
+                                  msg: 'error occured',
+                                  toastLength: Toast.LENGTH_LONG,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.green[600],
+                                  textColor: Colors.white,
+                                  fontSize: 13.0);
+                            }
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 0, bottom: 30),
+                            child: Center(
+                                child: Text(
+                              "Resend Email".toUpperCase(),
+                              style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            )),
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 14,
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                      height: 14,
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                  ],
                 ),
               ),
             ),

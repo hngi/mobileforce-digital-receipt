@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:io';
 
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:digital_receipt/models/receipt.dart';
@@ -8,7 +9,9 @@ import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/date_time_input_textField.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class CreateReceiptStep2 extends StatefulWidget {
@@ -37,12 +40,27 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
   TextEditingController _hexCodeController = TextEditingController();
 
   bool autoReceiptNo = true;
-
+  String fontVal = "100";
   DateTime date = DateTime.now();
+  final picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
+  }
+
+    Future getImageSignature() async {
+    PermissionStatus status = await Permission.storage.status;
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    print("file size is :");
+    print(File(pickedFile.path).lengthSync());
+    if(pickedFile != null) {
+      setState(() {
+        Provider.of<Receipt>(context,listen: false).setSignature(pickedFile.path);
+      });
+    } else {
+      print("no file");
+    }
   }
 
   @override
@@ -195,22 +213,23 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             SizedBox(
               height: 30,
             ),
-            DropdownButtonFormField(
+            DropdownButtonFormField<String>(
+              value: fontVal,
               items: [
-                DropdownMenuItem(
-                  child: Text(
-                    'Select font',
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.3,
-                      fontSize: 16,
-                      color: Color(0xFF1B1B1B),
-                    ),
-                  ),
-                ),
-              ],
-              onChanged: (val) {},
+                '100',
+                '200',
+                '300',
+                '400',
+                '500'
+              ].map((val) => DropdownMenuItem(child: Text(val.toString()),
+              value: val,
+              )).toList(),
+
+              onChanged: (val) {
+                setState(() {
+                  fontVal = val;
+                });
+              },
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(15),
                 enabledBorder: OutlineInputBorder(
@@ -248,7 +267,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               height: 50,
               width: double.infinity,
               child: FlatButton(
-                onPressed: () {},
+                onPressed: getImageSignature,
                 shape: RoundedRectangleBorder(
                     side: BorderSide(color: Color(0xFF25CCB3), width: 1.5),
                     borderRadius: BorderRadius.circular(5)),
@@ -276,7 +295,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             SizedBox(height: 10),
             Center(
               child: Text(
-                'Your logo should be in PNG format and have a max size of 3MB (Optional)',
+                'Your Signature should be taken on a clear white paper and have a max size of 3MB (Optional)',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Montserrat',
@@ -290,15 +309,21 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             SizedBox(
               height: 35,
             ),
-            Text(
-              'Choose a color (optional)',
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.w500,
-                letterSpacing: 0.3,
-                fontSize: 14,
-                color: Colors.black,
-              ),
+            Row(
+              children: <Widget>[
+                Text(
+                  'Choose a color (optional)',
+                  style: TextStyle(
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.3,
+                    fontSize: 14,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(width:12),
+                Text(_hexCodeController.text.toUpperCase()),
+              ],
             ),
             SizedBox(height: 20),
             SizedBox(
@@ -313,15 +338,15 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                         color: Colors.red,
                         onPressed: () {
                           setState(() {
-                            _hexCodeController.text = '#F14C4C';
+                            _hexCodeController.text = 'F14C4C';
                           });
                         },
                       ),
-                      ColorButton(
+                              ColorButton(
                         color: Color(0xFF539C30),
                         onPressed: () {
                           setState(() {
-                            _hexCodeController.text = '#539C30';
+                            _hexCodeController.text = '539C30';
                           });
                         },
                       ),
@@ -329,7 +354,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                         color: Color(0xFF2C33D5),
                         onPressed: () {
                           setState(() {
-                            _hexCodeController.text = '#2C33D5';
+                            _hexCodeController.text = '2C33D5';
                           });
                         },
                       ),
@@ -337,7 +362,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                         color: Color(0xFFE7D324),
                         onPressed: () {
                           setState(() {
-                            _hexCodeController.text = '#E7D324';
+                            _hexCodeController.text = 'E7D324';
                           });
                         },
                       ),
@@ -345,7 +370,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                         color: Color(0xFFC022B1),
                         onPressed: () {
                           setState(() {
-                            _hexCodeController.text = '#C022B1';
+                            _hexCodeController.text = 'C022B1';
                           });
                         },
                       ),
@@ -390,8 +415,12 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   ),
                 ),
                 Checkbox(
-                  value: true,
-                  onChanged: (val) {},
+                  value: Provider.of<Receipt>(context, listen: false).enablePaidStamp(),
+                  onChanged: (val) {
+                           setState(() {
+                      Provider.of<Receipt>(context,listen: false).togglePaidStamp();
+                    });
+                  },
                 )
               ],
             ),
@@ -410,8 +439,12 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   ),
                 ),
                 Switch(
-                  value: false,
-                  onChanged: (val) {},
+                  value:Provider.of<Receipt>(context,listen: false).enablePreset(),
+                  onChanged: (val) {
+                    setState(() {
+                    Provider.of<Receipt>(context,listen: false).togglePreset();
+                    });
+                  },
                 ),
               ],
             ),
@@ -455,6 +488,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                     .setIssueDate(_dateTextController.text);
                 Provider.of<Receipt>(context, listen: false)
                     .setColor(hexCode: _hexCodeController.text);
+                Provider.of<Receipt>(context,listen: false).setFont(int.parse(fontVal));
                 Navigator.push(
                     context,
                     MaterialPageRoute(

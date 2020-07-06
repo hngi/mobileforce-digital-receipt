@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
@@ -47,6 +49,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
 
   @override
   Widget build(BuildContext context) {
+  // SendReceiptService srs = Provider.of<SendReceiptService>(context);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -176,7 +179,12 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     value: ReceiptCategory.TWITTER,
                     child: Text('Twitter'),
                   ),
+              
                   DropdownMenuItem(
+                    value: ReceiptCategory.REDIT,
+                    child: Text('Redit'),
+                  ),
+                      DropdownMenuItem(
                     value: ReceiptCategory.OTHERS,
                     child: Text('Others'),
                   ),
@@ -506,8 +514,13 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     ),
                   ),
                   Switch(
-                    value: false,
-                    onChanged: (val) {},
+                    value: Provider.of<Receipt>(context, listen: false).enableSaveCustomer(),
+                    onChanged: (val) {
+                      setState(() {
+                         Provider.of<Receipt>(context,listen: false).toggleSaveCustomer();
+                      });
+                     
+                    },
                   ),
                 ],
               ),
