@@ -55,6 +55,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
     receiptPdfFuture = generatePdf(
       pageFormat: PdfPageFormat.a4,
       receipt: Provider.of<Receipt>(context, listen: false),
+      accountData: Provider.of<Business>(context, listen: false).accountData,
     );
   }
 
