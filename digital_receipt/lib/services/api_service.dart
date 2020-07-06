@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:connectivity/connectivity.dart';
 import 'package:digital_receipt/services/send_receipt_service.dart';
 
 import 'package:dio/adapter.dart';
@@ -29,7 +30,7 @@ class ApiService {
   /* This is the user id of the logged in user. Please replace it with the userID that is returned
     from the response when the user logs in. Thank you
   */
-  String userID = "82c4e6bc-8923-4511-8b74-e85c05b34dff";
+  //String userID = "82c4e6bc-8923-4511-8b74-e85c05b34dff";
 
   final Dio _dio = Dio(
     BaseOptions(
@@ -86,7 +87,7 @@ class ApiService {
         print(response.data["status"]);
 
         userId = response.data["data"]["_id"];
-        userID = userId;
+        // userID = userId;
         auth_token = response.data["data"]["auth_token"];
 
         //Save details to Shared Preference
@@ -154,6 +155,7 @@ class ApiService {
         "name": "$name"
       },
     );
+    print(response.body);
     if (response.statusCode == 200) {
       return "true";
     }
@@ -171,6 +173,8 @@ class ApiService {
     if (response.statusCode == 200) {
       //set the token to null
       _sharedPreferenceService.addStringToSF("AUTH_TOKEN", 'empty');
+
+      _sharedPreferenceService.addStringToSF('BUSINESS_INFO', null);
       print('done');
 
       return true;
@@ -190,30 +194,42 @@ class ApiService {
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
     String businessId =
         await _sharedPreferenceService.getStringValuesSF('Business_ID');
-    print(businessId);
-    var response = await http.put(
-      uri,
-      headers: <String, String>{
-        "token": token,
-      },
-      body: {
-        "phoneNumber": phoneNumber,
-        "name": name,
-        "address": address,
-        "slogan": slogan,
-        "businessId": businessId,
-      },
+    print(token);
+
+    print(
+      """
+      name: $name,
+      number: $phoneNumber,
+      address: $address,
+      slogan: $slogan
+      """,
     );
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+    try {
+      var response = await http.put(
+        uri,
+        headers: <String, String>{
+          "token": token,
+          // HttpHeaders.contentTypeHeader: 'application/json',
+          // HttpHeaders.acceptHeader: 'application/json',
+        },
+        body: {
+          "phoneNumber": phoneNumber,
+          "name": name,
+          "address": address,
+          "slogan": slogan,
+          "businessId": businessId,
+        },
+      );
+      print(response.statusCode);
+      //print(response.body);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+      return null;
+    } catch (e) {
+      throw (e);
     }
-    return null;
-    // return responseBody['message'] ?? responseBody['error'];
-    /* } on SocketException {
-      return "No network";
-    }
- */
   }
 
   Future<bool> setUpBusiness({
@@ -252,7 +268,6 @@ class ApiService {
     return false;
   }
 
-
   Future changeLogo(String logo) async {
     var uri = Uri.parse('$_urlEndpoint/business/info/update');
     String token =
@@ -260,18 +275,6 @@ class ApiService {
     String businessId =
         await _sharedPreferenceService.getStringValuesSF('Business_ID');
     print(businessId);
-    /* var response = await http.put(
-      uri,
-      headers: <String, String>{
-        "token": token,
-      },
-      body: {"logo": logo, 'businessId': businessId},
-    );
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    }
-    return null; */
 
     var request = http.MultipartRequest('PUT', uri);
 
@@ -292,7 +295,6 @@ class ApiService {
     }
     return null;
   }
-
 
   Future<String> changePassword(
       String currentPassword, String newPassword) async {
@@ -348,6 +350,7 @@ class ApiService {
           'token': token,
         },
       );
+      print(response.statusCode);
 
       dynamic res = jsonDecode(response.body)['data'] as List<dynamic>;
 
@@ -381,12 +384,17 @@ class ApiService {
     }
   }
 
-  Future<String> otpVerification(String email, password, name) async {
-    var uri = 'https://digital-receipt-07.herokuapp.com/v1/user/otp_register';
+  Future<String> otpVerification(
+    String email,
+    password,
+    name,
+  ) async {
+    var uri = '$_urlEndpoint/user/otp_register';
     var response = await http.post(
       uri,
       body: {"email_address": "$email"},
     );
+    print(response.body);
     if (response.statusCode == 200) {
       return response.body;
     }
