@@ -1,3 +1,4 @@
+import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/screens/account_page.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';
@@ -9,6 +10,7 @@ import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -67,9 +69,12 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(
             create: (context) => Receipt(),
           ),
+          ChangeNotifierProvider(
+            create: (context) => Customer(),
+          ),
         ],
         child: MaterialApp(
-          title: 'Reepcy',
+          title: 'Degeit',
           theme: ThemeData(
             primaryColor: Color(0xFF0B57A7),
             scaffoldBackgroundColor: Color(0xFFF2F8FF),
@@ -207,11 +212,13 @@ class _ScreenControllerState extends State<ScreenController> {
           } else if (snapshot.data == 'empty') {
             return LogInScreen();
           } else if (snapshot.hasData && snapshot.data != null) {
-            print('snapshotss: ${snapshot.data}');
+           
             // return HomePage();
             return HomePage();
+            // return Otp(email: "francis@francis.francis",);
           } else {
-            return OnboardingPage();
+	    // return Otp(email: "francis@francis.francis",);
+           return HomePage();
           }
         });
   }

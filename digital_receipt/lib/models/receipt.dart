@@ -1,12 +1,20 @@
+import 'dart:io';
+
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/product.dart';
+import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
 
-enum ReceiptCategory { WHATSAPP, INSTAGRAM, FACEBOOK, TWITTER, OTHERS }
+import 'dart:convert';
+
+SharedPreferenceService _sharedPreferenceService = SharedPreferenceService();
+enum ReceiptCategory { WHATSAPP, INSTAGRAM, FACEBOOK, TWITTER, REDIT, OTHERS }
 
 class Receipt extends ChangeNotifier {
   String receiptNo;
@@ -19,6 +27,16 @@ class Receipt extends ChangeNotifier {
   Customer customer;
   List<Product> products;
   String primaryColorHexCode;
+  bool preset = false;
+  bool paidStamp = false;
+  bool partPayment = false;
+  bool saveCustomer = false;
+  bool issued = false;
+  int fonts;
+  String partPaymentDateTime;
+  String signature;
+  TimeOfDay reminderTime;
+  DateTime reminderDate;
 
   Receipt({
     this.receiptNo,
@@ -27,6 +45,9 @@ class Receipt extends ChangeNotifier {
     this.description,
     this.category,
     this.totalAmount,
+    this.fonts,
+    this.customer,
+    this.products,
   });
 
   factory Receipt.fromJson(Map<String, dynamic> json) => Receipt(
@@ -48,8 +69,49 @@ class Receipt extends ChangeNotifier {
     return autoGenReceiptNo;
   }
 
+  bool enablePreset() {
+    return preset;
+  }
+
+  bool enablePaidStamp() {
+    return paidStamp;
+  }
+
+  bool enableSaveCustomer() {
+    return saveCustomer;
+  }
+
+  bool enablePartPayment() {
+    return partPayment;
+  }
+
   void toggleAutoGenReceiptNo() {
     autoGenReceiptNo = !autoGenReceiptNo;
+    notifyListeners();
+  }
+
+  void togglePreset() {
+    preset = !preset;
+    notifyListeners();
+  }
+
+  void togglePaidStamp() {
+    paidStamp = !paidStamp;
+    notifyListeners();
+  }
+
+  void toggleSaveCustomer() {
+    saveCustomer = !saveCustomer;
+    notifyListeners();
+  }
+
+  void togglPartPayment() {
+    partPayment = !partPayment;
+    notifyListeners();
+  }
+
+  void toggleIssued() {
+    issued = !issued;
     notifyListeners();
   }
 
@@ -75,6 +137,74 @@ class Receipt extends ChangeNotifier {
 
   void setIssueDate(String date) {
     issuedDate = date;
+  }
+
+  void setFont(int font) {
+    fonts = font;
+  }
+
+  void setSignature(String signatureImageUrl) {
+    signature = signatureImageUrl;
+  }
+
+  void setReminderTime(TimeOfDay time) {
+    reminderTime = time;
+  }
+
+  void setReminderDate(DateTime date) {
+    reminderDate = date;
+  }
+
+  convertToDateTime() {
+    var d = this.reminderDate.toString();
+    // var t = this.reminderTime.toString();
+    return this.partPaymentDateTime = d;
+  }
+
+  Map<String, dynamic> toJson() => {
+        "customer": {
+          "name": customer.name,
+          "email": customer.email,
+          "address": customer.address,
+          "platform": category.toString(),
+          "phoneNumber": customer.phoneNumber,
+          "saved": saveCustomer,
+        },
+        "receipt": {
+          "date": convertToDateTime(),
+          "font": fonts,
+          "color": primaryColorHexCode,
+          "preset": preset,
+          "paid_stamp": paidStamp,
+          "issued": issuedDate == null ? false : true,
+          "deleted": false,
+          "partPayment": partPayment,
+          "partPaymentDateTime": convertToDateTime(),
+        },
+        "products": products,
+      };
+
+  void showJson() {
+    print(json.encode(toJson()));
+  }
+
+  saveReceipt() async {
+    var uri =
+        "https://digital-receipt-07.herokuapp.com/v1/business/receipt/customize";
+    var token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+
+    var response = await http.post(uri,
+        body: json.encode(toJson()),
+        headers: {"token": token, "Content-Type": "application/json"});
+
+    print("3");
+    if (response.statusCode == 200) {
+      print("successful");
+      return "successful";
+    } else {
+      print("failed");
+      return "failed";
+    }
   }
 }
 

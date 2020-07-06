@@ -1,20 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:connectivity/connectivity.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
-
-import 'package:flutter/foundation.dart';
 import 'device_info_service.dart';
 import 'shared_preference_service.dart';
 import 'package:http/http.dart' as http;
 import '../models/account.dart';
 
 import '../models/receipt.dart';
-import 'device_info_service.dart';
-import 'shared_preference_service.dart';
-import 'package:http/http.dart' as http;
 import 'package:digital_receipt/models/receipt.dart';
 
 class ApiService {
@@ -27,7 +23,7 @@ class ApiService {
   /* This is the user id of the logged in user. Please replace it with the userID that is returned
     from the response when the user logs in. Thank you
   */
-  String userID = "82c4e6bc-8923-4511-8b74-e85c05b34dff";
+  //String userID = "82c4e6bc-8923-4511-8b74-e85c05b34dff";
 
   final Dio _dio = Dio(
     BaseOptions(
@@ -84,7 +80,7 @@ class ApiService {
         print(response.data["status"]);
 
         userId = response.data["data"]["_id"];
-        userID = userId;
+        // userID = userId;
         auth_token = response.data["data"]["auth_token"];
 
         //Save details to Shared Preference
@@ -92,6 +88,7 @@ class ApiService {
         _sharedPreferenceService.addStringToSF("AUTH_TOKEN", auth_token);
         _sharedPreferenceService.addStringToSF("EMAIL", email_address);
         //
+        print("token :");
         print(auth_token);
         print(userId);
         return "true";
@@ -151,6 +148,7 @@ class ApiService {
         "name": "$name"
       },
     );
+    print(response.body);
     if (response.statusCode == 200) {
       return "true";
     }
@@ -168,6 +166,8 @@ class ApiService {
     if (response.statusCode == 200) {
       //set the token to null
       _sharedPreferenceService.addStringToSF("AUTH_TOKEN", 'empty');
+
+      _sharedPreferenceService.addStringToSF('BUSINESS_INFO', null);
       print('done');
 
       return true;
@@ -187,30 +187,42 @@ class ApiService {
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
     String businessId =
         await _sharedPreferenceService.getStringValuesSF('Business_ID');
-    print(businessId);
-    var response = await http.put(
-      uri,
-      headers: <String, String>{
-        "token": token,
-      },
-      body: {
-        "phoneNumber": phoneNumber,
-        "name": name,
-        "address": address,
-        "slogan": slogan,
-        "businessId": businessId,
-      },
+    print(token);
+
+    print(
+      """
+      name: $name,
+      number: $phoneNumber,
+      address: $address,
+      slogan: $slogan
+      """,
     );
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+    try {
+      var response = await http.put(
+        uri,
+        headers: <String, String>{
+          "token": token,
+          // HttpHeaders.contentTypeHeader: 'application/json',
+          // HttpHeaders.acceptHeader: 'application/json',
+        },
+        body: {
+          "phoneNumber": phoneNumber,
+          "name": name,
+          "address": address,
+          "slogan": slogan,
+          "businessId": businessId,
+        },
+      );
+      print(response.statusCode);
+      //print(response.body);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+      return null;
+    } catch (e) {
+      throw (e);
     }
-    return null;
-    // return responseBody['message'] ?? responseBody['error'];
-    /* } on SocketException {
-      return "No network";
-    }
- */
   }
 
   Future<bool> setUpBusiness({
@@ -249,63 +261,33 @@ class ApiService {
     return false;
   }
 
+  Future changeLogo(String logo) async {
+    var uri = Uri.parse('$_urlEndpoint/business/info/update');
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    String businessId =
+        await _sharedPreferenceService.getStringValuesSF('Business_ID');
+    print(businessId);
 
+    var request = http.MultipartRequest('PUT', uri);
 
-  AccountData user = AccountData(
-      id: '', name: '', phone: '', address: '', slogan: '', logo: '',email: '' );
-  List<AccountData> _users = [];
+    print(logo);
 
-  void setData(AccountData x) {
-    user.id = x.id;
-    user.name = x.name;
-    user.phone = x.phone;
-    user.address = x.address;
-    user.slogan = x.slogan;
-    user.logo = x.logo;
-    x.email != null ? user.email = x.email: user.email = 'custom@mail.com';
-    print(user.name);
+    request.headers['token'] = token;
+    request.fields['businessId'] = businessId;
+    request.files.add(
+      await http.MultipartFile.fromPath("logo", logo),
+    );
+
+    var response = await request.send();
+    print('code: ${response.statusCode}');
+    var res = await response.stream.bytesToString();
+    print(res);
+    if (response.statusCode == 200) {
+      return res;
+    }
+    return null;
   }
-
-  //Get user by Id
-  Future<void> findById() async{
-    await fetchAndSetUser();
-    var x = _users.firstWhere((element) => element.id == userID);
-    setData(x);
-  }
-
-  //Fetch users from db;
-  Future<void> fetchAndSetUser() async {
-    print('call in');
-    const url = "https://degeit-receipt.herokuapp.com/v1/business/info/all";
-    var headers = {
-      'token':
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImNhODM4NDQ2LTQ4YjctNDg2Zi1hMzAyLTkyNDJjZDA5NDM1NCIsIm5hbWUiOiJmcm96ZW4iLCJlbWFpbF9hZGRyZXNzIjoiZnJvemVuQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiZnJvemVuIiwicmVnaXN0cmF0aW9uX2lkIjoiNTI3MjgyNTFmd3lldGhoZ2RhIiwiZGV2aWNlVHlwZSI6ImFuZHJpb2QiLCJhY3RpdmUiOnRydWUsImlzX3ByZW1pdW1fdXNlciI6ZmFsc2UsImV4cCI6MTU5NDEzNjEzOX0.0Z_pFd5c3VbOjtfUkvMQj-oEIvpwvQqj0tCWbwbdtCY'
-    };
-    try {
-      final response = await http.get(url, headers: headers);
-      final data = json.decode(response.body) as Map<String, dynamic>;
-      final List<AccountData> loadedData = [];
-      data.forEach((userId, accountInfo) {
-        var newData = accountInfo;
-        for (Map a in newData) {
-          loadedData.add(AccountData(
-            id: a['id'],
-            name: a['name'],
-            phone: a['phone_number'],
-            address: a['address'],
-            slogan: a['slogan'],
-            logo: a['logo'],
-            email: a['email_address']
-          ));
-        }
-      });
-      _users = loadedData;
-      print('fetched');
-    } catch (error) {
-      throw error;
-      }
-  }
-
 
   Future<String> changePassword(
       String currentPassword, String newPassword) async {
@@ -348,21 +330,41 @@ class ApiService {
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
     String userID = await _sharedPreferenceService.getStringValuesSF('USER_ID');
-    print(token);
-    var response = await http.get(
-      url,
-      headers: <String, String>{
-        'token': token,
-      },
-    );
 
-    dynamic res = jsonDecode(response.body)['data'] as List<dynamic>;
-    //print(res.length);
     var email = await _sharedPreferenceService.getStringValuesSF('EMAIL');
 
-    if (response.statusCode == 200) {
-      res = res.singleWhere((e) => e['user'] == userID);
+    var connectivityResult = await (Connectivity().checkConnectivity());
 
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      var response = await http.get(
+        url,
+        headers: <String, String>{
+          'token': token,
+        },
+      );
+      print(response.statusCode);
+
+      dynamic res = jsonDecode(response.body)['data'] as List<dynamic>;
+
+      if (response.statusCode == 200) {
+        res = res.singleWhere((e) => e['user'] == userID);
+
+        return AccountData(
+          id: res['id'],
+          name: res['name'],
+          phone: res['phone_number'],
+          address: res['address'],
+          slogan: res['slogan'],
+          logo: 'https://degeit-receipt.herokuapp.com${res['logo']}',
+          email: email,
+        );
+      }
+      return null;
+    } else {
+      var result =
+          await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
+      var res = jsonDecode(result);
       return AccountData(
         id: res['id'],
         name: res['name'],
@@ -373,15 +375,19 @@ class ApiService {
         email: email,
       );
     }
-    return null;
   }
 
-    Future<String> otpVerification(String email, password, name) async {
-    var uri = 'https://digital-receipt-07.herokuapp.com/v1/user/otp_register';
+  Future<String> otpVerification(
+    String email,
+    password,
+    name,
+  ) async {
+    var uri = '$_urlEndpoint/user/otp_register';
     var response = await http.post(
       uri,
       body: {"email_address": "$email"},
     );
+    print(response.body);
     if (response.statusCode == 200) {
       return response.body;
     }

@@ -1,14 +1,19 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:digital_receipt/models/account.dart';
 import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/providers/business.dart';
 import 'package:digital_receipt/screens/generate_pdf.dart';
+import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/widgets/receipt_item.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:provider/provider.dart';
+
+import '../constant.dart';
 
 class ReceiptScreen extends StatefulWidget {
   final Receipt receipt;
@@ -50,12 +55,13 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
     receiptPdfFuture = generatePdf(
       pageFormat: PdfPageFormat.a4,
       receipt: Provider.of<Receipt>(context, listen: false),
+      accountData: Provider.of<Business>(context, listen: false).accountData,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<Receipt>(context, listen: false);
+    final ApiService _apiService = ApiService();
     return Scaffold(
       backgroundColor: Color(0xFFF2F8FF),
       appBar: AppBar(
@@ -122,7 +128,11 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
   }
 }
 
+// ignore: non_constant_identifier_names
 Widget ReceiptScreenLayout([BuildContext context]) {
+  final ApiService _apiService = ApiService();
+  final AccountData businessInfo =
+      Provider.of<Business>(context, listen: false).accountData;
   return Column(children: <Widget>[
     SizedBox(
       height: 14,
@@ -150,7 +160,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
       alignment: Alignment.topCenter,
       // width: 325,
       decoration: BoxDecoration(
-        color: Color(0xFFF2F8FF),
+        //  color: Color(int.parse("0xFF"+Provider.of<Receipt>(context,listen: false).primaryColorHexCode)),
         border: Border.all(
           color: Colors.grey[500],
         ),
@@ -168,7 +178,9 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                    color: Color(0xFF539C30),
+                    color: Color(int.parse("0xFF" +
+                        Provider.of<Receipt>(context, listen: false)
+                            .primaryColorHexCode)),
                     height: 13,
                     width: double.infinity,
                   ),
@@ -181,7 +193,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
 
                       child: Center(
                     child: Text(
-                      'Geek Tutor',
+                      businessInfo.name,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
@@ -193,7 +205,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                   ),
                   Center(
                     child: Text(
-                      '2118 Thornridge Cir. Syracuse, Connecticut 35624',
+                      businessInfo.address,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.black,
@@ -208,7 +220,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                   ),
                   Center(
                     child: Text(
-                      'Tel No: (603) 555-0123',
+                      'Tel No: ${businessInfo.phone}',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 13,
@@ -222,7 +234,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                   ),
                   Center(
                     child: Text(
-                      'Email: cfroschauerc@ucoz.ru',
+                      'Email: ${businessInfo.email}',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 13,
@@ -249,7 +261,10 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                         Container(
                           padding: EdgeInsets.only(bottom: 8),
                           child: Text(
-                            'Date: 17-06-2020',
+                            "Date: " +
+                                Provider.of<Receipt>(context, listen: false)
+                                    .issuedDate
+                                    .toString(),
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 13,
@@ -260,7 +275,15 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                           ),
                         ),
                         Text(
-                          'Reciept No: 10334',
+                          Provider.of<Receipt>(context, listen: false)
+                                      .receiptNo
+                                      .toString() !=
+                                  null
+                              ? 'Receipt No : ' + "AutoGenerated"
+                              : 'Receipt No : ' +
+                                  Provider.of<Receipt>(context, listen: false)
+                                      .receiptNo
+                                      .toString(),
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 13,
@@ -281,7 +304,11 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                         Container(
                           padding: EdgeInsets.only(bottom: 8),
                           child: Text(
-                            'Name: Denys Wilacot',
+                            'Name: ' +
+                                Provider.of<Receipt>(context, listen: false)
+                                    .customer
+                                    .name
+                                    .toString(),
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -293,7 +320,11 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                         Container(
                           padding: EdgeInsets.only(bottom: 8),
                           child: Text(
-                            'Email: zpopley3@nifty.com',
+                            'Email: ' +
+                                Provider.of<Receipt>(context, listen: false)
+                                    .customer
+                                    .email
+                                    .toString(),
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -303,7 +334,11 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                           ),
                         ),
                         Text(
-                          'Phone No: 741-142-4459',
+                          'Phone No: ' +
+                              Provider.of<Receipt>(context, listen: false)
+                                  .customer
+                                  .phoneNumber
+                                  .toString(),
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 14,
@@ -324,7 +359,6 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                     ),
                   ),
                   Divider(),
-                  ReceiptItem(),
                   ReceiptItem(),
                   SizedBox(
                     //toatal payment and stamp
@@ -356,11 +390,27 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                                 ),
                               ),
                             ),
-                            Image.asset('assets/images/paid-stamp.png'),
+                            Provider.of<Receipt>(context, listen: false)
+                                        .paidStamp !=
+                                    false
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    child: SizedBox(
+                                      height: 65,
+                                      width: 65,
+                                      child: kPaidStamp(Provider.of<Receipt>(
+                                              context,
+                                              listen: false)
+                                          .primaryColorHexCode
+                                          .toLowerCase()),
+                                    ),
+                                  )
+                                : Container(),
                             Padding(
                               padding: const EdgeInsets.only(top: 15.0),
                               child: Text(
-                                '₦80,000',
+                                '₦',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
@@ -427,6 +477,36 @@ Widget ReceiptScreenLayout([BuildContext context]) {
     //SHARE BUTTON
     SizedBox(
       height: 45,
+    ),
+    SizedBox(
+      width: double.infinity,
+      height: 45,
+      child: FlatButton(
+        //padding: EdgeInsets.all(5.0),
+        color: Colors.white,
+        textTheme: ButtonTextTheme.primary,
+        //minWidth: 350,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Text(
+          'Send',
+          style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        onPressed: () async {
+          bool load = true;
+          // await  _apiService.saveReceipt();
+
+          Provider.of<Receipt>(context, listen: false).showJson();
+          Provider.of<Receipt>(context, listen: false).saveReceipt();
+        },
+      ),
+    ),
+    SizedBox(
+      height: 15,
     ),
     SizedBox(
       width: double.infinity,
