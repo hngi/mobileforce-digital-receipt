@@ -178,10 +178,7 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
                 });
                 _formKey.currentState.save();
                 // }
-                print("""name: $name,
-                number: $phoneNumber,
-                address: $address,
-                slogan: $slogan""");
+               
                 var email =
                     await _sharedPreferenceService.getStringValuesSF('EMAIL');
                 var res = await _apiService.updateBusinessInfo(

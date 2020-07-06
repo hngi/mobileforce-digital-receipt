@@ -70,7 +70,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
             return _showDialog
                 ? _showAlertDialog()
                 : Padding(
-                    padding: EdgeInsets.all(15.0),
+                    padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
                     child: Column(
                       children: <Widget>[
                         SizedBox(height: 10.0),
@@ -199,9 +199,17 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                         Flexible(
                           child: ListView.builder(
                             itemCount: receiptList.length,
+                            /*  padding: EdgeInsets.symmetric(
+                              vertical: 15,
+                            ), */
                             itemBuilder: (context, index) {
                               // HardCoded Receipt details
-                              return receiptCard(receiptList[index]);
+                              return Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 15,
+                                ),
+                                child: receiptCard(receiptList[index]),
+                              );
                             },
                           ),
                         ),
@@ -216,42 +224,98 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
   }
 
   Widget receiptCard(Receipt receipt) {
-    return Column(
-      children: <Widget>[
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Color(0xff539C30),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Container(
-            margin: EdgeInsets.only(left: 5.0),
-            decoration: BoxDecoration(
-              color: Color(0xffE8F1FB),
-              borderRadius: BorderRadius.circular(10),
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Color(0xff539C30),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Container(
+        margin: EdgeInsets.only(left: 5.0),
+        decoration: BoxDecoration(
+          color: Color(0xffE8F1FB),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "Receipt No: ${receipt.receiptNo}",
+                    style: TextStyle(
+                      color: Color.fromRGBO(0, 0, 0, 0.6),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w300,
+                      fontFamily: 'Montserrat',
+                      letterSpacing: 0.03,
+                    ),
+                  ),
+                  Text(
+                    "${receipt.issuedDate}",
+                    style: TextStyle(
+                      color: Color.fromRGBO(0, 0, 0, 0.6),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w300,
+                      fontFamily: 'Montserrat',
+                      letterSpacing: 0.03,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        "Receipt No: ${receipt.receiptNo}",
+            Padding(
+              padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
+              child: Text(
+                "${receipt.customerName}",
+                style: TextStyle(
+                  color: Color.fromRGBO(0, 0, 0, 0.87),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Montserrat',
+                  letterSpacing: 0.03,
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
+              child: Text(
+                "${receipt.description}",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w300,
+                  fontFamily: 'Montserrat',
+                  letterSpacing: 0.03,
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              // )
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: RichText(
+                  textAlign: TextAlign.right,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Total: ',
                         style: TextStyle(
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                          fontSize: 14,
+                          color: Colors.black,
+                          fontSize: 13,
                           fontWeight: FontWeight.w300,
                           fontFamily: 'Montserrat',
                           letterSpacing: 0.03,
                         ),
                       ),
-                      Text(
-                        "${receipt.issuedDate}",
+                      TextSpan(
+                        text: ' N${receipt.totalAmount} ',
                         style: TextStyle(
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
+                          color: Colors.black,
                           fontSize: 14,
                           fontWeight: FontWeight.w300,
                           fontFamily: 'Montserrat',
@@ -261,74 +325,11 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
-                  child: Text(
-                    "${receipt.customerName}",
-                    style: TextStyle(
-                      color: Color.fromRGBO(0, 0, 0, 0.87),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Montserrat',
-                      letterSpacing: 0.03,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
-                  child: Text(
-                    "${receipt.description}",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w300,
-                      fontFamily: 'Montserrat',
-                      letterSpacing: 0.03,
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  // )
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: RichText(
-                      textAlign: TextAlign.right,
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'Total: ',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w300,
-                              fontFamily: 'Montserrat',
-                              letterSpacing: 0.03,
-                            ),
-                          ),
-                          TextSpan(
-                            text: ' N${receipt.totalAmount} ',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w300,
-                              fontFamily: 'Montserrat',
-                              letterSpacing: 0.03,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
-        SizedBox(
-          height: 30,
-        ),
-      ],
+      ),
     );
   }
 
