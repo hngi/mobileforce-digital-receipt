@@ -18,25 +18,30 @@
 
 import 'dart:typed_data';
 
+import 'package:digital_receipt/models/account.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/providers/business.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:provider/provider.dart';
 
 Future<Uint8List> generatePdf(
-    {PdfPageFormat pageFormat, Receipt receipt}) async {
+    {PdfPageFormat pageFormat, Receipt receipt, AccountData accountData}) async {
   final lorem = pw.LoremText();
 
-  final invoice = Invoice(receipt);
+  final invoice = Invoice(receipt, accountData);
 
   return await invoice.buildPdf(pageFormat);
 }
 
 class Invoice {
   final Receipt receipt;
-  Invoice(this.receipt);
+  final AccountData accountData;
+  Invoice(this.receipt, this.accountData);
 
   static final _backgroundColor = PdfColor.fromHex('#F2F8FF');
   static const _lightColor = PdfColors.white;
@@ -166,6 +171,8 @@ class Invoice {
   }
 
   pw.Widget _contentHeaderTop() {
+    /* final AccountData businessInfo =
+      Provider.of<Business>(context, listen: false).accountData; */
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       mainAxisSize: pw.MainAxisSize.max,
@@ -185,7 +192,7 @@ class Invoice {
             //padding: const EdgeInsets.all(10),
             child: pw.Center(
           child: pw.Text(
-            'Geek Tutor',
+            accountData.name,
             style: pw.TextStyle(
               fontWeight: pw.FontWeight.bold,
               fontSize: 16,
@@ -197,7 +204,7 @@ class Invoice {
         ),
         pw.Center(
           child: pw.Text(
-            '2118 Thornridge Cir. Syracuse, Connecticut 35624',
+            accountData.address,
             textAlign: pw.TextAlign.center,
             style: pw.TextStyle(
                 color: PdfColors.black,
@@ -212,7 +219,7 @@ class Invoice {
         ),
         pw.Center(
           child: pw.Text(
-            'Tel No: (603) 555-0123',
+            'Tel No: ${accountData.phone}',
             style: pw.TextStyle(
                 color: PdfColors.black,
                 fontSize: 13,
@@ -226,7 +233,7 @@ class Invoice {
         ),
         pw.Center(
           child: pw.Text(
-            'Email: cfroschauerc@ucoz.ru',
+            'Email: ${accountData.email}',
             style: pw.TextStyle(
                 color: PdfColors.black,
                 fontSize: 13,
@@ -458,7 +465,7 @@ class Invoice {
                   child: pw.Container(
                 padding: const pw.EdgeInsets.fromLTRB(23, 0, 8, 0),
                 child: pw.Text(
-                  'X ${thisProduct.quantity}',
+                  'X${thisProduct.quantity}',
                   style: pw.TextStyle(
                     color: PdfColors.black,
                     fontSize: 14,
@@ -518,7 +525,7 @@ class Invoice {
               pw.Padding(
                 padding: const pw.EdgeInsets.only(top: 15.0),
                 child: pw.Text(
-                  _total.toString(),
+                  '₦${_total.toString()}',
                   style: pw.TextStyle(
                     color: PdfColors.black,
                     fontSize: 14,

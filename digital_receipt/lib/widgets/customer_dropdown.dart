@@ -28,7 +28,7 @@ class CustomerDropdown extends StatelessWidget {
                   color: Color(0xFFF2F8FF),
                 ),
                 height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width * 0.85,
+                width: MediaQuery.of(context).size.width -32,
                 child: Column(
                   children: <Widget>[
                     TextFormField(
