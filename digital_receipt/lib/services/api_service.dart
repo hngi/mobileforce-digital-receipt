@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:connectivity/connectivity.dart';
+import 'package:digital_receipt/services/send_receipt_service.dart';
+
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
-
-import 'package:flutter/foundation.dart';
+import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 import 'device_info_service.dart';
 import 'shared_preference_service.dart';
 import 'package:http/http.dart' as http;
@@ -93,6 +94,7 @@ class ApiService {
         _sharedPreferenceService.addStringToSF("AUTH_TOKEN", auth_token);
         _sharedPreferenceService.addStringToSF("EMAIL", email_address);
         //
+        print("token :");
         print(auth_token);
         print(userId);
         return "true";
@@ -250,6 +252,7 @@ class ApiService {
     return false;
   }
 
+
   Future changeLogo(String logo) async {
     var uri = Uri.parse('$_urlEndpoint/business/info/update');
     String token =
@@ -289,6 +292,7 @@ class ApiService {
     }
     return null;
   }
+
 
   Future<String> changePassword(
       String currentPassword, String newPassword) async {

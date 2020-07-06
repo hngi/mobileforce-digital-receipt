@@ -4,6 +4,8 @@ import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 class ProductDetail extends StatefulWidget {
   final Function(Product) onSubmit;
@@ -106,10 +108,10 @@ class _ProductDetailState extends State<ProductDetail> {
                           'Product added',
                           style: TextStyle(
                             fontFamily: 'Montserrat',
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.normal,
                             letterSpacing: 0.3,
-                            fontSize: 14,
-                            color: Color(0xFF219653),
+                            fontSize: 13,
+                            color: Color.fromRGBO(0, 0, 0, 0.6),
                           ),
                         ),
                       ),
@@ -138,14 +140,15 @@ class _ProductDetailState extends State<ProductDetail> {
                         textColor: Colors.white,
                       )
                     ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+                  ) 
+                  )
+                  )
+            )
+          ]
+        )
+      )
     );
+        
   }
 
   @override

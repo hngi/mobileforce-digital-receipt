@@ -1,4 +1,6 @@
-class Customer {
+import 'package:flutter/cupertino.dart';
+
+class Customer extends ChangeNotifier{
   String name;
   String email;
   String phoneNumber;
