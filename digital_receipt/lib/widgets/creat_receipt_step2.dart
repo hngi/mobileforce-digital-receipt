@@ -214,6 +214,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               height: 30,
             ),
             DropdownButtonFormField<String>(
+              value: fontVal,
               items: [
                 '100',
                 '200',
@@ -337,7 +338,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                         color: Colors.red,
                         onPressed: () {
                           setState(() {
-                            _hexCodeController.text = '#F14C4C';
+                            _hexCodeController.text = 'F14C4C';
                           });
                         },
                       ),
@@ -345,7 +346,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                         color: Color(0xFF539C30),
                         onPressed: () {
                           setState(() {
-                            _hexCodeController.text = '#539C30';
+                            _hexCodeController.text = '539C30';
                           });
                         },
                       ),
@@ -353,7 +354,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                         color: Color(0xFF2C33D5),
                         onPressed: () {
                           setState(() {
-                            _hexCodeController.text = '#2C33D5';
+                            _hexCodeController.text = '2C33D5';
                           });
                         },
                       ),
@@ -361,7 +362,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                         color: Color(0xFFE7D324),
                         onPressed: () {
                           setState(() {
-                            _hexCodeController.text = '#E7D324';
+                            _hexCodeController.text = 'E7D324';
                           });
                         },
                       ),
@@ -369,7 +370,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                         color: Color(0xFFC022B1),
                         onPressed: () {
                           setState(() {
-                            _hexCodeController.text = '#C022B1';
+                            _hexCodeController.text = 'C022B1';
                           });
                         },
                       ),

@@ -1,3 +1,4 @@
+import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/screens/account_page.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';
@@ -67,6 +68,9 @@ class MyApp extends StatelessWidget {
           ),
           ChangeNotifierProvider(
             create: (context) => Receipt(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Customer(),
           ),
         ],
         child: MaterialApp(
@@ -214,7 +218,7 @@ class _ScreenControllerState extends State<ScreenController> {
             // return Otp(email: "francis@francis.francis",);
           } else {
 	    // return Otp(email: "francis@francis.francis",);
-           return HomePage();
+           return LogInScreen();
           }
         });
   }

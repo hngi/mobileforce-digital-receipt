@@ -10,6 +10,7 @@ class AppTextFieldForm extends StatelessWidget {
       this.validator,
       this.hintColor,
       this.borderWidth,
+      this.onTap,
       this.onSaved});
 
   final String hintText;
@@ -20,6 +21,7 @@ class AppTextFieldForm extends StatelessWidget {
   final double borderWidth;
   final Function(String) validator;
   final Function onSaved;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class AppTextFieldForm extends StatelessWidget {
       ),
       validator: validator,
       onSaved: onSaved,
+      onTap: onTap,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.all(15),
         enabledBorder: OutlineInputBorder(

@@ -500,8 +500,13 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     ),
                   ),
                   Switch(
-                    value: false,
-                    onChanged: (val) {},
+                    value: Provider.of<Receipt>(context, listen: false).enableSaveCustomer(),
+                    onChanged: (val) {
+                      setState(() {
+                         Provider.of<Receipt>(context,listen: false).toggleSaveCustomer();
+                      });
+                     
+                    },
                   ),
                 ],
               ),
