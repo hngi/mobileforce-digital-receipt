@@ -1,23 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
-import 'package:digital_receipt/services/send_receipt_service.dart';
-
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
-import 'package:path/path.dart';
-import 'package:provider/provider.dart';
 import 'device_info_service.dart';
 import 'shared_preference_service.dart';
 import 'package:http/http.dart' as http;
 import '../models/account.dart';
 
 import '../models/receipt.dart';
-import 'device_info_service.dart';
-import 'shared_preference_service.dart';
-import 'package:http/http.dart' as http;
 import 'package:digital_receipt/models/receipt.dart';
 
 class ApiService {
