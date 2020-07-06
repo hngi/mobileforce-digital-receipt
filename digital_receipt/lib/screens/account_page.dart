@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:digital_receipt/screens/change_password_screen.dart';
@@ -39,7 +40,7 @@ class _AccountPageState extends State<AccountPage> {
       logo: '',
       email: loading_text);
 
-  File image;
+  String image;
 
   final picker = ImagePicker();
 
@@ -49,24 +50,18 @@ class _AccountPageState extends State<AccountPage> {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        image = File(pickedFile.path);
+        image = pickedFile.path;
       });
+      //  var res = await _apiService.changeLogo(pickedFile.path);
     }
-
   }
 
   callFetch() async {
     var res = await _apiService.fetchAndSetUser();
     Provider.of<Business>(context, listen: false).setAccountData = res;
-    /* setState(() {
-       x.id = res?.id;
-      x.name = res?.name;
-      x.phone = res?.phone;
-      x.address = res?.address;
-      x.slogan = res?.slogan;
-      x.logo = res?.logo;
-      x.email = res?.email ?? '';
-    }); */
+    var val = Provider.of<Business>(context, listen: false).toJson();
+    _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
+    print(val);
   }
 
   @override
@@ -142,22 +137,18 @@ class _AccountPageState extends State<AccountPage> {
                 children: <Widget>[
                   InkWell(
                     child: Container(
-                      height: 50,
-                      constraints: BoxConstraints(
-                        maxWidth: 74,
-                      ),
-                      //width: 65,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: image == null
-                          ? Image.network(
-                              Provider.of<Business>(context).accountData.logo)
-                          : Image.file(
-                              image,
-                              fit: BoxFit.cover,
-                            ),
-                    ),
+                        height: 50,
+                        constraints: BoxConstraints(
+                          maxWidth: 74,
+                        ),
+                        //width: 65,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: image == null
+                            ? Image.network(
+                                Provider.of<Business>(context).accountData.logo)
+                            : Image.asset(image)),
                     onTap: getImage,
                   ),
                   Container(
@@ -165,7 +156,9 @@ class _AccountPageState extends State<AccountPage> {
                     width: 20,
                     decoration: BoxDecoration(color: Color(0xFFE7ECF1)),
                     child: InkWell(
-                        onTap: () {},
+                        onTap: () async {
+                          await getImage();
+                        },
                         child: Icon(
                           Icons.edit,
                           color: Colors.black,
