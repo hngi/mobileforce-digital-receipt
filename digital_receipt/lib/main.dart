@@ -218,7 +218,7 @@ class _ScreenControllerState extends State<ScreenController> {
             // return Otp(email: "francis@francis.francis",);
           } else {
 	    // return Otp(email: "francis@francis.francis",);
-           return OnboardingPage();
+           return HomePage();
           }
         });
   }
