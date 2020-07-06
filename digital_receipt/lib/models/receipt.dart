@@ -190,7 +190,7 @@ class Receipt extends ChangeNotifier {
 
   saveReceipt() async {
     var uri =
-        "https://digital-receipt-07.herokuapp.com/v1/business/receipt/customize";
+        "https://degeit-receipt.herokuapp.com/v1/business/receipt/customize";
     var token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
 
     var response = await http.post(uri,
