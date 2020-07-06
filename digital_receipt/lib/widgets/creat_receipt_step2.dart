@@ -7,8 +7,10 @@ import 'package:digital_receipt/screens/receipt_screen.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/date_time_input_textField.dart';
+import 'package:digital_receipt/widgets/loading.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -37,7 +39,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
 
   TextEditingController _dateTextController = TextEditingController();
   TextEditingController _receiptNumberController = TextEditingController();
-  TextEditingController _hexCodeController = TextEditingController();
+  TextEditingController _hexCodeController = TextEditingController()..text = "F14C4C";
 
   bool autoReceiptNo = true;
   String fontVal = "100";
@@ -49,24 +51,29 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
     super.initState();
   }
 
-    Future getImageSignature() async {
+  Future getImageSignature() async {
     PermissionStatus status = await Permission.storage.status;
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
     print("file size is :");
     print(File(pickedFile.path).lengthSync());
-    if(pickedFile != null) {
+    if (pickedFile != null) {
       setState(() {
-        Provider.of<Receipt>(context,listen: false).setSignature(pickedFile.path);
+        Provider.of<Receipt>(context, listen: false)
+            .setSignature(pickedFile.path);
       });
     } else {
       print("no file");
     }
   }
 
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     _dateTextController.text = DateFormat('dd-MM-yyyy').format(date);
-    return SingleChildScrollView(
+    return isLoading == true
+            ? LoadingIndicator()
+            : SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -215,16 +222,12 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             ),
             DropdownButtonFormField<String>(
               value: fontVal,
-              items: [
-                '100',
-                '200',
-                '300',
-                '400',
-                '500'
-              ].map((val) => DropdownMenuItem(child: Text(val.toString()),
-              value: val,
-              )).toList(),
-
+              items: ['100', '200', '300', '400', '500']
+                  .map((val) => DropdownMenuItem(
+                        child: Text(val.toString()),
+                        value: val,
+                      ))
+                  .toList(),
               onChanged: (val) {
                 setState(() {
                   fontVal = val;
@@ -321,7 +324,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(width:12),
+                SizedBox(width: 12),
                 Text(_hexCodeController.text.toUpperCase()),
               ],
             ),
@@ -342,7 +345,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                           });
                         },
                       ),
-                              ColorButton(
+                      ColorButton(
                         color: Color(0xFF539C30),
                         onPressed: () {
                           setState(() {
@@ -415,10 +418,12 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   ),
                 ),
                 Checkbox(
-                  value: Provider.of<Receipt>(context, listen: false).enablePaidStamp(),
+                  value: Provider.of<Receipt>(context, listen: false)
+                      .enablePaidStamp(),
                   onChanged: (val) {
-                           setState(() {
-                      Provider.of<Receipt>(context,listen: false).togglePaidStamp();
+                    setState(() {
+                      Provider.of<Receipt>(context, listen: false)
+                          .togglePaidStamp();
                     });
                   },
                 )
@@ -439,10 +444,12 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   ),
                 ),
                 Switch(
-                  value:Provider.of<Receipt>(context,listen: false).enablePreset(),
+                  value: Provider.of<Receipt>(context, listen: false)
+                      .enablePreset(),
                   onChanged: (val) {
                     setState(() {
-                    Provider.of<Receipt>(context,listen: false).togglePreset();
+                      Provider.of<Receipt>(context, listen: false)
+                          .togglePreset();
                     });
                   },
                 ),
@@ -453,7 +460,38 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               height: 50,
               width: double.infinity,
               child: FlatButton(
-                onPressed: () {},
+                onPressed: () async{
+                  setState(() {
+                      isLoading = true;
+                    });
+                  var result = await Provider.of<Receipt>(context, listen: false)
+                      .saveReceipt();
+                  if (result == "successful") {
+                    setState(() {
+                      isLoading = false;
+                    });
+                    Fluttertoast.showToast(
+                        msg: "saved to Draft",
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.green,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  } else {
+                    setState(() {
+                      isLoading = false;
+                    });
+                    Fluttertoast.showToast(
+                        msg: "$result",
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  }
+                },
                 shape: RoundedRectangleBorder(
                     side: BorderSide(color: Color(0xFF0B57A7), width: 1.5),
                     borderRadius: BorderRadius.circular(5)),
@@ -488,7 +526,8 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                     .setIssueDate(_dateTextController.text);
                 Provider.of<Receipt>(context, listen: false)
                     .setColor(hexCode: _hexCodeController.text);
-                Provider.of<Receipt>(context,listen: false).setFont(int.parse(fontVal));
+                Provider.of<Receipt>(context, listen: false)
+                    .setFont(int.parse(fontVal));
                 Navigator.push(
                     context,
                     MaterialPageRoute(

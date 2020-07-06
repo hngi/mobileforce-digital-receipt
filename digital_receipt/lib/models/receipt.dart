@@ -189,25 +189,23 @@ class Receipt extends ChangeNotifier {
   }
 
   saveReceipt() async {
-
     var uri =
         "https://digital-receipt-07.herokuapp.com/v1/business/receipt/customize";
-    var token = await _sharedPreferenceService
-        .getStringValuesSF("AUTH_TOKEN");
+    var token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
 
     var response = await http.post(uri,
         body: json.encode(toJson()),
-        headers: {"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImNmZmRmNDQwLTJiNDctNDE5Zi1hNDdkLTE0NDFjYmY1ZmMyYiIsIm5hbWUiOiJwb29qIiwiZW1haWxfYWRkcmVzcyI6InBvb2ppdGhhMTIzQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoicG9vaiIsInJlZ2lzdHJhdGlvbl9pZCI6IjEyMzQ1Njc4OSIsImRldmljZVR5cGUiOiJhbmRyaW9kIiwiYWN0aXZlIjpmYWxzZSwiaXNfcHJlbWl1bV91c2VyIjpmYWxzZSwiZXhwIjoxNTk0MTI3MDgzfQ.VjdSX5fXF4l_56SJ2WFkmxVDBv81n7x9QTBvhNTibfM", "Content-Type": "application/json"});
+        headers: {"token": token, "Content-Type": "application/json"});
 
     print("3");
     if (response.statusCode == 200) {
       print("successful");
+      return "successful";
     } else {
       print("failed");
-
+      return "failed";
     }
   }
-
 }
 
 List<Receipt> dummyReceiptList = [
