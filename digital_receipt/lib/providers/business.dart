@@ -18,4 +18,16 @@ class Business extends ChangeNotifier {
     print(accountData.address);
     notifyListeners();
   }
+
+  toJson() {
+    return <String, dynamic>{
+      'id': accountData.id,
+      'name': accountData.name,
+      'phone': accountData.phone,
+      'address': accountData.address,
+      'slogan': accountData.slogan,
+      'logo': '',
+      'email': accountData.email,
+    };
+  }
 }
