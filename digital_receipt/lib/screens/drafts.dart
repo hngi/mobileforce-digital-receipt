@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
+import '../constant.dart';
 import '../models/receipt.dart';
 import '../services/api_service.dart';
 
@@ -20,16 +20,7 @@ class _DraftsState extends State<Drafts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Color(0xffE5E5E5),
       appBar: AppBar(
-        //backgroundColor: Color(0xff226EBE),
-        /* leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ), */
         title: Text(
           "Drafts",
           style: TextStyle(
@@ -45,19 +36,11 @@ class _DraftsState extends State<Drafts> {
       body: FutureBuilder(
           future: _apiService.getDraftReciepts(), // receipts from API
           builder: (context, snapshot) {
-            // If the API returns nothing it means the user has to upgrade to premium
-            // for now it doesn't validate if the user has upgraded to premium
-            /// If the API returns nothing it shows the dialog box `JUST FOR TESTING`
-            ///
-            /// Uncomment the if statement
-            // if (!snapshot.hasData) {
-            // return Center(
-            //   child: Text("There are no draft receipts created"),
-            // );
-            // } else {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                child: CircularProgressIndicator(strokeWidth: 1.5,),
+                child: CircularProgressIndicator(
+                  strokeWidth: 1.5,
+                ),
               );
             } else if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {
@@ -87,7 +70,10 @@ class _DraftsState extends State<Drafts> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Image.asset("assets/images/heartbroken 1.png"),
+                      SizedBox(
+                        child: kBrokenHeart,
+                        height: 170,
+                      ),
                       SizedBox(
                         height: 20,
                       ),
