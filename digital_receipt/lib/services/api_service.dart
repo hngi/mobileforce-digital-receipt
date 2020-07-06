@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:connectivity/connectivity.dart';
 import 'package:digital_receipt/services/send_receipt_service.dart';
 
 import 'package:dio/adapter.dart';
