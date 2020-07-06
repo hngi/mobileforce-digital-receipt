@@ -325,6 +325,24 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                             });
                           }
                         },
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(15),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            borderSide: BorderSide(
+                              color: Color(0xFFC8C8C8),
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(),
+                          //hintText: hintText,
+                          hintStyle: TextStyle(
+                            color: Color(0xFF979797),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'Montserrat',
+                          ),
+                        ),
                       ),
                       SizedBox(
                         height: 22,
@@ -343,6 +361,24 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                       TextFormField(
                         readOnly: true,
                         controller: _time,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(15),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            borderSide: BorderSide(
+                              color: Color(0xFFC8C8C8),
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(),
+                          //hintText: hintText,
+                          hintStyle: TextStyle(
+                            color: Color(0xFF979797),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'Montserrat',
+                          ),
+                        ),
                         onTap: () async {
                           final TimeOfDay timePicked = await showTimePicker(
                               context: context, initialTime: time);
