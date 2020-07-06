@@ -41,7 +41,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
 
   @override
   Widget build(BuildContext context) {
-        if (date != null && time != null) {
+    if (date != null && time != null) {
       _date.text = DateFormat('dd-MM-yyyy').format(date);
       _time.text = time.format(context);
     }
@@ -131,7 +131,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                       },
                     ),
                     backgroundColor: Colors.transparent,
-                    isScrollControlled: true,
+                    isScrollControlled: false,
 
                     //barrierColor: Colors.red
                   );
@@ -242,7 +242,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                     key: Key(thisProduct.id),
                     child: ProductItem(
                       title: thisProduct.productDesc,
-                      amount: '₦'+'${thisProduct.amount}',
+                      amount: '₦' + '${thisProduct.amount}',
                       index: index,
                     ),
                   );
@@ -261,11 +261,13 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   ),
                 ),
                 Switch(
-                  value: Provider.of<Receipt>(context,listen: false).enablePartPayment(),
+                  value: Provider.of<Receipt>(context, listen: false)
+                      .enablePartPayment(),
                   onChanged: (val) {
                     setState(() {
                       _partPayment = val;
-                      Provider.of<Receipt>(context,listen: false).togglPartPayment();
+                      Provider.of<Receipt>(context, listen: false)
+                          .togglPartPayment();
                     });
                   },
                 ),
@@ -306,22 +308,20 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                       ),
                       SizedBox(height: 5),
                       TextFormField(
-                        readOnly:true,
+                        readOnly: true,
                         controller: _date,
                         onTap: () async {
                           final DateTime datePicked = await showDatePicker(
                               context: context,
                               initialDate: date,
                               firstDate: date.add(Duration(days: -5)),
-                              lastDate: date.add(Duration(days: 365))
-                              );
-
+                              lastDate: date.add(Duration(days: 365)));
 
                           if (datePicked != null && datePicked != date) {
                             setState(() {
                               date = datePicked;
-                              
-                                  print(date);
+
+                              print(date);
                             });
                           }
                         },
@@ -341,7 +341,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                       ),
                       SizedBox(height: 5),
                       TextFormField(
-                        readOnly:true,
+                        readOnly: true,
                         controller: _time,
                         onTap: () async {
                           final TimeOfDay timePicked = await showTimePicker(
@@ -350,7 +350,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                             setState(() {
                               time = timePicked;
                               time.format(context);
-                                  print(time);
+                              print(time);
                             });
                           }
                         },
@@ -363,10 +363,10 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             ),
             SubmitButton(
               onPressed: () {
-                   Provider.of<Receipt>(context, listen: false)
-                                  .setReminderTime(time);
                 Provider.of<Receipt>(context, listen: false)
-                                  .setReminderDate(date);
+                    .setReminderTime(time);
+                Provider.of<Receipt>(context, listen: false)
+                    .setReminderDate(date);
                 Provider.of<Receipt>(context, listen: false)
                     .setProducts(products);
                 widget.carouselController.animateToPage(2);
