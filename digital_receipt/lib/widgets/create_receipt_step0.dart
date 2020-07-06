@@ -5,6 +5,7 @@ import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
+import 'package:digital_receipt/widgets/customer_dropdown.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -298,12 +299,25 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
 */
               GestureDetector(
                 onTap: () {
-                  _selectCustomerDropdown(
+                  /* _selectCustomerDropdown(
                     context,
                     onSubmit: (customer) {
                       setState(() {
                         selectedCustomer = customer;
                       });
+                    },
+                  ); */
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CustomerDropdown(
+                        customers: customers,
+                        onSubmit: (customer) {
+                          setState(() {
+                            selectedCustomer = customer;
+                          });
+                        },
+                      );
                     },
                   );
                 },
@@ -601,63 +615,58 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5), color: Color(0xFFF2F8FF)),
-        height: 500,
-        width: 500,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                decoration: InputDecoration(
-                  hintText: "Search customer",
-                  hintStyle: TextStyle(
-                      color: Color.fromRGBO(0, 0, 0, 0.38),
-                      fontFamily: 'Montserrat'),
-                  prefixIcon: IconButton(
-                    icon: Icon(Icons.search),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: <Widget>[
+            TextFormField(
+              decoration: InputDecoration(
+                hintText: "Search customer",
+                hintStyle: TextStyle(
                     color: Color.fromRGBO(0, 0, 0, 0.38),
-                    onPressed: () {},
+                    fontFamily: 'Montserrat'),
+                prefixIcon: IconButton(
+                  icon: Icon(Icons.search),
+                  color: Color.fromRGBO(0, 0, 0, 0.38),
+                  onPressed: () {},
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: BorderSide(
+                    color: Color.fromRGBO(0, 0, 0, 0.12),
+                    width: 1,
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                    borderSide: BorderSide(
-                      color: Color.fromRGBO(0, 0, 0, 0.12),
-                      width: 1,
-                    ),
-                  ),
-                  contentPadding: EdgeInsets.all(15),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                    borderSide: BorderSide(
-                      color: Color(0xFFC8C8C8),
-                      width: 1.5,
-                    ),
+                ),
+                contentPadding: EdgeInsets.all(15),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: BorderSide(
+                    color: Color(0xFFC8C8C8),
+                    width: 1.5,
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-              Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: customers.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        onSubmit(customers[index]);
-                        Navigator.pop(context);
-                      },
-                      child: ContactCard(
-                          receiptTitle: customers[index].name,
-                          subtitle: customers[index].phoneNumber),
-                    );
-                  },
-                ),
+            ),
+            SizedBox(height: 20),
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: customers.length,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      onSubmit(customers[index]);
+                      Navigator.pop(context);
+                    },
+                    child: ContactCard(
+                      receiptTitle: customers[index].name,
+                      subtitle: customers[index].phoneNumber,
+                    ),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

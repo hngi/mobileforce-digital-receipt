@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:digital_receipt/services/send_receipt_service.dart';
+
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -251,34 +252,46 @@ class ApiService {
     return false;
   }
 
-  AccountData user = AccountData(
-      id: '',
-      name: '',
-      phone: '',
-      address: '',
-      slogan: '',
-      logo: '',
-      email: '');
-  List<AccountData> _users = [];
 
-  void setData(AccountData x) {
-    user.id = x.id;
-    user.name = x.name;
-    user.phone = x.phone;
-    user.address = x.address;
-    user.slogan = x.slogan;
-    user.logo = x.logo;
-    x.email != null ? user.email = x.email : user.email = 'custom@mail.com';
-    print(user.name);
+  Future changeLogo(String logo) async {
+    var uri = Uri.parse('$_urlEndpoint/business/info/update');
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    String businessId =
+        await _sharedPreferenceService.getStringValuesSF('Business_ID');
+    print(businessId);
+    /* var response = await http.put(
+      uri,
+      headers: <String, String>{
+        "token": token,
+      },
+      body: {"logo": logo, 'businessId': businessId},
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+    return null; */
+
+    var request = http.MultipartRequest('PUT', uri);
+
+    print(logo);
+
+    request.headers['token'] = token;
+    request.fields['businessId'] = businessId;
+    request.files.add(
+      await http.MultipartFile.fromPath("logo", logo),
+    );
+
+    var response = await request.send();
+    print('code: ${response.statusCode}');
+    var res = await response.stream.bytesToString();
+    print(res);
+    if (response.statusCode == 200) {
+      return res;
+    }
+    return null;
   }
-
-  //Get user by Id
-  Future<void> findById() async {
-    await fetchAndSetUser();
-    var x = _users.firstWhere((element) => element.id == userID);
-    setData(x);
-  }
-
 
 
   Future<String> changePassword(
@@ -322,21 +335,40 @@ class ApiService {
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
     String userID = await _sharedPreferenceService.getStringValuesSF('USER_ID');
-    print(token);
-    var response = await http.get(
-      url,
-      headers: <String, String>{
-        'token': token,
-      },
-    );
 
-    dynamic res = jsonDecode(response.body)['data'] as List<dynamic>;
-    //print(res.length);
     var email = await _sharedPreferenceService.getStringValuesSF('EMAIL');
 
-    if (response.statusCode == 200) {
-      res = res.singleWhere((e) => e['user'] == userID);
+    var connectivityResult = await (Connectivity().checkConnectivity());
 
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      var response = await http.get(
+        url,
+        headers: <String, String>{
+          'token': token,
+        },
+      );
+
+      dynamic res = jsonDecode(response.body)['data'] as List<dynamic>;
+
+      if (response.statusCode == 200) {
+        res = res.singleWhere((e) => e['user'] == userID);
+
+        return AccountData(
+          id: res['id'],
+          name: res['name'],
+          phone: res['phone_number'],
+          address: res['address'],
+          slogan: res['slogan'],
+          logo: 'https://degeit-receipt.herokuapp.com${res['logo']}',
+          email: email,
+        );
+      }
+      return null;
+    } else {
+      var result =
+          await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
+      var res = jsonDecode(result);
       return AccountData(
         id: res['id'],
         name: res['name'],
@@ -347,7 +379,6 @@ class ApiService {
         email: email,
       );
     }
-    return null;
   }
 
   Future<String> otpVerification(String email, password, name) async {
