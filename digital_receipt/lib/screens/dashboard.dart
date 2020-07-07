@@ -57,6 +57,7 @@ Map<String, dynamic> recInfo(var snapshot){
       if(data['partPayment']){
 
       deptIssued += 1;
+      
       }
       print(data['total']);
     } 

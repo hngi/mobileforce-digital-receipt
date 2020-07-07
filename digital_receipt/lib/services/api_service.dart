@@ -506,8 +506,7 @@ class ApiService {
   }
 
     Future<Map<String,dynamic>> getIssuedReceipt2() async {
-    //String token = await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
-    String token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImZjNmNmMzIzLTBjY2EtNGYxMy1iNjdiLTM3MjQ4ZjIwMWYzNyIsIm5hbWUiOiJmcm96ZW4iLCJlbWFpbF9hZGRyZXNzIjoiZnJvemVuMTJAZ21haWwuY29tIiwicGFzc3dvcmQiOiJwYmtkZjJfc2hhMjU2JDE4MDAwMCRjTnBiSmRRV3pHNkkkUFJhak9EaU5rc2pxR0Z6K0J6Ym9ML1dMb0ZhaHB6K01VRHlsTFBVSWV6bz0iLCJyZWdpc3RyYXRpb25faWQiOm51bGwsImRldmljZVR5cGUiOm51bGwsImFjdGl2ZSI6ZmFsc2UsImlzX3ByZW1pdW1fdXNlciI6ZmFsc2UsImV4cCI6MTU5NDc0MjIwNX0.DxtHqM3m86jtk6ZSj21LbeTh9oewrQnXq6G9AdItPuk';
+    String token = await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
     var connectivityResult = await (Connectivity().checkConnectivity());
     String url = '$_urlEndpoint/business/receipt/issued';
     if (connectivityResult == ConnectivityResult.mobile ||
