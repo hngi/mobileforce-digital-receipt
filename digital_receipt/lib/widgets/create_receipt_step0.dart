@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
+import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/customer_dropdown.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
@@ -42,8 +43,11 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
 
   String _customerName, _customerEmail, _customerAddress, _customerPNumber;
 
+  
+
   @override
   void initState() {
+  
     super.initState();
   }
 
@@ -304,15 +308,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
 */
               GestureDetector(
-                onTap: () {
-                  /* _selectCustomerDropdown(
-                    context,
-                    onSubmit: (customer) {
-                      setState(() {
-                        selectedCustomer = customer;
-                      });
-                    },
-                  ); */
+                onTap: () async {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {

@@ -1,5 +1,9 @@
+import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/screens/customer_list_detail.dart';
+
+import 'package:digital_receipt/services/api_service.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -14,9 +18,14 @@ class CustomerList extends StatefulWidget {
 class _CustomerListState extends State<CustomerList> {
   String dropdownValue = "Last Upadated";
 
+
+  ApiService _apiService = ApiService();
+
+
   @override
   void initState() {
     super.initState();
+
   }
 
   @override
@@ -38,19 +47,26 @@ class _CustomerListState extends State<CustomerList> {
         ),
         //centerTitle: true,
       ),
+
       body: FutureBuilder(
-        future: null, // receipts from API
+        future: _apiService.getAllCustomers(), // receipts from API
+
         builder: (context, snapshot) {
           // If the API returns nothing it means the user has to upgrade to premium
           // for now it doesn't validate if the user has upgraded to premium
           /// If the API returns nothing it shows the dialog box `JUST FOR TESTING`
           ///
 
+         // print(snapshot.data);
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                strokeWidth: 1.5,
+              ),
             );
-          } else {
+          } else if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.hasData &&
+              snapshot.data.length > 0) {
             return Padding(
               padding: EdgeInsets.only(top: 15.0, left: 16, right: 16),
               child: Column(
@@ -59,7 +75,9 @@ class _CustomerListState extends State<CustomerList> {
                   TextFormField(
                     decoration: InputDecoration(
                       hintText: "Type a keyword",
-                      hintStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.38),),
+                      hintStyle: TextStyle(
+                        color: Color.fromRGBO(0, 0, 0, 0.38),
+                      ),
                       prefixIcon: IconButton(
                         icon: Icon(Icons.search),
                         color: Color.fromRGBO(0, 0, 0, 0.38),
@@ -132,17 +150,44 @@ class _CustomerListState extends State<CustomerList> {
                   SizedBox(height: 20.0),
                   Flexible(
                     child: ListView.builder(
-                      itemCount: 25,
+                      itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
-                        // HardCoded Receipt details
                         return customer(
-                          customerName: "Carole Froschauer",
-                          customerEmail: "caroFro@gmail.com",
-                          phoneNumber: "741-142-4459",
-                          numberOfReceipts: 4,
+                          customerName: snapshot.data[index]['name'],
+                          customerEmail: snapshot.data[index]['email'],
+                          phoneNumber: snapshot.data[index]['phoneNumber'],
+                          // numberOfReceipts: 0,
                         );
                       },
                     ),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  kBrokenHeart,
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Center(
+                    child: Text(
+                      "You don't have any customer!",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 16,
+                        letterSpacing: 0.3,
+                        color: Color.fromRGBO(0, 0, 0, 0.87),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
                   ),
                 ],
               ),
@@ -263,7 +308,7 @@ class _CustomerListState extends State<CustomerList> {
                                     letterSpacing: 0.03,
                                   ),
                                 ),
-                                Text(
+                                /* Text(
                                   "$numberOfReceipts Receipts",
                                   style: TextStyle(
                                     color: Color.fromRGBO(0, 0, 0, 0.6),
@@ -272,7 +317,7 @@ class _CustomerListState extends State<CustomerList> {
                                     fontFamily: 'Montserrat',
                                     letterSpacing: 0.03,
                                   ),
-                                ),
+                                ), */
                               ],
                             ),
                           ),

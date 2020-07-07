@@ -1,9 +1,10 @@
+import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/screens/forgot_password.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:digital_receipt/widgets/loading.dart';
+import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 
@@ -24,8 +25,40 @@ class _LogInScreenState extends State<LogInScreen> {
   bool isLoading = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  String _cachedEmailText;
+  Future<dynamic> _emailTextFuture;
+  Widget _futureEMAILText;
 
   ApiService _apiService = ApiService();
+  static SharedPreferenceService _sharedPreferenceService =
+      SharedPreferenceService();
+
+  @override
+  void initState() {
+    super.initState();
+    _emailTextFuture = _sharedPreferenceService.getStringValuesSF('EMAIL');
+
+    //This widget had to be built in the initState method to prevent rebuild
+    //when setState method is called when the user toggles the visisbility of the
+    //password field. This rebuild clears the text in the email field.
+    _futureEMAILText = FutureBuilder(
+      future: _emailTextFuture,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        Widget _emptywidget = _builldTextFormFiled('');
+        _cachedEmailText = snapshot.data == null ? ' ' : '${snapshot.data}';
+        Widget _dataWidget = _builldTextFormFiled(_cachedEmailText);
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _emptywidget;
+        } else {
+          if (snapshot.hasError)
+            return _emptywidget;
+          else
+            return _dataWidget;
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,32 +122,7 @@ class _LogInScreenState extends State<LogInScreen> {
                   SizedBox(
                     height: 5,
                   ),
-                  TextFormField(
-                    controller: _emailController,
-                    validator: Validators.compose([
-                      Validators.required('Input Email Address'),
-                      Validators.email('Invalid Email Address'),
-                    ]),
-                    style: TextStyle(
-                      color: Color(0xFF2B2B2B),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Montserrat',
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(15),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                        borderSide: BorderSide(
-                          color: Color(0xFFC8C8C8),
-                          width: 1,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(),
-                      errorStyle: TextStyle(height: 0.5),
-                    ),
-                  ),
+                  _futureEMAILText,
                   SizedBox(
                     height: 20,
                   ),
@@ -132,7 +140,7 @@ class _LogInScreenState extends State<LogInScreen> {
                   ),
                   TextFormField(
                     controller: _passwordController,
-                    validator: Validators.compose([
+                   /*  validator: Validators.compose([
                       Validators.required('Input Password'),
                       Validators.minLength(
                           8, 'Minimum of 8 characters required for Password'),
@@ -144,7 +152,7 @@ class _LogInScreenState extends State<LogInScreen> {
                           'Password should contain at least a Digit'),
                       Validators.patternRegExp(kOneSpecialCharRegex,
                           'Password should contain at least a Special Character')
-                    ]),
+                    ]), */
                     style: TextStyle(
                       color: Color(0xFF2B2B2B),
                       fontSize: 14,
@@ -210,8 +218,18 @@ class _LogInScreenState extends State<LogInScreen> {
                             isLoading = true;
                           });
 
+                          String emailString;
+                          if (_cachedEmailText != null) {
+                            if (_emailController.text.isNotEmpty)
+                              emailString = _emailController.text;
+                            else
+                              emailString = _cachedEmailText;
+                          } else {
+                            emailString = _emailController.text;
+                          }
+                          print(emailString);
                           String api_response = await _apiService.loginUser(
-                            _emailController.text,
+                            emailString,
                             _passwordController.text,
                           );
                           if (api_response == "true") {
@@ -429,6 +447,37 @@ class _LogInScreenState extends State<LogInScreen> {
               ),
             ),
             color: Colors.black),
+      ),
+    );
+  }
+
+  Widget _builldTextFormFiled(String text) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _emailController.text = text);
+    return TextFormField(
+      controller: _emailController,
+      validator: Validators.compose([
+        Validators.required('Input Email Address'),
+        Validators.email('Invalid Email Address'),
+      ]),
+      style: TextStyle(
+        color: Color(0xFF2B2B2B),
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        fontFamily: 'Montserrat',
+      ),
+      keyboardType: TextInputType.emailAddress,
+      decoration: InputDecoration(
+        hintText: text,
+        contentPadding: EdgeInsets.all(15),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: BorderSide(
+            color: Color(0xFFC8C8C8),
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(),
+        errorStyle: TextStyle(height: 0.5),
       ),
     );
   }
