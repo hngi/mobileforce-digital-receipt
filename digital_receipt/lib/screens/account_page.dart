@@ -29,6 +29,7 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   final String username = "Geek Tutor";
+  String label;
   bool _loading = false;
   static String loading_text = "loading ...";
   var x = AccountData(
@@ -52,16 +53,20 @@ class _AccountPageState extends State<AccountPage> {
       setState(() {
         image = pickedFile.path;
       });
-      //  var res = await _apiService.changeLogo(pickedFile.path);
+      var res = await _apiService.changeLogo(pickedFile.path);
+      print(res);
     }
+    print('nope imahe');
   }
 
   callFetch() async {
     var res = await _apiService.fetchAndSetUser();
-    Provider.of<Business>(context, listen: false).setAccountData = res;
-    var val = Provider.of<Business>(context, listen: false).toJson();
-    _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
-    print(val);
+    if (res != null) {
+      Provider.of<Business>(context, listen: false).setAccountData = res;
+      var val = Provider.of<Business>(context, listen: false).toJson();
+      _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
+      print(val);
+    }
   }
 
   @override

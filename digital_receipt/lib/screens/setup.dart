@@ -178,6 +178,7 @@ class _SetupState extends State<Setup> {
             height: 1.43,
             fontFamily: 'Montserrat',
           ),
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(15),
             border: OutlineInputBorder(

@@ -49,7 +49,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
 
   @override
   Widget build(BuildContext context) {
-  // SendReceiptService srs = Provider.of<SendReceiptService>(context);
+    // SendReceiptService srs = Provider.of<SendReceiptService>(context);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -162,6 +162,13 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     color: Color(0xFF1B1B1B),
                   ),
                 ),
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.normal,
+                  letterSpacing: 0.3,
+                  fontSize: 16,
+                  color: Color(0xFF1B1B1B),
+                ),
                 items: [
                   DropdownMenuItem(
                     value: ReceiptCategory.WHATSAPP,
@@ -179,12 +186,11 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     value: ReceiptCategory.TWITTER,
                     child: Text('Twitter'),
                   ),
-              
                   DropdownMenuItem(
                     value: ReceiptCategory.REDIT,
                     child: Text('Redit'),
                   ),
-                      DropdownMenuItem(
+                  DropdownMenuItem(
                     value: ReceiptCategory.OTHERS,
                     child: Text('Others'),
                   ),
@@ -514,12 +520,13 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     ),
                   ),
                   Switch(
-                    value: Provider.of<Receipt>(context, listen: false).enableSaveCustomer(),
+                    value: Provider.of<Receipt>(context, listen: false)
+                        .enableSaveCustomer(),
                     onChanged: (val) {
                       setState(() {
-                         Provider.of<Receipt>(context,listen: false).toggleSaveCustomer();
+                        Provider.of<Receipt>(context, listen: false)
+                            .toggleSaveCustomer();
                       });
-                     
                     },
                   ),
                 ],

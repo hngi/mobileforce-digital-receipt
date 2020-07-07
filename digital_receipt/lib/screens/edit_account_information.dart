@@ -135,6 +135,7 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
   }
   @override
   Widget build(BuildContext context) {
+    var initData = Provider.of<Business>(context).accountData;
     return Form(
       key: _formKey,
       //autovalidate: true,
@@ -150,19 +151,23 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
                 height: 1.43),
           ),
           _buildInputField(
+            initialValue: initData.name,
             label: 'Business name',
             onSaved: (String value) => name = value,
           ),
           _buildInputField(
+            initialValue: initData.phone,
             label: 'Phone number',
             keyboardType: TextInputType.phone,
             onSaved: (String value) => phoneNumber = value,
           ),
           _buildInputField(
+            initialValue: initData.address,
             label: 'Address',
             onSaved: (String value) => address = value,
           ),
           _buildInputField(
+            initialValue: initData.slogan,
             label: 'Business slogan (optional)',
             onSaved: (String value) => slogan = value,
           ),
@@ -198,7 +203,7 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
                     address: res['data']['address'],
                     slogan: res['data']['slogan'],
                     logo:
-                        'https://degeit-receipt.herokuapp.com${res['data']['logo']}',
+                        'https://hng-degeit-receipt.herokuapp.com${res['data']['logo']}',
                     email: email,
                   );
                   setState(() {

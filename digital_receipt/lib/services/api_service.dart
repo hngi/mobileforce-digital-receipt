@@ -15,7 +15,7 @@ import 'package:digital_receipt/models/receipt.dart';
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
-  static String _urlEndpoint = "https://degeit-receipt.herokuapp.com/v1";
+  static String _urlEndpoint = "https://hng-degeit-receipt.herokuapp.com/v1";
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();
@@ -166,7 +166,7 @@ class ApiService {
     if (response.statusCode == 200) {
       //set the token to null
       _sharedPreferenceService.addStringToSF("AUTH_TOKEN", 'empty');
-
+      _sharedPreferenceService.addStringToSF("USER_ID", null);
       _sharedPreferenceService.addStringToSF('BUSINESS_INFO', null);
       print('done');
 
@@ -343,13 +343,36 @@ class ApiService {
           'token': token,
         },
       );
-      print(response.statusCode);
+      print(userID);
+      print(jsonDecode(response.body)['data']);
 
-      dynamic res = jsonDecode(response.body)['data'] as List<dynamic>;
+      dynamic res = jsonDecode(response.body)['data'] as List;
 
       if (response.statusCode == 200) {
-        res = res.singleWhere((e) => e['user'] == userID);
-
+        print(response.statusCode);
+        res = res.firstWhere(
+          (e) => e['user'] == userID,
+          orElse: () {
+            print('object');
+          },
+        );
+        print('res: $res');
+        if (res != null) {
+          return AccountData(
+            id: res['id'],
+            name: res['name'],
+            phone: res['phone_number'],
+            address: res['address'],
+            slogan: res['slogan'],
+            logo: 'https://hng-degeit-receipt.herokuapp.com${res['logo']}',
+            email: email,
+          );
+        }
+        return null;
+      } else {
+        var result =
+            await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
+        var res = jsonDecode(result);
         return AccountData(
           id: res['id'],
           name: res['name'],
@@ -360,20 +383,8 @@ class ApiService {
           email: email,
         );
       }
-      return null;
     } else {
-      var result =
-          await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
-      var res = jsonDecode(result);
-      return AccountData(
-        id: res['id'],
-        name: res['name'],
-        phone: res['phone_number'],
-        address: res['address'],
-        slogan: res['slogan'],
-        logo: 'https://degeit-receipt.herokuapp.com${res['logo']}',
-        email: email,
-      );
+      return null;
     }
   }
 

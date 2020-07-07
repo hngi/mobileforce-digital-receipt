@@ -56,6 +56,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
     receiptPdfFuture = generatePdf(
       pageFormat: PdfPageFormat.a4,
       receipt: Provider.of<Receipt>(context, listen: false),
+      accountData: Provider.of<Business>(context, listen: false).accountData,
     );
   }
 
@@ -435,7 +436,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                             Padding(
                               padding: const EdgeInsets.only(top: 15.0),
                               child: Text(
-                                '₦',
+                                '₦'+Provider.of<Receipt>(context,listen: false).getTotal().toString(),
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
@@ -503,7 +504,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
     SizedBox(
       height: 45,
     ),
-    SizedBox(
+    /* SizedBox(
       width: double.infinity,
       height: 45,
       child: FlatButton(
@@ -530,7 +531,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
           Provider.of<Receipt>(context, listen: false).saveReceipt();
         },
       ),
-    ),
+    ), */
     SizedBox(
       height: 15,
     ),
@@ -554,7 +555,9 @@ Widget ReceiptScreenLayout([BuildContext context]) {
         ),
         onPressed: () async {
           //take this action
-          shareFile();
+          await shareFile();
+          Provider.of<Receipt>(context, listen: false).showJson();
+          Provider.of<Receipt>(context, listen: false).saveReceipt();
         },
       ),
     ),

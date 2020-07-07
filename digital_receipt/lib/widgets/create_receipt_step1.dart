@@ -39,6 +39,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
   final _time = TextEditingController();
   final _date = TextEditingController();
 
+  List pro = [];
+
   @override
   Widget build(BuildContext context) {
     if (date != null && time != null) {
@@ -127,11 +129,19 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                     context: context,
                     builder: (BuildContext context) => ProductDetail(
                       onSubmit: (product) {
-                        setState(() => products.add(product));
+                        setState(() {
+                          products.add(product);
+                          pro.add(product.amount);
+                        });
+
+                        ////////////////////////////
+                        
+                        // int total = pro.fold(0, (p, c) => p+c);
+                        // print('total: $total');
                       },
                     ),
                     backgroundColor: Colors.transparent,
-                    isScrollControlled: false,
+                    isScrollControlled: true,
 
                     //barrierColor: Colors.red
                   );
@@ -399,6 +409,14 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             ),
             SubmitButton(
               onPressed: () {
+                num sum = 0;
+                for (num e in pro) {
+                  sum += e;
+                }
+                print("sum: $sum");
+                
+                Provider.of<Receipt>(context, listen: false)
+                    .setTotal(sum);
                 Provider.of<Receipt>(context, listen: false)
                     .setReminderTime(time);
                 Provider.of<Receipt>(context, listen: false)

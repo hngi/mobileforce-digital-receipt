@@ -37,6 +37,7 @@ class Receipt extends ChangeNotifier {
   String signature;
   TimeOfDay reminderTime;
   DateTime reminderDate;
+  num total;
 
   Receipt({
     this.receiptNo,
@@ -48,8 +49,9 @@ class Receipt extends ChangeNotifier {
     this.fonts,
     this.customer,
     this.products,
+    this.total,
   });
-
+  static String _urlEndpoint = 'https://hng-degeit-receipt.herokuapp.com/v1';
   factory Receipt.fromJson(Map<String, dynamic> json) => Receipt(
         receiptNo:
             json["receipt_number"] == null ? null : json["receipt_number"],
@@ -83,6 +85,11 @@ class Receipt extends ChangeNotifier {
 
   bool enablePartPayment() {
     return partPayment;
+  }
+
+
+  num getTotal() {
+    return total;
   }
 
   void toggleAutoGenReceiptNo() {
@@ -132,7 +139,8 @@ class Receipt extends ChangeNotifier {
   void setProducts(List<Product> products) => this.products = products;
 
   void setNumber(int receiptNo) {
-    receiptNo = receiptNo;
+    this.customer != null ? print("theirs a customer") : print("no customer object good"); 
+    receiptNo = receiptNo;      
   }
 
   void setIssueDate(String date) {
@@ -153,6 +161,10 @@ class Receipt extends ChangeNotifier {
 
   void setReminderDate(DateTime date) {
     reminderDate = date;
+  }
+
+  void setTotal(num total) {
+    this.total = total;
   }
 
   convertToDateTime() {
@@ -189,8 +201,7 @@ class Receipt extends ChangeNotifier {
   }
 
   saveReceipt() async {
-    var uri =
-        "https://degeit-receipt.herokuapp.com/v1/business/receipt/customize";
+    var uri = "$_urlEndpoint/business/receipt/customize";
     var token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
 
     var response = await http.post(uri,
@@ -258,3 +269,7 @@ List<Receipt> dummyReceiptList = [
     category: ReceiptCategory.TWITTER,
   ),
 ];
+
+
+
+

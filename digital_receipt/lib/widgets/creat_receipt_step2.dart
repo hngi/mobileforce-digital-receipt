@@ -239,12 +239,12 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                         fontVal = val;
                       });
                     },
-                    style:  TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Montserrat',
-                      ),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Montserrat',
+                    ),
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(15),
                       enabledBorder: OutlineInputBorder(
@@ -524,7 +524,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   ),
                   SizedBox(height: 25),
                   SubmitButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (Provider.of<Receipt>(context, listen: false)
                           .shouldGenReceiptNo()) {
                         Provider.of<Receipt>(context, listen: false)
@@ -544,6 +544,10 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                           .setColor(hexCode: _hexCodeController.text);
                       Provider.of<Receipt>(context, listen: false)
                           .setFont(int.parse(fontVal));
+
+                      /* await Provider.of<Receipt>(context, listen: false)
+                          .saveReceipt(); */
+
                       Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -116,10 +116,18 @@ class _ScreenControllerState extends State<ScreenController> {
     await _sqlDbRepository.createDatabase();
   }
 
+  bool _currentAutoLogoutStatus;
+
+  getCurrentAutoLogoutStatus() async {
+    _currentAutoLogoutStatus =
+        await _sharedPreferenceService.getBoolValuesSF("AUTO_LOGOUT") ?? false;
+  }
+
   @override
   void initState() {
     super.initState();
     initSharedPreferenceDb();
+    getCurrentAutoLogoutStatus();
 
     final FirebaseMessaging _fcm = FirebaseMessaging();
 
@@ -210,16 +218,15 @@ class _ScreenControllerState extends State<ScreenController> {
               child: Center(child: CircularProgressIndicator()),
             );
             // TODO Reverse if-condition to show OnBoarding
-          } else if (snapshot.data == 'empty') {
+          } else if (snapshot.data == 'empty' || _currentAutoLogoutStatus) {
             return LogInScreen();
           } else if (snapshot.hasData && snapshot.data != null) {
-           
             // return HomePage();
             return HomePage();
             // return Otp(email: "francis@francis.francis",);
           } else {
-	    // return Otp(email: "francis@francis.francis",);
-           return SignupScreen();
+            // return Otp(email: "francis@francis.francis",);
+            return OnboardingPage();
           }
         });
   }

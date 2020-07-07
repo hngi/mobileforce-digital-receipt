@@ -262,7 +262,7 @@ class MainDrawer extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Setup(),
+                          builder: (context) => PreferencePage(),
                         ),
                       );
                     },
