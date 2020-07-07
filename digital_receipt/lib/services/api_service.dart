@@ -4,13 +4,15 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
+import '../models/receipt.dart';
 import 'device_info_service.dart';
 import 'shared_preference_service.dart';
 import 'package:http/http.dart' as http;
+import 'package:digital_receipt/models/receipt.dart';
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
-  static String _urlEndpoint = "https://digital-receipt-07.herokuapp.com/v1";
+  static String _urlEndpoint = "https://degeit-receipt.herokuapp.com/v1";
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();
@@ -88,6 +90,42 @@ class ApiService {
     }
   }
 
+  Future<List<Receipt>> getDraftReciepts() async {
+    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (HttpClient client) {
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+      return client;
+    };
+
+    try {
+      String auth_token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+      Response response = await _dio.get(
+        "/business/receipt/draft",
+        options: Options(
+          followRedirects: false,
+          validateStatus: (status) {
+            return status < 500;
+          },
+          headers: {"token": auth_token},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        List<Receipt> draft_receipts = [];
+        response.data["data"].forEach((data) {
+        Receipt receipt = Receipt.fromJson(data);
+        draft_receipts.add(receipt);
+      });
+        return draft_receipts;
+      } else {
+        return null;
+      }
+    } on DioError catch (error) {
+      print(error);
+    }
+  }
+
   Future<String> signinUser(String email, String password, String name) async {
     var uri = '$_urlEndpoint/user/register';
     var response = await http.post(
@@ -158,28 +196,45 @@ class ApiService {
     return false;
   } */
 
-  registerCustomer(String token, String email, String phoneNumber, String name,
-      String address,
-      {String slogan}) async {
-    var uri = '$_urlEndpoint/customer/register';
-    var response = await http.post(
+  Future<bool> setUpBusiness({
+    String token,
+    String phoneNumber,
+    String name,
+    String address,
+    String slogan,
+    String logo,
+  }) async {
+    var uri = Uri.parse('$_urlEndpoint/business/info/create');
+    var request = http.MultipartRequest('POST', uri);
+    request.fields['name'] = name;
+    request.fields['phone_number'] = phoneNumber;
+    request.fields['address'] = address;
+    request.fields['slogan'] = slogan;
+
+    request.headers['token'] = token;
+    request.files.add(
+      await http.MultipartFile.fromPath("logo", logo),
+    );
+    /*  .post(
       uri,
       body: {
-        "email_address": email,
         'name': name,
-        "email": email,
-        "phoneNumber": phoneNumber,
+        "phone_number": phoneNumber,
         "address": address,
-        "slogan": slogan
+        "slogan": slogan,
+        "logo": logo
       },
       headers: {"token": token},
-    );
+    ); */
+    var response = await request.send();
     print('code: ${response.statusCode}');
+    var res = await response.stream.bytesToString();
+    print(res);
     if (response.statusCode == 200) {
       //set the token to null
-
-      return jsonDecode(response.body);
+      print(response.stream);
+      return true;
     }
-    return null;
+    return false;
   }
 }

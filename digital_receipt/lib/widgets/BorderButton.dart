@@ -10,31 +10,32 @@ class BorderedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 0),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5) ,
-        border: Border.all(
-          color: Color(0xFF25CCB3),
-          width: 2
-        ),
-        
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          MaterialButton(onPressed: () => onpress(),
-          child: Text(title,
-          style: TextStyle(
-            fontSize: 18,
-            color: Colors.black54
-          ),
-          )
-          ),
-          icon,
-        ],
-      ),
-    );
+   return SizedBox(
+              height: 50,
+              width: double.infinity,
+              child: FlatButton(
+                onPressed: () => onpress(),
+                shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Color(0xFF25CCB3), width: 1.5),
+                    borderRadius: BorderRadius.circular(5)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      '$title',
+                      style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.normal,
+                        letterSpacing: 0.3,
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    icon
+                  ],
+                ),
+              ),
+            );
   }
 }
