@@ -59,10 +59,12 @@ class _AccountPageState extends State<AccountPage> {
 
   callFetch() async {
     var res = await _apiService.fetchAndSetUser();
-    Provider.of<Business>(context, listen: false).setAccountData = res;
-    var val = Provider.of<Business>(context, listen: false).toJson();
-    _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
-    print(val);
+    if (res != null) {
+      Provider.of<Business>(context, listen: false).setAccountData = res;
+      var val = Provider.of<Business>(context, listen: false).toJson();
+      _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
+      print(val);
+    }
   }
 
   @override
