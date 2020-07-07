@@ -6,6 +6,7 @@ import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:wc_form_validators/wc_form_validators.dart';
 
 class ProductDetail extends StatefulWidget {
   final Function(Product) onSubmit;
@@ -40,7 +41,7 @@ class _ProductDetailState extends State<ProductDetail> {
                     height: 1,
                   ),
                   RawMaterialButton(
-                      padding: EdgeInsets.only(top: 10, bottom: 10, left: 10),
+                      padding: EdgeInsets.only(top: 60, bottom: 20, left: 10,right: 50),
                       constraints: BoxConstraints.tightForFinite(),
                       onPressed: () {
                         Navigator.pop(context);
@@ -71,6 +72,12 @@ class _ProductDetailState extends State<ProductDetail> {
                               SizedBox(height: 5),
                               AppTextFieldForm(
                                 controller: productDescController,
+                                validator: (val) {
+                                  if(val.length < 4){
+                                    return "minimum length is 4 charaters";
+                                  }
+                                  return "";
+                                }
                               ),
                               SizedBox(height: 22),
                               Text(
@@ -105,18 +112,20 @@ class _ProductDetailState extends State<ProductDetail> {
                                 controller: unitPriceController,
                               ),
                               SizedBox(height: 15),
-                             productAdded ?  Center(
-                                child: Text(
-                                  'Product added',
-                                  style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    fontWeight: FontWeight.normal,
-                                    letterSpacing: 0.3,
-                                    fontSize: 13,
-                                    color: Color.fromRGBO(0, 0, 0, 0.6),
-                                  ),
-                                ),
-                              ): SizedBox(),
+                              productAdded
+                                  ? Center(
+                                      child: Text(
+                                        'Product added',
+                                        style: TextStyle(
+                                          fontFamily: 'Montserrat',
+                                          fontWeight: FontWeight.normal,
+                                          letterSpacing: 0.3,
+                                          fontSize: 13,
+                                          color: Color.fromRGBO(0, 0, 0, 0.6),
+                                        ),
+                                      ),
+                                    )
+                                  : SizedBox(),
                               SizedBox(height: 20),
                               SubmitButton(
                                 title: 'Add',
@@ -141,6 +150,9 @@ class _ProductDetailState extends State<ProductDetail> {
                                     );
                                     setState(() {
                                       productAdded = true;
+                                      productDescController..text = "";
+                                      quantityController..text = "";
+                                      unitPriceController..text = "";
                                     });
                                     Future.delayed(
                                       Duration(seconds: 1),

@@ -53,8 +53,10 @@ class _AccountPageState extends State<AccountPage> {
       setState(() {
         image = pickedFile.path;
       });
-      //  var res = await _apiService.changeLogo(pickedFile.path);
+      var res = await _apiService.changeLogo(pickedFile.path);
+      print(res);
     }
+    print('nope imahe');
   }
 
   callFetch() async {

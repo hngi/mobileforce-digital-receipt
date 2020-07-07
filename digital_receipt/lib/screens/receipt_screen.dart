@@ -9,6 +9,7 @@ import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/widgets/receipt_item.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:provider/provider.dart';
@@ -130,6 +131,31 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
 
 // ignore: non_constant_identifier_names
 Widget ReceiptScreenLayout([BuildContext context]) {
+  
+  Future sendMail() async {
+     final String dir = (await getApplicationDocumentsDirectory()).path;
+    final String path = '$dir/receipt.pdf';
+    MailOptions mailOptions = MailOptions();
+    mailOptions = MailOptions(
+      body: "Receipt issued",
+      subject: "new Receipt",
+      recipients: [Provider.of<Receipt>(context,listen: false).customer.email.toString()],
+      isHTML: false,
+      attachments: [path],
+    );
+    String platformResponse;
+
+    try {
+      await FlutterMailer.send(mailOptions);
+      platformResponse = "success";
+      print(platformResponse);
+    } catch (e) {
+      platformResponse = "failed";
+      print(platformResponse);
+      print("error: $e");
+    }
+  }
+
   final ApiService _apiService = ApiService();
   final AccountData businessInfo =
       Provider.of<Business>(context, listen: false).accountData;
@@ -410,7 +436,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                             Padding(
                               padding: const EdgeInsets.only(top: 15.0),
                               child: Text(
-                                '₦',
+                                '₦'+Provider.of<Receipt>(context,listen: false).getTotal().toString(),
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
@@ -497,6 +523,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
           ),
         ),
         onPressed: () async {
+          await sendMail();
           bool load = true;
           // await  _apiService.saveReceipt();
 

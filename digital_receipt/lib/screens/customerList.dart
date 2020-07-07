@@ -6,6 +6,7 @@ import 'package:digital_receipt/services/api_service.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 // import 'customerDetails/customerDetail.dart';
 
@@ -18,14 +19,11 @@ class CustomerList extends StatefulWidget {
 class _CustomerListState extends State<CustomerList> {
   String dropdownValue = "Last Upadated";
 
-
   ApiService _apiService = ApiService();
-
 
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
@@ -57,7 +55,7 @@ class _CustomerListState extends State<CustomerList> {
           /// If the API returns nothing it shows the dialog box `JUST FOR TESTING`
           ///
 
-         // print(snapshot.data);
+          // print(snapshot.data);
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(
@@ -210,28 +208,39 @@ class _CustomerListState extends State<CustomerList> {
               actionPane: SlidableDrawerActionPane(),
               actionExtentRatio: 0.25,
               secondaryActions: <Widget>[
-                Container(
-                  color: Color(0xFFB3E2F4),
+                Material(
                   child: InkWell(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.call,
+                    onTap: () async {
+                      print("tapped");
+                      var url = "$phoneNumber";
+                      print(url);
+
+                    UrlLauncher.launch("tel://$url");
+                    },
+                    child: Container(
+                      color: Color(0xFFB3E2F4),
+                      child: InkWell(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(
+                              Icons.call,
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Text(
+                              "Call Customer",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          "Call Customer",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
