@@ -14,6 +14,7 @@ import './screens/onboarding.dart';
 import 'package:flutter/material.dart';
 
 import 'models/notification.dart';
+import 'screens/home_page.dart';
 import 'services/sql_database_client.dart';
 import 'services/shared_preference_service.dart';
 import 'services/sql_database_repository.dart';
@@ -192,12 +193,12 @@ class _ScreenControllerState extends State<ScreenController> {
             );
             // TODO Reverse if-condition to show OnBoarding
           } else if (snapshot.data == 'empty') {
-            return LogInScreen();
+            return HomePage();
           } else if (snapshot.hasData && snapshot.data != null) {
             print('snapshots: ${snapshot.data}');
             return HomePage();
           } else {
-            return OnboardingPage();
+            return HomePage();
           }
         });
   }
