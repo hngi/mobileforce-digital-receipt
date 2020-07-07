@@ -330,8 +330,7 @@ class ApiService {
   Future<AccountData> fetchAndSetUser() async {
     var url = "$_urlEndpoint/business/info/all";
 
-    String token =
-        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    String token = await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
     String userID = await _sharedPreferenceService.getStringValuesSF('USER_ID');
 
@@ -408,7 +407,7 @@ class ApiService {
     return 'error';
   }
 
-  getIssuedReceipts() async {
+  Future getIssuedReceipts() async {
     var uri = "$_urlEndpoint/business/receipt/issued";
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
@@ -496,6 +495,7 @@ class ApiService {
           _allCustomers.add(Customer.fromJson(customer));
           Customer.fromJson(customer).toString();
         }); */
+        print(data['data']);
         return data['data'];
       } else {
         print("All Customers status code ${response.statusCode}");
@@ -503,5 +503,28 @@ class ApiService {
       }
     }
     return [];
+  }
+
+    Future<Map<String,dynamic>> getIssuedReceipt2() async {
+    //String token = await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    String token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImZjNmNmMzIzLTBjY2EtNGYxMy1iNjdiLTM3MjQ4ZjIwMWYzNyIsIm5hbWUiOiJmcm96ZW4iLCJlbWFpbF9hZGRyZXNzIjoiZnJvemVuMTJAZ21haWwuY29tIiwicGFzc3dvcmQiOiJwYmtkZjJfc2hhMjU2JDE4MDAwMCRjTnBiSmRRV3pHNkkkUFJhak9EaU5rc2pxR0Z6K0J6Ym9ML1dMb0ZhaHB6K01VRHlsTFBVSWV6bz0iLCJyZWdpc3RyYXRpb25faWQiOm51bGwsImRldmljZVR5cGUiOm51bGwsImFjdGl2ZSI6ZmFsc2UsImlzX3ByZW1pdW1fdXNlciI6ZmFsc2UsImV4cCI6MTU5NDc0MjIwNX0.DxtHqM3m86jtk6ZSj21LbeTh9oewrQnXq6G9AdItPuk';
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    String url = '$_urlEndpoint/business/receipt/issued';
+    if (connectivityResult == ConnectivityResult.mobile ||
+    connectivityResult == ConnectivityResult.wifi) {
+    final http.Response res = await http.get(url, headers: <String, String>{
+        "token": token,
+      }).catchError((err) => print(err));
+    
+      if(res.statusCode == 200){
+      var data = json.decode(res.body);
+        print(data);
+        return data;
+      }else{
+      
+        return null;
+      }
+    }
+    return null;
   }
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:digital_receipt/models/account.dart';
+import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/providers/business.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../services/email_service.dart';
+import '../constant.dart';
 
 final ApiService _apiService = ApiService();
 final SharedPreferenceService _sharedPreferenceService =
@@ -39,8 +41,35 @@ class _DashBoardState extends State<DashBoard> {
     }
   }
 
+Map<String, dynamic> recInfo(var snapshot){
+    var data;
+
+    int snapLength = snapshot['data'].length;
+    // ignore: unused_local_variable
+    double amnt = 0;
+    // ignore: unused_local_variable
+    int deptIssued = 0;
+      for(var i=0; i < snapLength; i++){
+
+      data = snapshot['data'][i];
+      amnt += data['total'];
+
+      if(data['partPayment']){
+
+      deptIssued += 1;
+      }
+      print(data['total']);
+    } 
+        return {
+        'total': amnt,
+        'recNo':snapLength,
+        'dept': deptIssued
+      };
+  }
+
   @override
   Widget build(BuildContext context) {
+   
     return Container(
       padding: EdgeInsets.only(top: 16.0, left: 16, right: 16),
       child: Column(
@@ -49,27 +78,48 @@ class _DashBoardState extends State<DashBoard> {
           SizedBox(
             height: 24.0,
           ),
-          Expanded(
-            child: GridView.count(
+          FutureBuilder(
+            future: _apiService.getIssuedReceipt2(),
+            builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot){
+              if(!snapshot.hasData){
+                return Expanded(child: Center(child: SizedBox(height: 200,child: kEmpty,)));
+              }else{
+              var userData = snapshot.data;
+              return Expanded(
+                child: buildGridView(
+                  recInfo(userData)['recNo'], 
+                  recInfo(userData)['dept'], 
+                  recInfo(userData)['total']),
+              );
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  GridView buildGridView(recNo, int deptIssued, double amnt) {
+    return GridView.count(
               crossAxisSpacing: 16.0,
               mainAxisSpacing: 16.0,
               shrinkWrap: true,
               crossAxisCount: 2,
               children: <Widget>[
                 _singleCard(
-                  leading: 'No of receipts',
-                  subtitle: '15',
-                  color: Color(0xFF25CCB3),
+                leading: 'No of receipts',
+                subtitle: '$recNo',
+                color: Color(0xFF25CCB3),
                 ),
                 _singleCard(
-                  leading: 'Debts',
-                  subtitle: '3',
-                  color: Color(0xFFE897A0),
+                leading: 'Debts',
+                subtitle: '$deptIssued',
+                color: Color(0xFFE897A0),
                 ),
                 _singleCard(
-                  leading: 'Total Sales',
-                  subtitle: '15',
-                  color: Color(0xFF25CCB3),
+                leading: 'Total Sales',
+                subtitle: '$amnt',
+                color: Color(0xFF25CCB3),
                 ),
                 /*  FlatButton(
                   onPressed: () async {
@@ -95,11 +145,7 @@ class _DashBoardState extends State<DashBoard> {
                   child: Text('Test mail'),
                 ), */
               ],
-            ),
-          ),
-        ],
-      ),
-    );
+            );
   }
 
   Container _buildInfo() {
