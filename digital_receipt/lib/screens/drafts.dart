@@ -60,7 +60,7 @@ class _DraftsState extends State<Drafts> {
                         receiptNo: receipt.receiptNo,
                         total: receipt.totalAmount,
                         date: "${date.day}/${date.month}/${date.year}",
-                        receiptTitle: "Title",
+                        receiptTitle: receipt.customerName,
                         subtitle: "Crptocurrency, intro to after effects");
                   },
                 );

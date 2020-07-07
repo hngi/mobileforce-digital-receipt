@@ -278,7 +278,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   SizedBox(
                     height: 35,
                   ),
-                  SizedBox(
+                  /* SizedBox(
                     height: 50,
                     width: double.infinity,
                     child: FlatButton(
@@ -321,10 +321,10 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                         color: Color.fromRGBO(0, 0, 0, 0.6),
                       ),
                     ),
-                  ),
+                  ), 
                   SizedBox(
                     height: 35,
-                  ),
+                  ),*/
                   Row(
                     children: <Widget>[
                       Text(

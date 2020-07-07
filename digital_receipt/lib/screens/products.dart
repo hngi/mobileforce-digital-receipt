@@ -271,12 +271,12 @@ print('amount: $newAmnt , quant: $newQuant and unit: $newUnit');
                icon: Icon(Icons.add),
                onpress: () => addNewProduct(context, createProduct),
              ),
-             SizedBox(height: 30,),
+            /*  SizedBox(height: 30,),
              BorderedButton(
                title: 'Upload .CSV file',
                icon: Icon(Icons.file_upload),
                onpress: () => print('add product fnx'),
-             ),
+             ), */
              SizedBox(height: 10,),
             Center(
               child: Text(
