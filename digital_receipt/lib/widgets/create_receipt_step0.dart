@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
+import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/customer_dropdown.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
@@ -38,12 +39,31 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
   Customer selectedCustomer;
 
   // Needed to decide weather to create a new customer or not
-  List<Customer> customers = Customer.dummy();
+  List<Customer> customers;
 
   String _customerName, _customerEmail, _customerAddress, _customerPNumber;
 
+  setCustomer() async {
+    dynamic res = await ApiService().getAllCustomers();
+    res = res.map(
+      (e) {
+        return Customer(
+          address: e['address'],
+          email: e['email'],
+          phoneNumber: e['phoneNumber'],
+          name: e['name'],
+        );
+      },
+    );
+    setState(() {
+      customers = List.from(res);
+    });
+    res = null;
+  }
+
   @override
   void initState() {
+    setCustomer();
     super.initState();
   }
 
@@ -304,15 +324,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
 */
               GestureDetector(
-                onTap: () {
-                  /* _selectCustomerDropdown(
-                    context,
-                    onSubmit: (customer) {
-                      setState(() {
-                        selectedCustomer = customer;
-                      });
-                    },
-                  ); */
+                onTap: () async {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
