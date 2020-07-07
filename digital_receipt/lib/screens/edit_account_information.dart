@@ -203,7 +203,7 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
                     address: res['data']['address'],
                     slogan: res['data']['slogan'],
                     logo:
-                        'https://degeit-receipt.herokuapp.com${res['data']['logo']}',
+                        'https://hng-degeit-receipt.herokuapp.com${res['data']['logo']}',
                     email: email,
                   );
                   setState(() {

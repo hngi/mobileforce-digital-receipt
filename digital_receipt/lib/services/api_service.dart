@@ -363,7 +363,7 @@ class ApiService {
             phone: res['phone_number'],
             address: res['address'],
             slogan: res['slogan'],
-            logo: 'https://degeit-receipt.herokuapp.com${res['logo']}',
+            logo: 'https://hng-degeit-receipt.herokuapp.com${res['logo']}',
             email: email,
           );
         }
