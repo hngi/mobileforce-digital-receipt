@@ -115,10 +115,18 @@ class _ScreenControllerState extends State<ScreenController> {
     await _sqlDbRepository.createDatabase();
   }
 
+  bool _currentAutoLogoutStatus;
+
+  getCurrentAutoLogoutStatus() async {
+    _currentAutoLogoutStatus =
+        await _sharedPreferenceService.getBoolValuesSF("AUTO_LOGOUT") ?? false;
+  }
+
   @override
   void initState() {
     super.initState();
     initSharedPreferenceDb();
+    getCurrentAutoLogoutStatus();
 
     final FirebaseMessaging _fcm = FirebaseMessaging();
 
@@ -208,7 +216,8 @@ class _ScreenControllerState extends State<ScreenController> {
               color: Colors.white,
               child: Center(child: CircularProgressIndicator()),
             );
-          } else if (snapshot.data == 'empty') {
+            // TODO Reverse if-condition to show OnBoarding
+          } else if (snapshot.data == 'empty' || _currentAutoLogoutStatus) {
             return LogInScreen();
           } else if (snapshot.hasData && snapshot.data != null) {
             // return HomePage();
