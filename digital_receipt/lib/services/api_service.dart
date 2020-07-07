@@ -482,4 +482,35 @@ class ApiService {
     }
     return [];
   }
+
+  Future<List<Customer>> getAllCustomers() async {
+    var uri = "$_urlEndpoint/customer/all";
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    List<Customer> _allCustomers = [];
+
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      var response = await http.get(
+        Uri.encodeFull(uri),
+        headers: <String, String>{
+          'token': token,
+        },
+      );
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        data["data"].forEach((customer) {
+          _allCustomers.add(Customer.fromJson(customer));
+          Customer.fromJson(customer).toString();
+        });
+        return _allCustomers;
+      } else {
+        print("All Customers status code ${response.statusCode}");
+        return [];
+      }
+    }
+    return [];
+  }
 }
