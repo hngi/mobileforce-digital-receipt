@@ -29,6 +29,7 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   final String username = "Geek Tutor";
+  String label;
   bool _loading = false;
   static String loading_text = "loading ...";
   var x = AccountData(
