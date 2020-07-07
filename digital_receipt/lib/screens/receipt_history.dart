@@ -1,7 +1,9 @@
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/models/receipt.dart';
+
 import 'package:digital_receipt/services/api_service.dart';
+
 
 /// This code displays only the UI
 class ReceiptHistory extends StatefulWidget {
@@ -14,11 +16,13 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
   String dropdownValue = "Receipt No";
   bool _showDialog = true;
   //instead of dummyReceiptList use the future data gotten
+
   static List<Receipt> receiptList = [];
   // the below is needed so as to create a copy of the list,
   //for sorting and searching functionalities
   List<Receipt> copyReceiptList = receiptList;
   ApiService _apiService = ApiService();
+
   @override
   void initState() {
     super.initState();
@@ -60,7 +64,9 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
         actions: <Widget>[],
       ),
       body: FutureBuilder<List<Receipt>>(
+
         future: _apiService.getIssuedReceipts(), // receipts from API
+
         builder: (context, snapshot) {
           // If the API returns nothing it means the user has to upgrade to premium
           // for now it doesn't validate if the user has upgraded to premium
@@ -76,6 +82,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
               child: CircularProgressIndicator(),
             );
           } else {
+
             if (snapshot.data == null ||
                 !snapshot.hasData ||
                 snapshot.data.length == 0) {
@@ -99,6 +106,49 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                                 fontSize: 16,
                                 letterSpacing: 0.3,
                                 color: Color.fromRGBO(0, 0, 0, 0.87),
+            return _showDialog
+                ? _showAlertDialog()
+                : Padding(
+                    padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 10.0),
+                        TextFormField(
+                          controller: _controller,
+                          onChanged: (value) async {
+                            await Future.delayed(Duration(milliseconds: 700));
+                            setState(() {
+                              receiptList = ReceiptUtil.filterReceipt(
+                                  copyReceiptList, _controller.text);
+                            });
+                          },
+                          decoration: InputDecoration(
+                            hintText: "Type a keyword",
+                            hintStyle: TextStyle(color: Colors.grey),
+                            prefixIcon: IconButton(
+                              icon: Icon(Icons.search),
+                              color: Colors.grey,
+                              onPressed: () {
+                                setState(() {
+                                  receiptList = ReceiptUtil.filterReceipt(
+                                      copyReceiptList, _controller.text);
+                                });
+                              },
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              borderSide: BorderSide(
+                                color: Color(0xFFC8C8C8),
+                                width: 1.5,
+                              ),
+                            ),
+                            contentPadding: EdgeInsets.all(15),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              borderSide: BorderSide(
+                                color: Color(0xFFC8C8C8),
+                                width: 1.5,
+
                               ),
                             ),
                           ),
@@ -144,6 +194,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                           color: Color(0xFFC8C8C8),
                           width: 1.5,
                         ),
+
                       ),
                       contentPadding: EdgeInsets.all(15),
                       enabledBorder: OutlineInputBorder(
@@ -194,6 +245,104 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                                     textAlign: TextAlign.start,
                                   ),
                                 ),
+
+                        SizedBox(height: 30.0),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(right: 10.0),
+                                child: Text("Sort By"),
+                              ),
+                              Container(
+                                width: 150,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Color(0xff25CCB3),
+                                  ),
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    value: dropdownValue,
+                                    underline: Divider(),
+                                    items: <String>[
+                                      "Receipt No",
+                                      "Date issued",
+                                      "WhatsApp",
+                                      "Instagram",
+                                      "Twitter",
+                                    ].map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Padding(
+                                            padding: EdgeInsets.only(left: 8.0),
+                                            child: Text(
+                                              value,
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ).toList(),
+                                    onChanged: (String value) {
+                                      setState(() {
+                                        dropdownValue = value;
+                                        switch (value) {
+                                          case "Date issued":
+                                            receiptList =
+                                                ReceiptUtil.sortReceiptByDate(
+                                                    copyReceiptList);
+                                            break;
+                                          case "WhatsApp":
+                                            receiptList = ReceiptUtil
+                                                .sortReceiptByCategory(
+                                                    copyReceiptList,
+                                                    byCategory: ReceiptCategory
+                                                        .WHATSAPP);
+                                            break;
+                                          case "Instagram":
+                                            receiptList = ReceiptUtil
+                                                .sortReceiptByCategory(
+                                                    copyReceiptList,
+                                                    byCategory: ReceiptCategory
+                                                        .INSTAGRAM);
+                                            break;
+                                          case "Twitter":
+                                            receiptList = ReceiptUtil
+                                                .sortReceiptByCategory(
+                                                    copyReceiptList,
+                                                    byCategory: ReceiptCategory
+                                                        .TWITTER);
+                                            break;
+                                          default:
+                                            receiptList = ReceiptUtil
+                                                .sortReceiptByReceiptNo(
+                                                    copyReceiptList);
+                                            break;
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ]),
+                        SizedBox(height: 20.0),
+                        Flexible(
+                          child: ListView.builder(
+                            itemCount: receiptList.length,
+                            /*  padding: EdgeInsets.symmetric(
+                              vertical: 15,
+                            ), */
+                            itemBuilder: (context, index) {
+                              // HardCoded Receipt details
+                              return Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 15,
+                                ),
+                                child: receiptCard(receiptList[index]),
+
                               );
                             },
                           ).toList(),
@@ -258,6 +407,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
   }
 
   Widget receiptCard(Receipt receipt) {
+
     return Column(
       children: <Widget>[
         Container(
@@ -307,28 +457,71 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                   padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                   child: Text(
                     "${receipt.customerName}",
+=======
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Color(0xff539C30),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Container(
+        margin: EdgeInsets.only(left: 5.0),
+        decoration: BoxDecoration(
+          color: Color(0xffE8F1FB),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "Receipt No: ${receipt.receiptNo}",
+
                     style: TextStyle(
-                      color: Color.fromRGBO(0, 0, 0, 0.87),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Montserrat',
-                      letterSpacing: 0.03,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
-                  child: Text(
-                    "${receipt.description}",
-                    style: TextStyle(
-                      color: Colors.black,
+                      color: Color.fromRGBO(0, 0, 0, 0.6),
                       fontSize: 14,
                       fontWeight: FontWeight.w300,
                       fontFamily: 'Montserrat',
                       letterSpacing: 0.03,
                     ),
                   ),
+
                 ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
+                  child: Text(
+                    "${receipt.description}",
+
+                  Text(
+                    "${receipt.issuedDate}",
+
+                    style: TextStyle(
+                      color: Color.fromRGBO(0, 0, 0, 0.6),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w300,
+                      fontFamily: 'Montserrat',
+                      letterSpacing: 0.03,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
+              child: Text(
+                "${receipt.customerName}",
+                style: TextStyle(
+                  color: Color.fromRGBO(0, 0, 0, 0.87),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Montserrat',
+                  letterSpacing: 0.03,
+                ),
+
                 Align(
                   alignment: Alignment.bottomRight,
                   // )
@@ -359,18 +552,60 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                             ),
                           ),
                         ],
+
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
+              child: Text(
+                "${receipt.description}",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w300,
+                  fontFamily: 'Montserrat',
+                  letterSpacing: 0.03,
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              // )
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: RichText(
+                  textAlign: TextAlign.right,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Total: ',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w300,
+                          fontFamily: 'Montserrat',
+                          letterSpacing: 0.03,
+                        ),
+
                       ),
-                    ),
+                      TextSpan(
+                        text: ' N${receipt.totalAmount} ',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w300,
+                          fontFamily: 'Montserrat',
+                          letterSpacing: 0.03,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
-        SizedBox(
-          height: 30,
-        ),
-      ],
+      ),
     );
   }
 

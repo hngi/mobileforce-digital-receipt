@@ -1,11 +1,15 @@
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:digital_receipt/models/product.dart';
+import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/product_detail.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class CreateReceiptStep1 extends StatefulWidget {
   const CreateReceiptStep1({this.carouselController, this.carouselIndex});
@@ -17,7 +21,9 @@ class CreateReceiptStep1 extends StatefulWidget {
 }
 
 class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
-  bool _partPayment = true;
+  bool _partPayment = false;
+
+  List products = Product.dummy();
 
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
@@ -27,8 +33,18 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
     return result;
   }
 
+  DateTime date = DateTime.now();
+  TimeOfDay time = TimeOfDay.now();
+
+  final _time = TextEditingController();
+  final _date = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    if (date != null && time != null) {
+      _date.text = DateFormat('dd-MM-yyyy').format(date);
+      _time.text = time.format(context);
+    }
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -109,8 +125,14 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
-                    builder: (BuildContext context) => ProductDetail(),
+                    builder: (BuildContext context) => ProductDetail(
+                      onSubmit: (product) {
+                        setState(() => products.add(product));
+                      },
+                    ),
                     backgroundColor: Colors.transparent,
+                    isScrollControlled: false,
+
                     //barrierColor: Colors.red
                   );
                 },
@@ -138,7 +160,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                 ),
               ),
             ),
-            SizedBox(
+            /* SizedBox(
               height: 30,
             ),
             SizedBox(
@@ -169,8 +191,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   ],
                 ),
               ),
-            ),
-            SizedBox(
+            ), */
+            /* SizedBox(
               height: 10,
             ),
             Center(
@@ -185,33 +207,46 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   color: Colors.black,
                 ),
               ),
-            ),
+            ), */
             SizedBox(
               height: 20,
             ),
-            Text(
-              'Product item/s',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.normal,
-                letterSpacing: 0.3,
-                fontSize: 16,
-                color: Colors.black,
-              ),
-            ),
+            products.length != 0
+                ? Text(
+                    'Product item/s',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.3,
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  )
+                : SizedBox.shrink(),
             SizedBox(
               height: 10,
             ),
             ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (BuildContext context, int index) => ProductItem(
-                title: 'After effect for dummies',
-                amount: '\$50000',
-              ),
-              itemCount: 3,
-            ),
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: products.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final Product thisProduct = products[index];
+                  return Dismissible(
+                    onDismissed: (direction) {
+                      setState(() {
+                        products.removeAt(index);
+                      });
+                    },
+                    key: Key(thisProduct.id),
+                    child: ProductItem(
+                      title: thisProduct.productDesc,
+                      amount: '₦' + '${thisProduct.amount}',
+                      index: index,
+                    ),
+                  );
+                }),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -226,10 +261,13 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   ),
                 ),
                 Switch(
-                  value: _partPayment,
+                  value: Provider.of<Receipt>(context, listen: false)
+                      .enablePartPayment(),
                   onChanged: (val) {
                     setState(() {
-                      _partPayment = !_partPayment;
+                      _partPayment = val;
+                      Provider.of<Receipt>(context, listen: false)
+                          .togglPartPayment();
                     });
                   },
                 ),
@@ -269,7 +307,43 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                         ),
                       ),
                       SizedBox(height: 5),
-                      AppTextField(),
+                      TextFormField(
+                        readOnly: true,
+                        controller: _date,
+                        onTap: () async {
+                          final DateTime datePicked = await showDatePicker(
+                              context: context,
+                              initialDate: date,
+                              firstDate: date.add(Duration(days: -5)),
+                              lastDate: date.add(Duration(days: 365)));
+
+                          if (datePicked != null && datePicked != date) {
+                            setState(() {
+                              date = datePicked;
+
+                              print(date);
+                            });
+                          }
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(15),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            borderSide: BorderSide(
+                              color: Color(0xFFC8C8C8),
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(),
+                          //hintText: hintText,
+                          hintStyle: TextStyle(
+                            color: Color(0xFF979797),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'Montserrat',
+                          ),
+                        ),
+                      ),
                       SizedBox(
                         height: 22,
                       ),
@@ -284,7 +358,39 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                         ),
                       ),
                       SizedBox(height: 5),
-                      AppTextField(),
+                      TextFormField(
+                        readOnly: true,
+                        controller: _time,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(15),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            borderSide: BorderSide(
+                              color: Color(0xFFC8C8C8),
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(),
+                          //hintText: hintText,
+                          hintStyle: TextStyle(
+                            color: Color(0xFF979797),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'Montserrat',
+                          ),
+                        ),
+                        onTap: () async {
+                          final TimeOfDay timePicked = await showTimePicker(
+                              context: context, initialTime: time);
+                          if (timePicked != null && timePicked != time) {
+                            setState(() {
+                              time = timePicked;
+                              time.format(context);
+                              print(time);
+                            });
+                          }
+                        },
+                      ),
                     ],
                   )
                 : SizedBox.shrink(),
@@ -293,6 +399,12 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             ),
             SubmitButton(
               onPressed: () {
+                Provider.of<Receipt>(context, listen: false)
+                    .setReminderTime(time);
+                Provider.of<Receipt>(context, listen: false)
+                    .setReminderDate(date);
+                Provider.of<Receipt>(context, listen: false)
+                    .setProducts(products);
                 widget.carouselController.animateToPage(2);
               },
               title: 'Next',

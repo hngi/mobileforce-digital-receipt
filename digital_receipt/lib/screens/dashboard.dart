@@ -1,5 +1,19 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:digital_receipt/models/account.dart';
+import 'package:digital_receipt/providers/business.dart';
+import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import '../services/email_service.dart';
+
+final ApiService _apiService = ApiService();
+final SharedPreferenceService _sharedPreferenceService =
+    SharedPreferenceService();
 
 class DashBoard extends StatefulWidget {
   DashBoard({Key key}) : super(key: key);
@@ -10,9 +24,25 @@ class DashBoard extends StatefulWidget {
 
 class _DashBoardState extends State<DashBoard> {
   @override
+  void initState() {
+    callFetch();
+    super.initState();
+  }
+
+  callFetch() async {
+    var res = await _apiService.fetchAndSetUser();
+    if (res != null) {
+      Provider.of<Business>(context, listen: false).setAccountData = res;
+      var val = Provider.of<Business>(context, listen: false).toJson();
+      _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
+      print(val);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: EdgeInsets.only(top: 16.0, left: 16, right: 16),
       child: Column(
         children: <Widget>[
           _buildInfo(),
@@ -41,6 +71,29 @@ class _DashBoardState extends State<DashBoard> {
                   subtitle: '15',
                   color: Color(0xFF25CCB3),
                 ),
+                /*  FlatButton(
+                  onPressed: () async {
+                    print('canSend');
+                    final EmailService emailService = EmailService();
+                    //final bool canSend = await FlutterMailer.canSendMail();
+
+                    //print(canSend);
+                    emailService.setMail(
+                      body:
+                          '<h1>a long body for the email<h1> <br> with a subset of HTML',
+                      subject: 'Degeit',
+                      recipients: ['2amafav3@gmail.com'],
+                      isHTML: true,
+                      ccRecipients: [],
+                      bccRecipients: [],
+                      attachments: <String>[
+                        '/storage/emulated/0/Download/Outliers.pdf'
+                      ],
+                    );
+                    await emailService.sendMail();
+                  },
+                  child: Text('Test mail'),
+                ), */
               ],
             ),
           ),
@@ -50,6 +103,7 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   Container _buildInfo() {
+    AccountData businessInfo = Provider.of<Business>(context).accountData;
     return Container(
       height: 130,
       padding: EdgeInsets.all(10.0),
@@ -61,30 +115,34 @@ class _DashBoardState extends State<DashBoard> {
         children: <Widget>[
           Expanded(
             flex: 3,
-            child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'Geek Tutor',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                  Text(
-                    '218 thonbridge cir, cyprus ...',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  Text(
-                    'johntompson@ucoz.com',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  Text(
-                    '(603) 555-6034',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  businessInfo.name,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                Text(
+                  businessInfo.address,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  businessInfo.email,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  businessInfo.phone,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -109,7 +167,7 @@ class _DashBoardState extends State<DashBoard> {
                         fontWeight: FontWeight.bold,
                       ),
                       children: [
-                        TextSpan(text: ' Tutor'),
+                        TextSpan(text: 'Tutor'),
                       ],
                     ),
                   )

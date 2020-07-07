@@ -1,13 +1,17 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-class AppTextField extends StatelessWidget {
-  const AppTextField({
-    this.hintText,
-    this.keyboardType,
-    this.obscureText,
-    this.controller,
-    this.hintColor, this.borderWidth,
-  });
+class AppTextFieldForm extends StatelessWidget {
+  const AppTextFieldForm(
+      {this.hintText,
+      this.keyboardType,
+      this.obscureText,
+      this.controller,
+      this.validator,
+      this.hintColor,
+      this.borderWidth,
+      this.onTap,
+      this.onSaved});
 
   final String hintText;
   final TextInputType keyboardType;
@@ -15,10 +19,13 @@ class AppTextField extends StatelessWidget {
   final Color hintColor;
   final TextEditingController controller;
   final double borderWidth;
+  final Function(String) validator;
+  final Function onSaved;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: controller != null ? controller : null,
       style: TextStyle(
         color: Color(0xFF2B2B2B),
@@ -26,6 +33,9 @@ class AppTextField extends StatelessWidget {
         fontWeight: FontWeight.w600,
         fontFamily: 'Montserrat',
       ),
+      validator: validator,
+      onSaved: onSaved,
+      onTap: onTap,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.all(15),
         enabledBorder: OutlineInputBorder(

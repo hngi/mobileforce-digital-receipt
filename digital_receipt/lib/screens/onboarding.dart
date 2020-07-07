@@ -76,19 +76,24 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       GestureDetector(
-                          onTap: () {
-                            pageController.animateToPage(slides.length - 1,
-                                duration: Duration(milliseconds: 400),
-                                curve: Curves.linear);
-                          },
-                          child: Text(
-                            "Back",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              letterSpacing: 0.3,
-                            ),
-                          )),
+                        onTap: () {
+                          pageController.animateToPage(currentIndex - 1,
+                              duration: Duration(milliseconds: 400),
+                              curve: Curves.linear);
+                        },
+                        child: currentIndex != 0
+                            ? Text(
+                                "Back",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  letterSpacing: 0.3,
+                                ),
+                              )
+                            : SizedBox(
+                                width: 1,
+                              ),
+                      ),
                       GestureDetector(
                           onTap: () {
                             pageController.animateToPage(currentIndex + 1,
@@ -122,7 +127,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5)),
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) => LogInScreen(),

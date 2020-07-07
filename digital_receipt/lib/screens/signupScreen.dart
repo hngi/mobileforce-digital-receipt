@@ -1,12 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:digital_receipt/screens/login_screen.dart';
+
 import 'package:digital_receipt/screens/otp_auth.dart';
 import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:wc_form_validators/wc_form_validators.dart';
+import '../constant.dart';
+
 import '../services/api_service.dart';
 import 'no_internet_connection.dart';
 import 'otp_auth.dart';
@@ -25,10 +31,12 @@ class _SignupScreenState extends State<SignupScreen> {
   ApiService _apiService = ApiService();
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Color(0xffF2F8FF),
         body: isloading == true
+
             ? LoadingIndicator()
             : SingleChildScrollView(
                 child: Padding(
@@ -106,19 +114,16 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                                   ),
                                 ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return "Enter name";
-                                  }
-                                  // Pattern pattern =
-                                  //     r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                                  // RegExp regex = new RegExp(pattern);
-                                  if (value.length < 8) {
-                                    return 'name must be more than 8 charcters';
-                                  }
 
-                                  return null;
-                                },
+                                validator: Validators.compose([
+                                  Validators.required('Input Name'),
+                                  Validators.patternRegExp(
+                                      RegExp(r"^[A-Z a-z]+$"),
+                                      'Only alphabets are allowed'),
+                                  Validators.minLength(3,
+                                      'Minimum of 3 characters required for Name'),
+                                ]),
+
                                 onSaved: (value) {
                                   setState(() {
                                     _name = value;
@@ -159,17 +164,12 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                                   ),
                                 ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return "Enter Email Address";
-                                  }
-                                  Pattern pattern =
-                                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                                  RegExp regex = new RegExp(pattern);
-                                  if (!regex.hasMatch(value))
-                                    return 'Enter Valid Email';
-                                  return null;
-                                },
+
+                                validator: Validators.compose([
+                                  Validators.required('Input Email Address'),
+                                  Validators.email('Invalid Email Address'),
+                                ]),
+
                                 onSaved: (value) {
                                   setState(() {
                                     _email = value;
@@ -214,14 +214,21 @@ class _SignupScreenState extends State<SignupScreen> {
                                   ),
                                   focusedBorder: OutlineInputBorder(),
                                 ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return "Enter Password";
-                                  } else if (value.length < 5) {
-                                    return "Password too short";
-                                  }
-                                  return null;
-                                },
+
+                                validator: Validators.compose([
+                                  Validators.required('Input Password'),
+                                  Validators.minLength(
+                                      8, 'Minimum of 8 characters required for Password'),
+                                  Validators.patternRegExp(kOneUpperCaseRegex,
+                                      'Password should contain at least an Uppercase letter'),
+                                  Validators.patternRegExp(kOneLowerCaseRegex,
+                                      'Password should contain at least a Lowercase letter'),
+                                  Validators.patternRegExp(kOneDigitRegex,
+                                      'Password should contain at least a Digit'),
+                                  Validators.patternRegExp(kOneSpecialCharRegex,
+                                      'Password should contain at least a Special Character')
+                                ]),
+
                                 onSaved: (value) {
                                   setState(() {
                                     _password = value;
@@ -236,6 +243,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         height: 25,
                       ),
                       Center(
+
                         child: InkWell(
                           onTap: () {
                             Navigator.push(
@@ -247,6 +255,32 @@ class _SignupScreenState extends State<SignupScreen> {
                             textAlign: TextAlign.center,
                             text: TextSpan(
                                 text: "Already have an account?",
+
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            text: 'By signing in you agree to our \n',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                letterSpacing: 0.02,
+                                fontWeight: FontWeight.w300,
+                                fontFamily: 'Montserrat',
+                                height: 1.51),
+                            children: [
+                              TextSpan(
+                                text: 'terms of service',
+                                style: TextStyle(
+                                  color: Color(0xFF25CCB3),
+                                  fontSize: 14,
+                                  letterSpacing: 0.02,
+                                  fontWeight: FontWeight.w300,
+                                  fontFamily: 'Montserrat',
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' and ',
+
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
@@ -254,6 +288,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   fontWeight: FontWeight.w300,
                                   fontFamily: 'Montserrat',
                                 ),
+
                                 children: [
                                   TextSpan(
                                     text: '  Login up',
@@ -266,6 +301,20 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                                   ),
                                 ]),
+
+                              ),
+                              TextSpan(
+                                text: 'privacy policy',
+                                style: TextStyle(
+                                  color: Color(0xFF25CCB3),
+                                  fontSize: 14,
+                                  letterSpacing: 0.02,
+                                  fontWeight: FontWeight.w300,
+                                  fontFamily: 'Montserrat',
+                                ),
+                              ),
+                            ],
+
                           ),
                         ),
                       ),
@@ -329,6 +378,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       SizedBox(
                         height: 20,
+
                       ),
                       button(
                           name: "Sign in with Facebook",
@@ -384,7 +434,13 @@ class _SignupScreenState extends State<SignupScreen> {
                             ],
                           ),
                         ),
+
                       ),
+                      button(
+                          name: "Sign in with Facebook",
+                          textColor: Color(0xffE5E5E5),
+                          iconPath: "assets/logos/facebook.png",
+                          buttonColor: Color(0xFF3b5998)),
                     ],
                   ),
                 ),

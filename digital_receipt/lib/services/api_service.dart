@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
+
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/notification.dart';
+
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -365,7 +367,9 @@ class ApiService {
             phone: res['phone_number'],
             address: res['address'],
             slogan: res['slogan'],
-            logo: 'https://degeit-receipt.herokuapp.com${res['logo']}',
+
+            logo: 'https://hng-degeit-receipt.herokuapp.com${res['logo']}',
+
             email: email,
           );
         }
@@ -405,21 +409,7 @@ class ApiService {
     }
     return 'error';
   }
-
-  /*
-  https://hng-degeit-receipt.herokuapp.com/v1/business/info/all
-  https://hng-degeit-receipt.herokuapp.com/v1/customer/all
-  https://hng-degeit-receipt.herokuapp.com/v1/customer/1
-  https://hng-degeit-receipt.herokuapp.com/v1/business/user/all
-  https://hng-degeit-receipt.herokuapp.com/v1/user/notification/all
-  https://hng-degeit-receipt.herokuapp.com/v1/user/info
-  https://hng-degeit-receipt.herokuapp.com/v1/business/receipt/issued
-  https://hng-degeit-receipt.herokuapp.com/v1/business/receipt/draft
-   */
-  /// Returns a list of receipts
-  /// if there are no receipts it returns an empty list
-  Future<List<Receipt>> getIssuedReceipts() async {
-    var uri = "$_urlEndpoint/business/receipt/issued";
+ var uri = "$_urlEndpoint/business/receipt/issued";
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
     var connectivityResult = await (Connectivity().checkConnectivity());
