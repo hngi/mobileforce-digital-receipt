@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 
 class Customer extends ChangeNotifier{
@@ -5,6 +6,7 @@ class Customer extends ChangeNotifier{
   String email;
   String phoneNumber;
   String address;
+
 
   Customer({
     this.name,
@@ -29,17 +31,7 @@ class Customer extends ChangeNotifier{
             email: 'Carole@gmail.com',
             phoneNumber: '+234 8123 4567 890',
             address: '2118 Thornridge Cir. Syracuse, Ikorodu'),
-        Customer(
-            name: 'Froschauer Carole',
-            email: 'Froschauer@gmail.com',
-            phoneNumber: '+234 8123 4567 890',
-            address: '2118 Thornridge Cir. Syracuse, Belgium, Mushin'),
-        Customer(
-            name: 'Seyi Ipaye',
-            email: 'Seyi@gmail.com',
-            phoneNumber: '+234 8123 4567 890',
-            address: '2118 Thornridge Cir. Syracuse, Ogun, Mushin'),
-        Customer(
+      Customer(
             name: 'Froooooschauer Carole',
             email: 'Froschauer@gmail.com',
             phoneNumber: '+234 8123 4567 890',

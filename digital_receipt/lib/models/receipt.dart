@@ -60,6 +60,7 @@ class Receipt extends ChangeNotifier {
             json["customer"]["name"] == null ? null : json["customer"]["name"],
         category: json["category"] == null ? null : json["category"],
         totalAmount: json["total"] == null ? null : json["total"].toString(),
+       //products: json["products"].isEmpty ? null : json['products']
       );
 
   @override
@@ -210,7 +211,7 @@ class Receipt extends ChangeNotifier {
 
     print("3");
     if (response.statusCode == 200) {
-      print("successful");
+      print(json.decode(response.body));
       return "successful";
     } else {
       print("failed");

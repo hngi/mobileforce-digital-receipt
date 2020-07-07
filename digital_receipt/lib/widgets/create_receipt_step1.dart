@@ -170,7 +170,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                 ),
               ),
             ),
-            SizedBox(
+            /* SizedBox(
               height: 30,
             ),
             SizedBox(
@@ -201,8 +201,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   ],
                 ),
               ),
-            ),
-            SizedBox(
+            ), */
+            /* SizedBox(
               height: 10,
             ),
             Center(
@@ -217,7 +217,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   color: Colors.black,
                 ),
               ),
-            ),
+            ), */
             SizedBox(
               height: 20,
             ),

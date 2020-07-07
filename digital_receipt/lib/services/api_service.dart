@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
+
+import 'package:digital_receipt/models/customer.dart';
+import 'package:digital_receipt/models/notification.dart';
+
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -326,8 +330,7 @@ class ApiService {
   Future<AccountData> fetchAndSetUser() async {
     var url = "$_urlEndpoint/business/info/all";
 
-    String token =
-        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    String token = await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
     String userID = await _sharedPreferenceService.getStringValuesSF('USER_ID');
 
@@ -403,5 +406,125 @@ class ApiService {
       return response.body;
     }
     return 'error';
+  }
+
+  Future getIssuedReceipts() async {
+    var uri = "$_urlEndpoint/business/receipt/issued";
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    List<Receipt> _issuedReceipts = [];
+
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      var response = await http.get(
+        Uri.encodeFull(uri),
+        headers: <String, String>{
+          'token': token,
+        },
+      );
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        print(data);
+        data["data"].forEach((receipt) {
+          _issuedReceipts.add(Receipt.fromJson(receipt));
+          // Receipt.fromJson(receipt).toString();
+        });
+        // print(_issuedReceipts);
+        return _issuedReceipts;
+      } else {
+        print("Issued Receipt status code ${response.statusCode}");
+        return [];
+      }
+    }
+    return [];
+  }
+
+  /// Returns a list of notifications
+  /// if there are no notifications it returns an empty list
+  Future<List<NotificationModel>> getAllNotifications() async {
+    var uri = "$_urlEndpoint/user/notification/all";
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    print(token);
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    List<NotificationModel> _allNotifications = [];
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      var response = await http.get(
+        Uri.encodeFull(uri),
+        headers: <String, String>{
+          'token': token,
+        },
+      );
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        data["data"].forEach((notification) {
+          _allNotifications.add(NotificationModel.fromJson(notification));
+          // NotificationModel.fromJson(notification).toString();
+        });
+        // print(data);
+        return _allNotifications;
+      } else {
+        print("All notifications status code ${response.statusCode}");
+        return [];
+      }
+    }
+    return [];
+  }
+
+  Future getAllCustomers() async {
+    var uri = "$_urlEndpoint/customer/all";
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    List<Customer> _allCustomers = [];
+
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      var response = await http.get(
+        Uri.encodeFull(uri),
+        headers: <String, String>{
+          'token': token,
+        },
+      );
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        //print(data);
+        /*   data["data"].forEach((customer) {
+          _allCustomers.add(Customer.fromJson(customer));
+          Customer.fromJson(customer).toString();
+        }); */
+        print(data['data']);
+        return data['data'];
+      } else {
+        print("All Customers status code ${response.statusCode}");
+        return [];
+      }
+    }
+    return [];
+  }
+
+    Future<Map<String,dynamic>> getIssuedReceipt2() async {
+    String token = await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    String url = '$_urlEndpoint/business/receipt/issued';
+    if (connectivityResult == ConnectivityResult.mobile ||
+    connectivityResult == ConnectivityResult.wifi) {
+    final http.Response res = await http.get(url, headers: <String, String>{
+        "token": token,
+      }).catchError((err) => print(err));
+    
+      if(res.statusCode == 200){
+      var data = json.decode(res.body);
+        print(data);
+        return data;
+      }else{
+      
+        return null;
+      }
+    }
+    return null;
   }
 }
