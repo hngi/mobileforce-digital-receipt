@@ -1,3 +1,4 @@
+import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -134,7 +135,15 @@ class _LogInScreenState extends State<LogInScreen> {
                     validator: Validators.compose([
                       Validators.required('Input Password'),
                       Validators.minLength(
-                          6, 'Minimum of 6 characters required for Password'),
+                          8, 'Minimum of 8 characters required for Password'),
+                      Validators.patternRegExp(kOneUpperCaseRegex,
+                          'Password should contain at least an Uppercase letter'),
+                      Validators.patternRegExp(kOneLowerCaseRegex,
+                          'Password should contain at least a Lowercase letter'),
+                      Validators.patternRegExp(kOneDigitRegex,
+                          'Password should contain at least a Digit'),
+                      Validators.patternRegExp(kOneSpecialCharRegex,
+                          'Password should contain at least a Special Character')
                     ]),
                     style: TextStyle(
                       color: Color(0xFF2B2B2B),

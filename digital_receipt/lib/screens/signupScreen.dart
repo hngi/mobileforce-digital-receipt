@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
+import '../constant.dart';
 import '../services/api_service.dart';
 import 'no_internet_connection.dart';
 import 'otp_auth.dart';
@@ -205,8 +206,16 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                                 validator: Validators.compose([
                                   Validators.required('Input Password'),
-                                  Validators.minLength(6,
-                                      'Minimum of 6 characters required for Password'),
+                                  Validators.minLength(
+                                      8, 'Minimum of 8 characters required for Password'),
+                                  Validators.patternRegExp(kOneUpperCaseRegex,
+                                      'Password should contain at least an Uppercase letter'),
+                                  Validators.patternRegExp(kOneLowerCaseRegex,
+                                      'Password should contain at least a Lowercase letter'),
+                                  Validators.patternRegExp(kOneDigitRegex,
+                                      'Password should contain at least a Digit'),
+                                  Validators.patternRegExp(kOneSpecialCharRegex,
+                                      'Password should contain at least a Special Character')
                                 ]),
                                 onSaved: (value) {
                                   setState(() {
