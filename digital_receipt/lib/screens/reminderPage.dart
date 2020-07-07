@@ -97,14 +97,14 @@ class _ReminderPageState extends State<ReminderPage> {
           width: double.infinity,
           decoration: BoxDecoration(
             color: Color(0xff539C30),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(5),
           ),
           child: Container(
             padding: EdgeInsets.all(10),
             margin: EdgeInsets.only(left: 5.0),
             decoration: BoxDecoration(
               color: Color(0xffE8F1FB),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(5),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

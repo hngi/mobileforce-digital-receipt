@@ -58,7 +58,7 @@ class Analytics extends StatelessWidget {
     return Container(
     decoration: BoxDecoration(
       color: sideColor,
-      borderRadius: BorderRadius.circular(7.0),
+      borderRadius: BorderRadius.circular(5.0),
     ),
     child: Container(
       margin: EdgeInsets.only(left: 5.0),

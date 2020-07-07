@@ -1,14 +1,20 @@
+import 'dart:convert';
+import 'dart:ffi';
+
 import 'package:digital_receipt/screens/change_password_screen.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';
 import 'package:digital_receipt/utils/customtext.dart';
 import "package:flutter/material.dart";
 import 'dart:async';
+import '../providers/business.dart';
 import 'dart:io';
+import 'package:provider/provider.dart';
 
 import 'package:image_picker/image_picker.dart';
 
 import '../services/api_service.dart';
 import '../services/shared_preference_service.dart';
+import '../models/account.dart';
 import 'login_screen.dart';
 
 final SharedPreferenceService _sharedPreferenceService =
@@ -23,18 +29,48 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   final String username = "Geek Tutor";
-
+  String label;
   bool _loading = false;
+  static String loading_text = "loading ...";
+  var x = AccountData(
+      id: loading_text,
+      name: loading_text,
+      phone: loading_text,
+      address: loading_text,
+      slogan: loading_text,
+      logo: '',
+      email: loading_text);
 
-  File image;
+  String image;
 
   final picker = ImagePicker();
 
+  AccountData _accountData;
+
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    setState(() {
-      image = File(pickedFile.path);
-    });
+    if (pickedFile != null) {
+      setState(() {
+        image = pickedFile.path;
+      });
+      //  var res = await _apiService.changeLogo(pickedFile.path);
+    }
+  }
+
+  callFetch() async {
+    var res = await _apiService.fetchAndSetUser();
+    if (res != null) {
+      Provider.of<Business>(context, listen: false).setAccountData = res;
+      var val = Provider.of<Business>(context, listen: false).toJson();
+      _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
+      print(val);
+    }
+  }
+
+  @override
+  void initState() {
+    callFetch();
+    super.initState();
   }
 
   @override
@@ -104,21 +140,18 @@ class _AccountPageState extends State<AccountPage> {
                 children: <Widget>[
                   InkWell(
                     child: Container(
-                      height: 50,
-                      constraints: BoxConstraints(
-                        maxWidth: 74,
-                      ),
-                      //width: 65,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: image == null
-                          ? Icon(Icons.verified_user)
-                          : Image.file(
-                              image,
-                              fit: BoxFit.cover,
-                            ),
-                    ),
+                        height: 50,
+                        constraints: BoxConstraints(
+                          maxWidth: 74,
+                        ),
+                        //width: 65,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: image == null
+                            ? Image.network(
+                                Provider.of<Business>(context).accountData.logo)
+                            : Image.asset(image)),
                     onTap: getImage,
                   ),
                   Container(
@@ -126,7 +159,9 @@ class _AccountPageState extends State<AccountPage> {
                     width: 20,
                     decoration: BoxDecoration(color: Color(0xFFE7ECF1)),
                     child: InkWell(
-                        onTap: () {},
+                        onTap: () async {
+                          await getImage();
+                        },
                         child: Icon(
                           Icons.edit,
                           color: Colors.black,
@@ -140,7 +175,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
               Center(
                 child: Text(
-                  '$username',
+                  Provider.of<Business>(context).accountData.name,
                   style: CustomText.display1,
                 ),
               ),
@@ -172,21 +207,25 @@ class _AccountPageState extends State<AccountPage> {
               SizedBox(
                 height: 4,
               ),
-              InformationData(
-                label: 'Email Address',
-                detail: 'myemail@mail.com',
+              Column(
+                children: <Widget>[
+                  InformationData(
+                    label: 'Email Address',
+                    detail: Provider.of<Business>(context).accountData.email,
+                  ),
+                ],
               ),
               InformationData(
                 label: 'Phone No',
-                detail: '892-983-240',
+                detail: Provider.of<Business>(context).accountData.phone,
               ),
               InformationData(
                 label: 'Address',
-                detail: '5, Amphitheatre Railway Street Degit',
+                detail: Provider.of<Business>(context).accountData.address,
               ),
               InformationData(
                 label: 'Bussiness Slogan',
-                detail: 'We are taking over',
+                detail: Provider.of<Business>(context).accountData.slogan,
               ),
               SizedBox(
                 height: 35,

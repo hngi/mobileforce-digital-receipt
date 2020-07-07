@@ -1,3 +1,5 @@
+import 'package:digital_receipt/models/notification.dart';
+import 'package:digital_receipt/services/api_service.dart';
 import 'package:flutter/material.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -7,6 +9,7 @@ class NotificationPage extends StatefulWidget {
 
 class _NotificationPageState extends State<NotificationPage> {
   int _notificationLength = 12;
+  ApiService _apiService = ApiService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,18 +26,60 @@ class _NotificationPageState extends State<NotificationPage> {
         ),
       ),
       body: SafeArea(
-        child: ListView.builder(
-          itemCount: _notificationLength,
-          itemBuilder: (BuildContext context, int index) {
-            return SingleNotification(
-              notificationLength: _notificationLength,
-              body:
-                  'You are using an outdated version of reepcy. Update to get our latest features.',
-              date: '5 mins ago',
-              index: index,
-            );
-          },
-        ),
+        child: FutureBuilder<List<NotificationModel>>(
+            future: _apiService.getAllNotifications(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 1.5,
+                  ),
+                );
+              } else if (snapshot.connectionState == ConnectionState.done) {
+                // print(snapshot.data);
+                if (snapshot.hasData && snapshot.data.length != 0) {
+                  return ListView.builder(
+                    itemCount: snapshot.data == null ? 0 : snapshot.data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return SingleNotification(
+                        notificationLength: snapshot.data.length,
+                        body: '${snapshot.data[index].body}',
+                        date: '${snapshot.data[index].date}',
+                        index: index,
+                      );
+                    },
+                  );
+                } else {
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Image.asset("assets/images/heartbroken 1.png"),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Center(
+                          child: Text(
+                            "There are no notifications created!",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 16,
+                              letterSpacing: 0.3,
+                              color: Color.fromRGBO(0, 0, 0, 0.87),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              }
+            }),
       ),
     );
   }
@@ -58,7 +103,7 @@ class SingleNotification extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         children: <Widget>[
           SizedBox(height: 16),

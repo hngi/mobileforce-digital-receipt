@@ -1,9 +1,12 @@
+import 'package:digital_receipt/constant.dart';
+import 'package:digital_receipt/screens/forgot_password.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
+import 'package:wc_form_validators/wc_form_validators.dart';
 
 import '../services/api_service.dart';
 
@@ -89,12 +92,10 @@ class _LogInScreenState extends State<LogInScreen> {
                   ),
                   TextFormField(
                     controller: _emailController,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Invalid Email Address';
-                      }
-                      return null;
-                    },
+                    validator: Validators.compose([
+                      Validators.required('Input Email Address'),
+                      Validators.email('Invalid Email Address'),
+                    ]),
                     style: TextStyle(
                       color: Color(0xFF2B2B2B),
                       fontSize: 14,
@@ -132,12 +133,19 @@ class _LogInScreenState extends State<LogInScreen> {
                   ),
                   TextFormField(
                     controller: _passwordController,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Invalid Password';
-                      }
-                      return null;
-                    },
+                    validator: Validators.compose([
+                      Validators.required('Input Password'),
+                      Validators.minLength(
+                          8, 'Minimum of 8 characters required for Password'),
+                      Validators.patternRegExp(kOneUpperCaseRegex,
+                          'Password should contain at least an Uppercase letter'),
+                      Validators.patternRegExp(kOneLowerCaseRegex,
+                          'Password should contain at least a Lowercase letter'),
+                      Validators.patternRegExp(kOneDigitRegex,
+                          'Password should contain at least a Digit'),
+                      Validators.patternRegExp(kOneSpecialCharRegex,
+                          'Password should contain at least a Special Character')
+                    ]),
                     style: TextStyle(
                       color: Color(0xFF2B2B2B),
                       fontSize: 14,

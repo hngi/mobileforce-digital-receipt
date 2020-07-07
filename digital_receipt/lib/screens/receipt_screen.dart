@@ -1,14 +1,71 @@
-import 'package:digital_receipt/widgets/receipt_item.dart';
-import 'package:flutter/material.dart';
+import 'dart:io';
+import 'dart:typed_data';
 
-class ReceiptScreen extends StatelessWidget {
+import 'package:digital_receipt/models/account.dart';
+import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/providers/business.dart';
+import 'package:digital_receipt/screens/generate_pdf.dart';
+import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/widgets/receipt_item.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:provider/provider.dart';
+
+import '../constant.dart';
+
+class ReceiptScreen extends StatefulWidget {
+  final Receipt receipt;
+
+  const ReceiptScreen({Key key, this.receipt}) : super(key: key);
+
+  @override
+  _ReceiptScreenState createState() => _ReceiptScreenState();
+}
+
+Uint8List receiptPdf;
+
+class _ReceiptScreenState extends State<ReceiptScreen> {
+  Future<Uint8List> receiptPdfFuture;
+
+  /*void generatePdf(BuildContext context) async {
+    final String dir = (await getApplicationDocumentsDirectory()).path;
+    final String path = '$dir/receipt.pdf';
+    final File file = File(path);
+    final invoice = await generateInvoice(PdfPageFormat.a4);
+    await file.writeAsBytes(invoice);
+
+    await shareFile(invoice);
+//  Navigator.push(context,
+//      MaterialPageRoute(builder: (_) => PdfViewerScreen(path: path)));
+  }*/
+
+  Future<void> savePdf(Uint8List pdf) async {
+    final String dir = (await getApplicationDocumentsDirectory()).path;
+    final String path = '$dir/receipt.pdf';
+    final File file = File(path);
+    await file.writeAsBytes(pdf);
+    receiptPdf = pdf;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    receiptPdfFuture = generatePdf(
+      pageFormat: PdfPageFormat.a4,
+      receipt: Provider.of<Receipt>(context, listen: false),
+      accountData: Provider.of<Business>(context, listen: false).accountData,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    final ApiService _apiService = ApiService();
     return Scaffold(
       backgroundColor: Color(0xFFF2F8FF),
       appBar: AppBar(
-      //  backgroundColor: Color(0xFF0b56a7),
+        //  backgroundColor: Color(0xFF0b56a7),
         automaticallyImplyLeading: true,
         title: Text(
           'Create Receipt',
@@ -20,25 +77,62 @@ class ReceiptScreen extends StatelessWidget {
             letterSpacing: 0.03,
           ),
         ),
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              //Implement code for back action here
-            }),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: <Widget>[ReceiptScreenLayout()],
-          ),
-        ),
+      body: FutureBuilder<Uint8List>(
+        future: receiptPdfFuture,
+        builder: (context, snapshot) {
+          Widget body;
+          if (snapshot.hasData) {
+            savePdf(snapshot.data);
+            body = SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: <Widget>[ReceiptScreenLayout(context)],
+                ),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            body = Column(
+              children: <Widget>[
+                Icon(
+                  Icons.error_outline,
+                  color: Colors.red,
+                  size: 60,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Text('Error: ${snapshot.error}'),
+                )
+              ],
+            );
+          } else {
+            body = Column(
+              children: <Widget>[
+                SizedBox(
+                  child: CircularProgressIndicator(),
+                  width: 60,
+                  height: 60,
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 16),
+                  child: Text('Awaiting result...'),
+                )
+              ],
+            );
+          }
+          return body;
+        },
       ),
     );
   }
 }
 
-Widget ReceiptScreenLayout() {
+// ignore: non_constant_identifier_names
+Widget ReceiptScreenLayout([BuildContext context]) {
+  final ApiService _apiService = ApiService();
+  final AccountData businessInfo =
+      Provider.of<Business>(context, listen: false).accountData;
   return Column(children: <Widget>[
     SizedBox(
       height: 14,
@@ -66,7 +160,7 @@ Widget ReceiptScreenLayout() {
       alignment: Alignment.topCenter,
       // width: 325,
       decoration: BoxDecoration(
-        color: Color(0xFFF2F8FF),
+        //  color: Color(int.parse("0xFF"+Provider.of<Receipt>(context,listen: false).primaryColorHexCode)),
         border: Border.all(
           color: Colors.grey[500],
         ),
@@ -84,7 +178,9 @@ Widget ReceiptScreenLayout() {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                    color: Color(0xFF539C30),
+                    color: Color(int.parse("0xFF" +
+                        Provider.of<Receipt>(context, listen: false)
+                            .primaryColorHexCode)),
                     height: 13,
                     width: double.infinity,
                   ),
@@ -97,7 +193,7 @@ Widget ReceiptScreenLayout() {
 
                       child: Center(
                     child: Text(
-                      'Geek Tutor',
+                      businessInfo.name,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
@@ -109,7 +205,7 @@ Widget ReceiptScreenLayout() {
                   ),
                   Center(
                     child: Text(
-                      '2118 Thornridge Cir. Syracuse, Connecticut 35624',
+                      businessInfo.address,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.black,
@@ -124,7 +220,7 @@ Widget ReceiptScreenLayout() {
                   ),
                   Center(
                     child: Text(
-                      'Tel No: (603) 555-0123',
+                      'Tel No: ${businessInfo.phone}',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 13,
@@ -138,7 +234,7 @@ Widget ReceiptScreenLayout() {
                   ),
                   Center(
                     child: Text(
-                      'Email: cfroschauerc@ucoz.ru',
+                      'Email: ${businessInfo.email}',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 13,
@@ -165,7 +261,10 @@ Widget ReceiptScreenLayout() {
                         Container(
                           padding: EdgeInsets.only(bottom: 8),
                           child: Text(
-                            'Date: 17-06-2020',
+                            "Date: " +
+                                Provider.of<Receipt>(context, listen: false)
+                                    .issuedDate
+                                    .toString(),
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 13,
@@ -176,7 +275,15 @@ Widget ReceiptScreenLayout() {
                           ),
                         ),
                         Text(
-                          'Reciept No: 10334',
+                          Provider.of<Receipt>(context, listen: false)
+                                      .receiptNo
+                                      .toString() !=
+                                  null
+                              ? 'Receipt No : ' + "AutoGenerated"
+                              : 'Receipt No : ' +
+                                  Provider.of<Receipt>(context, listen: false)
+                                      .receiptNo
+                                      .toString(),
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 13,
@@ -197,7 +304,11 @@ Widget ReceiptScreenLayout() {
                         Container(
                           padding: EdgeInsets.only(bottom: 8),
                           child: Text(
-                            'Name: Denys Wilacot',
+                            'Name: ' +
+                                Provider.of<Receipt>(context, listen: false)
+                                    .customer
+                                    .name
+                                    .toString(),
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -209,7 +320,11 @@ Widget ReceiptScreenLayout() {
                         Container(
                           padding: EdgeInsets.only(bottom: 8),
                           child: Text(
-                            'Email: zpopley3@nifty.com',
+                            'Email: ' +
+                                Provider.of<Receipt>(context, listen: false)
+                                    .customer
+                                    .email
+                                    .toString(),
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -219,7 +334,11 @@ Widget ReceiptScreenLayout() {
                           ),
                         ),
                         Text(
-                          'Phone No: 741-142-4459',
+                          'Phone No: ' +
+                              Provider.of<Receipt>(context, listen: false)
+                                  .customer
+                                  .phoneNumber
+                                  .toString(),
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 14,
@@ -240,7 +359,6 @@ Widget ReceiptScreenLayout() {
                     ),
                   ),
                   Divider(),
-                  ReceiptItem(),
                   ReceiptItem(),
                   SizedBox(
                     //toatal payment and stamp
@@ -272,11 +390,27 @@ Widget ReceiptScreenLayout() {
                                 ),
                               ),
                             ),
-                            Image.asset('assets/images/paid-stamp.png'),
+                            Provider.of<Receipt>(context, listen: false)
+                                        .paidStamp !=
+                                    false
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    child: SizedBox(
+                                      height: 65,
+                                      width: 65,
+                                      child: kPaidStamp(Provider.of<Receipt>(
+                                              context,
+                                              listen: false)
+                                          .primaryColorHexCode
+                                          .toLowerCase()),
+                                    ),
+                                  )
+                                : Container(),
                             Padding(
                               padding: const EdgeInsets.only(top: 15.0),
                               child: Text(
-                                '₦80,000',
+                                '₦',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
@@ -344,6 +478,36 @@ Widget ReceiptScreenLayout() {
     SizedBox(
       height: 45,
     ),
+    /* SizedBox(
+      width: double.infinity,
+      height: 45,
+      child: FlatButton(
+        //padding: EdgeInsets.all(5.0),
+        color: Colors.white,
+        textTheme: ButtonTextTheme.primary,
+        //minWidth: 350,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Text(
+          'Send',
+          style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        onPressed: () async {
+          bool load = true;
+          // await  _apiService.saveReceipt();
+
+          Provider.of<Receipt>(context, listen: false).showJson();
+          Provider.of<Receipt>(context, listen: false).saveReceipt();
+        },
+      ),
+    ), */
+    SizedBox(
+      height: 15,
+    ),
     SizedBox(
       width: double.infinity,
       height: 45,
@@ -362,8 +526,11 @@ Widget ReceiptScreenLayout() {
             fontWeight: FontWeight.w600,
           ),
         ),
-        onPressed: () {
+        onPressed: () async {
           //take this action
+          await shareFile();
+          Provider.of<Receipt>(context, listen: false).showJson();
+          Provider.of<Receipt>(context, listen: false).saveReceipt();
         },
       ),
     ),
@@ -371,6 +538,15 @@ Widget ReceiptScreenLayout() {
       height: 15,
     ),
   ]);
+}
+
+Future<void> shareFile() async {
+  try {
+    await Share.file('Receipt', 'receipt.pdf', receiptPdf, 'application/pdf',
+        text: 'My optional text.');
+  } catch (e) {
+    print('error: $e');
+  }
 }
 
 class DashedSeparator extends StatelessWidget {
