@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
+import 'package:wc_form_validators/wc_form_validators.dart';
 
 import '../services/api_service.dart';
 
@@ -89,12 +90,10 @@ class _LogInScreenState extends State<LogInScreen> {
                   ),
                   TextFormField(
                     controller: _emailController,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Invalid Email Address';
-                      }
-                      return null;
-                    },
+                    validator: Validators.compose([
+                      Validators.required('Input Email Address'),
+                      Validators.email('Invalid Email Address'),
+                    ]),
                     style: TextStyle(
                       color: Color(0xFF2B2B2B),
                       fontSize: 14,
@@ -132,12 +131,11 @@ class _LogInScreenState extends State<LogInScreen> {
                   ),
                   TextFormField(
                     controller: _passwordController,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Invalid Password';
-                      }
-                      return null;
-                    },
+                    validator: Validators.compose([
+                      Validators.required('Input Password'),
+                      Validators.minLength(
+                          6, 'Minimum of 6 characters required for Password'),
+                    ]),
                     style: TextStyle(
                       color: Color(0xFF2B2B2B),
                       fontSize: 14,
