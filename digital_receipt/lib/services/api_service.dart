@@ -15,7 +15,7 @@ import 'package:digital_receipt/models/receipt.dart';
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
-  static String _urlEndpoint = "https://degeit-receipt.herokuapp.com/v1";
+  static String _urlEndpoint = "https://hng-degeit-receipt.herokuapp.com/v1";
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();

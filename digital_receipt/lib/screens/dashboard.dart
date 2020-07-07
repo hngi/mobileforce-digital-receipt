@@ -1,9 +1,19 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:digital_receipt/models/account.dart';
+import 'package:digital_receipt/providers/business.dart';
+import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import '../services/email_service.dart';
+
+final ApiService _apiService = ApiService();
+final SharedPreferenceService _sharedPreferenceService =
+    SharedPreferenceService();
 
 class DashBoard extends StatefulWidget {
   DashBoard({Key key}) : super(key: key);
@@ -13,6 +23,20 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
+  @override
+  void initState() {
+    callFetch();
+    super.initState();
+  }
+
+  callFetch() async {
+    var res = await _apiService.fetchAndSetUser();
+    Provider.of<Business>(context, listen: false).setAccountData = res;
+    var val = Provider.of<Business>(context, listen: false).toJson();
+    _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
+    print(val);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -77,6 +101,7 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   Container _buildInfo() {
+    AccountData businessInfo = Provider.of<Business>(context).accountData;
     return Container(
       height: 130,
       padding: EdgeInsets.all(10.0),
@@ -93,24 +118,24 @@ class _DashBoardState extends State<DashBoard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Geek Tutor',
+                  businessInfo.name,
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 Text(
-                  '218 thonbridge cir, cyprus',
+                  businessInfo.address,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: Colors.white),
                 ),
                 Text(
-                  'johntompson@ucoz.com',
+                  businessInfo.email,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: Colors.white),
                 ),
                 Text(
-                  '(603) 555-6034',
+                  businessInfo.phone,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: Colors.white),
