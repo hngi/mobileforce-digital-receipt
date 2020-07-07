@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 
 class Customer extends ChangeNotifier{
@@ -5,6 +6,7 @@ class Customer extends ChangeNotifier{
   String email;
   String phoneNumber;
   String address;
+
 
   Customer({
     this.name,

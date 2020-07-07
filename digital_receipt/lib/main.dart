@@ -16,8 +16,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'models/notification.dart';
+
 import './providers/business.dart';
 import 'models/receipt.dart';
+
 import 'services/sql_database_client.dart';
 import 'services/shared_preference_service.dart';
 import 'services/sql_database_repository.dart';
@@ -217,15 +219,19 @@ class _ScreenControllerState extends State<ScreenController> {
               child: Center(child: CircularProgressIndicator()),
             );
             // TODO Reverse if-condition to show OnBoarding
+
           } else if (snapshot.data == 'empty' || _currentAutoLogoutStatus) {
             return LogInScreen();
+
           } else if (snapshot.hasData && snapshot.data != null) {
             // return HomePage();
             return HomePage();
             // return Otp(email: "francis@francis.francis",);
           } else {
+
             // return Otp(email: "francis@francis.francis",);
             return OnboardingPage();
+
           }
         });
   }
