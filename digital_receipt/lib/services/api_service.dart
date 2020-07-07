@@ -367,9 +367,7 @@ class ApiService {
             phone: res['phone_number'],
             address: res['address'],
             slogan: res['slogan'],
-
             logo: 'https://hng-degeit-receipt.herokuapp.com${res['logo']}',
-
             email: email,
           );
         }
@@ -409,7 +407,9 @@ class ApiService {
     }
     return 'error';
   }
- var uri = "$_urlEndpoint/business/receipt/issued";
+
+  getIssuedReceipts() async {
+    var uri = "$_urlEndpoint/business/receipt/issued";
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -473,7 +473,7 @@ class ApiService {
     return [];
   }
 
-  Future<List<Customer>> getAllCustomers() async {
+  Future getAllCustomers() async {
     var uri = "$_urlEndpoint/customer/all";
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
@@ -491,11 +491,12 @@ class ApiService {
       );
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        data["data"].forEach((customer) {
+        //print(data);
+        /*   data["data"].forEach((customer) {
           _allCustomers.add(Customer.fromJson(customer));
           Customer.fromJson(customer).toString();
-        });
-        return _allCustomers;
+        }); */
+        return data['data'];
       } else {
         print("All Customers status code ${response.statusCode}");
         return [];
