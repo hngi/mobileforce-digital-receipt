@@ -1,4 +1,7 @@
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
+import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/services/api_service.dart';
 
 /// This code displays only the UI
 class ReceiptHistory extends StatefulWidget {
@@ -7,20 +10,35 @@ class ReceiptHistory extends StatefulWidget {
 }
 
 class _ReceiptHistoryState extends State<ReceiptHistory> {
-  String dropdownValue = "Last Upadated";
+  TextEditingController _controller = TextEditingController();
+  String dropdownValue = "Receipt No";
   bool _showDialog = true;
-
+  //instead of dummyReceiptList use the future data gotten
+  static List<Receipt> receiptList = [];
+  // the below is needed so as to create a copy of the list,
+  //for sorting and searching functionalities
+  List<Receipt> copyReceiptList = receiptList;
+  ApiService _apiService = ApiService();
   @override
   void initState() {
     super.initState();
+    _issuedReceipts();
+  }
+
+  void _issuedReceipts() async {
+    List<Receipt> receipts = await _apiService.getIssuedReceipts();
+    // print("receipts \n $receipts");
+    receiptList =
+        receipts != null ? ReceiptUtil.sortReceiptByReceiptNo(receipts) : [];
+    // print("receipts \n $receipts");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffE5E5E5),
+      // backgroundColor: Color(0xffE5E5E5),
       appBar: AppBar(
-        backgroundColor: Color(0xff226EBE),
+        //backgroundColor: Color(0xff226EBE),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
@@ -38,11 +56,11 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
             letterSpacing: 0.03,
           ),
         ),
-        centerTitle: true,
+        //centerTitle: true,
         actions: <Widget>[],
       ),
-      body: FutureBuilder(
-        future: null, // receipts from API
+      body: FutureBuilder<List<Receipt>>(
+        future: _apiService.getIssuedReceipts(), // receipts from API
         builder: (context, snapshot) {
           // If the API returns nothing it means the user has to upgrade to premium
           // for now it doesn't validate if the user has upgraded to premium
@@ -58,106 +76,180 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
               child: CircularProgressIndicator(),
             );
           } else {
-            return _showDialog
-                ? _showAlertDialog()
-                : Padding(
-                    padding: EdgeInsets.all(15.0),
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(height: 30.0),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            hintText: "Type a keyword",
-                            hintStyle: TextStyle(color: Colors.grey),
-                            prefixIcon: IconButton(
-                              icon: Icon(Icons.search),
-                              color: Colors.grey,
-                              onPressed: () {},
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5),
-                              borderSide: BorderSide(
-                                color: Color(0xFFC8C8C8),
-                                width: 1.5,
-                              ),
-                            ),
-                            contentPadding: EdgeInsets.all(15),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5),
-                              borderSide: BorderSide(
-                                color: Color(0xFFC8C8C8),
-                                width: 1.5,
+            if (snapshot.data == null ||
+                !snapshot.hasData ||
+                snapshot.data.length == 0) {
+              return _showDialog
+                  ? _showAlertDialog()
+                  : Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Image.asset("assets/images/heartbroken 1.png"),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Center(
+                            child: Text(
+                              "There are no receipts created!",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                                fontSize: 16,
+                                letterSpacing: 0.3,
+                                color: Color.fromRGBO(0, 0, 0, 0.87),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 30.0),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(right: 10.0),
-                                child: Text("Sort By"),
-                              ),
-                              Container(
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: Color(0xff25CCB3),
-                                  ),
-                                ),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton(
-                                    value: dropdownValue,
-                                    underline: Divider(),
-                                    items: <String>[
-                                      "Last Upadated",
-                                      "Date issued",
-                                      "WhatsApp",
-                                      "Instagram",
-                                      "Twitter",
-                                    ].map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Padding(
-                                            padding: EdgeInsets.only(left: 8.0),
-                                            child: Text(
-                                              value,
-                                              textAlign: TextAlign.start,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ).toList(),
-                                    onChanged: (String value) {
-                                      setState(() => dropdownValue = value);
-                                      // No logic Implemented
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ]),
-                        SizedBox(height: 20.0),
-                        Flexible(
-                          child: ListView.builder(
-                            itemCount: 25,
-                            itemBuilder: (context, index) {
-                              // HardCoded Receipt details
-                              return receiptCard(
-                                  receiptNo: "0021",
-                                  total: "80,000",
-                                  date: "12-06-2020",
-                                  receiptTitle: "Carole",
-                                  subtitle:
-                                      "Crptocurrency, intro to after effects");
-                            },
+                          SizedBox(
+                            height: 30,
                           ),
+                        ],
+                      ),
+                    );
+              ;
+            }
+
+            return Padding(
+              padding: EdgeInsets.all(15.0),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 10.0),
+                  TextFormField(
+                    controller: _controller,
+                    onChanged: (value) async {
+                      await Future.delayed(Duration(milliseconds: 700));
+                      setState(() {
+                        receiptList = ReceiptUtil.filterReceipt(
+                            snapshot.data, _controller.text);
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Type a keyword",
+                      hintStyle: TextStyle(color: Colors.grey),
+                      prefixIcon: IconButton(
+                        icon: Icon(Icons.search),
+                        color: Colors.grey,
+                        onPressed: () {
+                          setState(() {
+                            receiptList = ReceiptUtil.filterReceipt(
+                                snapshot.data, _controller.text);
+                          });
+                        },
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: BorderSide(
+                          color: Color(0xFFC8C8C8),
+                          width: 1.5,
                         ),
-                      ],
+                      ),
+                      contentPadding: EdgeInsets.all(15),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: BorderSide(
+                          color: Color(0xFFC8C8C8),
+                          width: 1.5,
+                        ),
+                      ),
                     ),
-                  );
+                  ),
+                  SizedBox(height: 30.0),
+                  // RaisedButton(
+                  //   onPressed: api,
+                  //   child: Text("Apitesting"),
+                  // ),
+                  Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 10.0),
+                      child: Text("Sort By"),
+                    ),
+                    Container(
+                      width: 150,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: Color(0xff25CCB3),
+                        ),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton(
+                          value: dropdownValue,
+                          underline: Divider(),
+                          items: <String>[
+                            "Receipt No",
+                            "Date issued",
+                            "WhatsApp",
+                            "Instagram",
+                            "Twitter",
+                          ].map<DropdownMenuItem<String>>(
+                            (String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 8.0),
+                                  child: Text(
+                                    value,
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ),
+                              );
+                            },
+                          ).toList(),
+                          onChanged: (String value) {
+                            setState(() {
+                              dropdownValue = value;
+                              switch (value) {
+                                case "Date issued":
+                                  receiptList = ReceiptUtil.sortReceiptByDate(
+                                      snapshot.data);
+                                  break;
+                                case "WhatsApp":
+                                  receiptList =
+                                      ReceiptUtil.sortReceiptByCategory(
+                                          snapshot.data,
+                                          byCategory: ReceiptCategory.WHATSAPP);
+                                  break;
+                                case "Instagram":
+                                  receiptList =
+                                      ReceiptUtil.sortReceiptByCategory(
+                                          snapshot.data,
+                                          byCategory:
+                                              ReceiptCategory.INSTAGRAM);
+                                  break;
+                                case "Twitter":
+                                  receiptList =
+                                      ReceiptUtil.sortReceiptByCategory(
+                                          snapshot.data,
+                                          byCategory: ReceiptCategory.TWITTER);
+                                  break;
+                                default:
+                                  receiptList =
+                                      ReceiptUtil.sortReceiptByReceiptNo(
+                                          snapshot.data);
+                                  break;
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ]),
+                  SizedBox(height: 20.0),
+                  Flexible(
+                    child: ListView.builder(
+                      itemCount:
+                          snapshot.data == null ? 0 : snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        // HardCoded Receipt details
+                        return receiptCard(snapshot.data[index]);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
           // }
         },
@@ -165,7 +257,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
     );
   }
 
-  Widget receiptCard({String receiptNo, total, date, receiptTitle, subtitle}) {
+  Widget receiptCard(Receipt receipt) {
     return Column(
       children: <Widget>[
         Container(
@@ -189,7 +281,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        "Receipt No: $receiptNo",
+                        "Receipt No: ${receipt.receiptNo}",
                         style: TextStyle(
                           color: Color.fromRGBO(0, 0, 0, 0.6),
                           fontSize: 14,
@@ -199,7 +291,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                         ),
                       ),
                       Text(
-                        "$date",
+                        "${receipt.issuedDate}",
                         style: TextStyle(
                           color: Color.fromRGBO(0, 0, 0, 0.6),
                           fontSize: 14,
@@ -214,7 +306,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                   child: Text(
-                    "$receiptTitle",
+                    "${receipt.customerName}",
                     style: TextStyle(
                       color: Color.fromRGBO(0, 0, 0, 0.87),
                       fontSize: 14,
@@ -227,7 +319,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                   child: Text(
-                    "$subtitle",
+                    "${receipt.description}",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 14,
@@ -257,7 +349,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                             ),
                           ),
                           TextSpan(
-                            text: ' N$total ',
+                            text: ' N${receipt.totalAmount} ',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 14,
@@ -284,6 +376,8 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
 
   Widget _showAlertDialog() {
     return AlertDialog(
+      elevation: 0,
+      backgroundColor: Color(0xFFF2F8FF),
       contentPadding: EdgeInsets.all(0.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -368,8 +462,8 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                 Container(
                   width: double.infinity,
                   padding: EdgeInsets.all(10.0),
-                  child: RaisedButton(
-                    color: Color(0xff226EBE),
+                  child: FlatButton(
+                    color: Color(0xFF0B57A7),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
@@ -384,7 +478,8 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                         "Upgrade",
                         style: TextStyle(
                           color: Color(0xffE5E5E5),
-                          fontSize: 15,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
@@ -400,7 +495,8 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                       "Skip",
                       style: TextStyle(
                         // color: Color(0xffE5E5E5),
-                        fontSize: 15,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
