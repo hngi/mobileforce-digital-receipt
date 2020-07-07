@@ -55,10 +55,11 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
         );
       },
     );
-    setState(() {
-      customers = List.from(res);
-    });
-    res = null;
+
+      Provider.of<Customer>(context, listen: false).setCustomerList =
+          List.from(res);
+    
+    //res = null;
   }
 
   @override
@@ -66,6 +67,8 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
     setCustomer();
     super.initState();
   }
+
+
 
   @override
   Widget build(BuildContext context) {

@@ -495,7 +495,7 @@ class ApiService {
           _allCustomers.add(Customer.fromJson(customer));
           Customer.fromJson(customer).toString();
         }); */
-        print(data['data']);
+        //print(data['data']);
         return data['data'];
       } else {
         print("All Customers status code ${response.statusCode}");
