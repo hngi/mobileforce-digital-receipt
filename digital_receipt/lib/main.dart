@@ -6,6 +6,7 @@ import 'package:digital_receipt/screens/edit_account_information.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/login_screen.dart';
 import 'package:digital_receipt/screens/onboarding.dart';
+import 'package:digital_receipt/screens/signupScreen.dart';
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -218,7 +219,7 @@ class _ScreenControllerState extends State<ScreenController> {
             // return Otp(email: "francis@francis.francis",);
           } else {
 	    // return Otp(email: "francis@francis.francis",);
-           return HomePage();
+           return SignupScreen();
           }
         });
   }
