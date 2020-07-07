@@ -478,7 +478,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
     SizedBox(
       height: 45,
     ),
-    SizedBox(
+    /* SizedBox(
       width: double.infinity,
       height: 45,
       child: FlatButton(
@@ -504,7 +504,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
           Provider.of<Receipt>(context, listen: false).saveReceipt();
         },
       ),
-    ),
+    ), */
     SizedBox(
       height: 15,
     ),
@@ -528,7 +528,9 @@ Widget ReceiptScreenLayout([BuildContext context]) {
         ),
         onPressed: () async {
           //take this action
-          shareFile();
+          await shareFile();
+          Provider.of<Receipt>(context, listen: false).showJson();
+          Provider.of<Receipt>(context, listen: false).saveReceipt();
         },
       ),
     ),
