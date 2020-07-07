@@ -39,31 +39,15 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
   Customer selectedCustomer;
 
   // Needed to decide weather to create a new customer or not
-  List<Customer> customers;
+  List<Customer> customers = Customer.dummy();
 
   String _customerName, _customerEmail, _customerAddress, _customerPNumber;
 
-  setCustomer() async {
-    dynamic res = await ApiService().getAllCustomers();
-    res = res.map(
-      (e) {
-        return Customer(
-          address: e['address'],
-          email: e['email'],
-          phoneNumber: e['phoneNumber'],
-          name: e['name'],
-        );
-      },
-    );
-    setState(() {
-      customers = List.from(res);
-    });
-    res = null;
-  }
+  
 
   @override
   void initState() {
-    setCustomer();
+  
     super.initState();
   }
 

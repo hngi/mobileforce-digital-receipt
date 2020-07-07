@@ -4,10 +4,10 @@ import '../widgets/create_receipt_step0.dart';
 
 class CustomerDropdown extends StatefulWidget {
   const CustomerDropdown(
-      {this.customers, this.onSubmit, this.initializeCustomers});
+      {this.customers, this.onSubmit, });
   final List customers;
   final Function onSubmit;
-  final Function initializeCustomers;
+
 
   @override
   _CustomerDropdownState createState() => _CustomerDropdownState();
@@ -16,7 +16,7 @@ class CustomerDropdown extends StatefulWidget {
 class _CustomerDropdownState extends State<CustomerDropdown> {
   @override
   void initState() {
-    widget.initializeCustomers();
+  
     super.initState();
   }
 

@@ -41,7 +41,7 @@ class _DashBoardState extends State<DashBoard> {
     }
   }
 
-Map<String, dynamic> recInfo(var snapshot){
+  Map<String, dynamic> recInfo(var snapshot) {
     var data;
 
     int snapLength = snapshot['data'].length;
@@ -49,28 +49,20 @@ Map<String, dynamic> recInfo(var snapshot){
     double amnt = 0;
     // ignore: unused_local_variable
     int deptIssued = 0;
-      for(var i=0; i < snapLength; i++){
-
+    for (var i = 0; i < snapLength; i++) {
       data = snapshot['data'][i];
       amnt += data['total'];
 
-      if(data['partPayment']){
-
-      deptIssued += 1;
-      
+      if (data['partPayment']) {
+        deptIssued += 1;
       }
       print(data['total']);
-    } 
-        return {
-        'total': amnt,
-        'recNo':snapLength,
-        'dept': deptIssued
-      };
+    }
+    return {'total': amnt, 'recNo': snapLength, 'dept': deptIssued};
   }
 
   @override
   Widget build(BuildContext context) {
-   
     return Container(
       padding: EdgeInsets.only(top: 16.0, left: 16, right: 16),
       child: Column(
@@ -81,17 +73,21 @@ Map<String, dynamic> recInfo(var snapshot){
           ),
           FutureBuilder(
             future: _apiService.getIssuedReceipt2(),
-            builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot){
-              if(!snapshot.hasData){
-                return Expanded(child: Center(child: SizedBox(height: 200,child: kEmpty,)));
-              }else{
-              var userData = snapshot.data;
-              return Expanded(
-                child: buildGridView(
-                  recInfo(userData)['recNo'], 
-                  recInfo(userData)['dept'], 
-                  recInfo(userData)['total']),
-              );
+            builder: (BuildContext context,
+                AsyncSnapshot<Map<String, dynamic>> snapshot) {
+              if (!snapshot.hasData) {
+                return Expanded(
+                    child: Center(
+                        child: SizedBox(
+                  height: 200,
+                  child: kEmpty,
+                )));
+              } else {
+                var userData = snapshot.data;
+                return Expanded(
+                  child: buildGridView(recInfo(userData)['recNo'],
+                      recInfo(userData)['dept'], recInfo(userData)['total']),
+                );
               }
             },
           ),
@@ -102,27 +98,27 @@ Map<String, dynamic> recInfo(var snapshot){
 
   GridView buildGridView(recNo, int deptIssued, double amnt) {
     return GridView.count(
-              crossAxisSpacing: 16.0,
-              mainAxisSpacing: 16.0,
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              children: <Widget>[
-                _singleCard(
-                leading: 'No of receipts',
-                subtitle: '$recNo',
-                color: Color(0xFF25CCB3),
-                ),
-                _singleCard(
-                leading: 'Debts',
-                subtitle: '$deptIssued',
-                color: Color(0xFFE897A0),
-                ),
-                _singleCard(
-                leading: 'Total Sales',
-                subtitle: '$amnt',
-                color: Color(0xFF25CCB3),
-                ),
-                /*  FlatButton(
+      crossAxisSpacing: 16.0,
+      mainAxisSpacing: 16.0,
+      shrinkWrap: true,
+      crossAxisCount: 2,
+      children: <Widget>[
+        _singleCard(
+          leading: 'No of receipts',
+          subtitle: '$recNo',
+          color: Color(0xFF25CCB3),
+        ),
+        _singleCard(
+          leading: 'Debts',
+          subtitle: '$deptIssued',
+          color: Color(0xFFE897A0),
+        ),
+        _singleCard(
+          leading: 'Total Sales',
+          subtitle: '₦$amnt',
+          color: Color(0xFF25CCB3),
+        ),
+        /*  FlatButton(
                   onPressed: () async {
                     print('canSend');
                     final EmailService emailService = EmailService();
@@ -145,8 +141,8 @@ Map<String, dynamic> recInfo(var snapshot){
                   },
                   child: Text('Test mail'),
                 ), */
-              ],
-            );
+      ],
+    );
   }
 
   Container _buildInfo() {

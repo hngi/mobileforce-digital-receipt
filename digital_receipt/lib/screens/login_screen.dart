@@ -140,7 +140,7 @@ class _LogInScreenState extends State<LogInScreen> {
                   ),
                   TextFormField(
                     controller: _passwordController,
-                    validator: Validators.compose([
+                   /*  validator: Validators.compose([
                       Validators.required('Input Password'),
                       Validators.minLength(
                           8, 'Minimum of 8 characters required for Password'),
@@ -152,7 +152,7 @@ class _LogInScreenState extends State<LogInScreen> {
                           'Password should contain at least a Digit'),
                       Validators.patternRegExp(kOneSpecialCharRegex,
                           'Password should contain at least a Special Character')
-                    ]),
+                    ]), */
                     style: TextStyle(
                       color: Color(0xFF2B2B2B),
                       fontSize: 14,
