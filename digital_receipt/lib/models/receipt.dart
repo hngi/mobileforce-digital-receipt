@@ -49,7 +49,7 @@ class Receipt extends ChangeNotifier {
     this.customer,
     this.products,
   });
-
+  static String _urlEndpoint = 'https://hng-degeit-receipt.herokuapp.com/v1';
   factory Receipt.fromJson(Map<String, dynamic> json) => Receipt(
         receiptNo:
             json["receipt_number"] == null ? null : json["receipt_number"],
@@ -189,8 +189,7 @@ class Receipt extends ChangeNotifier {
   }
 
   saveReceipt() async {
-    var uri =
-        "https://digital-receipt-07.herokuapp.com/v1/business/receipt/customize";
+    var uri = "$_urlEndpoint/business/receipt/customize";
     var token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
 
     var response = await http.post(uri,
