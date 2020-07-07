@@ -37,6 +37,7 @@ class Receipt extends ChangeNotifier {
   String signature;
   TimeOfDay reminderTime;
   DateTime reminderDate;
+  num total;
 
   Receipt({
     this.receiptNo,
@@ -48,6 +49,7 @@ class Receipt extends ChangeNotifier {
     this.fonts,
     this.customer,
     this.products,
+    this.total,
   });
   static String _urlEndpoint = 'https://hng-degeit-receipt.herokuapp.com/v1';
   factory Receipt.fromJson(Map<String, dynamic> json) => Receipt(
@@ -84,6 +86,11 @@ class Receipt extends ChangeNotifier {
 
   bool enablePartPayment() {
     return partPayment;
+  }
+
+
+  num getTotal() {
+    return total;
   }
 
   void toggleAutoGenReceiptNo() {
@@ -133,7 +140,8 @@ class Receipt extends ChangeNotifier {
   void setProducts(List<Product> products) => this.products = products;
 
   void setNumber(int receiptNo) {
-    receiptNo = receiptNo;
+    this.customer != null ? print("theirs a customer") : print("no customer object good"); 
+    receiptNo = receiptNo;      
   }
 
   void setIssueDate(String date) {
@@ -154,6 +162,10 @@ class Receipt extends ChangeNotifier {
 
   void setReminderDate(DateTime date) {
     reminderDate = date;
+  }
+
+  void setTotal(num total) {
+    this.total = total;
   }
 
   convertToDateTime() {
@@ -258,3 +270,7 @@ List<Receipt> dummyReceiptList = [
     category: ReceiptCategory.TWITTER,
   ),
 ];
+
+
+
+
