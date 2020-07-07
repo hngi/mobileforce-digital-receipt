@@ -1,3 +1,4 @@
+import 'package:digital_receipt/screens/forgot_password.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -173,7 +174,7 @@ class _LogInScreenState extends State<LogInScreen> {
                     alignment: Alignment.centerRight,
                     child: InkWell(
                       onTap: () {
-                        print('forgotten password');
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPassword()));
                       },
                       child: Text(
                         "Forgotten Password?",
