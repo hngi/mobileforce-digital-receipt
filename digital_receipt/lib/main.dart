@@ -208,17 +208,15 @@ class _ScreenControllerState extends State<ScreenController> {
               color: Colors.white,
               child: Center(child: CircularProgressIndicator()),
             );
-            // TODO Reverse if-condition to show OnBoarding
           } else if (snapshot.data == 'empty') {
             return LogInScreen();
           } else if (snapshot.hasData && snapshot.data != null) {
-           
             // return HomePage();
             return HomePage();
             // return Otp(email: "francis@francis.francis",);
           } else {
-	    // return Otp(email: "francis@francis.francis",);
-           return HomePage();
+            // return Otp(email: "francis@francis.francis",);
+            return OnboardingPage();
           }
         });
   }
