@@ -1,4 +1,4 @@
-import 'package:digital_receipt/utils/receipt_util.dart';
+/* import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/models/receipt.dart';
 
@@ -744,4 +744,4 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
     );
   }
 }
- 
+  */
