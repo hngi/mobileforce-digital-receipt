@@ -142,6 +142,40 @@ class ApiService {
     }
   }
 
+  Future getDraft() async {
+    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (HttpClient client) {
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+      return client;
+    };
+
+   
+      String auth_token =
+          await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+      Response response = await _dio.get(
+        "/business/receipt/draft",
+        options: Options(
+          followRedirects: false,
+          validateStatus: (status) {
+            return status < 500;
+          },
+          headers: {"token": auth_token},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        var res = response.data["data"] as List;
+        print('res:::::: ${res.length}');
+        return res;
+      } else {
+        return null;
+      }
+   /*  } on DioError catch (error) {
+      print(error);
+    } */
+  }
+
   Future<String> signinUser(String email, String password, String name) async {
     var uri = '$_urlEndpoint/user/register';
     var response = await http.post(
@@ -330,7 +364,8 @@ class ApiService {
   Future<AccountData> fetchAndSetUser() async {
     var url = "$_urlEndpoint/business/info/all";
 
-    String token = await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
     String userID = await _sharedPreferenceService.getStringValuesSF('USER_ID');
 
@@ -506,22 +541,22 @@ class ApiService {
     return [];
   }
 
-    Future<Map<String,dynamic>> getIssuedReceipt2() async {
-    String token = await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+  Future<Map<String, dynamic>> getIssuedReceipt2() async {
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
     var connectivityResult = await (Connectivity().checkConnectivity());
     String url = '$_urlEndpoint/business/receipt/issued';
     if (connectivityResult == ConnectivityResult.mobile ||
-    connectivityResult == ConnectivityResult.wifi) {
-    final http.Response res = await http.get(url, headers: <String, String>{
+        connectivityResult == ConnectivityResult.wifi) {
+      final http.Response res = await http.get(url, headers: <String, String>{
         "token": token,
       }).catchError((err) => print(err));
-    
-      if(res.statusCode == 200){
-      var data = json.decode(res.body);
+
+      if (res.statusCode == 200) {
+        var data = json.decode(res.body);
         print(data);
         return data;
-      }else{
-      
+      } else {
         return null;
       }
     }

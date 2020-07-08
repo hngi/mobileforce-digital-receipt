@@ -60,7 +60,7 @@ class Receipt extends ChangeNotifier {
             json["customer"]["name"] == null ? null : json["customer"]["name"],
         category: json["category"] == null ? null : json["category"],
         totalAmount: json["total"] == null ? null : json["total"].toString(),
-       //products: json["products"].isEmpty ? null : json['products']
+        //products: json["products"].isEmpty ? null : json['products']
       );
 
   @override
@@ -87,7 +87,6 @@ class Receipt extends ChangeNotifier {
   bool enablePartPayment() {
     return partPayment;
   }
-
 
   num getTotal() {
     return total;
@@ -140,8 +139,10 @@ class Receipt extends ChangeNotifier {
   void setProducts(List<Product> products) => this.products = products;
 
   void setNumber(int receiptNo) {
-    this.customer != null ? print("theirs a customer") : print("no customer object good"); 
-    receiptNo = receiptNo;      
+    this.customer != null
+        ? print("theirs a customer")
+        : print("no customer object good");
+    receiptNo = receiptNo;
   }
 
   void setIssueDate(String date) {
@@ -270,7 +271,3 @@ List<Receipt> dummyReceiptList = [
     category: ReceiptCategory.TWITTER,
   ),
 ];
-
-
-
-
