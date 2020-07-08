@@ -102,6 +102,11 @@ class Receipt extends ChangeNotifier {
     notifyListeners();
   }
 
+  set setPaidStamp(bool val) {
+    paidStamp = val;
+    notifyListeners();
+  }
+
   void togglePaidStamp() {
     paidStamp = !paidStamp;
     notifyListeners();
