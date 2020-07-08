@@ -164,10 +164,10 @@ class MainDrawer extends StatelessWidget {
                   child: FlatButton(
                     highlightColor: Colors.transparent,
                     onPressed: () {
-                     /*  Navigator.push(
+                      Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ReceiptHistory())); */
+                              builder: (context) => ReceiptHistory()));
                     },
                     child: Row(
                       children: <Widget>[
