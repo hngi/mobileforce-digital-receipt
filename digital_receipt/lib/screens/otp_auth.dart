@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:digital_receipt/screens/reset_password.dart';
 import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:flare_flutter/flare_actor.dart';
@@ -17,7 +18,10 @@ class PinCodeVerificationScreen extends StatefulWidget {
   String email;
   String name;
   String password;
+  bool fp;
   PinCodeVerificationScreen({this.otp, this.email, this.name, this.password});
+
+  PinCodeVerificationScreen.forgotPassword({this.email,this.fp = true,this.otp});
 
   @override
   _PinCodeVerificationScreenState createState() =>
@@ -65,7 +69,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
     print(widget.email);
     print(widget.password);
     return Scaffold(
-      backgroundColor: Colors.blue.shade50,
+      backgroundColor: Colors.white,
       body: isLoading == true
           ? LoadingIndicator()
           : GestureDetector(
@@ -143,7 +147,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                   ),
                                   animationDuration:
                                       Duration(milliseconds: 300),
-                                  backgroundColor: Colors.blue.shade50,
+                                  backgroundColor: Colors.white,
                                   errorAnimationController: errorController,
                                   autoDisposeControllers: true,
                                   controller: textEditingController,
@@ -187,7 +191,52 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                         height: 40,
                         child: FlatButton(
                           onPressed: () async {
-                            try {
+
+                            if (widget.fp == true){
+                              try {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              String response =
+                                  await _apiService.forgotPasswordOtpVerification(
+                                      widget.email,
+                                      );
+                              var res = jsonDecode(response);
+                              print(res['data']['otp']);
+                              var otp = res['data']['otp'];
+                              Fluttertoast.showToast(
+                                  msg: 'OTP sent successfully',
+                                  toastLength: Toast.LENGTH_LONG,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.green[600],
+                                  textColor: Colors.white,
+                                  fontSize: 13.0);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PinCodeVerificationScreen.forgotPassword(
+                                              otp: otp,
+                                              email: widget.email,
+                                             )));
+                            } catch (error) {
+                                 setState(() {
+                                isLoading = false;
+                              });
+                                    Fluttertoast.showToast(
+                                  msg: 'error occured',
+                                  toastLength: Toast.LENGTH_LONG,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.green[600],
+                                  textColor: Colors.white,
+                                  fontSize: 13.0);
+                            }
+
+                            } else {
+
+                              try {
                               setState(() {
                                 isLoading = true;
                               });
@@ -226,6 +275,8 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                   textColor: Colors.white,
                                   fontSize: 13.0);
                             }
+                            }
+                            
                           },
                           child: Padding(
                             padding: EdgeInsets.only(top: 0, bottom: 30),
@@ -255,7 +306,45 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
   }
 
   otpValid() async {
-    setState(() {
+    if(widget.fp == true){
+          setState(() {
+      isLoading = true;
+    });
+    try {
+             Fluttertoast.showToast(
+          msg: "Sucessful",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green[600],
+          textColor: Colors.white,
+          fontSize: 13.0);
+              Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => ResetPassword(email:widget.email)));
+      
+    } catch (error) {
+      setState(() {
+        isLoading = false;
+      });
+      Fluttertoast.showToast(
+          msg: error,
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red[600],
+          textColor: Colors.white,
+          fontSize: 13.0);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PinCodeVerificationScreen(
+                  otp: widget.otp,
+                  email: widget.email,
+                  password: widget.password,
+                  name: widget.name)));
+    }
+    } else {
+          setState(() {
       isLoading = true;
     });
     try {
@@ -294,6 +383,8 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                   password: widget.password,
                   name: widget.name)));
     }
+    }
+
   }
 
   otpError() {
