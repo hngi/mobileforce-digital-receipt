@@ -330,7 +330,8 @@ class ApiService {
   Future<AccountData> fetchAndSetUser() async {
     var url = "$_urlEndpoint/business/info/all";
 
-    String token = await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
     String userID = await _sharedPreferenceService.getStringValuesSF('USER_ID');
 
@@ -506,25 +507,57 @@ class ApiService {
     return [];
   }
 
-    Future<Map<String,dynamic>> getIssuedReceipt2() async {
-    String token = await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+  Future<Map<String, dynamic>> getIssuedReceipt2() async {
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
     var connectivityResult = await (Connectivity().checkConnectivity());
     String url = '$_urlEndpoint/business/receipt/issued';
     if (connectivityResult == ConnectivityResult.mobile ||
-    connectivityResult == ConnectivityResult.wifi) {
-    final http.Response res = await http.get(url, headers: <String, String>{
+        connectivityResult == ConnectivityResult.wifi) {
+      final http.Response res = await http.get(url, headers: <String, String>{
         "token": token,
       }).catchError((err) => print(err));
-    
-      if(res.statusCode == 200){
-      var data = json.decode(res.body);
+
+      if (res.statusCode == 200) {
+        var data = json.decode(res.body);
         print(data);
         return data;
-      }else{
-      
+      } else {
         return null;
       }
     }
     return null;
+  }
+
+  Future<String> forgotPasswordOtpVerification(String email) async {
+    var uri = '$_urlEndpoint/user/send_email';
+    var response = await http.post(
+      uri,
+      body: {"email_address": "$email"},
+    );
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      print(data);
+      return response.body;
+    } else {
+      return null;
+    }
+  }
+
+  Future<String> resetForgottenPassword(
+    String email,
+    String newPassword,
+  ) async {
+    var uri = '$_urlEndpoint/user/forgot_password';
+
+    var response = await http.put(
+      uri,
+      body: {"email_address": "$email", "password": "$newPassword"},
+    );
+    print(response.body);
+    if (response.statusCode == 200) {
+      return 'true';
+    }
+    return 'false';
   }
 }

@@ -395,7 +395,7 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  signupUser() async {
+  signupUser() async { 
     _formKey.currentState.save();
     setState(() {
       isloading = true;
@@ -403,7 +403,7 @@ class _SignupScreenState extends State<SignupScreen> {
     print('im res');
     String response =
         await _apiService.otpVerification(_email, _password, _name);
-    var res = jsonDecode(response);
+   var res = jsonDecode(response);
     print(res['data']['otp']);
     var otp = res['data']['otp'];
     Navigator.pushReplacement(
@@ -414,7 +414,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 email: "$_email",
                 password: "$_password",
                 name: "$_name")));
-  }
+  } 
 
   dont() {
     print('check if to login or signup');
