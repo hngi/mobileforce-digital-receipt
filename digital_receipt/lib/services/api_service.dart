@@ -562,4 +562,36 @@ class ApiService {
     }
     return null;
   }
+
+  Future<String> forgotPasswordOtpVerification(String email) async {
+    var uri = '$_urlEndpoint/user/send_email';
+    var response = await http.post(
+      uri,
+      body: {"email_address": "$email"},
+    );
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      print(data);
+      return response.body;
+    } else {
+      return null;
+    }
+  }
+
+  Future<String> resetForgottenPassword(
+    String email,
+    String newPassword,
+  ) async {
+    var uri = '$_urlEndpoint/user/forgot_password';
+
+    var response = await http.put(
+      uri,
+      body: {"email_address": "$email", "password": "$newPassword"},
+    );
+    print(response.body);
+    if (response.statusCode == 200) {
+      return 'true';
+    }
+    return 'false';
+  }
 }
