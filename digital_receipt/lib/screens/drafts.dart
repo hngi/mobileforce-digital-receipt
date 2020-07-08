@@ -1,3 +1,4 @@
+import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -123,8 +124,19 @@ class _DraftsState extends State<Drafts> {
   }
 
   setReceipt(snapshot) {
+    print('color::: ${snapshot['color']}');
+    if (snapshot['color'] != null) {
+      Provider.of<Receipt>(context, listen: false).primaryColorHexCode =
+          snapshot['color'];
+    } else {
+      Provider.of<Receipt>(context, listen: false).primaryColorHexCode =
+          '539C30';
+    }
 
-    Provider.of<Receipt>(context, listen: false).primaryColorHexCode = '539C30';
+    if (snapshot['paid_stamp'] == true) {
+      Provider.of<Receipt>(context, listen: false).setPaidStamp = true;
+    }
+
     var prod = snapshot['products'].map((e) {
       return Product(
         id: e['id'].toString(),
@@ -135,13 +147,20 @@ class _DraftsState extends State<Drafts> {
       );
     });
     List<Product> products = List.from(prod);
-    print(products);
+    // print(products);
     Provider.of<Receipt>(context, listen: false)
       //   ..setNumber(56)
       ..customerName = snapshot['customer']['name']
       ..totalAmount = snapshot['total'].toString()
+      ..total = snapshot['total']
       ..receiptNo = snapshot['receipt_number']
       ..products = products
+      ..customer = Customer(
+        name: snapshot['customer']['name'],
+        email: snapshot['customer']['email'],
+        phoneNumber: snapshot['customer']['phoneNumber'],
+        address: snapshot['customer']['address'],
+      )
       ..setIssueDate(snapshot['date']);
     /* String id, String productDesc, int quantity, int amount, int unitPrice */
   }
