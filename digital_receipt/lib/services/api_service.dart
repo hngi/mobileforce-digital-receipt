@@ -151,28 +151,27 @@ class ApiService {
       return client;
     };
 
+    String auth_token =
+        await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+    Response response = await _dio.get(
+      "/business/receipt/draft",
+      options: Options(
+        followRedirects: false,
+        validateStatus: (status) {
+          return status < 500;
+        },
+        headers: {"token": auth_token},
+      ),
+    );
 
-      String auth_token =
-          await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
-      Response response = await _dio.get(
-        "/business/receipt/draft",
-        options: Options(
-          followRedirects: false,
-          validateStatus: (status) {
-            return status < 500;
-          },
-          headers: {"token": auth_token},
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        var res = response.data["data"] as List;
-        print('res:::::: ${res.length}');
-        return res;
-      } else {
-        return null;
-      }
-   /*  } on DioError catch (error) {
+    if (response.statusCode == 200) {
+      var res = response.data["data"] as List;
+      print('res:::::: ${res.length}');
+      return res;
+    } else {
+      return null;
+    }
+    /*  } on DioError catch (error) {
       print(error);
     } */
   }
@@ -548,13 +547,13 @@ class ApiService {
     var connectivityResult = await (Connectivity().checkConnectivity());
     String url = '$_urlEndpoint/business/receipt/issued';
     if (connectivityResult == ConnectivityResult.mobile ||
-    connectivityResult == ConnectivityResult.wifi) {
-    final http.Response res = await http.get(url, headers: <String, String>{
+        connectivityResult == ConnectivityResult.wifi) {
+      final http.Response res = await http.get(url, headers: <String, String>{
         "token": token,
       }).catchError((err) => print(err));
-    
-      if(res.statusCode == 200){
-      var data = json.decode(res.body);
+
+      if (res.statusCode == 200) {
+        var data = json.decode(res.body);
         print(data);
         return data;
       } else {
@@ -578,3 +577,21 @@ class ApiService {
       return null;
     }
   }
+
+  Future<String> resetForgottenPassword(
+    String email,
+    String newPassword,
+  ) async {
+    var uri = '$_urlEndpoint/user/forgot_password';
+
+    var response = await http.put(
+      uri,
+      body: {"email_address": "$email", "password": "$newPassword"},
+    );
+    print(response.body);
+    if (response.statusCode == 200) {
+      return 'true';
+    }
+    return 'false';
+  }
+}
