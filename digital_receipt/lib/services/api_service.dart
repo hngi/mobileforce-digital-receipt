@@ -176,6 +176,41 @@ class ApiService {
     } */
   }
 
+  /// This function gets all issued receipts from the database.
+  Future getIssued() async {
+    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (HttpClient client) {
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+      return client;
+    };
+
+   
+      String auth_token =
+          await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+      Response response = await _dio.get(
+        "/business/receipt/issued",
+        options: Options(
+          followRedirects: false,
+          validateStatus: (status) {
+            return status < 500;
+          },
+          headers: {"token": auth_token},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        var res = response.data["data"] as List;
+        print('res:::::: ${res.length}');
+        return res;
+      } else {
+        return null;
+      }
+   /*  } on DioError catch (error) {
+      print(error);
+    } */
+  }
+
   Future<String> signinUser(String email, String password, String name) async {
     var uri = '$_urlEndpoint/user/register';
     var response = await http.post(
