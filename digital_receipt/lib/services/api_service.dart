@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 
@@ -330,7 +331,8 @@ class ApiService {
   Future<AccountData> fetchAndSetUser() async {
     var url = "$_urlEndpoint/business/info/all";
 
-    String token = await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
     String userID = await _sharedPreferenceService.getStringValuesSF('USER_ID');
 
@@ -408,36 +410,33 @@ class ApiService {
     return 'error';
   }
 
-  Future getIssuedReceipts() async {
-    var uri = "$_urlEndpoint/business/receipt/issued";
+  Future<List<Receipt>> getIssuedReceipts() async {
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
     var connectivityResult = await (Connectivity().checkConnectivity());
-    List<Receipt> _issuedReceipts = [];
-
+    String url = '$_urlEndpoint/business/receipt/issued';
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
-      var response = await http.get(
-        Uri.encodeFull(uri),
-        headers: <String, String>{
-          'token': token,
-        },
-      );
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-        print(data);
-        data["data"].forEach((receipt) {
-          _issuedReceipts.add(Receipt.fromJson(receipt));
-          // Receipt.fromJson(receipt).toString();
-        });
-        // print(_issuedReceipts);
-        return _issuedReceipts;
+      final http.Response res = await http.get(url, headers: <String, String>{
+        "token": token,
+      }).catchError((err) => print(err));
+
+      if (res.statusCode == 200) {
+        var data = json.decode(res.body);
+        //log(res.body);
+        List<Receipt> reciepts;
+        try {
+          reciepts =
+              (data['data'] as List).map((e) => Receipt.fromJson(e)).toList();
+        } catch (e) {
+          print(e);
+        }
+        return reciepts;
       } else {
-        print("Issued Receipt status code ${response.statusCode}");
-        return [];
+        return null;
       }
     }
-    return [];
+    return null;
   }
 
   /// Returns a list of notifications
@@ -506,22 +505,22 @@ class ApiService {
     return [];
   }
 
-    Future<Map<String,dynamic>> getIssuedReceipt2() async {
-    String token = await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+  Future<Map<String, dynamic>> getIssuedReceipt2() async {
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
     var connectivityResult = await (Connectivity().checkConnectivity());
     String url = '$_urlEndpoint/business/receipt/issued';
     if (connectivityResult == ConnectivityResult.mobile ||
-    connectivityResult == ConnectivityResult.wifi) {
-    final http.Response res = await http.get(url, headers: <String, String>{
+        connectivityResult == ConnectivityResult.wifi) {
+      final http.Response res = await http.get(url, headers: <String, String>{
         "token": token,
       }).catchError((err) => print(err));
-    
-      if(res.statusCode == 200){
-      var data = json.decode(res.body);
-        print(data);
+
+      if (res.statusCode == 200) {
+        var data = json.decode(res.body);
+        //print(data);
         return data;
-      }else{
-      
+      } else {
         return null;
       }
     }

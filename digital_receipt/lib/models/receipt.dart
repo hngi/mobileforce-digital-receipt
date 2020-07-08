@@ -52,16 +52,26 @@ class Receipt extends ChangeNotifier {
     this.total,
   });
   static String _urlEndpoint = 'https://hng-degeit-receipt.herokuapp.com/v1';
-  factory Receipt.fromJson(Map<String, dynamic> json) => Receipt(
-        receiptNo:
-            json["receipt_number"] == null ? null : json["receipt_number"],
-        issuedDate: json["date"] == null ? null : json["date"],
-        customerName:
-            json["customer"]["name"] == null ? null : json["customer"]["name"],
-        category: json["category"] == null ? null : json["category"],
-        totalAmount: json["total"] == null ? null : json["total"].toString(),
-       //products: json["products"].isEmpty ? null : json['products']
-      );
+
+  factory Receipt.fromJson(Map<String, dynamic> json) {
+    ReceiptCategory convertToEnum({@required string}) {
+      return ReceiptCategory.values.firstWhere((e) => e.toString() == string);
+    }
+
+    return Receipt(
+      receiptNo: json["receipt_number"] == null ? null : json["receipt_number"],
+      issuedDate: json["date"] == null ? null : json["date"],
+      customerName:
+          json["customer"]["name"] == null ? null : json["customer"]["name"],
+      category: json["customer"]["platform"] == null
+          ? null
+          : convertToEnum(string: json["customer"]["platform"]),
+      totalAmount: json["total"] == null ? null : json["total"].toString(),
+      products: json["products"].isEmpty
+          ? null
+          : (json['products'] as List).map((e) => Product.fromJson(e)).toList(),
+    );
+  }
 
   @override
   String toString() {
@@ -87,7 +97,6 @@ class Receipt extends ChangeNotifier {
   bool enablePartPayment() {
     return partPayment;
   }
-
 
   num getTotal() {
     return total;
@@ -140,8 +149,10 @@ class Receipt extends ChangeNotifier {
   void setProducts(List<Product> products) => this.products = products;
 
   void setNumber(int receiptNo) {
-    this.customer != null ? print("theirs a customer") : print("no customer object good"); 
-    receiptNo = receiptNo;      
+    this.customer != null
+        ? print("theirs a customer")
+        : print("no customer object good");
+    receiptNo = receiptNo;
   }
 
   void setIssueDate(String date) {
@@ -270,7 +281,3 @@ List<Receipt> dummyReceiptList = [
     category: ReceiptCategory.TWITTER,
   ),
 ];
-
-
-
-

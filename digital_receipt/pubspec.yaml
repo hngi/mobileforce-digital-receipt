@@ -55,6 +55,7 @@ dependencies:
   pin_code_fields: ^3.1.2
   flare_flutter: ^2.0.3
   url_launcher: ^5.4.11
+  random_color: ^1.0.5
   device_preview: ^0.4.5
 
 
