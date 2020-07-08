@@ -98,6 +98,7 @@ class Receipt extends ChangeNotifier {
     return partPayment;
   }
 
+
   num getTotal() {
     return total;
   }
@@ -109,6 +110,11 @@ class Receipt extends ChangeNotifier {
 
   void togglePreset() {
     preset = !preset;
+    notifyListeners();
+  }
+
+  set setPaidStamp(bool val) {
+    paidStamp = val;
     notifyListeners();
   }
 
@@ -149,10 +155,8 @@ class Receipt extends ChangeNotifier {
   void setProducts(List<Product> products) => this.products = products;
 
   void setNumber(int receiptNo) {
-    this.customer != null
-        ? print("theirs a customer")
-        : print("no customer object good");
-    receiptNo = receiptNo;
+    this.customer != null ? print("theirs a customer") : print("no customer object good"); 
+    receiptNo = receiptNo;      
   }
 
   void setIssueDate(String date) {
@@ -281,3 +285,7 @@ List<Receipt> dummyReceiptList = [
     category: ReceiptCategory.TWITTER,
   ),
 ];
+
+
+
+

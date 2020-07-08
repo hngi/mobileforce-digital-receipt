@@ -16,18 +16,18 @@ import 'package:provider/provider.dart';
 
 import '../constant.dart';
 
-class ReceiptScreen extends StatefulWidget {
+class ReceiptScreenFromCustomer extends StatefulWidget {
   final Receipt receipt;
 
-  const ReceiptScreen({Key key, this.receipt}) : super(key: key);
+  const ReceiptScreenFromCustomer({Key key, this.receipt}) : super(key: key);
 
   @override
-  _ReceiptScreenState createState() => _ReceiptScreenState();
+  _ReceiptScreenFromCustomerState createState() => _ReceiptScreenFromCustomerState();
 }
 
 Uint8List receiptPdf;
 
-class _ReceiptScreenState extends State<ReceiptScreen> {
+class _ReceiptScreenFromCustomerState extends State<ReceiptScreenFromCustomer> {
   Future<Uint8List> receiptPdfFuture;
 
   /*void generatePdf(BuildContext context) async {
@@ -131,16 +131,15 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
 
 // ignore: non_constant_identifier_names
 Widget ReceiptScreenLayout([BuildContext context]) {
+  
   Future sendMail() async {
-    final String dir = (await getApplicationDocumentsDirectory()).path;
+     final String dir = (await getApplicationDocumentsDirectory()).path;
     final String path = '$dir/receipt.pdf';
     MailOptions mailOptions = MailOptions();
     mailOptions = MailOptions(
       body: "Receipt issued",
       subject: "new Receipt",
-      recipients: [
-        Provider.of<Receipt>(context, listen: false).customer.email.toString()
-      ],
+      recipients: [Provider.of<Receipt>(context,listen: false).customer.email.toString()],
       isHTML: false,
       attachments: [path],
     );
@@ -437,10 +436,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                             Padding(
                               padding: const EdgeInsets.only(top: 15.0),
                               child: Text(
-                                '₦' +
-                                    Provider.of<Receipt>(context, listen: false)
-                                        .getTotal()
-                                        .toString(),
+                                '₦'+Provider.of<Receipt>(context,listen: false).getTotal().toString(),
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,

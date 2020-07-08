@@ -143,6 +143,40 @@ class ApiService {
     }
   }
 
+  Future getDraft() async {
+    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (HttpClient client) {
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+      return client;
+    };
+
+
+      String auth_token =
+          await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+      Response response = await _dio.get(
+        "/business/receipt/draft",
+        options: Options(
+          followRedirects: false,
+          validateStatus: (status) {
+            return status < 500;
+          },
+          headers: {"token": auth_token},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        var res = response.data["data"] as List;
+        print('res:::::: ${res.length}');
+        return res;
+      } else {
+        return null;
+      }
+   /*  } on DioError catch (error) {
+      print(error);
+    } */
+  }
+
   Future<String> signinUser(String email, String password, String name) async {
     var uri = '$_urlEndpoint/user/register';
     var response = await http.post(
@@ -410,33 +444,36 @@ class ApiService {
     return 'error';
   }
 
-  Future<List<Receipt>> getIssuedReceipts() async {
+  Future getIssuedReceipts() async {
+    var uri = "$_urlEndpoint/business/receipt/issued";
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
     var connectivityResult = await (Connectivity().checkConnectivity());
-    String url = '$_urlEndpoint/business/receipt/issued';
+    List<Receipt> _issuedReceipts = [];
+
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
-      final http.Response res = await http.get(url, headers: <String, String>{
-        "token": token,
-      }).catchError((err) => print(err));
-
-      if (res.statusCode == 200) {
-        var data = json.decode(res.body);
-        //log(res.body);
-        List<Receipt> reciepts;
-        try {
-          reciepts =
-              (data['data'] as List).map((e) => Receipt.fromJson(e)).toList();
-        } catch (e) {
-          print(e);
-        }
-        return reciepts;
+      var response = await http.get(
+        Uri.encodeFull(uri),
+        headers: <String, String>{
+          'token': token,
+        },
+      );
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        print(data);
+        data["data"].forEach((receipt) {
+          _issuedReceipts.add(Receipt.fromJson(receipt));
+          // Receipt.fromJson(receipt).toString();
+        });
+        // print(_issuedReceipts);
+        return _issuedReceipts;
       } else {
-        return null;
+        print("Issued Receipt status code ${response.statusCode}");
+        return [];
       }
     }
-    return null;
+    return [];
   }
 
   /// Returns a list of notifications
@@ -511,14 +548,14 @@ class ApiService {
     var connectivityResult = await (Connectivity().checkConnectivity());
     String url = '$_urlEndpoint/business/receipt/issued';
     if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
-      final http.Response res = await http.get(url, headers: <String, String>{
+    connectivityResult == ConnectivityResult.wifi) {
+    final http.Response res = await http.get(url, headers: <String, String>{
         "token": token,
       }).catchError((err) => print(err));
-
-      if (res.statusCode == 200) {
-        var data = json.decode(res.body);
-        //print(data);
+    
+      if(res.statusCode == 200){
+      var data = json.decode(res.body);
+        print(data);
         return data;
       } else {
         return null;
@@ -526,4 +563,18 @@ class ApiService {
     }
     return null;
   }
-}
+
+  Future<String> forgotPasswordOtpVerification(String email) async {
+    var uri = '$_urlEndpoint/user/send_email';
+    var response = await http.post(
+      uri,
+      body: {"email_address": "$email"},
+    );
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      print(data);
+      return response.body;
+    } else {
+      return null;
+    }
+  }

@@ -190,6 +190,7 @@ class _LogInScreenState extends State<LogInScreen> {
                     alignment: Alignment.centerRight,
                     child: InkWell(
                       onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_)=>ForgotPassword()));
                         print('forgotten password');
                       },
                       child: Text(

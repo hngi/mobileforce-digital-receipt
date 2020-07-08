@@ -477,9 +477,14 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                         setState(() {
                           isLoading = true;
                         });
+                        Provider.of<Receipt>(context, listen: false)
+                            .setIssueDate(null);
+                        Provider.of<Receipt>(context, listen: false)
+                            .setColor(hexCode: _hexCodeController.text);
                         var result =
                             await Provider.of<Receipt>(context, listen: false)
                                 .saveReceipt();
+                     
                         if (result == "successful") {
                           setState(() {
                             isLoading = false;
