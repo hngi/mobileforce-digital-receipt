@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:ffi';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/screens/change_password_screen.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';
 import 'package:digital_receipt/utils/customtext.dart';
@@ -282,6 +282,13 @@ class _AccountPageState extends State<AccountPage> {
                         MaterialPageRoute(
                           builder: (BuildContext context) => LogInScreen(),
                         ),
+                      );
+                    } else {
+                      Fluttertoast.showToast(
+                        msg: 'Sorry an error occured plaese try again',
+                        fontSize: 12,
+                        toastLength: Toast.LENGTH_LONG,
+                        backgroundColor: Colors.red,
                       );
                     }
                   }
