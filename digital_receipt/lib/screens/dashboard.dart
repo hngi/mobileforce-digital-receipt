@@ -56,7 +56,7 @@ class _DashBoardState extends State<DashBoard> {
       if (data['partPayment']) {
         deptIssued += 1;
       }
-      print(data['total']);
+      //print(data['total']);
     }
     return {'total': amnt, 'recNo': snapLength, 'dept': deptIssued};
   }
@@ -78,6 +78,7 @@ class _DashBoardState extends State<DashBoard> {
               if (snapshot.connectionState == ConnectionState.done &&
                   !snapshot.hasData) {
                 return Expanded(
+
                     child: Center(
                         child: SizedBox(
                   height: 200,
@@ -87,6 +88,7 @@ class _DashBoardState extends State<DashBoard> {
                 return Center(
                   child: CircularProgressIndicator(
                     strokeWidth: 1.5,
+
                   ),
                 );
               } else {
