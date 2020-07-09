@@ -55,7 +55,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
   }
 }
 
-void main() => runApp(DevicePreview(builder: (_) => MyApp()));
+void main() => runApp( MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -224,14 +224,16 @@ class _ScreenControllerState extends State<ScreenController> {
 
           } else if (snapshot.data == 'empty' || _currentAutoLogoutStatus) {
             return LogInScreen();
+
           } else if (snapshot.hasData && snapshot.data != null) {
             // return HomePage();
             return HomePage();
             // return Otp(email: "francis@francis.francis",);
           } else {
+
             // return Otp(email: "francis@francis.francis",);
-            // Change back to OnboardingPage() it it suites you
             return OnboardingPage();
+
           }
         });
   }
