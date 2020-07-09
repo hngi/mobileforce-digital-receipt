@@ -400,8 +400,8 @@ class ApiService {
     resp.statusCode == 200 ?  result = json.decode(resp.body)["data"] as List : print(resp.statusCode);
     print("this is the result");
     print(result);
-    var businessId = result[0]["id"];
-    await _sharedPreferenceService.addStringToSF('Business_ID', businessId);
+    var businessID = result[0]["id"];
+    await _sharedPreferenceService.addStringToSF('Business_ID', businessID);
 
 
 
