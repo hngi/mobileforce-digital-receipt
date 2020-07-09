@@ -244,7 +244,7 @@ class Receipt extends ChangeNotifier {
 
     print(response.statusCode);
     print(json.decode(response.body));
-   /*  if (response.statusCode == 200) {
+    /*  if (response.statusCode == 200) {
       Fluttertoast.showToast(
         msg: 'Draft updated successfully',
         fontSize: 12,
