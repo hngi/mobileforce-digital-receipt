@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/product.dart';
@@ -22,6 +22,7 @@ class Receipt extends ChangeNotifier {
   String issuedDate;
   String customerName;
   String description;
+  String receiptId;
   ReceiptCategory category;
   String totalAmount;
   Customer customer;
@@ -40,6 +41,7 @@ class Receipt extends ChangeNotifier {
   num total;
 
   Receipt({
+    this.receiptId,
     this.receiptNo,
     this.issuedDate,
     this.customerName,
@@ -59,6 +61,7 @@ class Receipt extends ChangeNotifier {
     }
 
     return Receipt(
+      receiptId: json["id"] == null ? null : json["id"],
       receiptNo: json["receipt_number"] == null ? null : json["receipt_number"],
       issuedDate: json["date"] == null ? null : json["date"],
       customerName:
@@ -75,7 +78,7 @@ class Receipt extends ChangeNotifier {
 
   @override
   String toString() {
-    return '$receiptNo : $issuedDate : $customerName : $description : $totalAmount : ($category) : $customer : $products';
+    return '$receiptId:  $receiptNo : $issuedDate : $customerName : $description : $totalAmount : ($category) : $customer : $products';
   }
 
   bool shouldGenReceiptNo() {
@@ -217,7 +220,37 @@ class Receipt extends ChangeNotifier {
     print(json.encode(toJson()));
   }
 
-  updatedReceipt() {}
+  Future updatedReceipt(String receiptId) async {
+    print(receiptId);
+    var uri = "$_urlEndpoint/business/receipt/draft/update";
+    var token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+
+    var response = await http.put(uri, body: {
+      'receiptId': receiptId,
+    }, headers: {
+      "token": token,
+    });
+
+    print(response.statusCode);
+    print(json.decode(response.body));
+   /*  if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+        msg: 'Draft updated successfully',
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.green,
+      );
+      return 'Draft updated successfully';
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Sorry something went Wrong, try again',
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.green,
+      );
+      return 'Sorry something went Wrong, try again';
+    } */
+  }
 
   saveReceipt() async {
     var uri = "$_urlEndpoint/business/receipt/customize";

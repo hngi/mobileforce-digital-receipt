@@ -22,12 +22,17 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
   // the below is needed so as to create a copy of the list,
   //for sorting and searching functionalities
   List<Receipt> copyReceiptList = receiptList;
+  List<Receipt> recieptListData;
   ApiService _apiService = ApiService();
 
-  List<Receipt> recieptListData = [];
+  setSort() async {
+    var res = await _apiService.getIssued();
+    recieptListData = res;
+  }
 
   @override
   void initState() {
+    setSort();
     super.initState();
   }
 
@@ -58,7 +63,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
         actions: <Widget>[],
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
         child: Column(
           children: <Widget>[
             SizedBox(height: 10.0),
@@ -123,6 +128,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                       "Receipt No",
                       "Date issued",
                       "WhatsApp",
+                      "Facebook",
                       "Instagram",
                       "Twitter",
                     ].map<DropdownMenuItem<String>>(
@@ -151,6 +157,11 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                             receiptList = ReceiptUtil.sortReceiptByCategory(
                                 recieptListData,
                                 byCategory: ReceiptCategory.WHATSAPP);
+                            break;
+                          case "Facebook":
+                            receiptList = ReceiptUtil.sortReceiptByCategory(
+                                recieptListData,
+                                byCategory: ReceiptCategory.FACEBOOK);
                             break;
                           case "Instagram":
                             receiptList = ReceiptUtil.sortReceiptByCategory(
@@ -198,19 +209,19 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                     return _showDialog
                         ? _showAlertDialog()
                         : Column(
-                            children: <Widget>[
-                              SizedBox(height: 20.0),
-                              Flexible(
-                                child: ListView.builder(
-                                  itemCount: receiptList.length,
-                                  itemBuilder: (context, index) {
-                                    // HardCoded Receipt details
-                                    return receiptCard(receiptList[index]);
-                                  },
-                                ),
+                          children: <Widget>[
+                            SizedBox(height: 20.0),
+                            Flexible(
+                              child: ListView.builder(
+                                itemCount: receiptList.length,
+                                itemBuilder: (context, index) {
+                                  // HardCoded Receipt details
+                                  return receiptCard(receiptList[index]);
+                                },
                               ),
-                            ],
-                          );
+                            ),
+                          ],
+                        );
                   } else {
                     return Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
@@ -287,7 +298,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                         ),
                       ),
                       Text(
-                        "${DateFormat('yyyy-MM-dd').format(DateTime.parse(receipt.issuedDate))}",
+                        "${DateFormat('yyyy-mm-dd').format(DateTime.parse(receipt.issuedDate))}",
                         style: TextStyle(
                           color: Color.fromRGBO(0, 0, 0, 0.6),
                           fontSize: 14,
@@ -315,7 +326,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                   child: Text(
-                    "${receipt.products[0].productDesc}",
+                    receipt.products[0].productDesc ?? '',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 14,
@@ -376,7 +387,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
       backgroundColor: Color(0xFFF2F8FF),
       contentPadding: EdgeInsets.all(0.0),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(5),
       ),
       content: Stack(
         children: <Widget>[
