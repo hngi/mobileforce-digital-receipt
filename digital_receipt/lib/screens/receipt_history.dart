@@ -17,17 +17,21 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
   String dropdownValue = "Receipt No";
   bool _showDialog = false;
   //instead of dummyReceiptList use the future data gotten
-  static List<Receipt> receiptList =
-      ReceiptUtil.sortReceiptByReceiptNo(dummyReceiptList);
+  List<Receipt> receiptList = [];
+     
   // the below is needed so as to create a copy of the list,
   //for sorting and searching functionalities
-  List<Receipt> copyReceiptList = receiptList;
-  List<Receipt> recieptListData;
+  List<Receipt> copyReceiptList = [];
+  List<Receipt> recieptListData = [];
   ApiService _apiService = ApiService();
 
   setSort() async {
     var res = await _apiService.getIssued();
-    recieptListData = res;
+    setState(() {
+      recieptListData = res;
+      receiptList =  ReceiptUtil.sortReceiptByReceiptNo(recieptListData);
+       copyReceiptList = receiptList;
+    });
   }
 
   @override
@@ -209,19 +213,21 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                     return _showDialog
                         ? _showAlertDialog()
                         : Column(
-                          children: <Widget>[
-                            SizedBox(height: 20.0),
-                            Flexible(
-                              child: ListView.builder(
-                                itemCount: receiptList.length,
-                                itemBuilder: (context, index) {
-                                  // HardCoded Receipt details
-                                  return receiptCard(receiptList[index]);
-                                },
+                            children: <Widget>[
+                              SizedBox(height: 20.0),
+                              Flexible(
+                                child: ListView.builder(
+                                  itemCount: receiptList.length ??
+                                      recieptListData.length,
+                                  itemBuilder: (context, index) {
+                                    // HardCoded Receipt details
+                                    return receiptCard(receiptList[index] ??
+                                        recieptListData[index]);
+                                  },
+                                ),
                               ),
-                            ),
-                          ],
-                        );
+                            ],
+                          );
                   } else {
                     return Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
@@ -326,7 +332,8 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                   child: Text(
-                    receipt.products[0].productDesc ?? '',
+                    //receipt.products != null ?
+                    receipt?.products[0].productDesc ?? '',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 14,
