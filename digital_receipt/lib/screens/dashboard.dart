@@ -56,7 +56,7 @@ class _DashBoardState extends State<DashBoard> {
       if (data['partPayment']) {
         deptIssued += 1;
       }
-      print(data['total']);
+      //print(data['total']);
     }
     return {'total': amnt, 'recNo': snapLength, 'dept': deptIssued};
   }
@@ -77,11 +77,13 @@ class _DashBoardState extends State<DashBoard> {
                 AsyncSnapshot<Map<String, dynamic>> snapshot) {
               if (!snapshot.hasData) {
                 return Expanded(
-                    child: Center(
-                        child: SizedBox(
-                  height: 200,
-                  child: kEmpty,
-                )));
+                  child: Center(
+                    child: SizedBox(
+                      height: 200,
+                      child: kEmpty,
+                    ),
+                  ),
+                );
               } else {
                 var userData = snapshot.data;
                 return Expanded(

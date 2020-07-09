@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
+final kPrimaryColor = Color(0xFF0B57A7);
 
 final kOneDigitRegex = RegExp(r'^(?=.*?[0-9]).{8,}$');
 

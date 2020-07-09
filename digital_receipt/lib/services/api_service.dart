@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 
@@ -165,6 +166,7 @@ class ApiService {
 
     if (response.statusCode == 200) {
       var res = response.data["data"] as List;
+
       return res;
     } else {
       return null;
