@@ -47,159 +47,172 @@ class _CustomerListState extends State<CustomerList> {
         //centerTitle: true,
       ),
 
-      body: FutureBuilder(
-        future: _apiService.getAllCustomers(), // receipts from API
-
-        builder: (context, snapshot) {
-          // If the API returns nothing it means the user has to upgrade to premium
-          // for now it doesn't validate if the user has upgraded to premium
-          /// If the API returns nothing it shows the dialog box `JUST FOR TESTING`
-          ///
-
-          // print(snapshot.data);
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 1.5,
-              ),
-            );
-          } else if (snapshot.connectionState == ConnectionState.done &&
-              snapshot.hasData &&
-              snapshot.data.length > 0) {
-            return Padding(
-              padding: EdgeInsets.only(top: 15.0, left: 16, right: 16),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 10.0),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: "Type a keyword",
-                      hintStyle: TextStyle(
-                        color: Color.fromRGBO(0, 0, 0, 0.38),
-                      ),
-                      prefixIcon: IconButton(
-                        icon: Icon(Icons.search),
-                        color: Color.fromRGBO(0, 0, 0, 0.38),
-                        onPressed: () {},
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                        borderSide: BorderSide(
-                          color: Color.fromRGBO(0, 0, 0, 0.12),
-                          width: 1,
-                        ),
-                      ),
-                      contentPadding: EdgeInsets.all(15),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                        borderSide: BorderSide(
-                          color: Color(0xFFC8C8C8),
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
+      body: Padding(
+        padding: EdgeInsets.only(top: 20.0, left: 16, right: 16),
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: 10.0),
+            TextFormField(
+              decoration: InputDecoration(
+                hintText: "Type a keyword",
+                hintStyle: TextStyle(
+                  color: Color.fromRGBO(0, 0, 0, 0.38),
+                ),
+                prefixIcon: IconButton(
+                  icon: Icon(Icons.search),
+                  color: Color.fromRGBO(0, 0, 0, 0.38),
+                  onPressed: () {},
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: BorderSide(
+                    color: Color.fromRGBO(0, 0, 0, 0.12),
+                    width: 1,
                   ),
-                  SizedBox(height: 30.0),
-                  Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: 10.0),
-                      child: Text("Sort By"),
-                    ),
-                    Container(
-                      width: 150,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(
-                          color: Color(0xff25CCB3),
-                        ),
-                      ),
-                      child: SizedBox(
-                        height: 40,
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton(
-                            value: dropdownValue,
-                            underline: Divider(),
-                            items: <String>[
-                              "Last Upadated",
-                              "A to Z",
-                              "Z to A",
-                            ].map<DropdownMenuItem<String>>(
-                              (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 8.0),
-                                    child: Text(
-                                      value,
-                                      textAlign: TextAlign.start,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ).toList(),
-                            onChanged: (String value) {
-                              setState(() => dropdownValue = value);
-                              // No logic Implemented
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ]),
-                  SizedBox(height: 20.0),
-                  Flexible(
-                    child: ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        return customer(
-                          customerName: snapshot.data[index]['name'],
-                          customerEmail: snapshot.data[index]['email'],
-                          phoneNumber: snapshot.data[index]['phoneNumber'],
-                          // numberOfReceipts: 0,
-                        );
+                ),
+                contentPadding: EdgeInsets.all(15),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: BorderSide(
+                    color: Color(0xFFC8C8C8),
+                    width: 1.5,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 30.0),
+            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              Padding(
+                padding: EdgeInsets.only(right: 10.0),
+                child: Text("Sort By"),
+              ),
+              Container(
+                width: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(
+                    color: Color(0xff25CCB3),
+                  ),
+                ),
+                child: SizedBox(
+                  height: 40,
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton(
+                      value: dropdownValue,
+                      underline: Divider(),
+                      items: <String>[
+                        "Last Upadated",
+                        "A to Z",
+                        "Z to A",
+                      ].map<DropdownMenuItem<String>>(
+                        (String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 8.0),
+                              child: Text(
+                                value,
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
+                          );
+                        },
+                      ).toList(),
+                      onChanged: (String value) {
+                        setState(() => dropdownValue = value);
+                        // No logic Implemented
                       },
                     ),
                   ),
-                ],
+                ),
               ),
-            );
-          } else {
-            return Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  kBrokenHeart,
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Center(
-                    child: Text(
-                      "You don't have any customer!",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        fontSize: 16,
-                        letterSpacing: 0.3,
-                        color: Color.fromRGBO(0, 0, 0, 0.87),
+            ]),
+            Expanded(
+              child: FutureBuilder(
+                future: _apiService.getAllCustomers(), // receipts from API
+
+                builder: (context, snapshot) {
+                  // If the API returns nothing it means the user has to upgrade to premium
+                  // for now it doesn't validate if the user has upgraded to premium
+                  /// If the API returns nothing it shows the dialog box `JUST FOR TESTING`
+                  ///
+
+                  // print(snapshot.data);
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 1.5,
                       ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                ],
+                    );
+                  } else if (snapshot.connectionState == ConnectionState.done &&
+                      snapshot.hasData &&
+                      snapshot.data.length > 0) {
+                    return Column(
+                      children: <Widget>[
+                        SizedBox(height: 20.0),
+                        Flexible(
+                          child: ListView.builder(
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) {
+                              return customer(
+                                  customerName: snapshot.data[index]['name'],
+                                  customerEmail: snapshot.data[index]['email'],
+                                  phoneNumber: snapshot.data[index]
+                                      ['phoneNumber'],
+                                  address: snapshot.data[index]['address']
+
+                                  // numberOfReceipts: 0,
+                                  );
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          kBrokenHeart,
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Center(
+                            child: Text(
+                              "You don't have any customer!",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                                fontSize: 16,
+                                letterSpacing: 0.3,
+                                color: Color.fromRGBO(0, 0, 0, 0.87),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  // }
+                },
               ),
-            );
-          }
-          // }
-        },
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget customer(
-      {String customerName, customerEmail, phoneNumber, int numberOfReceipts}) {
+      {String customerName,
+      customerEmail,
+      phoneNumber,
+      int numberOfReceipts,
+      String address}) {
     return Column(
       children: <Widget>[
         SizedBox(
@@ -289,10 +302,11 @@ class _CustomerListState extends State<CustomerList> {
                     MaterialPageRoute(
                         builder: (context) => CustomerDetail(
                               customer: Customer(
-                                  name: customerName,
-                                  email: customerEmail,
-                                  phoneNumber: phoneNumber,
-                                  address: ''),
+                                name: customerName,
+                                email: customerEmail,
+                                phoneNumber: phoneNumber,
+                                address: address,
+                              ),
                             )),
                   );
                 },
