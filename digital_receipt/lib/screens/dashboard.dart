@@ -85,7 +85,7 @@ class _DashBoardState extends State<DashBoard> {
                 )));
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return Expanded(
-                                  child: Center(
+                  child: Center(
                     child: CircularProgressIndicator(
                       strokeWidth: 1.5,
                     ),
@@ -96,15 +96,15 @@ class _DashBoardState extends State<DashBoard> {
                 dynamic recNo = recInfo(userData)['recNo'];
                 int deptIssued = recInfo(userData)['dept'];
                 double amnt = recInfo(userData)['total'];
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    var snapshot = await _apiService.getIssuedReceipt2();
-                    var userData = snapshot;
-                    dynamic recNo = recInfo(userData)['recNo'];
-                    int deptIssued = recInfo(userData)['dept'];
-                    double amnt = recInfo(userData)['total'];
-                  },
-                  child: Expanded(
+                return Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      var snapshot = await _apiService.getIssuedReceipt2();
+                      var userData = snapshot;
+                      dynamic recNo = recInfo(userData)['recNo'];
+                      int deptIssued = recInfo(userData)['dept'];
+                      double amnt = recInfo(userData)['total'];
+                    },
                     child: buildGridView(recNo, deptIssued, amnt),
                   ),
                 );
