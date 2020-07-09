@@ -11,6 +11,7 @@ import 'package:digital_receipt/screens/signupScreen.dart';
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
@@ -56,7 +57,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 }
 
 
-void main() => runApp(DevicePreview(builder: (_)=>MyApp()));
+void main() => runApp(DevicePreview(builder: (_)=>MyApp(), enabled: !kReleaseMode,));
 
 
 class MyApp extends StatelessWidget {
