@@ -347,6 +347,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                     child: SizedBox(
                       width: double.infinity,
                       child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[

@@ -3,6 +3,9 @@ import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:wc_form_validators/wc_form_validators.dart';
+
+import '../constant.dart';
 //import 'package:path/path.dart';
 
 class ResetPassword extends StatefulWidget {
@@ -14,6 +17,7 @@ class ResetPassword extends StatefulWidget {
 }
 
 class _ResetPasswordState extends State<ResetPassword> {
+  bool _passwordObscureText = true;
   final _formKey = GlobalKey<FormState>();
 
   final _passwordController = TextEditingController();
@@ -84,15 +88,22 @@ class _ResetPasswordState extends State<ResetPassword> {
                                 child: Container(
                                   child: TextFormField(
                                     controller: _passwordController,
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'Invalid Password';
-                                      }
-                                      if (value.length < 5) {
-                                        return 'Password is too short';
-                                      }
-                                      return null;
-                                    },
+                                    validator: Validators.compose([
+                                      Validators.required('Input Password'),
+                                      Validators.minLength(8,
+                                          'Minimum of 8 characters required for Password'),
+                                      Validators.patternRegExp(
+                                          kOneUpperCaseRegex,
+                                          'Password should contain at least an Uppercase letter'),
+                                      Validators.patternRegExp(
+                                          kOneLowerCaseRegex,
+                                          'Password should contain at least a Lowercase letter'),
+                                      Validators.patternRegExp(kOneDigitRegex,
+                                          'Password should contain at least a Digit'),
+                                      Validators.patternRegExp(
+                                          kOneSpecialCharRegex,
+                                          'Password should contain at least a Special Character')
+                                    ]),
                                     style: TextStyle(
                                       color: Color(0xFF2B2B2B),
                                       fontSize: 14,
@@ -100,6 +111,17 @@ class _ResetPasswordState extends State<ResetPassword> {
                                       fontFamily: 'Montserrat',
                                     ),
                                     decoration: InputDecoration(
+                                      suffixIcon: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _passwordObscureText =
+                                                  !_passwordObscureText;
+                                            });
+                                          },
+                                          icon: _passwordObscureText
+                                              ? Icon(Icons.visibility_off)
+                                              : Icon(Icons.remove_red_eye),
+                                          color: Color(0xFFC8C8C8)),
                                       contentPadding: EdgeInsets.all(15),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(5),
@@ -111,6 +133,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                       focusedBorder: OutlineInputBorder(),
                                       errorStyle: TextStyle(height: 0.5),
                                     ),
+                                    obscureText: _passwordObscureText,
                                   ),
                                 ),
                               ),
