@@ -154,6 +154,7 @@ class _DraftsState extends State<Drafts> {
       ..totalAmount = snapshot['total'].toString()
       ..total = snapshot['total']
       ..receiptNo = snapshot['receipt_number']
+      ..receiptId = snapshot['id']
       ..products = products
       ..customer = Customer(
         name: snapshot['customer']['name'],

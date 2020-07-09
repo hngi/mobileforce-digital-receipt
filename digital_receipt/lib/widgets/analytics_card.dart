@@ -49,7 +49,7 @@ class AnalyticsCard extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
+          /* Expanded(
             flex: 1,
             child: Container(
               child: Column(
@@ -82,7 +82,7 @@ class AnalyticsCard extends StatelessWidget {
                 ],
               ),
             ),
-          )
+          ) */
         ],
       ),
     );

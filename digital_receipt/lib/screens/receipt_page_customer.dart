@@ -15,14 +15,15 @@ import 'package:pdf/pdf.dart';
 import 'package:provider/provider.dart';
 
 import '../constant.dart';
-
+import 'package:intl/intl.dart';
 class ReceiptScreenFromCustomer extends StatefulWidget {
   final Receipt receipt;
 
   const ReceiptScreenFromCustomer({Key key, this.receipt}) : super(key: key);
 
   @override
-  _ReceiptScreenFromCustomerState createState() => _ReceiptScreenFromCustomerState();
+  _ReceiptScreenFromCustomerState createState() =>
+      _ReceiptScreenFromCustomerState();
 }
 
 Uint8List receiptPdf;
@@ -131,15 +132,16 @@ class _ReceiptScreenFromCustomerState extends State<ReceiptScreenFromCustomer> {
 
 // ignore: non_constant_identifier_names
 Widget ReceiptScreenLayout([BuildContext context]) {
-  
   Future sendMail() async {
-     final String dir = (await getApplicationDocumentsDirectory()).path;
+    final String dir = (await getApplicationDocumentsDirectory()).path;
     final String path = '$dir/receipt.pdf';
     MailOptions mailOptions = MailOptions();
     mailOptions = MailOptions(
       body: "Receipt issued",
       subject: "new Receipt",
-      recipients: [Provider.of<Receipt>(context,listen: false).customer.email.toString()],
+      recipients: [
+        Provider.of<Receipt>(context, listen: false).customer.email.toString()
+      ],
       isHTML: false,
       attachments: [path],
     );
@@ -287,10 +289,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                         Container(
                           padding: EdgeInsets.only(bottom: 8),
                           child: Text(
-                            "Date: " +
-                                Provider.of<Receipt>(context, listen: false)
-                                    .issuedDate
-                                    .toString(),
+                            "Date: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(Provider.of<Receipt>(context, listen: false).issuedDate))} ",
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 13,
@@ -436,7 +435,10 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                             Padding(
                               padding: const EdgeInsets.only(top: 15.0),
                               child: Text(
-                                '₦'+Provider.of<Receipt>(context,listen: false).getTotal().toString(),
+                                '₦' +
+                                    Provider.of<Receipt>(context, listen: false)
+                                        .getTotal()
+                                        .toString(),
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
@@ -555,9 +557,11 @@ Widget ReceiptScreenLayout([BuildContext context]) {
         ),
         onPressed: () async {
           //take this action
+          //print(Provider.of<Receipt>(context, listen: false));
           await shareFile();
           Provider.of<Receipt>(context, listen: false).showJson();
-          Provider.of<Receipt>(context, listen: false).updatedReceipt();
+          await Provider.of<Receipt>(context, listen: false).updatedReceipt(
+              Provider.of<Receipt>(context, listen: false).receiptId);
         },
       ),
     ),
