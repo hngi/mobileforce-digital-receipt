@@ -1,6 +1,10 @@
+import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/models/receipt.dart';
+import 'package:intl/intl.dart';
+
+import '../constant.dart';
 
 /// This code displays only the UI
 class ReceiptHistory extends StatefulWidget {
@@ -11,13 +15,14 @@ class ReceiptHistory extends StatefulWidget {
 class _ReceiptHistoryState extends State<ReceiptHistory> {
   TextEditingController _controller = TextEditingController();
   String dropdownValue = "Receipt No";
-  bool _showDialog = true;
+  bool _showDialog = false;
   //instead of dummyReceiptList use the future data gotten
   static List<Receipt> receiptList =
       ReceiptUtil.sortReceiptByReceiptNo(dummyReceiptList);
   // the below is needed so as to create a copy of the list,
   //for sorting and searching functionalities
   List<Receipt> copyReceiptList = receiptList;
+  ApiService _apiService = ApiService();
 
   @override
   void initState() {
@@ -50,9 +55,10 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
         //centerTitle: true,
         actions: <Widget>[],
       ),
-      body: FutureBuilder<List<Receipt>>(
-        future: null, // receipts from API
+      body: FutureBuilder(
+        future: _apiService.getIssued(), // receipts from API
         builder: (context, snapshot) {
+          List<Receipt> recieptListData = snapshot.data;
           // If the API returns nothing it means the user has to upgrade to premium
           // for now it doesn't validate if the user has upgraded to premium
           /// If the API returns nothing it shows the dialog box `JUST FOR TESTING`
@@ -64,9 +70,12 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
           // else {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                strokeWidth: 1.5,
+              ),
             );
-          } else {
+          } else if(snapshot.connectionState == ConnectionState.done &&
+                snapshot.hasData) {
             return _showDialog
                 ? _showAlertDialog()
                 : Padding(
@@ -80,7 +89,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                             await Future.delayed(Duration(milliseconds: 700));
                             setState(() {
                               receiptList = ReceiptUtil.filterReceipt(
-                                  copyReceiptList, _controller.text);
+                                  recieptListData, _controller.text);
                             });
                           },
                           decoration: InputDecoration(
@@ -92,7 +101,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                               onPressed: () {
                                 setState(() {
                                   receiptList = ReceiptUtil.filterReceipt(
-                                      copyReceiptList, _controller.text);
+                                      recieptListData, _controller.text);
                                 });
                               },
                             ),
@@ -160,33 +169,33 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                                           case "Date issued":
                                             receiptList =
                                                 ReceiptUtil.sortReceiptByDate(
-                                                    copyReceiptList);
+                                                    recieptListData);
                                             break;
                                           case "WhatsApp":
                                             receiptList = ReceiptUtil
                                                 .sortReceiptByCategory(
-                                                    copyReceiptList,
+                                                    recieptListData,
                                                     byCategory: ReceiptCategory
                                                         .WHATSAPP);
                                             break;
                                           case "Instagram":
                                             receiptList = ReceiptUtil
                                                 .sortReceiptByCategory(
-                                                    copyReceiptList,
+                                                    recieptListData,
                                                     byCategory: ReceiptCategory
                                                         .INSTAGRAM);
                                             break;
                                           case "Twitter":
                                             receiptList = ReceiptUtil
                                                 .sortReceiptByCategory(
-                                                    copyReceiptList,
+                                                    recieptListData,
                                                     byCategory: ReceiptCategory
                                                         .TWITTER);
                                             break;
                                           default:
                                             receiptList = ReceiptUtil
                                                 .sortReceiptByReceiptNo(
-                                                    copyReceiptList);
+                                                    recieptListData);
                                             break;
                                         }
                                       });
@@ -208,6 +217,37 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                       ],
                     ),
                   );
+          }else{
+            return Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      child: kBrokenHeart,
+                      height: 170,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Center(
+                      child: Text(
+                        "There are no issued receipts created!",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          fontSize: 16,
+                          letterSpacing: 0.3,
+                          color: Color.fromRGBO(0, 0, 0, 0.87),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                  ],
+                ),
+              );
           }
           // }
         },
@@ -249,7 +289,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                         ),
                       ),
                       Text(
-                        "${receipt.issuedDate}",
+                        "${DateFormat('yyyy-mm-dd').parse(receipt.issuedDate)}",
                         style: TextStyle(
                           color: Color.fromRGBO(0, 0, 0, 0.6),
                           fontSize: 14,
