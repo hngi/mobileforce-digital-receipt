@@ -69,7 +69,7 @@ class _CustomerDetailState extends State<CustomerDetail> {
                     ),
                   ),
                   Padding(
-                     padding: EdgeInsets.fromLTRB(16.0, 0, 16, 16),
+                    padding: EdgeInsets.fromLTRB(16.0, 0, 16, 16),
                     child: SingleChildScrollView(child: ReceiptTab()),
                   ),
                 ],
@@ -154,10 +154,10 @@ class ReceiptTab extends StatelessWidget {
       height: 150,
       decoration: BoxDecoration(
         color: Color(0xFF539C30),
-        borderRadius: BorderRadius.circular(7.0),
+        borderRadius: BorderRadius.circular(5.0),
       ),
       child: Container(
-        margin: EdgeInsets.only(left: 3.0),
+        margin: EdgeInsets.only(left: 5.0),
         padding: EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: Color(0xFFE3EAF1),

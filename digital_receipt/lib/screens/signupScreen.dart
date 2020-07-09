@@ -7,7 +7,10 @@ import 'package:digital_receipt/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:wc_form_validators/wc_form_validators.dart';
 import '../services/api_service.dart';
+import 'no_internet_connection.dart';
+import 'otp_auth.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -23,10 +26,10 @@ class _SignupScreenState extends State<SignupScreen> {
   ApiService _apiService = ApiService();
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Color(0xffF2F8FF),
-        body: isloading == true
+    return Scaffold(
+      backgroundColor: Color(0xffF2F8FF),
+      body: SafeArea(
+        child: isloading == true
             ? LoadingIndicator()
             : SingleChildScrollView(
                 child: Padding(
@@ -104,19 +107,14 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                                   ),
                                 ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return "Enter name";
-                                  }
-                                  // Pattern pattern =
-                                  //     r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                                  // RegExp regex = new RegExp(pattern);
-                                  if (value.length < 8) {
-                                    return 'name must be more than 8 charcters';
-                                  }
-
-                                  return null;
-                                },
+                                validator: Validators.compose([
+                                  Validators.required('Input Name'),
+                                  Validators.patternRegExp(
+                                      RegExp(r"^[A-Z a-z]+$"),
+                                      'Only alphabets are allowed'),
+                                  Validators.minLength(3,
+                                      'Minimum of 3 characters required for Name'),
+                                ]),
                                 onSaved: (value) {
                                   setState(() {
                                     _name = value;
@@ -157,17 +155,10 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                                   ),
                                 ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return "Enter Email Address";
-                                  }
-                                  Pattern pattern =
-                                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                                  RegExp regex = new RegExp(pattern);
-                                  if (!regex.hasMatch(value))
-                                    return 'Enter Valid Email';
-                                  return null;
-                                },
+                                validator: Validators.compose([
+                                  Validators.required('Input Email Address'),
+                                  Validators.email('Invalid Email Address'),
+                                ]),
                                 onSaved: (value) {
                                   setState(() {
                                     _email = value;
@@ -195,8 +186,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                 decoration: InputDecoration(
                                   suffixIcon: IconButton(
                                     icon: passwordVisible
-                                        ? Icon(Icons.visibility_off)
-                                        : Icon(Icons.remove_red_eye),
+                                        ? Icon(Icons.remove_red_eye)
+                                        : Icon(Icons.visibility_off),
                                     color: Colors.grey,
                                     onPressed: () {
                                       setState(() =>
@@ -212,14 +203,11 @@ class _SignupScreenState extends State<SignupScreen> {
                                   ),
                                   focusedBorder: OutlineInputBorder(),
                                 ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return "Enter Password";
-                                  } else if (value.length < 5) {
-                                    return "Password too short";
-                                  }
-                                  return null;
-                                },
+                                validator: Validators.compose([
+                                  Validators.required('Input Password'),
+                                  Validators.minLength(6,
+                                      'Minimum of 6 characters required for Password'),
+                                ]),
                                 onSaved: (value) {
                                   setState(() {
                                     _password = value;
@@ -381,13 +369,7 @@ class _SignupScreenState extends State<SignupScreen> {
             onPressed == "" ? dont() : signupUser();
           }
         },
-        child:
-            //  loadingSpinner
-            //     ? CircularProgressIndicator(
-            //         backgroundColor: Color(0xffE5E5E5),
-            //       )
-            //     :
-            Padding(
+        child: Padding(
           padding: EdgeInsets.all(12.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -419,18 +401,47 @@ class _SignupScreenState extends State<SignupScreen> {
       isloading = true;
     });
     print('im res');
-    String response = await _apiService.otpVerification(_email, _password, _name);
-    var res = jsonDecode(response);
-    print(res['data']['otp']);
-    var otp  = res['data']['otp'];
-       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => PinCodeVerificationScreen(otp:"$otp",email:"$_email",password:"$_password",name:"$_name")));
+    var response = await _apiService.otpVerification(_email, _password, _name);
+    var res = jsonDecode(response.body);
 
+    if (response.statusCode == 200) {
+      var otp = res['data']['otp'];
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PinCodeVerificationScreen(
+            otp: "$otp",
+            email: "$_email",
+            password: "$_password",
+            name: "$_name",
+          ),
+        ),
+      );
+    } else if (response.statusCode == 400) {
+      setState(() {
+        isloading = false;
+      });
+      var error = res['error'];
+      Fluttertoast.showToast(
+        msg: error,
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red,
+      );
+    } else {
+      setState(() {
+        isloading = false;
+      });
+      Fluttertoast.showToast(
+        msg: 'Sorry an error occured try again',
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red,
+      );
+    }
   }
 
-
-dont() {
-  print('check if to login or signup');
-}
-
+  dont() {
+    print('check if to login or signup');
+  }
 }

@@ -1,19 +1,27 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:digital_receipt/models/customer.dart';
+import 'package:digital_receipt/screens/account_page.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
+import 'package:digital_receipt/screens/edit_account_information.dart';
+
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/login_screen.dart';
-import 'package:digital_receipt/screens/preference_page.dart';
-//import 'package:digital_receipt/screens/create_receipt_page.dart';
+import 'package:digital_receipt/screens/onboarding.dart';
+import 'package:digital_receipt/screens/signupScreen.dart';
 import 'dart:io';
 
-import 'package:digital_receipt/screens/home_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:overlay_support/overlay_support.dart';
-
-import './screens/onboarding.dart';
+import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'models/notification.dart';
+
+import './providers/business.dart';
+import 'models/receipt.dart';
+
 import 'services/sql_database_client.dart';
 import 'services/shared_preference_service.dart';
 import 'services/sql_database_repository.dart';
@@ -47,7 +55,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
   }
 }
 
-void main() => runApp(MyApp());
+void main() => runApp( MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -57,26 +65,39 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OverlaySupport(
-      child: MaterialApp(
-        title: 'Reepcy',
-        theme: ThemeData(
-          primaryColor: Color(0xFF0B57A7),
-          scaffoldBackgroundColor: Color(0xFFF2F8FF),
-          accentColor: Color(0xFF25CCB3),
-          textTheme: TextTheme(
-            bodyText1: TextStyle(
-              fontFamily: 'Montserrat',
-            ),
-            bodyText2: TextStyle(
-              fontFamily: 'Montserrat',
-            ),
-            button: TextStyle(
-              fontFamily: 'Montserrat',
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => Business(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Receipt(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Customer(),
+          ),
+        ],
+        child: MaterialApp(
+          title: 'Degeit',
+          theme: ThemeData(
+            primaryColor: Color(0xFF0B57A7),
+            scaffoldBackgroundColor: Color(0xFFF2F8FF),
+            accentColor: Color(0xFF25CCB3),
+            textTheme: TextTheme(
+              bodyText1: TextStyle(
+                fontFamily: 'Montserrat',
+              ),
+              bodyText2: TextStyle(
+                fontFamily: 'Montserrat',
+              ),
+              button: TextStyle(
+                fontFamily: 'Montserrat',
+              ),
             ),
           ),
+          debugShowCheckedModeBanner: false,
+          home: ScreenController(),
         ),
-        debugShowCheckedModeBanner: false,
-        home: ScreenController(),
       ),
     );
   }
@@ -98,10 +119,18 @@ class _ScreenControllerState extends State<ScreenController> {
     await _sqlDbRepository.createDatabase();
   }
 
+  bool _currentAutoLogoutStatus;
+
+  getCurrentAutoLogoutStatus() async {
+    _currentAutoLogoutStatus =
+        await _sharedPreferenceService.getBoolValuesSF("AUTO_LOGOUT") ?? false;
+  }
+
   @override
   void initState() {
     super.initState();
     initSharedPreferenceDb();
+    getCurrentAutoLogoutStatus();
 
     final FirebaseMessaging _fcm = FirebaseMessaging();
 
@@ -184,6 +213,7 @@ class _ScreenControllerState extends State<ScreenController> {
         future: _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN"),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // await _pushNotificationService.initialise();
+          print('snapshots: ${snapshot.data}');
 
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(
@@ -191,15 +221,19 @@ class _ScreenControllerState extends State<ScreenController> {
               child: Center(child: CircularProgressIndicator()),
             );
             // TODO Reverse if-condition to show OnBoarding
-          } else if (snapshot.data == 'empty') {
+
+          } else if (snapshot.data == 'empty' || _currentAutoLogoutStatus) {
             return LogInScreen();
+
           } else if (snapshot.hasData && snapshot.data != null) {
-            print('snapshots: ${snapshot.data}');
+            // return HomePage();
             return HomePage();
             // return Otp(email: "francis@francis.francis",);
           } else {
-	    // return Otp(email: "francis@francis.francis",);
-           return OnboardingPage();
+
+            // return Otp(email: "francis@francis.francis",);
+            return OnboardingPage();
+
           }
         });
   }

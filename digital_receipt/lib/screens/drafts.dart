@@ -1,4 +1,12 @@
+import 'package:digital_receipt/models/customer.dart';
+import 'package:digital_receipt/models/product.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import '../constant.dart';
+import '../models/receipt.dart';
+import '../services/api_service.dart';
+import 'receipt_page_customer.dart';
 
 /// This code displays only the UI
 class Drafts extends StatefulWidget {
@@ -7,6 +15,7 @@ class Drafts extends StatefulWidget {
 }
 
 class _DraftsState extends State<Drafts> {
+  ApiService _apiService = ApiService();
   @override
   void initState() {
     super.initState();
@@ -15,16 +24,7 @@ class _DraftsState extends State<Drafts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Color(0xffE5E5E5),
       appBar: AppBar(
-        //backgroundColor: Color(0xff226EBE),
-        /* leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ), */
         title: Text(
           "Drafts",
           style: TextStyle(
@@ -38,45 +38,132 @@ class _DraftsState extends State<Drafts> {
         actions: <Widget>[],
       ),
       body: FutureBuilder(
-        future: null, // receipts from API
-        builder: (context, snapshot) {
-          // If the API returns nothing it means the user has to upgrade to premium
-          // for now it doesn't validate if the user has upgraded to premium
-          /// If the API returns nothing it shows the dialog box `JUST FOR TESTING`
-          ///
-          /// Uncomment the if statement
-          // if (!snapshot.hasData) {
-          //   return _showAlertDialog();
-          // }
-          // else {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            return ListView.builder(
-              padding: EdgeInsets.only(
-                top: 30,
-                left: 16,
-                right: 16,
-                bottom: 16,
-              ),
-              itemCount: 25,
-              itemBuilder: (context, index) {
-                // HardCoded Receipt details
-                return receiptCard(
-                    receiptNo: "0021",
-                    total: "80,000",
-                    date: "12-06-2020",
-                    receiptTitle: "Carole",
-                    subtitle: "Crptocurrency, intro to after effects");
-              },
-            );
-          }
-          // }
-        },
-      ),
+          future: _apiService.getDraft(), // receipts from API
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 1.5,
+                ),
+              );
+            } else if (snapshot.connectionState == ConnectionState.done &&
+                snapshot.hasData) {
+              print('sbap:: {snapshot.data.length}');
+              return ListView.builder(
+                padding: EdgeInsets.only(
+                  top: 30,
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
+                ),
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, index) {
+                  Receipt receipt = Receipt.fromJson(snapshot.data[index]);
+                  DateTime date =
+                      DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
+                  return GestureDetector(
+                    onTap: () {
+                      setReceipt(snapshot.data[index]);
+                      print(Provider.of<Receipt>(context, listen: false));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  ReceiptScreenFromCustomer()));
+                    },
+                    child: receiptCard(
+                        receiptNo: receipt.receiptNo,
+                        total: receipt.totalAmount,
+                        date: "${date.day}/${date.month}/${date.year}",
+                        receiptTitle: receipt.customerName,
+                        subtitle: "Crptocurrency, intro to after effects"),
+                  );
+                },
+              );
+            } else {
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      child: kBrokenHeart,
+                      height: 170,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Center(
+                      child: Text(
+                        "There are no draft receipts created!",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          fontSize: 16,
+                          letterSpacing: 0.3,
+                          color: Color.fromRGBO(0, 0, 0, 0.87),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                  ],
+                ),
+              );
+              // Center(
+              //   child: Text("There are no draft receipts created",
+              //       style: TextStyle(
+              //           fontWeight: FontWeight.bold, fontSize: 16.0)),
+              // );
+            }
+
+            // }
+          }),
     );
+  }
+
+  setReceipt(snapshot) {
+    print('color::: ${snapshot['color']}');
+    if (snapshot['color'] != null) {
+      Provider.of<Receipt>(context, listen: false).primaryColorHexCode =
+          snapshot['color'];
+    } else {
+      Provider.of<Receipt>(context, listen: false).primaryColorHexCode =
+          '539C30';
+    }
+
+    if (snapshot['paid_stamp'] == true) {
+      Provider.of<Receipt>(context, listen: false).setPaidStamp = true;
+    }
+
+    var prod = snapshot['products'].map((e) {
+      return Product(
+        id: e['id'].toString(),
+        productDesc: e['name'],
+        quantity: e['quantity'],
+        unitPrice: e['unit_price'].toInt(),
+        amount: (e['quantity'] * e['unit_price']).toInt(),
+      );
+    });
+    List<Product> products = List.from(prod);
+    // print(products);
+    Provider.of<Receipt>(context, listen: false)
+      //   ..setNumber(56)
+      ..customerName = snapshot['customer']['name']
+      ..totalAmount = snapshot['total'].toString()
+      ..total = snapshot['total']
+      ..receiptNo = snapshot['receipt_number']
+      ..receiptId = snapshot['id']
+      ..products = products
+      ..customer = Customer(
+        name: snapshot['customer']['name'],
+        email: snapshot['customer']['email'],
+        phoneNumber: snapshot['customer']['phoneNumber'],
+        address: snapshot['customer']['address'],
+      )
+      ..setIssueDate(snapshot['date']);
+    /* String id, String productDesc, int quantity, int amount, int unitPrice */
   }
 
   Widget receiptCard({String receiptNo, total, date, receiptTitle, subtitle}) {

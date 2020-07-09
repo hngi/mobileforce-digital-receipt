@@ -97,14 +97,14 @@ class _ReminderPageState extends State<ReminderPage> {
           width: double.infinity,
           decoration: BoxDecoration(
             color: Color(0xff539C30),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(5),
           ),
           child: Container(
             padding: EdgeInsets.all(10),
             margin: EdgeInsets.only(left: 5.0),
             decoration: BoxDecoration(
               color: Color(0xffE8F1FB),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(5),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,36 +113,40 @@ class _ReminderPageState extends State<ReminderPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "$reminderTitle",
-                          style: TextStyle(
-                            color: Color.fromRGBO(0, 0, 0, 0.87),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Montserrat',
-                            letterSpacing: 0.03,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "$reminderTitle",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Color.fromRGBO(0, 0, 0, 0.87),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Montserrat',
+                              letterSpacing: 0.03,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          "$subtitle",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w300,
-                            height: 1.43,
-                            fontFamily: 'Montserrat',
-                            letterSpacing: 0.03,
+                          SizedBox(
+                            height: 5,
                           ),
-                        ),
-                      ],
+                          Text(
+                            "$subtitle",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w300,
+                              height: 1.43,
+                              fontFamily: 'Montserrat',
+                              letterSpacing: 0.03,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     Text(
                       "$date",

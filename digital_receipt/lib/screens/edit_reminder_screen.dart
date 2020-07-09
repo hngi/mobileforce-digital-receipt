@@ -136,30 +136,22 @@ class _EditReminderScreenState extends State<EditReminderScreen> {
                       ),
                     ),
                     SizedBox(height: 5),
-                    Theme(
-                      data: Theme.of(context).copyWith(
-                        brightness: Brightness.light,
-                        primaryColor: Colors.black,
-                        accentColor: Colors.black,
-                        splashColor: Colors.black,
-                      ),
-                      child: _buildTextFieldWidget(
-                          controller: _dateTextController,
-                          onTap: () async {
-                            final DateTime picked = await showDatePicker(
-                              context: context,
-                              initialDate: date,
-                              firstDate: date.add(Duration(days: -5)),
-                              lastDate: date.add(Duration(days: 365)),
-                            );
+                    _buildTextFieldWidget(
+                        controller: _dateTextController,
+                        onTap: () async {
+                          final DateTime picked = await showDatePicker(
+                            context: context,
+                            initialDate: date,
+                            firstDate: date.add(Duration(days: -5)),
+                            lastDate: date.add(Duration(days: 365)),
+                          );
 
-                            if (picked != null && picked != date) {
-                              setState(() {
-                                date = picked;
-                              });
-                            }
-                          }),
-                    ),
+                          if (picked != null && picked != date) {
+                            setState(() {
+                              date = picked;
+                            });
+                          }
+                        }),
                     SizedBox(
                       height: 22,
                     ),

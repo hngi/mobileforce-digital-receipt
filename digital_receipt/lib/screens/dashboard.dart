@@ -1,9 +1,21 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:digital_receipt/models/account.dart';
+import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/providers/business.dart';
+import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import '../services/email_service.dart';
+import '../constant.dart';
+
+final ApiService _apiService = ApiService();
+final SharedPreferenceService _sharedPreferenceService =
+    SharedPreferenceService();
 
 class DashBoard extends StatefulWidget {
   DashBoard({Key key}) : super(key: key);
@@ -14,6 +26,42 @@ class DashBoard extends StatefulWidget {
 
 class _DashBoardState extends State<DashBoard> {
   @override
+  void initState() {
+    callFetch();
+    super.initState();
+  }
+
+  callFetch() async {
+    var res = await _apiService.fetchAndSetUser();
+    if (res != null) {
+      Provider.of<Business>(context, listen: false).setAccountData = res;
+      var val = Provider.of<Business>(context, listen: false).toJson();
+      _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
+      print(val);
+    }
+  }
+
+  Map<String, dynamic> recInfo(var snapshot) {
+    var data;
+
+    int snapLength = snapshot['data'].length;
+    // ignore: unused_local_variable
+    double amnt = 0;
+    // ignore: unused_local_variable
+    int deptIssued = 0;
+    for (var i = 0; i < snapLength; i++) {
+      data = snapshot['data'][i];
+      amnt += data['total'];
+
+      if (data['partPayment']) {
+        deptIssued += 1;
+      }
+      //print(data['total']);
+    }
+    return {'total': amnt, 'recNo': snapLength, 'dept': deptIssued};
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 16.0, left: 16, right: 16),
@@ -23,29 +71,74 @@ class _DashBoardState extends State<DashBoard> {
           SizedBox(
             height: 24.0,
           ),
-          Expanded(
-            child: GridView.count(
-              crossAxisSpacing: 16.0,
-              mainAxisSpacing: 16.0,
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              children: <Widget>[
-                _singleCard(
-                  leading: 'No of receipts',
-                  subtitle: '15',
-                  color: Color(0xFF25CCB3),
-                ),
-                _singleCard(
-                  leading: 'Debts',
-                  subtitle: '3',
-                  color: Color(0xFFE897A0),
-                ),
-                _singleCard(
-                  leading: 'Total Sales',
-                  subtitle: '15',
-                  color: Color(0xFF25CCB3),
-                ),
-                /*  FlatButton(
+          FutureBuilder(
+            future: _apiService.getIssuedReceipt2(),
+            builder: (BuildContext context,
+                AsyncSnapshot<Map<String, dynamic>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  !snapshot.hasData) {
+                return Expanded(
+                    child: Center(
+                        child: SizedBox(
+                  height: 200,
+                  child: kEmpty,
+                )));
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return Expanded(
+                                  child: Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.5,
+                    ),
+                  ),
+                );
+              } else {
+                var userData = snapshot.data;
+                dynamic recNo = recInfo(userData)['recNo'];
+                int deptIssued = recInfo(userData)['dept'];
+                double amnt = recInfo(userData)['total'];
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    var snapshot = await _apiService.getIssuedReceipt2();
+                    var userData = snapshot;
+                    dynamic recNo = recInfo(userData)['recNo'];
+                    int deptIssued = recInfo(userData)['dept'];
+                    double amnt = recInfo(userData)['total'];
+                  },
+                  child: Expanded(
+                    child: buildGridView(recNo, deptIssued, amnt),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  GridView buildGridView(recNo, int deptIssued, double amnt) {
+    return GridView.count(
+      crossAxisSpacing: 16.0,
+      mainAxisSpacing: 16.0,
+      shrinkWrap: true,
+      crossAxisCount: 2,
+      children: <Widget>[
+        _singleCard(
+          leading: 'No of receipts',
+          subtitle: '$recNo',
+          color: Color(0xFF25CCB3),
+        ),
+        _singleCard(
+          leading: 'Debts',
+          subtitle: '$deptIssued',
+          color: Color(0xFFE897A0),
+        ),
+        _singleCard(
+          leading: 'Total Sales',
+          subtitle: '₦$amnt',
+          color: Color(0xFF25CCB3),
+        ),
+        /*  FlatButton(
                   onPressed: () async {
                     print('canSend');
                     final EmailService emailService = EmailService();
@@ -68,15 +161,12 @@ class _DashBoardState extends State<DashBoard> {
                   },
                   child: Text('Test mail'),
                 ), */
-              ],
-            ),
-          ),
-        ],
-      ),
+      ],
     );
   }
 
   Container _buildInfo() {
+    AccountData businessInfo = Provider.of<Business>(context).accountData;
     return Container(
       height: 130,
       padding: EdgeInsets.all(10.0),
@@ -93,24 +183,24 @@ class _DashBoardState extends State<DashBoard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Geek Tutor',
+                  businessInfo.name,
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 Text(
-                  '218 thonbridge cir, cyprus',
+                  businessInfo.address,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: Colors.white),
                 ),
                 Text(
-                  'johntompson@ucoz.com',
+                  businessInfo.email,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: Colors.white),
                 ),
                 Text(
-                  '(603) 555-6034',
+                  businessInfo.phone,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: Colors.white),
@@ -118,7 +208,7 @@ class _DashBoardState extends State<DashBoard> {
               ],
             ),
           ),
-          Expanded(
+          /* Expanded(
             flex: 1,
             child: Container(
               child: Column(
@@ -147,7 +237,7 @@ class _DashBoardState extends State<DashBoard> {
                 ],
               ),
             ),
-          )
+          ) */
         ],
       ),
     );
@@ -179,7 +269,8 @@ class _DashBoardState extends State<DashBoard> {
               height: 8.0,
             ),
             Text(
-              subtitle,
+              leading == 'Total Sales' ? '$subtitle\0' : '$subtitle',
+              textScaleFactor: leading == 'Total Sales' ? 0.7 : null,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24.0,

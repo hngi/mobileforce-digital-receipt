@@ -1,5 +1,8 @@
 import 'dart:io';
 import 'package:digital_receipt/screens/home_page.dart';
+import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/services/shared_preference_service.dart';
+import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 import 'package:flutter/material.dart';
@@ -10,28 +13,35 @@ class Setup extends StatefulWidget {
   _SetupState createState() => _SetupState();
 }
 
+final ApiService _apiService = ApiService();
+final SharedPreferenceService _sharedPreferenceService =
+    SharedPreferenceService();
+
 class _SetupState extends State<Setup> {
   String businessName;
   String address;
   String slogan;
   String phoneNumber;
-  File _image;
+  String _image;
   final picker = ImagePicker();
+  bool loading = false;
   var status;
 
   Future getImage() async {
     PermissionStatus status = await Permission.storage.status;
     //print(status);
     /*  if (status == PermissionStatus.granted) { */
-    final pickedFile = await picker.getImage(
-      source: ImageSource.gallery,
-    );
-    if (_image != null) {
-      print(pickedFile.path);
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    print(File(pickedFile.path).lengthSync());
+    //  print('picked: $pickedFile');
+    if (pickedFile != null) {
+      // print(pickedFile.path);
       setState(() {
-        _image = File(pickedFile.path);
+        _image = pickedFile.path;
       });
       print('image: $_image');
+    } else {
+      print('not able to pick file');
     }
 
     //}
@@ -82,7 +92,7 @@ class _SetupState extends State<Setup> {
             }
             return null;
           },
-           onSaved: (String value) {
+          onSaved: (String value) {
             businessName = value;
           },
         )
@@ -127,13 +137,13 @@ class _SetupState extends State<Setup> {
               ),
             ),
           ),
-         /*  validator: (value) {
+          /*  validator: (value) {
             if (value.isEmpty) {
               return 'Invalid Email Address';
             }
             return null;
           }, */
-           onSaved: (String value) {
+          onSaved: (String value) {
             slogan = value;
           },
         )
@@ -168,6 +178,7 @@ class _SetupState extends State<Setup> {
             height: 1.43,
             fontFamily: 'Montserrat',
           ),
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(15),
             border: OutlineInputBorder(
@@ -184,7 +195,7 @@ class _SetupState extends State<Setup> {
             }
             return null;
           },
-           onSaved: (String value) {
+          onSaved: (String value) {
             phoneNumber = value;
           },
         )
@@ -235,7 +246,7 @@ class _SetupState extends State<Setup> {
             }
             return null;
           },
-           onSaved: (String value) {
+          onSaved: (String value) {
             address = value;
           },
         )
@@ -328,7 +339,7 @@ class _SetupState extends State<Setup> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          'Upload your logo',
+                          _image == null ? 'Upload your logo' : "Logo uploaded",
                           style: TextStyle(
                               fontWeight: FontWeight.w300,
                               fontSize: 16.0,
@@ -337,20 +348,23 @@ class _SetupState extends State<Setup> {
                         SizedBox(
                           width: 10,
                         ),
-                        Icon(Icons.file_upload),
+                        _image == null
+                            ? Icon(Icons.file_upload)
+                            : Icon(Icons.check),
                       ],
                     ),
                   ),
                 ),
                 SizedBox(height: 10),
                 Text(
-                    'Your logo should be in PNG format and have\na max size of 3MB (Optional)',
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.w300,
-                        color: Color.fromRGBO(0, 0, 0, 0.6)),
-                    textAlign: TextAlign.center),
+                  'Your logo should be in PNG format and have\na max size of 3MB (Optional)',
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.w300,
+                      color: Color.fromRGBO(0, 0, 0, 0.6)),
+                  textAlign: TextAlign.center,
+                ),
 
                 SizedBox(height: 45),
 
@@ -358,28 +372,60 @@ class _SetupState extends State<Setup> {
                   height: 45,
                   width: double.infinity,
                   child: FlatButton(
-                      onPressed: () => {
-                            if (_setupKey.currentState.validate())
-                              {
-                                _setupKey.currentState.save(),
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => HomePage(),
-                                  ),
-                                )
-                              },
-                          },
-                      textColor: Colors.white,
-                      color: Color(0xFF0B57A7),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Text('Proceed',
-                          style: TextStyle(
+                    onPressed: () async {
+                      if (_setupKey.currentState.validate()) {
+                        _setupKey.currentState.save();
+
+                        setState(() {
+                          loading = true;
+                        });
+
+                        var token = await _sharedPreferenceService
+                            .getStringValuesSF('AUTH_TOKEN');
+
+                        print(_image);
+
+                        var result = await _apiService.setUpBusiness(
+                          token: token,
+                          phoneNumber: phoneNumber,
+                          name: businessName,
+                          address: address,
+                          slogan: slogan,
+                          logo: _image,
+                        );
+
+                        if (result != null) {
+                          setState(() {
+                            loading = false;
+                          });
+                        }
+                        if (result == true) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(),
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    textColor: Colors.white,
+                    color: Color(0xFF0B57A7),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: loading
+                        ? ButtonLoadingIndicator(
+                            color: Colors.white, height: 20, width: 20)
+                        : Text(
+                            'Proceed',
+                            style: TextStyle(
                               fontFamily: 'Montserrat',
                               fontSize: 16,
-                              fontWeight: FontWeight.w600))),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                  ),
                 ),
               ],
             ),
