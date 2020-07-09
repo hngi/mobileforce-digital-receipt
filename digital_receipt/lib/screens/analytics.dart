@@ -75,7 +75,8 @@ class _AnalyticsState extends State<Analytics> {
               content = _buildLoadingState();
             }
             return content;
-          }),
+          },
+      ),
     );
   }
 
