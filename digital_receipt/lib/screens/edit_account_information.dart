@@ -140,6 +140,7 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
       key: _formKey,
       //autovalidate: true,
       child: Column(
+         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // SizedBox(height: 30),
           Text(
