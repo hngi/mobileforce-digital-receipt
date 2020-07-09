@@ -207,6 +207,8 @@ class Receipt extends ChangeNotifier {
     print(json.encode(toJson()));
   }
 
+  updatedReceipt() {}
+
   saveReceipt() async {
     var uri = "$_urlEndpoint/business/receipt/customize";
     var token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
@@ -218,7 +220,7 @@ class Receipt extends ChangeNotifier {
     print("3");
     if (response.statusCode == 200) {
       print(json.decode(response.body));
-      return "successful";
+      return "Receipt saved successfully";
     } else {
       print("failed");
       return "failed";
