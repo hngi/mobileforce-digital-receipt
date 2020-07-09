@@ -486,12 +486,12 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                             await Provider.of<Receipt>(context, listen: false)
                                 .saveReceipt();
                      
-                        if (result == "successful") {
+                        if (result == "Receipt saved successfully") {
                           setState(() {
                             isLoading = false;
                           });
                           Fluttertoast.showToast(
-                              msg: "saved to Draft",
+                              msg: "Receipt saved successfully",
                               toastLength: Toast.LENGTH_LONG,
                               gravity: ToastGravity.BOTTOM,
                               timeInSecForIosWeb: 1,
