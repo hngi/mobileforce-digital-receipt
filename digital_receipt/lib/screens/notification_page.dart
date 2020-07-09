@@ -105,6 +105,7 @@ class SingleNotification extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(height: 16),
           Text(

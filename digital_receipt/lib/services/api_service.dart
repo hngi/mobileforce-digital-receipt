@@ -166,7 +166,7 @@ class ApiService {
 
     if (response.statusCode == 200) {
       var res = response.data["data"] as List;
-      print('res:::::: ${res.length}');
+
       return res;
     } else {
       return null;
@@ -349,7 +349,7 @@ class ApiService {
       );
 
       var responseBody = json.decode(response.body.toString());
-      print(responseBody);
+      print(response.statusCode);
       print('api post recieved!');
       if (response.statusCode == 200) {
         return "true";
@@ -563,19 +563,20 @@ class ApiService {
     return null;
   }
 
-  Future<String> forgotPasswordOtpVerification(String email) async {
+  Future forgotPasswordOtpVerification(String email) async {
     var uri = '$_urlEndpoint/user/send_email';
     var response = await http.post(
       uri,
       body: {"email_address": "$email"},
     );
-    if (response.statusCode == 200) {
+    /* if (response.statusCode == 200) {
       var data = json.decode(response.body);
       print(data);
       return response.body;
     } else {
-      return null;
-    }
+     return response.body;
+    } */
+    return response;
   }
 
   Future<String> resetForgottenPassword(

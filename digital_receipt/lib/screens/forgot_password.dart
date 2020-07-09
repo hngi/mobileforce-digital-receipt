@@ -4,6 +4,7 @@ import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 
 import 'otp_auth.dart';
@@ -105,7 +106,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           width: double.infinity,
                           height: 45,
                           child: FlatButton(
-                            onPressed: () async{
+                            onPressed: () async {
                               if (_formKey.currentState.validate()) {
                                 await verifyUserToResetPassword();
                               }
@@ -115,7 +116,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Text(
-                              'Request Reset Otp',
+                              'Request reset OTP',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontFamily: 'Montserrat',
@@ -143,9 +144,52 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       isloading = true;
     });
     print('im res');
-    String response =
+    Response response =
         await _apiService.forgotPasswordOtpVerification(_emailController.text);
+    print(response.statusCode);
 
+    if (response.statusCode == 200) {
+      var res = jsonDecode(response.body);
+      print(res['data']['otp']);
+      print(res['error']);
+      var otp = res['data']['otp'];
+      var error = res['error'];
+
+      /* setState(() {
+        isloading = false;
+      }); */
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PinCodeVerificationScreen.forgotPassword(
+                    otp: "$otp",
+                    email: _emailController.text,
+                  )));
+    } else if (response.statusCode == 400) {
+      var res = jsonDecode(response.body);
+
+      var error = res['error'];
+      setState(() {
+        isloading = false;
+      });
+      Fluttertoast.showToast(
+        msg: error,
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red,
+      );
+    }else{
+      setState(() {
+        isloading = false;
+      });
+      Fluttertoast.showToast(
+        msg: 'Sorry an error occured try again',
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red,
+      );
+    }
+/* 
     var res = jsonDecode(response);
     print(res['data']['otp']);
     print(res['error']);
@@ -172,6 +216,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     otp: "$otp",
                     email: _emailController.text,
                   )));
-    }
+    }*/
   }
 }
