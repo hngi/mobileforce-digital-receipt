@@ -55,7 +55,9 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
   }
 }
 
+
 void main() => runApp( MyApp());
+
 
 class MyApp extends StatelessWidget {
   const MyApp({
