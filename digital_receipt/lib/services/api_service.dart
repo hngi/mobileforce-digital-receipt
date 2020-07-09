@@ -426,7 +426,7 @@ class ApiService {
     }
   }
 
-  Future<String> otpVerification(
+  Future otpVerification(
     String email,
     password,
     name,
@@ -436,12 +436,11 @@ class ApiService {
       uri,
       body: {"email_address": "$email"},
     );
-    print(response.body);
-    if (response.statusCode == 200) {
-      return response.body;
+
+
+      return response;
     }
-    return 'error';
-  }
+  
 
   Future getIssuedReceipts() async {
     var uri = "$_urlEndpoint/business/receipt/issued";

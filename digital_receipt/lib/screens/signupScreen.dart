@@ -395,26 +395,51 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  signupUser() async { 
+  signupUser() async {
     _formKey.currentState.save();
     setState(() {
       isloading = true;
     });
     print('im res');
-    String response =
-        await _apiService.otpVerification(_email, _password, _name);
-   var res = jsonDecode(response);
-    print(res['data']['otp']);
-    var otp = res['data']['otp'];
-    Navigator.pushReplacement(
+    var response = await _apiService.otpVerification(_email, _password, _name);
+    var res = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      var otp = res['data']['otp'];
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => PinCodeVerificationScreen(
-                otp: "$otp",
-                email: "$_email",
-                password: "$_password",
-                name: "$_name")));
-  } 
+          builder: (context) => PinCodeVerificationScreen(
+            otp: "$otp",
+            email: "$_email",
+            password: "$_password",
+            name: "$_name",
+          ),
+        ),
+      );
+    } else if (response.statusCode == 400) {
+      setState(() {
+        isloading = false;
+      });
+      var error = res['error'];
+      Fluttertoast.showToast(
+        msg: error,
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red,
+      );
+    } else {
+      setState(() {
+        isloading = false;
+      });
+      Fluttertoast.showToast(
+        msg: 'Sorry an error occured try again',
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red,
+      );
+    }
+  }
 
   dont() {
     print('check if to login or signup');
