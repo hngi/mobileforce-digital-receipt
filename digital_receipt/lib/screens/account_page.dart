@@ -3,6 +3,7 @@ import 'dart:ffi';
 
 import 'package:digital_receipt/screens/change_password_screen.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';
+import 'package:digital_receipt/screens/upgrade_screen.dart';
 import 'package:digital_receipt/utils/customtext.dart';
 import "package:flutter/material.dart";
 import 'dart:async';
@@ -97,39 +98,45 @@ class _AccountPageState extends State<AccountPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Center(
-                child: Container(
-                  height: 133,
-                  width: double.infinity,
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Color(0xFF76DBC9)
-                      /*  gradient: LinearGradient(
-                        colors: [Colors.teal[100], Colors.teal[300]],
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                      ) */
-                      ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Text(
-                            'Unlock Amazing Features',
-                            style: CustomText.displayn,
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            'Upgrade to premium',
-                            style: CustomText.display1,
-                          )
-                        ],
-                      )
-                    ],
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => UpgradeScreen()));
+                  },
+                  child: Container(
+                    height: 133,
+                    width: double.infinity,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Color(0xFF76DBC9)
+                        /*  gradient: LinearGradient(
+                          colors: [Colors.teal[100], Colors.teal[300]],
+                          begin: Alignment.topRight,
+                          end: Alignment.bottomLeft,
+                        ) */
+                        ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Text(
+                              'Unlock Amazing Features',
+                              style: CustomText.displayn,
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              'Upgrade to premium',
+                              style: CustomText.display1,
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

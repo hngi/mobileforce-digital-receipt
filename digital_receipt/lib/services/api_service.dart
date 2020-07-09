@@ -150,28 +150,27 @@ class ApiService {
       return client;
     };
 
-   
-      String auth_token =
-          await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
-      Response response = await _dio.get(
-        "/business/receipt/draft",
-        options: Options(
-          followRedirects: false,
-          validateStatus: (status) {
-            return status < 500;
-          },
-          headers: {"token": auth_token},
-        ),
-      );
+    String auth_token =
+        await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+    Response response = await _dio.get(
+      "/business/receipt/draft",
+      options: Options(
+        followRedirects: false,
+        validateStatus: (status) {
+          return status < 500;
+        },
+        headers: {"token": auth_token},
+      ),
+    );
 
-      if (response.statusCode == 200) {
-        var res = response.data["data"] as List;
-        print('res:::::: ${res.length}');
-        return res;
-      } else {
-        return null;
-      }
-   /*  } on DioError catch (error) {
+    if (response.statusCode == 200) {
+      var res = response.data["data"] as List;
+      print('res:::::: ${res.length}');
+      return res;
+    } else {
+      return null;
+    }
+    /*  } on DioError catch (error) {
       print(error);
     } */
   }
@@ -303,22 +302,37 @@ class ApiService {
     var uri = Uri.parse('$_urlEndpoint/business/info/update');
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
-    String businessId =
-        await _sharedPreferenceService.getStringValuesSF('Business_ID');
-    print(businessId);
 
+    var resp = await http.get('https://hng-degeit-receipt.herokuapp.com/v1/business/user/all', headers: {"token": token});
+    var result;
+    resp.statusCode == 200 ?  result = json.decode(resp.body)["data"] as List : print(resp.statusCode);
+    print("this is the result");
+    print(result);
+    var businessId = result[0]["id"];
+    await _sharedPreferenceService.addStringToSF('Business_ID', businessId);
+
+
+
+      String bId =
+        await _sharedPreferenceService.getStringValuesSF('Business_ID');
+    print(bId);
+    print(token);
+    print(
+        'pref: ${await _sharedPreferenceService.getStringValuesSF('Business_ID')}');
+    print("im here 1");
     var request = http.MultipartRequest('PUT', uri);
 
     print(logo);
 
     request.headers['token'] = token;
-    request.fields['businessId'] = businessId;
+    request.fields['businessId'] = bId;
     request.files.add(
       await http.MultipartFile.fromPath("logo", logo),
     );
-
+    print("im here 2");
     var response = await request.send();
     print('code: ${response.statusCode}');
+    print("im here 3");
     var res = await response.stream.bytesToString();
     print(res);
     if (response.statusCode == 200) {
