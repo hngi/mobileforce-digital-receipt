@@ -78,24 +78,35 @@ class _DashBoardState extends State<DashBoard> {
               if (snapshot.connectionState == ConnectionState.done &&
                   !snapshot.hasData) {
                 return Expanded(
-
                     child: Center(
                         child: SizedBox(
                   height: 200,
                   child: kEmpty,
                 )));
               } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 1.5,
-
+                return Expanded(
+                                  child: Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.5,
+                    ),
                   ),
                 );
               } else {
                 var userData = snapshot.data;
-                return Expanded(
-                  child: buildGridView(recInfo(userData)['recNo'],
-                      recInfo(userData)['dept'], recInfo(userData)['total']),
+                dynamic recNo = recInfo(userData)['recNo'];
+                int deptIssued = recInfo(userData)['dept'];
+                double amnt = recInfo(userData)['total'];
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    var snapshot = await _apiService.getIssuedReceipt2();
+                    var userData = snapshot;
+                    dynamic recNo = recInfo(userData)['recNo'];
+                    int deptIssued = recInfo(userData)['dept'];
+                    double amnt = recInfo(userData)['total'];
+                  },
+                  child: Expanded(
+                    child: buildGridView(recNo, deptIssued, amnt),
+                  ),
                 );
               }
             },
@@ -197,7 +208,7 @@ class _DashBoardState extends State<DashBoard> {
               ],
             ),
           ),
-          Expanded(
+          /* Expanded(
             flex: 1,
             child: Container(
               child: Column(
@@ -226,7 +237,7 @@ class _DashBoardState extends State<DashBoard> {
                 ],
               ),
             ),
-          )
+          ) */
         ],
       ),
     );

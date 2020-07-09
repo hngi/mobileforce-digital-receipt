@@ -133,6 +133,7 @@ class _AnalyticsState extends State<Analytics> {
               fit: BoxFit.fitWidth,
               child: Text(
                 '$subTitle',
+                textScaleFactor: 0.8,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 28.0,
@@ -154,7 +155,7 @@ class _AnalyticsState extends State<Analytics> {
           Expanded(
             child: Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(kPrimaryColor),
+                strokeWidth: 1.5,
               ),
             ),
           )
