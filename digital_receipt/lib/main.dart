@@ -56,7 +56,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 }
 
 
-void main() => runApp(DevicePreview(builder: (_)=>MyApp()));
+void main() => runApp(MyApp());
 
 
 class MyApp extends StatelessWidget {
