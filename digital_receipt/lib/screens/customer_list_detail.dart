@@ -69,7 +69,7 @@ class _CustomerDetailState extends State<CustomerDetail> {
                     ),
                   ),
                   Padding(
-                     padding: EdgeInsets.fromLTRB(16.0, 0, 16, 16),
+                    padding: EdgeInsets.fromLTRB(16.0, 0, 16, 16),
                     child: SingleChildScrollView(child: ReceiptTab()),
                   ),
                 ],

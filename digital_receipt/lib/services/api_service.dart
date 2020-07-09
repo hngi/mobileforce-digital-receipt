@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 
@@ -390,7 +391,7 @@ class ApiService {
       );
 
       var responseBody = json.decode(response.body.toString());
-      print(responseBody);
+      print(response.statusCode);
       print('api post recieved!');
       if (response.statusCode == 200) {
         return "true";
@@ -467,7 +468,7 @@ class ApiService {
     }
   }
 
-  Future<String> otpVerification(
+  Future otpVerification(
     String email,
     password,
     name,
@@ -477,12 +478,11 @@ class ApiService {
       uri,
       body: {"email_address": "$email"},
     );
-    print(response.body);
-    if (response.statusCode == 200) {
-      return response.body;
+
+
+      return response;
     }
-    return 'error';
-  }
+  
 
   Future getIssuedReceipts() async {
     var uri = "$_urlEndpoint/business/receipt/issued";
@@ -602,5 +602,38 @@ class ApiService {
       }
     }
     return null;
+  }
+
+  Future forgotPasswordOtpVerification(String email) async {
+    var uri = '$_urlEndpoint/user/send_email';
+    var response = await http.post(
+      uri,
+      body: {"email_address": "$email"},
+    );
+    /* if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      print(data);
+      return response.body;
+    } else {
+     return response.body;
+    } */
+    return response;
+  }
+
+  Future<String> resetForgottenPassword(
+    String email,
+    String newPassword,
+  ) async {
+    var uri = '$_urlEndpoint/user/forgot_password';
+
+    var response = await http.put(
+      uri,
+      body: {"email_address": "$email", "password": "$newPassword"},
+    );
+    print(response.body);
+    if (response.statusCode == 200) {
+      return 'true';
+    }
+    return 'false';
   }
 }

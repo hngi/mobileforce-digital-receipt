@@ -52,16 +52,26 @@ class Receipt extends ChangeNotifier {
     this.total,
   });
   static String _urlEndpoint = 'https://hng-degeit-receipt.herokuapp.com/v1';
-  factory Receipt.fromJson(Map<String, dynamic> json) => Receipt(
-        receiptNo:
-            json["receipt_number"] == null ? null : json["receipt_number"],
-        issuedDate: json["date"] == null ? null : json["date"],
-        customerName:
-            json["customer"]["name"] == null ? null : json["customer"]["name"],
-        category: json["category"] == null ? null : json["category"],
-        totalAmount: json["total"] == null ? null : json["total"].toString(),
-        //products: json["products"].isEmpty ? null : json['products']
-      );
+
+  factory Receipt.fromJson(Map<String, dynamic> json) {
+    ReceiptCategory convertToEnum({@required string}) {
+      return ReceiptCategory.values.firstWhere((e) => e.toString() == string);
+    }
+
+    return Receipt(
+      receiptNo: json["receipt_number"] == null ? null : json["receipt_number"],
+      issuedDate: json["date"] == null ? null : json["date"],
+      customerName:
+          json["customer"]["name"] == null ? null : json["customer"]["name"],
+      category: json["customer"]["platform"] == null
+          ? null
+          : convertToEnum(string: json["customer"]["platform"]),
+      totalAmount: json["total"] == null ? null : json["total"].toString(),
+      products: json["products"].isEmpty
+          ? null
+          : (json['products'] as List).map((e) => Product.fromJson(e)).toList(),
+    );
+  }
 
   @override
   String toString() {
@@ -207,6 +217,8 @@ class Receipt extends ChangeNotifier {
     print(json.encode(toJson()));
   }
 
+  updatedReceipt() {}
+
   saveReceipt() async {
     var uri = "$_urlEndpoint/business/receipt/customize";
     var token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
@@ -218,7 +230,7 @@ class Receipt extends ChangeNotifier {
     print("3");
     if (response.statusCode == 200) {
       print(json.decode(response.body));
-      return "successful";
+      return "Receipt saved successfully";
     } else {
       print("failed");
       return "failed";

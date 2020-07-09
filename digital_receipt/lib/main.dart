@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/screens/account_page.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
@@ -54,7 +55,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
   }
 }
 
-void main() => runApp(MyApp());
+void main() => runApp(DevicePreview(builder: (_) => MyApp()));
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -223,16 +224,14 @@ class _ScreenControllerState extends State<ScreenController> {
 
           } else if (snapshot.data == 'empty' || _currentAutoLogoutStatus) {
             return LogInScreen();
-
           } else if (snapshot.hasData && snapshot.data != null) {
             // return HomePage();
             return HomePage();
             // return Otp(email: "francis@francis.francis",);
           } else {
-
             // return Otp(email: "francis@francis.francis",);
+            // Change back to OnboardingPage() it it suites you
             return OnboardingPage();
-
           }
         });
   }
