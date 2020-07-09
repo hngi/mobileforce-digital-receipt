@@ -45,7 +45,7 @@ class _LogInScreenState extends State<LogInScreen> {
       future: _emailTextFuture,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         Widget _emptywidget = _builldTextFormFiled('');
-        _cachedEmailText = snapshot.data == null ? ' ' : '${snapshot.data}';
+        _cachedEmailText = snapshot.data == null ? '' : '${snapshot.data}';
         Widget _dataWidget = _builldTextFormFiled(_cachedEmailText);
 
         if (snapshot.connectionState == ConnectionState.waiting) {
