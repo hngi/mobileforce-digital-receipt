@@ -166,8 +166,50 @@ class ApiService {
 
     if (response.statusCode == 200) {
       var res = response.data["data"] as List;
-
+      print('res:::::: ${res.length}');
       return res;
+    } else {
+      return null;
+    }
+    /*  } on DioError catch (error) {
+      print(error);
+    } */
+  }
+
+  /// This function gets all issued receipts from the database.
+  Future<List<Receipt>> getIssued() async {
+    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (HttpClient client) {
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+      return client;
+    };
+
+    String auth_token =
+        await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+    Response response = await _dio.get(
+      "/business/receipt/issued",
+      options: Options(
+        followRedirects: false,
+        validateStatus: (status) {
+          return status < 500;
+        },
+        headers: {
+          "token": auth_token,
+              
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      List<Receipt> issued_receipts = [];
+      response.data["data"].forEach((data) {
+        Receipt receipt = Receipt.fromJson(data);
+        issued_receipts.add(receipt);
+      });
+      // var res = response.data["data"] as List;
+      // print('res:::::: ${res.length}');
+      return issued_receipts;
     } else {
       return null;
     }
