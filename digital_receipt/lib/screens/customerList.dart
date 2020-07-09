@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
-// import 'customerDetails/customerDetail.dart';
+// import 'customerDetails/customerDetail.dart'; 
 
 /// This code displays only the UI
 class CustomerList extends StatefulWidget {

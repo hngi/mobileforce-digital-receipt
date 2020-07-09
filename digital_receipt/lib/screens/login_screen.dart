@@ -315,42 +315,42 @@ class _LogInScreenState extends State<LogInScreen> {
                       ),
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 14.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Expanded(
-                          flex: 2,
-                          child: Divider(
-                            thickness: 1.0,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            'OR',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Divider(
-                            thickness: 1.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  _buildAppleLogin(),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  _buildGoogleLogin(),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  _buildFacebookLogin(),
+                  // Container(
+                  //   padding: EdgeInsets.symmetric(vertical: 14.0),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //     children: <Widget>[
+                  //       Expanded(
+                  //         flex: 2,
+                  //         child: Divider(
+                  //           thickness: 1.0,
+                  //         ),
+                  //       ),
+                  //       Padding(
+                  //         padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  //         child: Text(
+                  //           'OR',
+                  //           style: TextStyle(color: Colors.grey),
+                  //         ),
+                  //       ),
+                  //       Expanded(
+                  //         flex: 2,
+                  //         child: Divider(
+                  //           thickness: 1.0,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // _buildAppleLogin(),
+                  // SizedBox(
+                  //   height: 20,
+                  // ),
+                  // _buildGoogleLogin(),
+                  // SizedBox(
+                  //   height: 20,
+                  // ),
+                  // _buildFacebookLogin(),
                 ],
               ),
             ),

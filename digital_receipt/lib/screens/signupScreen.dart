@@ -277,63 +277,63 @@ class _SignupScreenState extends State<SignupScreen> {
                           buttonColor: Color(0xFF0B57A7),
                           height: 45,
                           onPressed: () {}),
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: 14.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Expanded(
-                              flex: 2,
-                              child: Divider(
-                                thickness: 1.0,
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(
-                                'OR',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Divider(
-                                thickness: 1.0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Platform.isIOS
-                          ? Column(
-                              children: <Widget>[
-                                button(
-                                    name: "Sign in with Apple",
-                                    textColor: Color(0xffE5E5E5),
-                                    iconPath: "assets/logos/apple-logo.png",
-                                    buttonColor: Color(0xff121212)),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                              ],
-                            )
-                          : SizedBox.shrink(),
-                      button(
-                        name: "Sign in with Google",
-                        textColor: Color(0xff121212),
-                        iconPath: "assets/logos/google-logo.png",
-                        buttonColor: Color(0xffF2F8FF),
-                        border: true,
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      button(
-                          name: "Sign in with Facebook",
-                          textColor: Color(0xffE5E5E5),
-                          iconPath: "assets/logos/facebook.png",
-                          buttonColor: Color(0xFF3b5998)),
+                      // Container(
+                      //   padding: EdgeInsets.symmetric(vertical: 14.0),
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //     children: <Widget>[
+                      //       Expanded(
+                      //         flex: 2,
+                      //         child: Divider(
+                      //           thickness: 1.0,
+                      //         ),
+                      //       ),
+                      //       Padding(
+                      //         padding:
+                      //             const EdgeInsets.symmetric(horizontal: 8.0),
+                      //         child: Text(
+                      //           'OR',
+                      //           style: TextStyle(color: Colors.grey),
+                      //         ),
+                      //       ),
+                      //       Expanded(
+                      //         flex: 2,
+                      //         child: Divider(
+                      //           thickness: 1.0,
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      // Platform.isIOS
+                      //     ? Column(
+                      //         children: <Widget>[
+                      //           button(
+                      //               name: "Sign in with Apple",
+                      //               textColor: Color(0xffE5E5E5),
+                      //               iconPath: "assets/logos/apple-logo.png",
+                      //               buttonColor: Color(0xff121212)),
+                      //           SizedBox(
+                      //             height: 20,
+                      //           ),
+                      //         ],
+                      //       )
+                      //     : SizedBox.shrink(),
+                      // button(
+                      //   name: "Sign in with Google",
+                      //   textColor: Color(0xff121212),
+                      //   iconPath: "assets/logos/google-logo.png",
+                      //   buttonColor: Color(0xffF2F8FF),
+                      //   border: true,
+                      // ),
+                      // SizedBox(
+                      //   height: 20,
+                      // ),
+                      // button(
+                      //     name: "Sign in with Facebook",
+                      //     textColor: Color(0xffE5E5E5),
+                      //     iconPath: "assets/logos/facebook.png",
+                      //     buttonColor: Color(0xFF3b5998)),
                     ],
                   ),
                 ),

@@ -317,7 +317,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                   child: Text(
-                    "${receipt.description}",
+                    "${receipt.description }",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 14,

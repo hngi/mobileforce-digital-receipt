@@ -133,33 +133,33 @@ class MainDrawer extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 50.0,
-                    width: double.maxFinite,
-                    child: FlatButton(
-                      highlightColor: Colors.transparent,
-                      onPressed: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => ReminderPage()));
-                      },
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.access_time,
-                              color: Colors.white, size: 22.0),
-                          SizedBox(width: 15.0),
-                          Text(
-                            'Reminders',
-                            style: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                                letterSpacing: 0.5),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // SizedBox(
+                  //   height: 50.0,
+                  //   width: double.maxFinite,
+                  //   child: FlatButton(
+                  //     highlightColor: Colors.transparent,
+                  //     onPressed: () {
+                  //       Navigator.of(context).push(
+                  //           MaterialPageRoute(builder: (_) => ReminderPage()));
+                  //     },
+                  //     child: Row(
+                  //       children: <Widget>[
+                  //         Icon(Icons.access_time,
+                  //             color: Colors.white, size: 22.0),
+                  //         SizedBox(width: 15.0),
+                  //         Text(
+                  //           'Reminders',
+                  //           style: TextStyle(
+                  //               fontFamily: 'Montserrat',
+                  //               fontSize: 16.0,
+                  //               fontWeight: FontWeight.w500,
+                  //               color: Colors.white,
+                  //               letterSpacing: 0.5),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   SizedBox(
                     height: 50.0,
                     width: double.maxFinite,
