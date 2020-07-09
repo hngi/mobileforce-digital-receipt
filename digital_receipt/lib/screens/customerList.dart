@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
-// import 'customerDetails/customerDetail.dart';
+// import 'customerDetails/customerDetail.dart'; 
 
 /// This code displays only the UI
 class CustomerList extends StatefulWidget {
@@ -222,40 +222,35 @@ class _CustomerListState extends State<CustomerList> {
               actionPane: SlidableDrawerActionPane(),
               actionExtentRatio: 0.25,
               secondaryActions: <Widget>[
-                Material(
+                Container(
+                  color: Color(0xFFB3E2F4),
                   child: InkWell(
-                    onTap: () async {
-                      print("tapped");
-                      var url = "$phoneNumber";
-                      print(url);
+                    onTap: () {
+                       print("tapped");
+                  var url = "$phoneNumber";
+                  print(url);
 
-                      UrlLauncher.launch("tel://$url");
+                  UrlLauncher.launch("tel://$url");
                     },
-                    child: Container(
-                      color: Color(0xFFB3E2F4),
-                      child: InkWell(
-                        onTap: () {},
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              Icons.call,
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Text(
-                              "Call Customer",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.call,
                         ),
-                      ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Call Customer",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
