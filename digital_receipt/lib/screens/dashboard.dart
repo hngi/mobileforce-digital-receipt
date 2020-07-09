@@ -75,13 +75,20 @@ class _DashBoardState extends State<DashBoard> {
             future: _apiService.getIssuedReceipt2(),
             builder: (BuildContext context,
                 AsyncSnapshot<Map<String, dynamic>> snapshot) {
-              if (!snapshot.hasData) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  !snapshot.hasData) {
                 return Expanded(
-                  child: Center(
-                    child: SizedBox(
-                      height: 200,
-                      child: kEmpty,
-                    ),
+
+                    child: Center(
+                        child: SizedBox(
+                  height: 200,
+                  child: kEmpty,
+                )));
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 1.5,
+
                   ),
                 );
               } else {
@@ -251,7 +258,8 @@ class _DashBoardState extends State<DashBoard> {
               height: 8.0,
             ),
             Text(
-              subtitle,
+              leading == 'Total Sales' ? '$subtitle\0' : '$subtitle',
+              textScaleFactor: leading == 'Total Sales' ? 0.7 : null,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24.0,

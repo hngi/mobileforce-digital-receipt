@@ -557,7 +557,7 @@ Widget ReceiptScreenLayout([BuildContext context]) {
           //take this action
           await shareFile();
           Provider.of<Receipt>(context, listen: false).showJson();
-          Provider.of<Receipt>(context, listen: false).saveReceipt();
+          Provider.of<Receipt>(context, listen: false).updatedReceipt();
         },
       ),
     ),
