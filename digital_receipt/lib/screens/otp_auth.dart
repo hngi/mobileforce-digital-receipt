@@ -51,13 +51,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    errorController.close();
-    textEditingController.clear();
 
-    super.dispose();
-  }
 
   ApiService _apiService = ApiService();
   bool isLoading = false;
@@ -149,7 +143,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                       Duration(milliseconds: 300),
                                   backgroundColor: Colors.white,
                                   errorAnimationController: errorController,
-                                  autoDisposeControllers: true,
+                                  autoDisposeControllers: false,
                                   controller: textEditingController,
                                   onCompleted: (value) async {
                                     value == widget.otp
@@ -229,7 +223,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                   toastLength: Toast.LENGTH_LONG,
                                   gravity: ToastGravity.BOTTOM,
                                   timeInSecForIosWeb: 1,
-                                  backgroundColor: Colors.green[600],
+                                  backgroundColor: Colors.red[600],
                                   textColor: Colors.white,
                                   fontSize: 13.0);
                             }
@@ -407,5 +401,13 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                 email: widget.email,
                 password: widget.password,
                 name: widget.name)));
+  }
+
+    @override
+  void dispose() {
+    errorController.close();
+    textEditingController.clear();
+
+    super.dispose();
   }
 }
