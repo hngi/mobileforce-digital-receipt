@@ -1,6 +1,17 @@
+import 'dart:developer' as dev;
+import 'dart:math';
+
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/services/api_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../constant.dart';
+
+final ApiService _apiService = ApiService();
+final numberFormat = new NumberFormat("\u{20A6}#,##0.#", "en_US");
+final dateFormat = DateFormat('dd-MM-yyyy');
 
 class CustomerDetail extends StatefulWidget {
   final Customer customer;
@@ -68,9 +79,8 @@ class _CustomerDetailState extends State<CustomerDetail> {
                       customer: widget.customer,
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(16.0, 0, 16, 16),
-                    child: SingleChildScrollView(child: ReceiptTab()),
+                  ReceiptTab(
+                    customer: widget.customer,
                   ),
                 ],
               ),
@@ -147,88 +157,146 @@ class DetailTab extends StatelessWidget {
 }
 
 class ReceiptTab extends StatelessWidget {
-  const ReceiptTab({Key key}) : super(key: key);
+  final Customer customer;
 
-  Container _singleReceiptCard(Receipt receipt) {
-    return Container(
-      height: 150,
-      decoration: BoxDecoration(
-        color: Color(0xFF539C30),
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      child: Container(
-        margin: EdgeInsets.only(left: 5.0),
-        padding: EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: Color(0xFFE3EAF1),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  'Receipt No: ${receipt.receiptNo}',
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-                Text(
-                  receipt.issuedDate,
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 4.0,
-            ),
-            Text(
-              receipt.customerName,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16.0,
-              ),
-            ),
-            SizedBox(
-              height: 4.0,
-            ),
-            Container(
-              width: 250,
-              child: Text(
-                receipt.description,
-              ),
-            ),
-            SizedBox(
-              height: 4.0,
-            ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Text(
-                'Total:\t\t \u{20A6}${receipt.totalAmount}',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  const ReceiptTab({Key key, this.customer}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _singleReceiptCard(
-          Receipt(
-            receiptNo: '0021',
-            issuedDate: '12-06-2020',
-            customerName: 'Carole Froschauer',
-            description: 'Cryptocurrency course, intro to after effects',
-            totalAmount: '80,000',
-          ),
-        ),
-      ],
-    );
+    return FutureBuilder<List<Receipt>>(
+        future: getCustomerReceipt(customer),
+        builder: (context, snapshot) {
+          print(snapshot.data);
+          Widget content;
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // If Loading
+            content = _buildLoadingState();
+          } else if (!snapshot.hasData) {
+            // If Empty
+            content = Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
+              child: Center(
+                child: Container(
+                  margin: EdgeInsets.all(80),
+                  child: kEmpty,
+                ),
+              ),
+            );
+          } else if (snapshot.hasData) {
+            // If contains Data
+            content = _buildReceiptList(snapshot.data);
+          } else {
+            // If Something went wrong
+            content = _buildLoadingState();
+          }
+          return content;
+        });
   }
+}
+
+/*Receipt(
+receiptNo: '0021',
+issuedDate: '12-06-2020',
+customerName: 'Carole Froschauer',
+description: 'Cryptocurrency course, intro to after effects',
+totalAmount: '80,000',
+),*/
+Widget _buildReceiptList(List<Receipt> customerReceiptList) => ListView.builder(
+      itemCount: customerReceiptList.length,
+      padding: EdgeInsets.fromLTRB(16.0, 0, 16, 0),
+      itemBuilder: (_, index) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: _buildReceiptCard(customerReceiptList[index]),
+      ),
+    );
+
+Container _buildReceiptCard(Receipt receipt) {
+  return Container(
+    decoration: BoxDecoration(
+      color: Color(0xFF539C30),
+      borderRadius: BorderRadius.circular(5.0),
+    ),
+    child: Container(
+      margin: EdgeInsets.only(left: 5.0),
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Color(0xFFE3EAF1),
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                'Receipt No: ${receipt.receiptNo}',
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+              Text(
+                dateFormat.format(DateTime.parse(receipt.issuedDate)),
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 8.0,
+          ),
+          Text(
+            receipt.customerName,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 14.0,
+            ),
+          ),
+          SizedBox(
+            height: 5.0,
+          ),
+          Container(
+            width: 250,
+            child: Text(
+              receipt.descriptions,
+              maxLines: 2,
+            ),
+          ),
+          SizedBox(
+            height: 4.0,
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Text(
+              'Total:\t\t ${numberFormat.format(double.parse(receipt.totalAmount))}',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Future<List<Receipt>> getCustomerReceipt(Customer customer) async {
+  List<Receipt> issuedReceipts = await _apiService.getIssuedReceipts();
+  if (issuedReceipts != null && issuedReceipts.length > 0) {
+    dev.log('This..... ${issuedReceipts.toString()}');
+
+    // FilterReceipts
+    issuedReceipts.removeWhere((element) {
+      return element.customer.email != customer.email;
+    });
+    dev.log('This..... ${issuedReceipts.toString()}');
+    return Future.value(issuedReceipts);
+  } else {
+    return Future.value();
+  }
+}
+
+Widget _buildLoadingState() {
+  return Center(
+    child: CircularProgressIndicator(
+      strokeWidth: 1.5,
+    ),
+  );
 }

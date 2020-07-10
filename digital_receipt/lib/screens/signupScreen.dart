@@ -156,8 +156,8 @@ class _SignupScreenState extends State<SignupScreen> {
                               "Password",
                               style: TextStyle(
                                 color: Color(0xFF2B2B2B),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                                fontWeight: FontWeight.normal,
                                 fontFamily: 'Montserrat',
                               ),
                             ),
