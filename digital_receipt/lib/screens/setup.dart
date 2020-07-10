@@ -400,7 +400,7 @@ class _SetupState extends State<Setup> {
                           });
                         }
                         if (result == true) {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (context) => HomePage(),

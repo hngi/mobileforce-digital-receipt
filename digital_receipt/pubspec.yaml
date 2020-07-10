@@ -57,6 +57,8 @@ dependencies:
   url_launcher: ^5.4.11
   random_color: ^1.0.5
   device_preview: ^0.4.5
+  google_sign_in: ^4.5.1
+  
 
 
 
