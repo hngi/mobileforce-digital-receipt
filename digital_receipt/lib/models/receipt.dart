@@ -40,12 +40,21 @@ class Receipt extends ChangeNotifier {
   DateTime reminderDate;
   num total;
 
+  String get description {
+    var desc = new StringBuffer();
+    if (products != null) {
+      products.forEach((element) {
+        desc.write('${element.productDesc} x ${element.quantity}, ');
+      });
+    }
+    return desc.toString();
+  }
+
   Receipt({
     this.receiptId,
     this.receiptNo,
     this.issuedDate,
     this.customerName,
-    this.description,
     this.category,
     this.totalAmount,
     this.fonts,
@@ -70,6 +79,8 @@ class Receipt extends ChangeNotifier {
           ? null
           : convertToEnum(string: json["customer"]["platform"]),
       totalAmount: json["total"] == null ? null : json["total"].toString(),
+      customer:
+          json["customer"] == null ? null : Customer.fromJson(json["customer"]),
       products: json["products"].isEmpty
           ? null
           : (json['products'] as List).map((e) => Product.fromJson(e)).toList(),
@@ -233,7 +244,7 @@ class Receipt extends ChangeNotifier {
 
     print(response.statusCode);
     print(json.decode(response.body));
-   /*  if (response.statusCode == 200) {
+    /*  if (response.statusCode == 200) {
       Fluttertoast.showToast(
         msg: 'Draft updated successfully',
         fontSize: 12,
@@ -276,7 +287,6 @@ List<Receipt> dummyReceiptList = [
     receiptNo: '0020',
     issuedDate: '12-05-2020',
     customerName: 'Carole Johnson',
-    description: 'Introduction to Numeritical analysis sales',
     totalAmount: '83,000',
     category: ReceiptCategory.WHATSAPP,
   ),
@@ -284,7 +294,6 @@ List<Receipt> dummyReceiptList = [
     receiptNo: '0021',
     issuedDate: '11-04-2020',
     customerName: 'Carole Froschauer',
-    description: 'Cryptocurrency course, intro to after effects',
     totalAmount: '80,000',
     category: ReceiptCategory.WHATSAPP,
   ),
@@ -292,7 +301,6 @@ List<Receipt> dummyReceiptList = [
     receiptNo: '0023',
     issuedDate: '21-07-2020',
     customerName: 'Paul Walker',
-    description: 'Introduction to Programming book sales',
     totalAmount: '6,000',
     category: ReceiptCategory.INSTAGRAM,
   ),
@@ -300,7 +308,6 @@ List<Receipt> dummyReceiptList = [
     receiptNo: '0035',
     issuedDate: '11-04-2020',
     customerName: 'Dwayne Johnson',
-    description: 'Cryptocurrency course, intro to after effects',
     totalAmount: '40,000',
     category: ReceiptCategory.INSTAGRAM,
   ),
@@ -308,7 +315,6 @@ List<Receipt> dummyReceiptList = [
     receiptNo: '0037',
     issuedDate: '29-12-2020',
     customerName: 'Johnson Stones',
-    description: 'Introduction to Numeritical analysis sales',
     totalAmount: '33,000',
     category: ReceiptCategory.TWITTER,
   ),
@@ -316,7 +322,6 @@ List<Receipt> dummyReceiptList = [
     receiptNo: '0021',
     issuedDate: '11-04-2020',
     customerName: 'Kelvin Hart',
-    description: 'Cryptocurrency course, intro to after effects',
     totalAmount: '44,000',
     category: ReceiptCategory.TWITTER,
   ),
