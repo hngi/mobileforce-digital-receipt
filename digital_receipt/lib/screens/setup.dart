@@ -138,12 +138,12 @@ class _SetupState extends State<Setup> {
               ),
             ),
           ),
-          /*  validator: (value) {
+            validator: (value) {
             if (value.isEmpty) {
-              return 'Invalid Email Address';
+              return 'Business slogan empty';
             }
             return null;
-          }, */
+          },
           onSaved: (String value) {
             slogan = value;
           },
@@ -318,7 +318,7 @@ class _SetupState extends State<Setup> {
                       SizedBox(height: 22),
                       _buildAddress('Address'),
                       SizedBox(height: 22),
-                      _buildSlogan('Business Slogan (optional)')
+                      _buildSlogan('Business Slogan')
                     ]),
 
                 SizedBox(
@@ -417,7 +417,6 @@ class _SetupState extends State<Setup> {
                             fontSize: 16.0,
                           );
                         } else {
-                          
                           Fluttertoast.showToast(
                             msg: "Sorry something went Wrong, try again",
                             toastLength: Toast.LENGTH_LONG,
