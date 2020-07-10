@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
-// import 'customerDetails/customerDetail.dart'; 
+// import 'customerDetails/customerDetail.dart';
 
 /// This code displays only the UI
 class CustomerList extends StatefulWidget {
@@ -157,6 +157,7 @@ class _CustomerListState extends State<CustomerList> {
                               return customer(
                                   customerName: snapshot.data[index]['name'],
                                   customerEmail: snapshot.data[index]['email'],
+                                  index: index,
                                   phoneNumber: snapshot.data[index]
                                       ['phoneNumber'],
                                   address: snapshot.data[index]['address']
@@ -210,6 +211,7 @@ class _CustomerListState extends State<CustomerList> {
   Widget customer(
       {String customerName,
       customerEmail,
+      int index,
       phoneNumber,
       int numberOfReceipts,
       String address}) {
@@ -226,11 +228,11 @@ class _CustomerListState extends State<CustomerList> {
                   color: Color(0xFFB3E2F4),
                   child: InkWell(
                     onTap: () {
-                       print("tapped");
-                  var url = "$phoneNumber";
-                  print(url);
+                      print("tapped");
+                      var url = "$phoneNumber";
+                      print(url);
 
-                  UrlLauncher.launch("tel://$url");
+                      UrlLauncher.launch("tel://$url");
                     },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -389,6 +391,17 @@ class _CustomerListState extends State<CustomerList> {
             ),
           ),
         ),
+        index == 0
+            ? SizedBox(
+                height: 8,
+              )
+            : SizedBox.shrink(),
+        index == 0
+            ? Text(
+                'Swipe for more options',
+                textAlign: TextAlign.center,
+              )
+            : SizedBox.shrink(),
         SizedBox(
           height: 19,
         ),

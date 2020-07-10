@@ -43,6 +43,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       // backgroundColor: Color(0xffE5E5E5),
       appBar: AppBar(
         //backgroundColor: Color(0xff226EBE),
