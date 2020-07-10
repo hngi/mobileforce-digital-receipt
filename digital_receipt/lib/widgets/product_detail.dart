@@ -41,7 +41,8 @@ class _ProductDetailState extends State<ProductDetail> {
                     height: 1,
                   ),
                   RawMaterialButton(
-                      padding: EdgeInsets.only(top: 60, bottom: 20, left: 10,right: 50),
+                      padding: EdgeInsets.only(
+                          top: 60, bottom: 20, left: 10, right: 50),
                       constraints: BoxConstraints.tightForFinite(),
                       onPressed: () {
                         Navigator.pop(context);
@@ -71,14 +72,13 @@ class _ProductDetailState extends State<ProductDetail> {
                               ),
                               SizedBox(height: 5),
                               AppTextFieldForm(
-                                controller: productDescController,
-                                validator: (val) {
-                                  if(val.length < 4){
-                                    return "minimum length is 4 charaters";
-                                  }
-                                  return "";
-                                }
-                              ),
+                                  controller: productDescController,
+                                  validator: (val) {
+                                    if (val.length < 4) {
+                                      return "minimum length is 4 charaters";
+                                    }
+                                    return "";
+                                  }),
                               SizedBox(height: 22),
                               Text(
                                 'Quantity',
@@ -141,8 +141,8 @@ class _ProductDetailState extends State<ProductDetail> {
                                         productDesc: productDescController.text,
                                         quantity:
                                             int.parse(quantityController.text),
-                                        unitPrice:
-                                            int.parse(unitPriceController.text),
+                                        unitPrice: double.parse(
+                                            unitPriceController.text),
                                         amount: int.parse(
                                                 quantityController.text) *
                                             int.parse(unitPriceController.text),
