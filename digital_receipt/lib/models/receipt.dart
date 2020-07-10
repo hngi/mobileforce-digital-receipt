@@ -40,7 +40,7 @@ class Receipt extends ChangeNotifier {
   DateTime reminderDate;
   num total;
 
-  String get description {
+  String get descriptions {
     var desc = new StringBuffer();
     if (products != null) {
       products.forEach((element) {
