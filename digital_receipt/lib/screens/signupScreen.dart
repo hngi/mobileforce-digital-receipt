@@ -12,6 +12,17 @@ import '../services/api_service.dart';
 import 'no_internet_connection.dart';
 import '../constant.dart';
 import 'otp_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+GoogleSignIn _googleSignIn = new GoogleSignIn(
+  clientId:
+      "555414249433-61st842v3pvs68ca034mt8rm7od1s1bb.apps.googleusercontent.com",
+  scopes: <String>[
+    'profile',
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ],
+);
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -23,6 +34,41 @@ class _SignupScreenState extends State<SignupScreen> {
   bool passwordVisible = false;
   var _formKey = GlobalKey<FormState>();
   var _email, _password, _name;
+
+  // Concerning google
+
+  GoogleSignInAccount _currentUser;
+  String _contactText;
+  String googleToken;
+
+  @override
+  void initState() {
+    super.initState();
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+      setState(() {
+        _currentUser = account;
+      });
+      if (_currentUser != null) {
+        // _handleGetContact();
+        print(_currentUser);
+      }
+      _googleSignIn.signInSilently();
+      _googleSignIn.signIn().then((result) {
+        result.authentication.then((googleKey) {
+          googleToken = googleKey.idToken;
+          print(googleKey.accessToken);
+          print(googleKey.idToken);
+          print(_googleSignIn.currentUser.displayName);
+          print(_googleSignIn.currentUser.id);
+          print(_googleSignIn.currentUser.toString());
+        }).catchError((err) {
+          print('inner error');
+        });
+      }).catchError((err) {
+        print('error occured');
+      });
+    });
+  }
 
   ApiService _apiService = ApiService();
   @override
@@ -267,64 +313,73 @@ class _SignupScreenState extends State<SignupScreen> {
                           textColor: Colors.white,
                           buttonColor: Color(0xFF0B57A7),
                           height: 45,
-                          onPressed: () {}),
-                      // Container(
-                      //   padding: EdgeInsets.symmetric(vertical: 14.0),
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      //     children: <Widget>[
-                      //       Expanded(
-                      //         flex: 2,
-                      //         child: Divider(
-                      //           thickness: 1.0,
-                      //         ),
-                      //       ),
-                      //       Padding(
-                      //         padding:
-                      //             const EdgeInsets.symmetric(horizontal: 8.0),
-                      //         child: Text(
-                      //           'OR',
-                      //           style: TextStyle(color: Colors.grey),
-                      //         ),
-                      //       ),
-                      //       Expanded(
-                      //         flex: 2,
-                      //         child: Divider(
-                      //           thickness: 1.0,
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      // Platform.isIOS
-                      //     ? Column(
-                      //         children: <Widget>[
-                      //           button(
-                      //               name: "Sign in with Apple",
-                      //               textColor: Color(0xffE5E5E5),
-                      //               iconPath: "assets/logos/apple-logo.png",
-                      //               buttonColor: Color(0xff121212)),
-                      //           SizedBox(
-                      //             height: 20,
-                      //           ),
-                      //         ],
-                      //       )
-                      //     : SizedBox.shrink(),
-                      // button(
-                      //   name: "Sign in with Google",
-                      //   textColor: Color(0xff121212),
-                      //   iconPath: "assets/logos/google-logo.png",
-                      //   buttonColor: Color(0xffF2F8FF),
-                      //   border: true,
-                      // ),
-                      // SizedBox(
-                      //   height: 20,
-                      // ),
-                      // button(
-                      //     name: "Sign in with Facebook",
-                      //     textColor: Color(0xffE5E5E5),
-                      //     iconPath: "assets/logos/facebook.png",
-                      //     buttonColor: Color(0xFF3b5998)),
+                          onPressed: () {
+                            if (_formKey.currentState.validate()) {
+                              signupUser();
+                            }
+                          }),
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 14.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Expanded(
+                              flex: 2,
+                              child: Divider(
+                                thickness: 1.0,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                'OR',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Divider(
+                                thickness: 1.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Platform.isIOS
+                          ? Column(
+                              children: <Widget>[
+                                button(
+                                    name: "Sign in with Apple",
+                                    textColor: Color(0xffE5E5E5),
+                                    iconPath: "assets/logos/apple-logo.png",
+                                    buttonColor: Color(0xff121212)),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                              ],
+                            )
+                          : SizedBox.shrink(),
+                      button(
+                          name: "Sign in with Google",
+                          textColor: Color(0xff121212),
+                          iconPath: "assets/logos/google-logo.png",
+                          buttonColor: Color(0xffF2F8FF),
+                          border: true,
+                          onPressed: () {
+                            googleSignup();
+                          }),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      button(
+                          name: "Sign in with Facebook",
+                          textColor: Color(0xffE5E5E5),
+                          iconPath: "assets/logos/facebook.png",
+                          buttonColor: Color(0xFF3b5998),
+                          onPressed: () {
+                            googleSignout();
+                          }),
                     ],
                   ),
                 ),
@@ -354,12 +409,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ? BorderSide(color: Colors.black, width: 1)
               : BorderSide(color: buttonColor, width: 0),
         ),
-        onPressed: () {
-          // setState(() => isloading = true);
-          if (_formKey.currentState.validate()) {
-            onPressed == "" ? dont() : signupUser();
-          }
-        },
+        onPressed: onPressed,
         child: Padding(
           padding: EdgeInsets.all(12.0),
           child: Row(
@@ -432,7 +482,16 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
-  dont() {
-    print('check if to login or signup');
+  googleSignup() async {
+    try {
+      await _googleSignIn.signIn();
+    } catch (error) {
+      print(error);
+    }
+  }
+
+
+  googleSignout() async {
+   _googleSignIn.disconnect();
   }
 }
