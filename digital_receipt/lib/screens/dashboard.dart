@@ -36,6 +36,11 @@ class _DashBoardState extends State<DashBoard> {
     super.initState();
   }
 
+  void didChangeDependencies() {
+    callFetch();
+    super.didChangeDependencies();
+  }
+
   callFetch() async {
     var res = await _apiService.fetchAndSetUser();
     if (res != null) {
