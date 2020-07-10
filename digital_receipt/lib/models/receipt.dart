@@ -271,9 +271,10 @@ class Receipt extends ChangeNotifier {
         body: json.encode(toJson()),
         headers: {"token": token, "Content-Type": "application/json"});
 
-    print("3");
+    print(toJson());
+    print(response.statusCode);
     if (response.statusCode == 200) {
-      print(json.decode(response.body));
+     // print(json.decode(response.body));
       return "Receipt saved successfully";
     } else {
       print("failed");

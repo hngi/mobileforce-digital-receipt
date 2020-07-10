@@ -234,6 +234,15 @@ class _LogInScreenState extends State<LogInScreen> {
                             _passwordController.text,
                           );
                           if (api_response == "true") {
+                            Fluttertoast.showToast(
+                                msg: 'Logged in successfully',
+                                toastLength: Toast.LENGTH_LONG,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.green,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                          
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -245,7 +254,7 @@ class _LogInScreenState extends State<LogInScreen> {
                               isLoading = false;
                             });
                             Fluttertoast.showToast(
-                                msg: api_response,
+                                msg: api_response ?? 'Sorry something went Wrong, try again',
                                 toastLength: Toast.LENGTH_LONG,
                                 gravity: ToastGravity.BOTTOM,
                                 timeInSecForIosWeb: 1,
