@@ -56,16 +56,9 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
   }
 }
 
-<<<<<<< HEAD
-void main() => runApp(DevicePreview(
-      builder: (_) => MyApp(),
-      enabled: !kReleaseMode,
-    ));
-=======
 
 void main() => runApp(DevicePreview(builder: (_)=>MyApp(), enabled: kReleaseMode,));
 
->>>>>>> upstream/dev/dev
 
 class MyApp extends StatelessWidget {
   const MyApp({
