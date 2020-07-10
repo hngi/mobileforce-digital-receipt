@@ -36,11 +36,6 @@ class _DashBoardState extends State<DashBoard> {
     super.initState();
   }
 
-  void didChangeDependencies() {
-    callFetch();
-    super.didChangeDependencies();
-  }
-
   callFetch() async {
     var res = await _apiService.fetchAndSetUser();
     if (res != null) {
@@ -159,17 +154,17 @@ class _DashBoardState extends State<DashBoard> {
         _singleCard(
           leading: 'No of receipts',
           subtitle: '$recNo',
-          color: _color.randomColor(colorBrightness: ColorBrightness.light),
+          color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
         _singleCard(
           leading: 'Debts',
           subtitle: '$deptIssued',
-          color: _color.randomColor(colorBrightness: ColorBrightness.light),
+          color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
         _singleCard(
           leading: 'Total Sales',
           subtitle: '₦$amnt',
-          color: _color.randomColor(colorBrightness: ColorBrightness.light),
+          color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
         /*  FlatButton(
                   onPressed: () async {
