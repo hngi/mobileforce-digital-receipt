@@ -79,11 +79,8 @@ class _CustomerDetailState extends State<CustomerDetail> {
                       customer: widget.customer,
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(16.0, 0, 16, 16),
-                    child: ReceiptTab(
-                      customer: widget.customer,
-                    ),
+                  ReceiptTab(
+                    customer: widget.customer,
                   ),
                 ],
               ),
@@ -206,19 +203,22 @@ totalAmount: '80,000',
 ),*/
 Widget _buildReceiptList(List<Receipt> customerReceiptList) => ListView.builder(
       itemCount: customerReceiptList.length,
-      itemBuilder: (_, index) => _buildReceiptCard(customerReceiptList[index]),
+      padding: EdgeInsets.fromLTRB(16.0, 0, 16, 0),
+      itemBuilder: (_, index) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: _buildReceiptCard(customerReceiptList[index]),
+      ),
     );
 
 Container _buildReceiptCard(Receipt receipt) {
   return Container(
-    height: 150,
     decoration: BoxDecoration(
       color: Color(0xFF539C30),
       borderRadius: BorderRadius.circular(5.0),
     ),
     child: Container(
       margin: EdgeInsets.only(left: 5.0),
-      padding: EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Color(0xFFE3EAF1),
         borderRadius: BorderRadius.circular(5.0),
@@ -227,6 +227,7 @@ Container _buildReceiptCard(Receipt receipt) {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -241,22 +242,22 @@ Container _buildReceiptCard(Receipt receipt) {
             ],
           ),
           SizedBox(
-            height: 4.0,
+            height: 8.0,
           ),
           Text(
             receipt.customerName,
             style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16.0,
+              fontWeight: FontWeight.w500,
+              fontSize: 14.0,
             ),
           ),
           SizedBox(
-            height: 4.0,
+            height: 5.0,
           ),
           Container(
             width: 250,
             child: Text(
-              receipt.description,
+              receipt.descriptions,
               maxLines: 2,
             ),
           ),
@@ -295,7 +296,7 @@ Future<List<Receipt>> getCustomerReceipt(Customer customer) async {
 Widget _buildLoadingState() {
   return Center(
     child: CircularProgressIndicator(
-      valueColor: AlwaysStoppedAnimation(kPrimaryColor),
+      strokeWidth: 1.5,
     ),
   );
 }
