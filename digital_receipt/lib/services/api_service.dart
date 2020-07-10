@@ -801,8 +801,4 @@ class ApiService {
       return 'false';
     }
   }
-
-  // Future googleSignup() {
-    
-  // }
 }
