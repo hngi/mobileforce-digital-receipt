@@ -10,6 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 import '../services/api_service.dart';
 import 'no_internet_connection.dart';
+import '../constant.dart';
 import 'otp_auth.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -33,12 +34,12 @@ class _SignupScreenState extends State<SignupScreen> {
             ? LoadingIndicator()
             : SingleChildScrollView(
                 child: Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: EdgeInsets.fromLTRB(16, 0, 16, 16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       SizedBox(
-                        height: 34,
+                        height: 40,
                       ),
                       Center(
                         child:
@@ -87,40 +88,32 @@ class _SignupScreenState extends State<SignupScreen> {
                             SizedBox(
                               height: 5,
                             ),
-                            SizedBox(
-                              height: 50,
-                              child: TextFormField(
-                                keyboardType: TextInputType.text,
-                                decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    borderSide: BorderSide(
-                                      color: Color(0xFFC8C8C8),
-                                      width: 1,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    borderSide: BorderSide(
-                                      color: Color(0xFFC8C8C8),
-                                      width: 1,
-                                    ),
+                            TextFormField(
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(15),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC8C8C8),
+                                    width: 1,
                                   ),
                                 ),
-                                validator: Validators.compose([
-                                  Validators.required('Input Name'),
-                                  Validators.patternRegExp(
-                                      RegExp(r"^[A-Z a-z]+$"),
-                                      'Only alphabets are allowed'),
-                                  Validators.minLength(3,
-                                      'Minimum of 3 characters required for Name'),
-                                ]),
-                                onSaved: (value) {
-                                  setState(() {
-                                    _name = value;
-                                  });
-                                },
+                                focusedBorder: OutlineInputBorder(),
                               ),
+                              validator: Validators.compose([
+                                Validators.required('Input Name'),
+                                Validators.patternRegExp(
+                                    RegExp(r"^[A-Z a-z]+$"),
+                                    'Only alphabets are allowed'),
+                                Validators.minLength(3,
+                                    'Minimum of 3 characters required for Name'),
+                              ]),
+                              onSaved: (value) {
+                                setState(() {
+                                  _name = value;
+                                });
+                              },
                             ),
                             SizedBox(height: 22),
                             Text(
@@ -135,42 +128,34 @@ class _SignupScreenState extends State<SignupScreen> {
                             SizedBox(
                               height: 5,
                             ),
-                            SizedBox(
-                              height: 50,
-                              child: TextFormField(
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    borderSide: BorderSide(
-                                      color: Color(0xFFC8C8C8),
-                                      width: 1,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    borderSide: BorderSide(
-                                      color: Color(0xFFC8C8C8),
-                                      width: 1,
-                                    ),
+                            TextFormField(
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(15),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC8C8C8),
+                                    width: 1,
                                   ),
                                 ),
-                                validator: Validators.compose([
-                                  Validators.required('Input Email Address'),
-                                  Validators.email('Invalid Email Address'),
-                                ]),
-                                onSaved: (value) {
-                                  setState(() {
-                                    _email = value;
-                                  });
-                                },
+                                focusedBorder: OutlineInputBorder(),
                               ),
+                              validator: Validators.compose([
+                                Validators.required('Input Email Address'),
+                                Validators.email('Invalid Email Address'),
+                              ]),
+                              onSaved: (value) {
+                                setState(() {
+                                  _email = value;
+                                });
+                              },
                             ),
                             SizedBox(height: 22),
                             Text(
                               "Password",
                               style: TextStyle(
-                                color: Color(0xff606060),
+                                color: Color(0xFF2B2B2B),
                                 fontSize: 13,
                                 fontWeight: FontWeight.normal,
                                 fontFamily: 'Montserrat',
@@ -179,41 +164,47 @@ class _SignupScreenState extends State<SignupScreen> {
                             SizedBox(
                               height: 5,
                             ),
-                            SizedBox(
-                              height: 50,
-                              child: TextFormField(
-                                obscureText: !passwordVisible ? true : false,
-                                decoration: InputDecoration(
-                                  suffixIcon: IconButton(
-                                    icon: passwordVisible
-                                        ? Icon(Icons.remove_red_eye)
-                                        : Icon(Icons.visibility_off),
-                                    color: Colors.grey,
-                                    onPressed: () {
-                                      setState(() =>
-                                          passwordVisible = !passwordVisible);
-                                    },
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    borderSide: BorderSide(
-                                      color: Color(0xFFC8C8C8),
-                                      width: 1,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(),
+                            TextFormField(
+                              obscureText: !passwordVisible ? true : false,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(15),
+                                suffixIcon: IconButton(
+                                  icon: passwordVisible
+                                      ? Icon(Icons.remove_red_eye)
+                                      : Icon(Icons.visibility_off),
+                                  color: Colors.grey,
+                                  onPressed: () {
+                                    setState(() =>
+                                        passwordVisible = !passwordVisible);
+                                  },
                                 ),
-                                validator: Validators.compose([
-                                  Validators.required('Input Password'),
-                                  Validators.minLength(6,
-                                      'Minimum of 6 characters required for Password'),
-                                ]),
-                                onSaved: (value) {
-                                  setState(() {
-                                    _password = value;
-                                  });
-                                },
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC8C8C8),
+                                    width: 1,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(),
                               ),
+                              validator: Validators.compose([
+                                Validators.required('Input Password'),
+                                Validators.minLength(8,
+                                    'Minimum of 8 characters required for Password'),
+                                Validators.patternRegExp(kOneUpperCaseRegex,
+                                    'Password should contain at least an Uppercase letter'),
+                                Validators.patternRegExp(kOneLowerCaseRegex,
+                                    'Password should contain at least a Lowercase letter'),
+                                Validators.patternRegExp(kOneDigitRegex,
+                                    'Password should contain at least a Digit'),
+                                Validators.patternRegExp(kOneSpecialCharRegex,
+                                    'Password should contain at least a Special Character')
+                              ]),
+                              onSaved: (value) {
+                                setState(() {
+                                  _password = value;
+                                });
+                              },
                             ),
                           ],
                         ),
@@ -277,63 +268,63 @@ class _SignupScreenState extends State<SignupScreen> {
                           buttonColor: Color(0xFF0B57A7),
                           height: 45,
                           onPressed: () {}),
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: 14.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Expanded(
-                              flex: 2,
-                              child: Divider(
-                                thickness: 1.0,
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(
-                                'OR',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Divider(
-                                thickness: 1.0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Platform.isIOS
-                          ? Column(
-                              children: <Widget>[
-                                button(
-                                    name: "Sign in with Apple",
-                                    textColor: Color(0xffE5E5E5),
-                                    iconPath: "assets/logos/apple-logo.png",
-                                    buttonColor: Color(0xff121212)),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                              ],
-                            )
-                          : SizedBox.shrink(),
-                      button(
-                        name: "Sign in with Google",
-                        textColor: Color(0xff121212),
-                        iconPath: "assets/logos/google-logo.png",
-                        buttonColor: Color(0xffF2F8FF),
-                        border: true,
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      button(
-                          name: "Sign in with Facebook",
-                          textColor: Color(0xffE5E5E5),
-                          iconPath: "assets/logos/facebook.png",
-                          buttonColor: Color(0xFF3b5998)),
+                      // Container(
+                      //   padding: EdgeInsets.symmetric(vertical: 14.0),
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //     children: <Widget>[
+                      //       Expanded(
+                      //         flex: 2,
+                      //         child: Divider(
+                      //           thickness: 1.0,
+                      //         ),
+                      //       ),
+                      //       Padding(
+                      //         padding:
+                      //             const EdgeInsets.symmetric(horizontal: 8.0),
+                      //         child: Text(
+                      //           'OR',
+                      //           style: TextStyle(color: Colors.grey),
+                      //         ),
+                      //       ),
+                      //       Expanded(
+                      //         flex: 2,
+                      //         child: Divider(
+                      //           thickness: 1.0,
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      // Platform.isIOS
+                      //     ? Column(
+                      //         children: <Widget>[
+                      //           button(
+                      //               name: "Sign in with Apple",
+                      //               textColor: Color(0xffE5E5E5),
+                      //               iconPath: "assets/logos/apple-logo.png",
+                      //               buttonColor: Color(0xff121212)),
+                      //           SizedBox(
+                      //             height: 20,
+                      //           ),
+                      //         ],
+                      //       )
+                      //     : SizedBox.shrink(),
+                      // button(
+                      //   name: "Sign in with Google",
+                      //   textColor: Color(0xff121212),
+                      //   iconPath: "assets/logos/google-logo.png",
+                      //   buttonColor: Color(0xffF2F8FF),
+                      //   border: true,
+                      // ),
+                      // SizedBox(
+                      //   height: 20,
+                      // ),
+                      // button(
+                      //     name: "Sign in with Facebook",
+                      //     textColor: Color(0xffE5E5E5),
+                      //     iconPath: "assets/logos/facebook.png",
+                      //     buttonColor: Color(0xFF3b5998)),
                     ],
                   ),
                 ),

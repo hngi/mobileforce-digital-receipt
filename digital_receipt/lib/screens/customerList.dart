@@ -157,6 +157,7 @@ class _CustomerListState extends State<CustomerList> {
                               return customer(
                                   customerName: snapshot.data[index]['name'],
                                   customerEmail: snapshot.data[index]['email'],
+                                  index: index,
                                   phoneNumber: snapshot.data[index]
                                       ['phoneNumber'],
                                   address: snapshot.data[index]['address']
@@ -210,6 +211,7 @@ class _CustomerListState extends State<CustomerList> {
   Widget customer(
       {String customerName,
       customerEmail,
+      int index,
       phoneNumber,
       int numberOfReceipts,
       String address}) {
@@ -222,40 +224,35 @@ class _CustomerListState extends State<CustomerList> {
               actionPane: SlidableDrawerActionPane(),
               actionExtentRatio: 0.25,
               secondaryActions: <Widget>[
-                Material(
+                Container(
+                  color: Color(0xFFB3E2F4),
                   child: InkWell(
-                    onTap: () async {
+                    onTap: () {
                       print("tapped");
                       var url = "$phoneNumber";
                       print(url);
 
                       UrlLauncher.launch("tel://$url");
                     },
-                    child: Container(
-                      color: Color(0xFFB3E2F4),
-                      child: InkWell(
-                        onTap: () {},
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              Icons.call,
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Text(
-                              "Call Customer",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.call,
                         ),
-                      ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Call Customer",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -394,6 +391,17 @@ class _CustomerListState extends State<CustomerList> {
             ),
           ),
         ),
+        index == 0
+            ? SizedBox(
+                height: 8,
+              )
+            : SizedBox.shrink(),
+        index == 0
+            ? Text(
+                'Swipe for more options',
+                textAlign: TextAlign.center,
+              )
+            : SizedBox.shrink(),
         SizedBox(
           height: 19,
         ),

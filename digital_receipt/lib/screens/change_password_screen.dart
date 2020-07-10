@@ -1,7 +1,9 @@
+import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:wc_form_validators/wc_form_validators.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   ChangePasswordScreen({Key key}) : super(key: key);
@@ -70,12 +72,19 @@ class _PasswordFormState extends State<PasswordForm> {
                 ),
                 TextFormField(
                   onSaved: (newValue) => _currentPassword = newValue,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Invalid Current Password';
-                    }
-                    return null;
-                  },
+                  validator: Validators.compose([
+                    Validators.required('Input Password'),
+                    Validators.minLength(
+                        8, 'Minimum of 8 characters required for Password'),
+                    Validators.patternRegExp(kOneUpperCaseRegex,
+                        'Password should contain at least an Uppercase letter'),
+                    Validators.patternRegExp(kOneLowerCaseRegex,
+                        'Password should contain at least a Lowercase letter'),
+                    Validators.patternRegExp(kOneDigitRegex,
+                        'Password should contain at least a Digit'),
+                    Validators.patternRegExp(kOneSpecialCharRegex,
+                        'Password should contain at least a Special Character')
+                  ]),
                   style: TextStyle(
                     color: Color(0xFF2B2B2B),
                     fontSize: 16,
@@ -121,13 +130,19 @@ class _PasswordFormState extends State<PasswordForm> {
                 ),
                 TextFormField(
                   onSaved: (newValue) => _newPassword = newValue,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Invalid New Password';
-                    }
-                    _newPassword = value;
-                    return null;
-                  },
+                  validator: Validators.compose([
+                    Validators.required('Input Password'),
+                    Validators.minLength(
+                        8, 'Minimum of 8 characters required for Password'),
+                    Validators.patternRegExp(kOneUpperCaseRegex,
+                        'Password should contain at least an Uppercase letter'),
+                    Validators.patternRegExp(kOneLowerCaseRegex,
+                        'Password should contain at least a Lowercase letter'),
+                    Validators.patternRegExp(kOneDigitRegex,
+                        'Password should contain at least a Digit'),
+                    Validators.patternRegExp(kOneSpecialCharRegex,
+                        'Password should contain at least a Special Character')
+                  ]),
                   style: TextStyle(
                     color: Color(0xFF2B2B2B),
                     fontSize: 16,
@@ -172,15 +187,19 @@ class _PasswordFormState extends State<PasswordForm> {
                 ),
                 TextFormField(
                   onSaved: (newValue) => _confirmNewPassword = newValue,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Invalid Confirm New Password';
-                    }
-                    if (value != _newPassword) {
-                      return 'New Password mismatch';
-                    }
-                    return null;
-                  },
+                  validator: Validators.compose([
+                    Validators.required('Input Password'),
+                    Validators.minLength(
+                        8, 'Minimum of 8 characters required for Password'),
+                    Validators.patternRegExp(kOneUpperCaseRegex,
+                        'Password should contain at least an Uppercase letter'),
+                    Validators.patternRegExp(kOneLowerCaseRegex,
+                        'Password should contain at least a Lowercase letter'),
+                    Validators.patternRegExp(kOneDigitRegex,
+                        'Password should contain at least a Digit'),
+                    Validators.patternRegExp(kOneSpecialCharRegex,
+                        'Password should contain at least a Special Character')
+                  ]),
                   style: TextStyle(
                     color: Color(0xFF2B2B2B),
                     fontSize: 16,
