@@ -223,7 +223,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                           });
                         }
                       }),
-                  SizedBox(
+                 /*  SizedBox(
                     height: 30,
                   ),
                   DropdownButtonFormField<String>(
@@ -274,7 +274,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                         color: Color(0xFF1B1B1B),
                       ),
                     ),
-                  ),
+                  ), */
                   SizedBox(
                     height: 35,
                   ),

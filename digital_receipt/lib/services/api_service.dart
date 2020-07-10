@@ -9,7 +9,9 @@ import 'package:digital_receipt/models/notification.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'device_info_service.dart';
 import 'shared_preference_service.dart';
 import 'package:http/http.dart' as http;
@@ -340,6 +342,44 @@ class ApiService {
         throw (e);
       }
     } else {
+      return null;
+    }
+  }
+
+  Future sendPDF(String email, String receipt, String subject) async {
+    var uri = Uri.parse('$_urlEndpoint/user/sendemail/pdf');
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+
+    var request = http.MultipartRequest('POST', uri)
+      ..headers['token'] = token
+      ..fields['email_address'] = email
+      ..fields['subject'] = subject
+      ..files.add(
+        await http.MultipartFile.fromPath("receipt", receipt),
+      );
+
+    var response = await request.send();
+    print('code: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      var res = await response.stream.bytesToString();
+      print(res);
+      Fluttertoast.showToast(
+        msg: 'Message sent successfully',
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.green,
+      );
+      return res;
+    } else {
+      var res = await response.stream.bytesToString();
+
+      Fluttertoast.showToast(
+        msg: 'Sorry something went Wrong, try again',
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.green,
+      );
       return null;
     }
   }
