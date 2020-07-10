@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:random_color/random_color.dart';
 import '../services/email_service.dart';
 import '../constant.dart';
 
@@ -143,6 +144,7 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   GridView buildGridView(recNo, int deptIssued, double amnt) {
+    RandomColor _color = RandomColor();
     return GridView.count(
       crossAxisSpacing: 16.0,
       mainAxisSpacing: 16.0,
@@ -152,17 +154,17 @@ class _DashBoardState extends State<DashBoard> {
         _singleCard(
           leading: 'No of receipts',
           subtitle: '$recNo',
-          color: Color(0xFF25CCB3),
+          color: _color.randomColor(colorBrightness: ColorBrightness.light),
         ),
         _singleCard(
           leading: 'Debts',
           subtitle: '$deptIssued',
-          color: Color(0xFFE897A0),
+          color: _color.randomColor(colorBrightness: ColorBrightness.light),
         ),
         _singleCard(
           leading: 'Total Sales',
           subtitle: '₦$amnt',
-          color: Color(0xFF25CCB3),
+          color: _color.randomColor(colorBrightness: ColorBrightness.light),
         ),
         /*  FlatButton(
                   onPressed: () async {
