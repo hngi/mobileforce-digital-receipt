@@ -2,7 +2,7 @@ class Product {
   String id;
   String productDesc;
   int quantity;
-  int unitPrice;
+  double unitPrice;
   int amount;
 
   Product(
@@ -17,6 +17,7 @@ class Product {
         id: json['id'].toString(),
         productDesc: json['name'] as String,
         quantity: json['quantity'] as int,
+        unitPrice: (json['unit_price'] as double),
         amount: json['amount'] as int);
   }
   Map<String, dynamic> toJson() => {

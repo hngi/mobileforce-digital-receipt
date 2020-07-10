@@ -23,6 +23,13 @@ class Customer extends ChangeNotifier {
   setPhoneNumber(phoneNumber) => this.phoneNumber = phoneNumber;
   setAddress(address) => this.address = address;
 
+  factory Customer.fromJson(Map<String, dynamic> json) => Customer(
+        name: json['name'],
+        email: json['email'],
+        phoneNumber: json['phoneNumber'],
+        address: json['address'],
+      );
+
   @override
   String toString() {
     return '$name : $email : $phoneNumber : $address';

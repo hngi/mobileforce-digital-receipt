@@ -589,14 +589,19 @@ class ApiService {
             'token': token,
           },
         );
+        //log(response.body);
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          print(data);
-          data["data"].forEach((receipt) {
-            _issuedReceipts.add(Receipt.fromJson(receipt));
-            // Receipt.fromJson(receipt).toString();
-          });
-          // print(_issuedReceipts);
+          try {
+            //log(response.body);
+            data["data"].forEach((receipt) {
+              _issuedReceipts.add(Receipt.fromJson(receipt));
+              // Receipt.fromJson(receipt).toString();
+            });
+            // print(_issuedReceipts);
+          } catch (e) {
+            print(e);
+          }
           return _issuedReceipts;
         } else {
           print("Issued Receipt status code ${response.statusCode}");
