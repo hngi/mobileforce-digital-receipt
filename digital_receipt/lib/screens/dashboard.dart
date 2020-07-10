@@ -166,29 +166,14 @@ class _DashBoardState extends State<DashBoard> {
           subtitle: '₦$amnt',
           color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
-        /*  FlatButton(
-                  onPressed: () async {
-                    print('canSend');
-                    final EmailService emailService = EmailService();
-                    //final bool canSend = await FlutterMailer.canSendMail();
-
-                    //print(canSend);
-                    emailService.setMail(
-                      body:
-                          '<h1>a long body for the email<h1> <br> with a subset of HTML',
-                      subject: 'Degeit',
-                      recipients: ['2amafav3@gmail.com'],
-                      isHTML: true,
-                      ccRecipients: [],
-                      bccRecipients: [],
-                      attachments: <String>[
-                        '/storage/emulated/0/Download/Outliers.pdf'
-                      ],
-                    );
-                    await emailService.sendMail();
-                  },
-                  child: Text('Test mail'),
-                ), */
+       /*  FlatButton(
+          onPressed: () async {
+            var h =
+                await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+            print(h);
+          },
+          child: Text('Test mail'),
+        ), */
       ],
     );
   }
