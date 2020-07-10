@@ -360,12 +360,17 @@ class ApiService {
       request.fields['name'] = name;
       request.fields['phone_number'] = phoneNumber;
       request.fields['address'] = address;
-      request.fields['slogan'] = slogan;
+
+      if (slogan != null) {
+        request.fields['slogan'] = slogan;
+      }
 
       request.headers['token'] = token;
-      request.files.add(
-        await http.MultipartFile.fromPath("logo", logo),
-      );
+      if (logo != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath("logo", logo),
+        );
+      }
 
       var response = await request.send();
       print('code: ${response.statusCode}');
@@ -387,31 +392,32 @@ class ApiService {
   }
 
   Future changeLogo(String logo) async {
-
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
       var uri = Uri.parse('$_urlEndpoint/business/info/update');
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
-      
-       var resp = await http.get('https://hng-degeit-receipt.herokuapp.com/v1/business/user/all', headers: {"token": token});
-    var result;
-    resp.statusCode == 200 ?  result = json.decode(resp.body)["data"] as List : print(resp.statusCode);
-    print("this is the result");
-    print(result);
-    var businessID = result[0]["id"];
-    await _sharedPreferenceService.addStringToSF('Business_ID', businessID);
 
-
+      var resp = await http.get(
+          'https://hng-degeit-receipt.herokuapp.com/v1/business/user/all',
+          headers: {"token": token});
+      var result;
+      resp.statusCode == 200
+          ? result = json.decode(resp.body)["data"] as List
+          : print(resp.statusCode);
+      print("this is the result");
+      print(result);
+      var businessID = result[0]["id"];
+      await _sharedPreferenceService.addStringToSF('Business_ID', businessID);
 
       String bId =
-        await _sharedPreferenceService.getStringValuesSF('Business_ID');
-    print(bId);
-    print(token);
-    print(
-        'pref: ${await _sharedPreferenceService.getStringValuesSF('Business_ID')}');
-    print("im here 1");
+          await _sharedPreferenceService.getStringValuesSF('Business_ID');
+      print(bId);
+      print(token);
+      print(
+          'pref: ${await _sharedPreferenceService.getStringValuesSF('Business_ID')}');
+      print("im here 1");
       String businessId =
           await _sharedPreferenceService.getStringValuesSF('Business_ID');
       print(businessId);
@@ -436,7 +442,6 @@ class ApiService {
       return null;
     } else {
       return null;
-
     }
   }
 
@@ -726,7 +731,6 @@ class ApiService {
       return Future.value();
     }
   }
-
 
   Future<String> resetForgottenPassword(
     String email,

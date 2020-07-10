@@ -25,7 +25,10 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
-  
+  dynamic recNo;
+  int deptIssued;
+  double amnt;
+
   @override
   void initState() {
     callFetch();
@@ -79,11 +82,31 @@ class _DashBoardState extends State<DashBoard> {
               if (snapshot.connectionState == ConnectionState.done &&
                   !snapshot.hasData) {
                 return Expanded(
-                    child: Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Center(
                         child: SizedBox(
-                  height: 200,
-                  child: kEmpty,
-                )));
+                      height: 200,
+                      child: kEmpty,
+                    )),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      'Nothing to see here. Click the plus icon to create a receipt',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color.fromRGBO(0, 0, 0, 0.6),
+                        fontSize: 16,
+                        letterSpacing: 0.03,
+                        fontWeight: FontWeight.normal,
+                        fontFamily: 'Montserrat',
+                        height: 1.43,
+                      ),
+                    )
+                  ],
+                ));
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return Expanded(
                   child: Center(
@@ -94,17 +117,19 @@ class _DashBoardState extends State<DashBoard> {
                 );
               } else {
                 var userData = snapshot.data;
-                dynamic recNo = recInfo(userData)['recNo'];
-                int deptIssued = recInfo(userData)['dept'];
-                double amnt = recInfo(userData)['total'];
+                recNo = recInfo(userData)['recNo'];
+                deptIssued = recInfo(userData)['dept'];
+                amnt = recInfo(userData)['total'];
                 return Expanded(
                   child: RefreshIndicator(
                     onRefresh: () async {
                       var snapshot = await _apiService.getIssuedReceipt2();
                       var userData = snapshot;
-                      dynamic recNo = recInfo(userData)['recNo'];
-                      int deptIssued = recInfo(userData)['dept'];
-                      double amnt = recInfo(userData)['total'];
+                      setState(() {
+                        recNo = recInfo(userData)['recNo'];
+                        deptIssued = recInfo(userData)['dept'];
+                        amnt = recInfo(userData)['total'];
+                      });
                     },
                     child: buildGridView(recNo, deptIssued, amnt),
                   ),

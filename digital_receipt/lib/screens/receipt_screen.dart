@@ -405,18 +405,44 @@ Widget ReceiptScreenLayout([BuildContext context]) {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.only(top: 15.0),
-                              child: Text(
-                                'Total',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  letterSpacing: 0.03,
-                                  fontWeight: FontWeight.normal,
-                                  height: 1.43,
-                                ),
-                              ),
-                            ),
+                                padding: const EdgeInsets.only(top: 15.0),
+                                child: RichText(
+                                  text: TextSpan(
+                                      text: 'Total',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                        letterSpacing: 0.03,
+                                        fontWeight: FontWeight.normal,
+                                        height: 1.43,
+                                      ),
+                                      children: [
+                                        Provider.of<Receipt>(context,
+                                                        listen: false)
+                                                    .paidStamp !=
+                                                false
+                                            ? TextSpan(
+                                                text: '',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14,
+                                                  letterSpacing: 0.03,
+                                                  fontWeight: FontWeight.normal,
+                                                  height: 1.43,
+                                                ),
+                                              )
+                                            : TextSpan(
+                                                text: ': ',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14,
+                                                  letterSpacing: 0.03,
+                                                  fontWeight: FontWeight.normal,
+                                                  height: 1.43,
+                                                ),
+                                              ),
+                                      ]),
+                                )),
                             Provider.of<Receipt>(context, listen: false)
                                         .paidStamp !=
                                     false
