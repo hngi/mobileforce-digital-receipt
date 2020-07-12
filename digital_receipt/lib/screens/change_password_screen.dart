@@ -83,7 +83,7 @@ class _PasswordFormState extends State<PasswordForm> {
                     Validators.patternRegExp(kOneDigitRegex,
                         'Password should contain at least a Digit'),
                     Validators.patternRegExp(kOneSpecialCharRegex,
-                        'Password should contain at least a Special Character')
+                        'Special Character eg.(\$\%#&@)')
                   ]),
                   style: TextStyle(
                     color: Color(0xFF2B2B2B),
@@ -141,7 +141,7 @@ class _PasswordFormState extends State<PasswordForm> {
                     Validators.patternRegExp(kOneDigitRegex,
                         'Password should contain at least a Digit'),
                     Validators.patternRegExp(kOneSpecialCharRegex,
-                        'Password should contain at least a Special Character')
+                        'Special Character eg.(\$\%#&@)')
                   ]),
                   style: TextStyle(
                     color: Color(0xFF2B2B2B),
@@ -198,7 +198,7 @@ class _PasswordFormState extends State<PasswordForm> {
                     Validators.patternRegExp(kOneDigitRegex,
                         'Password should contain at least a Digit'),
                     Validators.patternRegExp(kOneSpecialCharRegex,
-                        'Password should contain at least a Special Character')
+                        'Special Character eg.(\$\%#&@)')
                   ]),
                   style: TextStyle(
                     color: Color(0xFF2B2B2B),

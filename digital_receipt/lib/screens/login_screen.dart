@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/screens/forgot_password.dart';
 import 'package:digital_receipt/screens/home_page.dart';
@@ -6,11 +7,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
+import 'package:provider/provider.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
-
+import '../utils/connected.dart';
 import '../services/api_service.dart';
 
 import 'dashboard.dart';
+import 'no_internet_connection.dart';
 import 'signupScreen.dart';
 import 'signupScreen.dart';
 
@@ -151,7 +154,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       Validators.patternRegExp(kOneDigitRegex,
                           'Password should contain at least a Digit'),
                       Validators.patternRegExp(kOneSpecialCharRegex,
-                          'Password should contain at least a Special Character')
+                          'Special Character eg.(\$\%#&@)')
                     ]),
                     style: TextStyle(
                       color: Color(0xFF2B2B2B),
@@ -160,6 +163,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       fontFamily: 'Montserrat',
                     ),
                     decoration: InputDecoration(
+                      errorMaxLines: 2,
                       suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
@@ -190,7 +194,8 @@ class _LogInScreenState extends State<LogInScreen> {
                     alignment: Alignment.centerRight,
                     child: InkWell(
                       onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (_)=>ForgotPassword()));
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => ForgotPassword()));
                         print('forgotten password');
                       },
                       child: Text(
@@ -228,7 +233,21 @@ class _LogInScreenState extends State<LogInScreen> {
                           } else {
                             emailString = _emailController.text;
                           }
-                          print(emailString);
+// check the internet
+                          var connected = await kInternet();
+                          if (!connected) {
+                            await showDialog(
+                              context: context,
+                              builder: (context) {
+                                return NoInternet();
+                              },
+                            );
+                            setState(() {
+                              isLoading = false;
+                            });
+                            return;
+                          }
+
                           String api_response = await _apiService.loginUser(
                             emailString,
                             _passwordController.text,
@@ -242,7 +261,7 @@ class _LogInScreenState extends State<LogInScreen> {
                                 backgroundColor: Colors.green,
                                 textColor: Colors.white,
                                 fontSize: 16.0);
-                          
+
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -254,7 +273,8 @@ class _LogInScreenState extends State<LogInScreen> {
                               isLoading = false;
                             });
                             Fluttertoast.showToast(
-                                msg: api_response ?? 'Sorry something went Wrong, try again',
+                                msg: api_response ??
+                                    'Sorry something went Wrong, try again',
                                 toastLength: Toast.LENGTH_LONG,
                                 gravity: ToastGravity.BOTTOM,
                                 timeInSecForIosWeb: 1,
@@ -462,7 +482,8 @@ class _LogInScreenState extends State<LogInScreen> {
   }
 
   Widget _builldTextFormFiled(String text) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _emailController.text = text);
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _emailController.text = text);
     return TextFormField(
       controller: _emailController,
       validator: Validators.compose([
