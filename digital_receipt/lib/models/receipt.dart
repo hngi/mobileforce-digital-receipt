@@ -33,7 +33,7 @@ class Receipt extends ChangeNotifier {
   bool partPayment = false;
   bool saveCustomer = false;
   bool issued = false;
-  int fonts;
+  int fonts = 20;
   String partPaymentDateTime;
   String signature;
   TimeOfDay reminderTime;
@@ -267,18 +267,23 @@ class Receipt extends ChangeNotifier {
     var uri = "$_urlEndpoint/business/receipt/customize";
     var token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
 
-    var response = await http.post(uri,
-        body: json.encode(toJson()),
-        headers: {"token": token, "Content-Type": "application/json"});
+    try {
+      var response = await http.post(uri,
+          body: json.encode(toJson()),
+          headers: {"token": token, "Content-Type": "application/json"});
 
-    print(toJson());
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-     // print(json.decode(response.body));
-      return "Receipt saved successfully";
-    } else {
-      print("failed");
-      return "failed";
+     print(token);
+       print(json.encode(toJson()));
+      // print('${json.decode(response.body)}');
+      if (response.statusCode == 200) {
+        // print(json.decode(response.body));
+        return "Receipt saved successfully";
+      } else {
+        print("failed");
+        return "failed";
+      }
+    } catch (e) {
+      throw (e);
     }
   }
 }
