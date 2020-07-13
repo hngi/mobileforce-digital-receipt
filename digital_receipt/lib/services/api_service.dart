@@ -762,7 +762,7 @@ class ApiService {
       var uri = '$_urlEndpoint/user/send_email';
       var response = await http.post(
         uri,
-        body: {"email_address": "$email"},
+        body: {"email_address": email},
       );
       /* if (response.statusCode == 200) {
       var data = json.decode(response.body);

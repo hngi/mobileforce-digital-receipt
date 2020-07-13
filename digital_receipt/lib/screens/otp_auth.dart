@@ -18,7 +18,7 @@ class PinCodeVerificationScreen extends StatefulWidget {
   String email;
   String name;
   String password;
-  bool fp;
+  bool fp = false;
   PinCodeVerificationScreen({this.otp, this.email, this.name, this.password});
 
   PinCodeVerificationScreen.forgotPassword({this.email,this.fp = true,this.otp});
@@ -215,17 +215,21 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                               email: widget.email,
                                              )));
                             } catch (error) {
+                              print(error);
                                  setState(() {
                                 isLoading = false;
                               });
                                     Fluttertoast.showToast(
-                                  msg: 'error occured',
+                                  msg: "error: $error",
                                   toastLength: Toast.LENGTH_LONG,
                                   gravity: ToastGravity.BOTTOM,
                                   timeInSecForIosWeb: 1,
                                   backgroundColor: Colors.red[600],
                                   textColor: Colors.white,
                                   fontSize: 13.0);
+                                   setState(() {
+                                isLoading = false;
+                              });
                             }
 
                             } else {
@@ -261,7 +265,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                               name: widget.name)));
                             } catch (error) {
                                     Fluttertoast.showToast(
-                                  msg: 'error occured',
+                                  msg: 'error: $error',
                                   toastLength: Toast.LENGTH_LONG,
                                   gravity: ToastGravity.BOTTOM,
                                   timeInSecForIosWeb: 1,
