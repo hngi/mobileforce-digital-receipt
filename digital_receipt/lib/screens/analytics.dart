@@ -118,6 +118,7 @@ class _AnalyticsState extends State<Analytics> {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             SizedBox(height: 50),
             Text(

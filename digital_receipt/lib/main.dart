@@ -7,8 +7,11 @@ import 'package:digital_receipt/screens/edit_account_information.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/login_screen.dart';
 import 'package:digital_receipt/screens/onboarding.dart';
+import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/screens/signupScreen.dart';
+import 'package:digital_receipt/services/api_service.dart';
 import 'dart:io';
+import 'utils/connected.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -56,9 +59,10 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
   }
 }
 
-
-void main() => runApp(DevicePreview(builder: (_)=>MyApp(), enabled: !kReleaseMode,));
-
+void main() => runApp(DevicePreview(
+      builder: (_) => MyApp(),
+      enabled: !kReleaseMode,
+    ));
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -78,6 +82,9 @@ class MyApp extends StatelessWidget {
           ),
           ChangeNotifierProvider(
             create: (context) => Customer(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Connected(),
           ),
         ],
         child: MaterialApp(
@@ -129,9 +136,12 @@ class _ScreenControllerState extends State<ScreenController> {
         await _sharedPreferenceService.getBoolValuesSF("AUTO_LOGOUT") ?? false;
   }
 
+  initConnect() async {}
+
   @override
   void initState() {
     super.initState();
+    initConnect();
     initSharedPreferenceDb();
     getCurrentAutoLogoutStatus();
 

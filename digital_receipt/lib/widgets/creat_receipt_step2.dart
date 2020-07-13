@@ -223,7 +223,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                           });
                         }
                       }),
-                 /*  SizedBox(
+                  /*  SizedBox(
                     height: 30,
                   ),
                   DropdownButtonFormField<String>(
@@ -482,10 +482,13 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                             .setIssueDate(null);
                         Provider.of<Receipt>(context, listen: false)
                             .setColor(hexCode: _hexCodeController.text);
+                        Provider.of<Receipt>(context, listen: false)
+                            .setFont(24);
+
                         var result =
                             await Provider.of<Receipt>(context, listen: false)
                                 .saveReceipt();
-                     
+
                         if (result == "Receipt saved successfully") {
                           setState(() {
                             isLoading = false;

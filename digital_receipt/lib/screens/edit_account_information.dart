@@ -219,6 +219,16 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
                     textColor: Colors.white,
                     fontSize: 16.0,
                   );
+                }else{
+                  Fluttertoast.showToast(
+                    msg: "Sorry something went Wrong, try again",
+                    toastLength: Toast.LENGTH_LONG,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
                 }
               },
               color: Theme.of(context).primaryColor,

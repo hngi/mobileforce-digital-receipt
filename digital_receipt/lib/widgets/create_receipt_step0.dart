@@ -56,9 +56,9 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
       },
     );
 
-      Provider.of<Customer>(context, listen: false).setCustomerList =
-          List.from(res);
-    
+    Provider.of<Customer>(context, listen: false).setCustomerList =
+        List.from(res);
+
     //res = null;
   }
 
@@ -67,8 +67,6 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
     setCustomer();
     super.initState();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -229,6 +227,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                   print(value);
                   setState(() {
                     selectedCategory = value;
+                    Provider.of<Receipt>(context).setCategory(selectedCategory);
                   });
                 },
                 value: selectedCategory,
@@ -549,7 +548,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               SizedBox(
                 height: 25,
               ),
-             /*  DropdownButtonFormField(
+              /*  DropdownButtonFormField(
                 items: [],
                 onChanged: (val) {},
                 iconDisabledColor: Color.fromRGBO(0, 0, 0, 0.87),
