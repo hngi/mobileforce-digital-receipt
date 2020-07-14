@@ -1,34 +1,25 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:digital_receipt/models/customer.dart';
-import 'package:digital_receipt/screens/account_page.dart';
-import 'package:digital_receipt/screens/create_receipt_page.dart';
-import 'package:digital_receipt/screens/edit_account_information.dart';
 
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/login_screen.dart';
 import 'package:digital_receipt/screens/onboarding.dart';
 import 'package:digital_receipt/screens/setup.dart';
-import 'package:digital_receipt/screens/signupScreen.dart';
-import 'package:digital_receipt/services/api_service.dart';
+
 import 'dart:io';
 import 'utils/connected.dart';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'models/notification.dart';
-
 import './providers/business.dart';
 import 'models/receipt.dart';
-
 import 'services/sql_database_client.dart';
 import 'services/shared_preference_service.dart';
 import 'services/sql_database_repository.dart';
+import 'package:intl/intl.dart';
 
 //BACKGROUND MESSAGE HANDLER
 Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
@@ -61,8 +52,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 
 void main() => runApp(DevicePreview(
       builder: (_) => MyApp(),
-      // TODO change to !kReleaseMode
-      enabled: false,
+      enabled: !kReleaseMode,
     ));
 
 class MyApp extends StatelessWidget {
@@ -137,7 +127,12 @@ class _ScreenControllerState extends State<ScreenController> {
         await _sharedPreferenceService.getBoolValuesSF("AUTO_LOGOUT") ?? false;
   }
 
-  initConnect() async {}
+  initConnect() async {
+    var id = await SharedPreferenceService().getStringValuesSF('BUSINESS_INFO');
+    print('id: $id');
+  }
+
+
 
   @override
   void initState() {
@@ -155,7 +150,6 @@ class _ScreenControllerState extends State<ScreenController> {
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
-        print("Twooo");
         showOverlayNotification((context) {
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -224,7 +218,10 @@ class _ScreenControllerState extends State<ScreenController> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN"),
+        future: Future.wait([
+          _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN"),
+          _sharedPreferenceService.getStringValuesSF("BUSINESS_INFO")
+        ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // await _pushNotificationService.initialise();
           print('snapshots: ${snapshot.data}');
@@ -234,14 +231,17 @@ class _ScreenControllerState extends State<ScreenController> {
               color: Colors.white,
               child: Center(child: CircularProgressIndicator()),
             );
+            // TODO Reverse if-condition to show OnBoarding
+
           } else if (snapshot.data == 'empty' || _currentAutoLogoutStatus) {
             return LogInScreen();
-          } else if (snapshot.hasData && snapshot.data != null) {
-            // return HomePage();
+          } else if (snapshot.hasData &&
+              snapshot.data[0] != null &&
+              snapshot.data[1] != null) {
             return HomePage();
-            // return Otp(email: "francis@francis.francis",);
+          } else if (snapshot.data[1] == null) {
+            return Setup();
           } else {
-            // return Otp(email: "francis@francis.francis",);
             return OnboardingPage();
           }
         });

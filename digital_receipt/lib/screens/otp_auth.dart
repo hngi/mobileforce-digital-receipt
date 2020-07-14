@@ -4,10 +4,12 @@ import 'dart:convert';
 import 'package:digital_receipt/screens/reset_password.dart';
 import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 
@@ -21,8 +23,7 @@ class PinCodeVerificationScreen extends StatefulWidget {
   bool fp;
   PinCodeVerificationScreen({this.otp, this.email, this.name, this.password});
 
-  PinCodeVerificationScreen.forgotPassword(
-      {this.email, this.fp = true, this.otp});
+  PinCodeVerificationScreen.forgotPassword({this.email,this.fp = true,this.otp});
 
   @override
   _PinCodeVerificationScreenState createState() =>
@@ -78,8 +79,6 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                 FocusScope.of(context).requestFocus(FocusNode());
               },
               child: Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
                 child: ListView(
                   children: <Widget>[
                     SizedBox(height: 50),
@@ -141,10 +140,10 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                   pinTheme: PinTheme(
                                     shape: PinCodeFieldShape.box,
                                     borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(5),
-                                        topRight: Radius.circular(5),
-                                        bottomLeft: Radius.circular(5),
-                                        bottomRight: Radius.circular(5)),
+                                        topLeft: Radius.circular(10),
+                                        topRight: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10),
+                                        bottomRight: Radius.circular(10)),
                                     fieldHeight: 50,
                                     fieldWidth: 50,
                                   ),
@@ -152,15 +151,17 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                       Duration(milliseconds: 300),
                                   backgroundColor: Colors.white,
                                   errorAnimationController: errorController,
-                                  autoDisposeControllers: true,
+                                  autoDisposeControllers: false,
                                   controller: textEditingController,
                                   onCompleted: (value) async {
-                                    value == widget.otp
+                                    /*value == widget.otp
                                         ? otpValid()
-                                        : otpError();
+                                        : otpError();*/
                                   },
                                   onChanged: (value) {
                                     print(value);
+                                    print(widget.email);
+                                    print(widget.fp);
                                     setState(() {
                                       currentText = value;
                                     });
@@ -186,6 +187,41 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                     ),
                     SizedBox(
                       height: 20,
+                      //
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 45,
+                        child: FlatButton(
+                          onPressed: () async {
+                            currentText == widget.otp ? otpValid() : otpError();
+                          },
+                          padding: EdgeInsets.all(10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: isLoading
+                              ? ButtonLoadingIndicator(
+                                  color: Colors.white,
+                                  width: 20,
+                                  height: 20,
+                                )
+                              : Text(
+                                  'Continue',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Montserrat',
+                                    fontSize: 16,
+                                    letterSpacing: 0.3,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                          color: Color(0xFF0B57A7),
+                        ),
+                      ),
+                      //
                     ),
                     Container(
                       margin: const EdgeInsets.symmetric(
@@ -199,13 +235,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                 setState(() {
                                   isLoading = true;
                                 });
-                                String response = await _apiService
-                                    .forgotPasswordOtpVerification(
-                                  widget.email,
-                                );
-                                var res = jsonDecode(response);
-                                print(res['data']['otp']);
-                                var otp = res['data']['otp'];
+                                await verifyUserToResetPassword();
                                 Fluttertoast.showToast(
                                     msg: 'OTP sent successfully',
                                     toastLength: Toast.LENGTH_LONG,
@@ -214,15 +244,6 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                     backgroundColor: Colors.green[600],
                                     textColor: Colors.white,
                                     fontSize: 13.0);
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            PinCodeVerificationScreen
-                                                .forgotPassword(
-                                              otp: otp,
-                                              email: widget.email,
-                                            )));
                               } catch (error) {
                                 setState(() {
                                   isLoading = false;
@@ -235,6 +256,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                     backgroundColor: Colors.green[600],
                                     textColor: Colors.white,
                                     fontSize: 13.0);
+                                textEditingController.clear();
                               }
                             } else {
                               try {
@@ -267,6 +289,9 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                                 password: widget.password,
                                                 name: widget.name)));
                               } catch (error) {
+                                setState(() {
+                                  isLoading = false;
+                                });
                                 Fluttertoast.showToast(
                                     msg: 'error occured',
                                     toastLength: Toast.LENGTH_LONG,
@@ -277,12 +302,13 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                     fontSize: 13.0);
                               }
                             }
+                            
                           },
                           child: Padding(
                             padding: EdgeInsets.only(top: 0, bottom: 30),
                             child: Center(
                                 child: Text(
-                              "Resend Email".toUpperCase(),
+                              "Resend OTP",
                               style: TextStyle(
                                   color: Colors.grey[700],
                                   fontSize: 15,
@@ -335,14 +361,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
             backgroundColor: Colors.red[600],
             textColor: Colors.white,
             fontSize: 13.0);
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PinCodeVerificationScreen(
-                    otp: widget.otp,
-                    email: widget.email,
-                    password: widget.password,
-                    name: widget.name)));
+        textEditingController.clear();
       }
     } else {
       setState(() {
@@ -374,14 +393,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
             backgroundColor: Colors.red[600],
             textColor: Colors.white,
             fontSize: 13.0);
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PinCodeVerificationScreen(
-                    otp: widget.otp,
-                    email: widget.email,
-                    password: widget.password,
-                    name: widget.name)));
+        textEditingController.clear();
       }
     }
   }
@@ -398,13 +410,66 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
         backgroundColor: Colors.red[600],
         textColor: Colors.white,
         fontSize: 13.0);
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => PinCodeVerificationScreen(
-                otp: widget.otp,
-                email: widget.email,
-                password: widget.password,
-                name: widget.name)));
+    textEditingController.clear();
+  }
+
+  Future verifyUserToResetPassword() async {
+    setState(() {
+      isLoading = true;
+    });
+    print('im res');
+    Response response =
+        await _apiService.forgotPasswordOtpVerification(widget.email);
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      var res = jsonDecode(response.body);
+      print(res['data']['otp']);
+      print(res['error']);
+      var otp = res['data']['otp'];
+      var error = res['error'];
+
+      /* setState(() {
+        isloading = false;
+      }); */
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PinCodeVerificationScreen.forgotPassword(
+                    otp: "$otp",
+                    email: widget.email,
+                  )));
+    } else if (response.statusCode == 400) {
+      var res = jsonDecode(response.body);
+
+      var error = res['error'];
+      setState(() {
+        isLoading = false;
+      });
+      Fluttertoast.showToast(
+        msg: error,
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red,
+      );
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      Fluttertoast.showToast(
+        msg: 'Sorry an error occured try again',
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red,
+      );
+    }
+  }
+
+    @override
+  void dispose() {
+    errorController.close();
+    textEditingController.clear();
+
+    super.dispose();
   }
 }

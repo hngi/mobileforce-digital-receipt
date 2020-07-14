@@ -653,7 +653,7 @@ class ApiService {
     }
   }
 
-  Future getIssuedReceipts() async {
+  Future<List<Receipt>> getIssuedReceipts() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
@@ -686,7 +686,7 @@ class ApiService {
           }
           return _issuedReceipts;
         } else {
-          print("Issued Receipt status code ${response.statusCode}");
+          print("Issued Receipt status code ${json.decode(response.body)}");
           return [];
         }
       }
@@ -805,7 +805,7 @@ class ApiService {
       var uri = '$_urlEndpoint/user/send_email';
       var response = await http.post(
         uri,
-        body: {"email_address": "$email"},
+        body: {"email_address": email},
       );
       /* if (response.statusCode == 200) {
       var data = json.decode(response.body);
