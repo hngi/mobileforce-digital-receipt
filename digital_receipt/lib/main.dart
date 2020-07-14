@@ -13,6 +13,10 @@ import 'package:flutter/foundation.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
+=======
+
+>>>>>>> otp auth screen bug fixed
 import 'models/notification.dart';
 import './providers/business.dart';
 import 'models/receipt.dart';
