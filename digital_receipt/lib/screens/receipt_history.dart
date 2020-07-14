@@ -2,6 +2,7 @@ import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/models/receipt.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import '../constant.dart';
@@ -27,12 +28,14 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
 
   setSort() async {
     var res = await _apiService.getIssued();
+   
     setState(() {
       recieptListData = res;
       receiptList =  ReceiptUtil.sortReceiptByReceiptNo(recieptListData);
        copyReceiptList = receiptList;
     });
   }
+  
 
   @override
   void initState() {
