@@ -61,7 +61,8 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 
 void main() => runApp(DevicePreview(
       builder: (_) => MyApp(),
-      enabled: !kReleaseMode,
+      // TODO change to !kReleaseMode
+      enabled: false,
     ));
 
 class MyApp extends StatelessWidget {
@@ -233,8 +234,6 @@ class _ScreenControllerState extends State<ScreenController> {
               color: Colors.white,
               child: Center(child: CircularProgressIndicator()),
             );
-            // TODO Reverse if-condition to show OnBoarding
-
           } else if (snapshot.data == 'empty' || _currentAutoLogoutStatus) {
             return LogInScreen();
           } else if (snapshot.hasData && snapshot.data != null) {

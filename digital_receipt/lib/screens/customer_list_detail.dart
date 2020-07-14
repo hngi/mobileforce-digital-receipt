@@ -10,7 +10,7 @@ import 'package:intl/intl.dart';
 import '../constant.dart';
 
 final ApiService _apiService = ApiService();
-final numberFormat = new NumberFormat("\u{20A6}#,##0.#", "en_US");
+final numberFormat = new NumberFormat("\u20A6#,##0.#", "en_US");
 final dateFormat = DateFormat('dd-MM-yyyy');
 
 class CustomerDetail extends StatefulWidget {
@@ -227,7 +227,6 @@ Container _buildReceiptCard(Receipt receipt) {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -286,7 +285,6 @@ Future<List<Receipt>> getCustomerReceipt(Customer customer) async {
     issuedReceipts.removeWhere((element) {
       return element.customer.email != customer.email;
     });
-    dev.log('This..... ${issuedReceipts.toString()}');
     return Future.value(issuedReceipts);
   } else {
     return Future.value();
