@@ -15,7 +15,6 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
-import 'package:rxdart/rxdart.dart';
 
 import 'models/notification.dart';
 
