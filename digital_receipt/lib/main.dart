@@ -8,20 +8,14 @@ import 'package:digital_receipt/screens/setup.dart';
 
 import 'dart:io';
 import 'utils/connected.dart';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
-
 import 'package:flutter/material.dart';
-import 'package:rxdart/rxdart.dart';
-
 import 'models/notification.dart';
-
 import './providers/business.dart';
 import 'models/receipt.dart';
-
 import 'services/sql_database_client.dart';
 import 'services/shared_preference_service.dart';
 import 'services/sql_database_repository.dart';
