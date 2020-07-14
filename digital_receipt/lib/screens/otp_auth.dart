@@ -74,8 +74,6 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                 FocusScope.of(context).requestFocus(FocusNode());
               },
               child: Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
                 child: ListView(
                   children: <Widget>[
                     SizedBox(height: 5),
