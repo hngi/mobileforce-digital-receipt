@@ -19,6 +19,7 @@ import 'models/receipt.dart';
 import 'services/sql_database_client.dart';
 import 'services/shared_preference_service.dart';
 import 'services/sql_database_repository.dart';
+import 'package:intl/intl.dart';
 
 //BACKGROUND MESSAGE HANDLER
 Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
@@ -131,10 +132,13 @@ class _ScreenControllerState extends State<ScreenController> {
     print('id: $id');
   }
 
+ 
+
   @override
   void initState() {
     super.initState();
     initConnect();
+    
     initSharedPreferenceDb();
     getCurrentAutoLogoutStatus();
 
@@ -196,6 +200,7 @@ class _ScreenControllerState extends State<ScreenController> {
         //INSERTING NOTIFICATION TO SQFLITE DB
       },
       onResume: (Map<String, dynamic> message) async {
+        
         print("onResume: $message");
 
         //INSERTING NOTIFICATION TO SQFLITE DB
@@ -244,3 +249,5 @@ class _ScreenControllerState extends State<ScreenController> {
         });
   }
 }
+
+
