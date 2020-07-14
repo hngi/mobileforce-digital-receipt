@@ -11,11 +11,13 @@ class Currency {
       Currency(id:1,currencyName:'Naira',currencySymbol:'₦',flag:'🇳🇬', ),
       Currency(id:2,currencyName:'USD',currencySymbol:'\$', flag:'🇺🇸', ),
       Currency(id:3,currencyName:'Cedi',currencySymbol:'₵',flag:'🇬🇭', ),
-      Currency(id:1,currencyName:'rupee',currencySymbol:'₦',flag:'🇳🇬', ),
-      Currency(id:1,currencyName:'Naira',currencySymbol:'₦',flag:'🇳🇬', ),
-      Currency(id:1,currencyName:'Naira',currencySymbol:'₦',flag:'🇳🇬', ),
-      Currency(id:1,currencyName:'Naira',currencySymbol:'₦',flag:'🇳🇬', ),
-      Currency(id:1,currencyName:'Naira',currencySymbol:'₦',flag:'🇳🇬', ),
+      Currency(id:4,currencyName:'rupee',currencySymbol:'₹',flag:'🇮🇴', ),
+      Currency(id:5,currencyName:'Pounds',currencySymbol:'£',flag:'󠁧󠁢󠁥󠁮🇬🇧', ),
+      Currency(id:6,currencyName:'Euro',currencySymbol:'€',flag:'🇻🇦', ),
+      Currency(id:7,currencyName:'Franc',currencySymbol:'₣',flag:'🇫🇷', ),
+      Currency(id:8,currencyName:'Yen',currencySymbol:'¥',flag:'🇯🇵', ),
+      Currency(id:9,currencyName:'shekel',currencySymbol:'₪',flag:'🇮🇱', ),
+      Currency(id:10,currencyName:'peseta',currencySymbol:'₧',flag:'🇪🇸', ),
     ];
   }
 }

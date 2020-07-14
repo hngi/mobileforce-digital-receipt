@@ -552,7 +552,10 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                 DropdownButtonFormField(
                 items: Currency.currencyList().map<DropdownMenuItem<Currency>>((curr) => DropdownMenuItem(value: curr, child: Row(children: <Widget>[
                   Text(curr.flag),
+                  SizedBox(width:7),
                   Text(curr.currencyName),
+                  SizedBox(width:7),
+                  Text(curr.currencySymbol),
                 ],),
                 )).toList(),
                 onChanged: (Currency currency) {
