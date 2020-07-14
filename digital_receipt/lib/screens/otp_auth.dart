@@ -78,7 +78,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                   children: <Widget>[
                     SizedBox(height: 5),
                     Padding(
-                        padding: EdgeInsets.only(bottom: 10),
+                        padding: EdgeInsets.only(bottom: 10, top: 16),
                         child: Image.asset(
                           'assets/images/logo.png',
                           height: 40,
