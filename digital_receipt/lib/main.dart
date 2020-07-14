@@ -52,7 +52,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 
 void main() => runApp(DevicePreview(
       builder: (_) => MyApp(),
-      enabled: !kReleaseMode,
+      enabled: false,
     ));
 
 class MyApp extends StatelessWidget {
