@@ -174,13 +174,13 @@ class _DraftsState extends State<Drafts> {
             width: double.infinity,
             decoration: BoxDecoration(
               color: Color(0xff539C30),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(5),
             ),
             child: Container(
               margin: EdgeInsets.only(left: 5.0),
               decoration: BoxDecoration(
                 color: Color(0xffE8F1FB),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(5),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

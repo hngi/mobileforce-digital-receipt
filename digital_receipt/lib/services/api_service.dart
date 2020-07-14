@@ -653,7 +653,7 @@ class ApiService {
     }
   }
 
-  Future getIssuedReceipts() async {
+  Future<List<Receipt>> getIssuedReceipts() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
@@ -686,7 +686,7 @@ class ApiService {
           }
           return _issuedReceipts;
         } else {
-          print("Issued Receipt status code ${response.statusCode}");
+          print("Issued Receipt status code ${json.decode(response.body)}");
           return [];
         }
       }
