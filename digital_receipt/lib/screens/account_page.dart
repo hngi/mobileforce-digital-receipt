@@ -184,7 +184,11 @@ class _AccountPageState extends State<AccountPage> {
               ),
               Center(
                 child: Text(
+                  
                   Provider.of<Business>(context).accountData.name,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: CustomText.display1,
                 ),
               ),

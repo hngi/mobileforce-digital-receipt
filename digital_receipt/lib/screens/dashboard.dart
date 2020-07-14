@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:random_color/random_color.dart';
 import '../services/email_service.dart';
 import '../constant.dart';
 
@@ -33,11 +34,6 @@ class _DashBoardState extends State<DashBoard> {
   void initState() {
     callFetch();
     super.initState();
-  }
-
-  void didChangeDependencies() {
-    callFetch();
-    super.didChangeDependencies();
   }
 
   callFetch() async {
@@ -148,6 +144,7 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   GridView buildGridView(recNo, int deptIssued, double amnt) {
+    RandomColor _color = RandomColor();
     return GridView.count(
       crossAxisSpacing: 16.0,
       mainAxisSpacing: 16.0,
@@ -157,41 +154,26 @@ class _DashBoardState extends State<DashBoard> {
         _singleCard(
           leading: 'No of receipts',
           subtitle: '$recNo',
-          color: Color(0xFF25CCB3),
+          color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
         _singleCard(
           leading: 'Debts',
           subtitle: '$deptIssued',
-          color: Color(0xFFE897A0),
+          color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
         _singleCard(
           leading: 'Total Sales',
           subtitle: '₦$amnt',
-          color: Color(0xFF25CCB3),
+          color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
-        /*  FlatButton(
-                  onPressed: () async {
-                    print('canSend');
-                    final EmailService emailService = EmailService();
-                    //final bool canSend = await FlutterMailer.canSendMail();
-
-                    //print(canSend);
-                    emailService.setMail(
-                      body:
-                          '<h1>a long body for the email<h1> <br> with a subset of HTML',
-                      subject: 'Degeit',
-                      recipients: ['2amafav3@gmail.com'],
-                      isHTML: true,
-                      ccRecipients: [],
-                      bccRecipients: [],
-                      attachments: <String>[
-                        '/storage/emulated/0/Download/Outliers.pdf'
-                      ],
-                    );
-                    await emailService.sendMail();
-                  },
-                  child: Text('Test mail'),
-                ), */
+       /*  FlatButton(
+          onPressed: () async {
+            var h =
+                await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+            print(h);
+          },
+          child: Text('Test mail'),
+        ), */
       ],
     );
   }

@@ -198,7 +198,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 Validators.patternRegExp(kOneDigitRegex,
                                     'Password should contain at least a Digit'),
                                 Validators.patternRegExp(kOneSpecialCharRegex,
-                                    'Password should contain at least a Special Character')
+                                    'Special Character eg.(\$\%#&@)')
                               ]),
                               onSaved: (value) {
                                 setState(() {

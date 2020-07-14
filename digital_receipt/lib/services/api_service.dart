@@ -277,6 +277,7 @@ class ApiService {
         "token": token,
       });
       print('code: ${response.statusCode}');
+      print(response.body);
       if (response.statusCode == 200) {
         //set the token to null
         _sharedPreferenceService.addStringToSF("AUTH_TOKEN", 'empty');
@@ -285,8 +286,9 @@ class ApiService {
         print('done');
 
         return true;
+      } else {
+        return false;
       }
-      print(response.body);
     }
     return false;
   }
@@ -305,7 +307,7 @@ class ApiService {
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
       String businessId =
           await _sharedPreferenceService.getStringValuesSF('Business_ID');
-      print(token);
+      print(businessId);
 
       print(
         """
@@ -332,7 +334,7 @@ class ApiService {
             "businessId": businessId,
           },
         );
-        print(response.statusCode);
+        print(jsonDecode(response.body));
         //print(response.body);
         if (response.statusCode == 200) {
           return jsonDecode(response.body);
@@ -525,6 +527,45 @@ class ApiService {
     }
   }
 
+  businessExist() async {
+    var url = "$_urlEndpoint/business/info/all";
+
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+
+    String userID = await _sharedPreferenceService.getStringValuesSF('USER_ID');
+
+    var email = await _sharedPreferenceService.getStringValuesSF('EMAIL');
+
+    var response = await http.get(
+      url,
+      headers: <String, String>{
+        'token': token,
+      },
+    );
+    print(userID);
+    print(jsonDecode(response.body)['data']);
+
+    dynamic res = jsonDecode(response.body)['data'] as List;
+
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+      res = res.firstWhere(
+        (e) => e['user'] == userID,
+        orElse: () {
+          print('object');
+        },
+      );
+
+      return true;
+    } else if (response.statusCode == 400) {
+      return false;
+    } else {
+      
+      return null;
+    }
+  }
+
   //Fetch users from db;
   Future<AccountData> fetchAndSetUser() async {
     var url = "$_urlEndpoint/business/info/all";
@@ -546,7 +587,7 @@ class ApiService {
           'token': token,
         },
       );
-      print(userID);
+  
       print(jsonDecode(response.body)['data']);
 
       dynamic res = jsonDecode(response.body)['data'] as List;
@@ -559,8 +600,9 @@ class ApiService {
             print('object');
           },
         );
-        print('res: $res');
         if (res != null) {
+        print('resid: ${res['user']}');
+          await _sharedPreferenceService.addStringToSF('Business_ID', res['id']);
           return AccountData(
             id: res['id'],
             name: res['name'],
