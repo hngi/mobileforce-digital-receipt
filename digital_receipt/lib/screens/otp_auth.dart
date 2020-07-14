@@ -18,7 +18,7 @@ class PinCodeVerificationScreen extends StatefulWidget {
   String email;
   String name;
   String password;
-  bool fp;
+  bool fp = false;
   PinCodeVerificationScreen({this.otp, this.email, this.name, this.password});
 
   PinCodeVerificationScreen.forgotPassword({this.email,this.fp = true,this.otp});
@@ -51,13 +51,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    errorController.close();
-    textEditingController.clear();
 
-    super.dispose();
-  }
 
   ApiService _apiService = ApiService();
   bool isLoading = false;
@@ -149,7 +143,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                       Duration(milliseconds: 300),
                                   backgroundColor: Colors.white,
                                   errorAnimationController: errorController,
-                                  autoDisposeControllers: true,
+                                  autoDisposeControllers: false,
                                   controller: textEditingController,
                                   onCompleted: (value) async {
                                     value == widget.otp
@@ -221,17 +215,21 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                               email: widget.email,
                                              )));
                             } catch (error) {
+                              print(error);
                                  setState(() {
                                 isLoading = false;
                               });
                                     Fluttertoast.showToast(
-                                  msg: 'error occured',
+                                  msg: "error: $error",
                                   toastLength: Toast.LENGTH_LONG,
                                   gravity: ToastGravity.BOTTOM,
                                   timeInSecForIosWeb: 1,
-                                  backgroundColor: Colors.green[600],
+                                  backgroundColor: Colors.red[600],
                                   textColor: Colors.white,
                                   fontSize: 13.0);
+                                   setState(() {
+                                isLoading = false;
+                              });
                             }
 
                             } else {
@@ -267,7 +265,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                               name: widget.name)));
                             } catch (error) {
                                     Fluttertoast.showToast(
-                                  msg: 'error occured',
+                                  msg: 'error: $error',
                                   toastLength: Toast.LENGTH_LONG,
                                   gravity: ToastGravity.BOTTOM,
                                   timeInSecForIosWeb: 1,
@@ -407,5 +405,13 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                 email: widget.email,
                 password: widget.password,
                 name: widget.name)));
+  }
+
+    @override
+  void dispose() {
+    errorController.close();
+    textEditingController.clear();
+
+    super.dispose();
   }
 }
