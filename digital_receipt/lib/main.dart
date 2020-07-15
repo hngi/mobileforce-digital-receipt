@@ -231,7 +231,6 @@ class _ScreenControllerState extends State<ScreenController> {
               color: Colors.white,
               child: Center(child: CircularProgressIndicator()),
             );
-
           } else if (snapshot.data[0] == 'empty' || _currentAutoLogoutStatus) {
             return LogInScreen();
           } else if (snapshot.hasData &&

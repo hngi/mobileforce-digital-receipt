@@ -450,7 +450,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
     }
   }
 
-    @override
+  @override
   void dispose() {
     errorController.close();
     textEditingController.clear();

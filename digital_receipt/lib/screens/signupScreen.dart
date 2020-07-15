@@ -21,7 +21,7 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  bool isloading = false;
+  bool isLoading = false;
   bool passwordVisible = false;
   var _formKey = GlobalKey<FormState>();
   var _email, _password, _name;
@@ -373,7 +373,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   letterSpacing: 0.3,
                   fontWeight: FontWeight.w600,
                 ),
-        ),
+              ),
       ),
     );
   }
@@ -381,7 +381,7 @@ class _SignupScreenState extends State<SignupScreen> {
   signupUser() async {
     _formKey.currentState.save();
     setState(() {
-      isloading = true;
+      isLoading = true;
     });
 
     var response = await _apiService.otpVerification(_email, _password, _name);
@@ -402,7 +402,7 @@ class _SignupScreenState extends State<SignupScreen> {
       );
     } else if (response.statusCode == 400) {
       setState(() {
-        isloading = false;
+        isLoading = false;
       });
       var res = jsonDecode(response.body);
       var error = res['error'];
@@ -414,7 +414,7 @@ class _SignupScreenState extends State<SignupScreen> {
       );
     } else {
       setState(() {
-        isloading = false;
+        isLoading = false;
       });
       Fluttertoast.showToast(
         msg: 'Sorry an error occured try again',
