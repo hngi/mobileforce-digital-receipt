@@ -1,5 +1,6 @@
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/product.dart';
+import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,7 @@ class _DraftsState extends State<Drafts> {
   ApiService _apiService = ApiService();
   @override
   void initState() {
+    Provider.of<HiveDb>(context, listen: false).initDraftBox();
     super.initState();
   }
 
@@ -38,9 +40,10 @@ class _DraftsState extends State<Drafts> {
         actions: <Widget>[],
       ),
       body: FutureBuilder(
-          future: _apiService.getDraft(), // receipts from API
+          future: _apiService.getDraft(context), // receipts from API
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
+              //print('Sna[hot:: ${snapshot.data}');
               return Center(
                 child: CircularProgressIndicator(
                   strokeWidth: 1.5,
@@ -48,7 +51,7 @@ class _DraftsState extends State<Drafts> {
               );
             } else if (snapshot.connectionState == ConnectionState.done &&
                 snapshot.hasData) {
-              print('sbap:: {snapshot.data.length}');
+              //print('sbap:: {snapshot.data.length}');
               return ListView.builder(
                 padding: EdgeInsets.only(
                   top: 30,
@@ -64,7 +67,7 @@ class _DraftsState extends State<Drafts> {
                   return GestureDetector(
                     onTap: () {
                       setReceipt(snapshot.data[index]);
-                      print(Provider.of<Receipt>(context, listen: false));
+                      // print(Provider.of<Receipt>(context, listen: false));
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -141,9 +144,9 @@ class _DraftsState extends State<Drafts> {
       return Product(
         id: e['id'].toString(),
         productDesc: e['name'],
-        quantity: e['quantity'],
+        quantity: e['quantity'].toDouble(),
         unitPrice: e['unit_price'].toDouble(),
-        amount: (e['quantity'] * e['unit_price']),
+        amount: (e['quantity'] * e['unit_price']).toDouble(),
       );
     });
     List<Product> products = List.from(prod);

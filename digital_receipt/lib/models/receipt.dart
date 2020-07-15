@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:digital_receipt/models/currency.dart';
-import 'package:digital_receipt/utils/HiveDB.dart';
+import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/product.dart';

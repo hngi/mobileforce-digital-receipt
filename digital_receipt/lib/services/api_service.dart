@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'device_info_service.dart';
 import 'shared_preference_service.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +22,9 @@ import '../models/account.dart';
 
 import '../models/receipt.dart';
 import 'package:digital_receipt/models/receipt.dart';
+import './hiveDb.dart';
+
+final HiveDb hiveDb = HiveDb();
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
@@ -147,6 +151,7 @@ class ApiService {
             Receipt receipt = Receipt.fromJson(data);
             draft_receipts.add(receipt);
           });
+
           return draft_receipts;
         } else {
           return null;
@@ -159,10 +164,9 @@ class ApiService {
     }
   }
 
-  Future getDraft() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+  Future getDraft(context) async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -185,16 +189,36 @@ class ApiService {
 
       if (response.statusCode == 200) {
         var res = response.data["data"] as List;
-        print('res:::::: ${res.length}');
-        return res;
+        //print('res:::::: $res');
+        print('res: 0z');
+// checks if the length of draft is larger than 100 and checks for internet
+        if (res.length >= 100 && connectivityResult) {
+          List temp = res.getRange(0, 99).toList();
+          await Provider.of<HiveDb>(context, listen: false).addDraft(temp);
+          print('res: 0');
+          return Provider.of<HiveDb>(context, listen: false).getDraft();
+        } else if (res.length < 100 && connectivityResult) {
+          // print('res: 6');
+          await Provider.of<HiveDb>(context, listen: false).addDraft(res);
+          // print('hiveDb: ${hiveDb.getDraft()}');
+          return Provider.of<HiveDb>(context, listen: false).getDraft();
+        } else {
+          print('res: 9');
+          return Provider.of<HiveDb>(context, listen: false).getDraft();
+        }
+
+        //hiveDb.addDraft(receipts);
+        // return draft_receipts;
+        /* } else {
+          return null;
+        } */
+
+        // return res;
       } else {
         return null;
       }
-      /*  } on DioError catch (error) {
-      print(error);
-    } */
     } else {
-      return Future.error('No network Connection');
+      return Provider.of<HiveDb>(context, listen: false).getDraft() ?? null;
     }
   }
 
