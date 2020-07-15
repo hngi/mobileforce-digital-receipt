@@ -5,7 +5,7 @@ import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/login_screen.dart';
 import 'package:digital_receipt/screens/onboarding.dart';
 import 'package:digital_receipt/screens/setup.dart';
-import 'package:digital_receipt/services/HiveDB.dart';
+import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:hive/hive.dart';
 
 import 'dart:io';
@@ -146,7 +146,6 @@ class _ScreenControllerState extends State<ScreenController> {
   }
 
   initConnect() async {
-    var c;
     Provider.of<Connected>(context, listen: false).init();
     Provider.of<Connected>(context, listen: false).stream.listen((event) {
       print(event);
@@ -244,7 +243,7 @@ class _ScreenControllerState extends State<ScreenController> {
         ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // await _pushNotificationService.initialise();
-          print('snapshots: ${snapshot.data}');
+          // print('snapshots: ${snapshot.data}');
 
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(
@@ -254,18 +253,15 @@ class _ScreenControllerState extends State<ScreenController> {
             // TODO Reverse if-condition to show OnBoarding
 
           } else if (snapshot.data[0] == 'empty' || _currentAutoLogoutStatus) {
-            return HomePage();
+            return LogInScreen();
           } else if (snapshot.hasData &&
               snapshot.data[0] != null &&
               snapshot.data[1] != null) {
             return HomePage();
           } else if (snapshot.data[0] != null && snapshot.data[1] == null) {
             return Setup();
-            //  return HomePage();
           } else {
             return OnboardingPage();
-
-            //  return HomePage();
           }
         });
   }

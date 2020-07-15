@@ -5,6 +5,7 @@ import 'package:connectivity/connectivity.dart';
 
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/notification.dart';
+import 'package:digital_receipt/utils/connected.dart';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'device_info_service.dart';
 import 'shared_preference_service.dart';
 import 'package:http/http.dart' as http;
@@ -20,6 +22,9 @@ import '../models/account.dart';
 
 import '../models/receipt.dart';
 import 'package:digital_receipt/models/receipt.dart';
+import './hiveDb.dart';
+
+final HiveDb hiveDb = HiveDb();
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
@@ -66,10 +71,10 @@ class ApiService {
       }
 
       try {
-        print(email_address);
-        print(password);
-        print(fcmToken);
-        print(deviceType);
+        //print(email_address);
+        //print(password);
+        //print(fcmToken);
+        //print(deviceType);
         Response response = await _dio.post(
           "/user/login",
           data: {
@@ -99,16 +104,16 @@ class ApiService {
           _sharedPreferenceService.addStringToSF("AUTH_TOKEN", auth_token);
           _sharedPreferenceService.addStringToSF("EMAIL", email_address);
           //
-          print("token :");
-          print(auth_token);
-          print(userId);
+          //print("token :");
+          //print(auth_token);
+          //print(userId);
           return "true";
         } else {
-          print(response.data);
+          //print(response.data);
           return response.data["error"];
         }
       } on DioError catch (error) {
-        print(error);
+        //print(error);
       }
     } else {
       return Future.error('No network Connection');
@@ -146,6 +151,7 @@ class ApiService {
             Receipt receipt = Receipt.fromJson(data);
             draft_receipts.add(receipt);
           });
+
           return draft_receipts;
         } else {
           return null;
@@ -158,10 +164,9 @@ class ApiService {
     }
   }
 
-  Future getDraft() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+  Future getDraft(context) async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -184,16 +189,27 @@ class ApiService {
 
       if (response.statusCode == 200) {
         var res = response.data["data"] as List;
-        print('res:::::: ${res.length}');
-        return res;
+        //print('res:::::: $res');
+
+// checks if the length of draft is larger than 100 and checks for internet
+        if (res.length >= 100 && connectivityResult) {
+          List temp = res.getRange(0, 99).toList();
+          await Provider.of<HiveDb>(context, listen: false).addDraft(temp);
+
+          return Provider.of<HiveDb>(context, listen: false).getDraft();
+        } else if (res.length < 100 && connectivityResult) {
+          await Provider.of<HiveDb>(context, listen: false).addDraft(res);
+
+          return Provider.of<HiveDb>(context, listen: false).getDraft();
+        } else {
+          print('res: 9');
+          return Provider.of<HiveDb>(context, listen: false).getDraft();
+        }
       } else {
         return null;
       }
-      /*  } on DioError catch (error) {
-      print(error);
-    } */
     } else {
-      return Future.error('No network Connection');
+      return Provider.of<HiveDb>(context, listen: false).getDraft() ?? null;
     }
   }
 
@@ -576,10 +592,10 @@ class ApiService {
 
     var email = await _sharedPreferenceService.getStringValuesSF('EMAIL');
 
-    var connectivityResult = await (Connectivity().checkConnectivity());
+    var connectivityResult = await Connected().checkInternet();
 
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    print(connectivityResult);
+    if (connectivityResult) {
       var response = await http.get(
         url,
         headers: <String, String>{
@@ -600,7 +616,7 @@ class ApiService {
           },
         );
         if (res != null) {
-          print('resid: ${res['user']}');
+          print('resid: {res}');
           await _sharedPreferenceService.addStringToSF(
               'Business_ID', res['id']);
           return AccountData(
@@ -612,24 +628,47 @@ class ApiService {
             logo: 'http://degeitreceipt.pythonanywhere.com${res['logo']}',
             email: email,
           );
+        } else {
+          var result =
+              await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
+          var res = jsonDecode(result);
+          return AccountData(
+            id: res['id'] ?? '',
+            name: res['name'] ?? '',
+            phone: res['phone'] ?? '',
+            address: res['address'] ?? '',
+            slogan: res['slogan'] ?? '',
+            logo: 'https://degeit-receipt.herokuapp.com${res['logo']}' ?? '',
+            email: email,
+          );
         }
-        return null;
       } else {
         var result =
             await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
         var res = jsonDecode(result);
         return AccountData(
-          id: res['id'],
-          name: res['name'],
-          phone: res['phone_number'],
-          address: res['address'],
-          slogan: res['slogan'],
-          logo: 'https://degeit-receipt.herokuapp.com${res['logo']}',
+          id: res['id'] ?? '',
+          name: res['name'] ?? '',
+          phone: res['phone'] ?? '',
+          address: res['address'] ?? '',
+          slogan: res['slogan'] ?? '',
+          logo: 'https://degeit-receipt.herokuapp.com${res['logo']}' ?? '',
           email: email,
         );
       }
     } else {
-      return null;
+      var result =
+          await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
+      var res = jsonDecode(result);
+      return AccountData(
+        id: res['id'] ?? '',
+        name: res['name'] ?? '',
+        phone: res['phone'] ?? '',
+        address: res['address'] ?? '',
+        slogan: res['slogan'] ?? '',
+        logo: 'https://degeit-receipt.herokuapp.com${res['logo']}' ?? '',
+        email: email,
+      );
     }
   }
 

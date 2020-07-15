@@ -34,4 +34,8 @@ class CustomerAdapter extends TypeAdapter<Customer> {
       ..writeByte(3)
       ..write(obj.address);
   }
+
+  @override
+  // TODO: implement typeId
+  int get typeId => throw UnimplementedError();
 }

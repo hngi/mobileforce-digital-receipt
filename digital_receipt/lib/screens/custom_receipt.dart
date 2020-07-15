@@ -38,6 +38,7 @@ class _CustomReceiptState extends State<CustomReceipt> {
   }
 
   DateTime selectedDate = DateTime.now();
+
 // Date Picker
   Future<DateTime> _selectDate(DateTime selectedDate) async {
     DateTime _initialDate = selectedDate;

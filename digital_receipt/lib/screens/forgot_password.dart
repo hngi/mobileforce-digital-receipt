@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/widgets/button_loading_indicator.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -17,19 +20,19 @@ class ForgotPassword extends StatefulWidget {
 class _ForgotPasswordState extends State<ForgotPassword> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  bool isloading = false;
+  bool isLoading = false;
   final TextEditingController _emailController = TextEditingController();
 
   ApiService _apiService = ApiService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xffF2F8FF),
-        elevation: 0,
-        iconTheme: IconThemeData(color: Color(0xFF0B57A7)),
-      ),
-        body: isloading == true
+        appBar: AppBar(
+          backgroundColor: Color(0xffF2F8FF),
+          elevation: 0,
+          iconTheme: IconThemeData(color: Color(0xFF0B57A7)),
+        ),
+        body: isLoading == true
             ? LoadingIndicator()
             : SingleChildScrollView(
                 child: Padding(
@@ -113,6 +116,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           child: FlatButton(
                             onPressed: () async {
                               if (_formKey.currentState.validate()) {
+                                var connected =
+                                    await Connected().checkInternet();
+                                if (!connected) {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return NoInternet();
+                                    },
+                                  );
+
+                                  return;
+                                }
                                 await verifyUserToResetPassword();
                               }
                             },
@@ -120,16 +135,22 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
                             ),
-                            child: Text(
-                              'Request reset OTP',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Montserrat',
-                                fontSize: 16,
-                                letterSpacing: 0.3,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                            child: isLoading
+                                ? ButtonLoadingIndicator(
+                                    color: Colors.white,
+                                    width: 20,
+                                    height: 20,
+                                  )
+                                : Text(
+                                    'Request reset OTP',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 16,
+                                      letterSpacing: 0.3,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                             color: Color(0xFF0B57A7),
                           ),
                         ),
@@ -146,7 +167,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   verifyUserToResetPassword() async {
     _formKey.currentState.save();
     setState(() {
-      isloading = true;
+      isLoading = true;
     });
     print('im res');
     Response response =
@@ -175,7 +196,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
       var error = res['error'];
       setState(() {
-        isloading = false;
+        isLoading = false;
       });
       Fluttertoast.showToast(
         msg: error,
@@ -183,9 +204,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         toastLength: Toast.LENGTH_LONG,
         backgroundColor: Colors.red,
       );
-    }else{
+    } else {
       setState(() {
-        isloading = false;
+        isLoading = false;
       });
       Fluttertoast.showToast(
         msg: 'Sorry an error occured try again',

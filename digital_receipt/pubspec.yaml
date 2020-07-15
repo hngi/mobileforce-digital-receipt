@@ -56,9 +56,12 @@ dependencies:
   url_launcher: ^5.4.11
   random_color: ^1.0.5
   device_preview: ^0.4.5
+  data_connection_checker: 
+
   hive: ^1.4.1+1
   hive_flutter: ^0.3.0+2
   google_sign_in: ^4.5.1
+
 
 
 

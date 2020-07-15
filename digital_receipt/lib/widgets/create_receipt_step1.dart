@@ -3,11 +3,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/product_detail.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +26,7 @@ class CreateReceiptStep1 extends StatefulWidget {
 class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
   bool _partPayment = false;
 
-  List products = Product.dummy();
+  List<Product> products = Product.dummy();
 
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
@@ -38,8 +41,6 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
 
   final _time = TextEditingController();
   final _date = TextEditingController();
-
-  List pro = [];
 
   @override
   Widget build(BuildContext context) {
@@ -128,16 +129,10 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   showModalBottomSheet(
                     context: context,
                     builder: (BuildContext context) => ProductDetail(
-                      onSubmit: (product) {
+                      onSubmit: (product, {index}) {
                         setState(() {
                           products.add(product);
-                          pro.add(product.amount);
                         });
-
-                        ////////////////////////////
-                        
-                        // int total = pro.fold(0, (p, c) => p+c);
-                        // print('total: $total');
                       },
                     ),
                     backgroundColor: Colors.transparent,
@@ -170,54 +165,6 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                 ),
               ),
             ),
-            /* SizedBox(
-              height: 30,
-            ),
-            SizedBox(
-              height: 50,
-              width: double.infinity,
-              child: FlatButton(
-                onPressed: () {},
-                shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Color(0xFF25CCB3), width: 1.5),
-                    borderRadius: BorderRadius.circular(5)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'Upload .CSV file',
-                      style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.normal,
-                        letterSpacing: 0.3,
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(width: 7),
-                    Icon(
-                      Icons.file_upload,
-                    )
-                  ],
-                ),
-              ),
-            ), */
-            /* SizedBox(
-              height: 10,
-            ),
-            Center(
-              child: Text(
-                'For bulk entry you can upload a .csv file of all your product information',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 14,
-                  color: Colors.black,
-                ),
-              ),
-            ), */
             SizedBox(
               height: 20,
             ),
@@ -248,13 +195,33 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                       setState(() {
                         products.removeAt(index);
                       });
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                          content:
+                              Text("${thisProduct.productDesc} dismissed")));
                     },
                     key: Key(thisProduct.id),
                     child: ProductItem(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: true,
+                          builder: (BuildContext context) => ProductDetail(
+                            product: thisProduct,
+                            onSubmit: (product) {
+                              setState(() {
+                                products[index] = product;
+                                Navigator.pop(context);
+                              });
+                            },
+                          ),
+                        );
+                      },
                       title: thisProduct.productDesc,
                       amount: Provider.of<Receipt>(context, listen: false)
-                                          .getCurrency()
-                                          .currencySymbol + '${thisProduct.amount}',
+                              .getCurrency()
+                              .currencySymbol +
+                          '${thisProduct.amount}',
                       index: index,
                     ),
                   );
@@ -411,21 +378,30 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             ),
             SubmitButton(
               onPressed: () {
-                num sum = 0;
-                for (num e in pro) {
-                  sum += e;
+                if (products.length == 0) {
+                  Fluttertoast.showToast(
+                    msg:
+                        "You need to add at least a product before you can proceed!",
+                    fontSize: 12,
+                    toastLength: Toast.LENGTH_LONG,
+                    backgroundColor: Colors.red,
+                  );
+                } else {
+                  num sum = 0;
+                  for (Product e in products) {
+                    sum += e.amount;
+                  }
+                  print("sum: $sum");
+
+                  Provider.of<Receipt>(context, listen: false).setTotal(sum);
+                  Provider.of<Receipt>(context, listen: false)
+                      .setReminderTime(time);
+                  Provider.of<Receipt>(context, listen: false)
+                      .setReminderDate(date);
+                  Provider.of<Receipt>(context, listen: false)
+                      .setProducts(products);
+                  widget.carouselController.animateToPage(2);
                 }
-                print("sum: $sum");
-                
-                Provider.of<Receipt>(context, listen: false)
-                    .setTotal(sum);
-                Provider.of<Receipt>(context, listen: false)
-                    .setReminderTime(time);
-                Provider.of<Receipt>(context, listen: false)
-                    .setReminderDate(date);
-                Provider.of<Receipt>(context, listen: false)
-                    .setProducts(products);
-                widget.carouselController.animateToPage(2);
               },
               title: 'Next',
               backgroundColor: Color(0xFF0B57A7),
