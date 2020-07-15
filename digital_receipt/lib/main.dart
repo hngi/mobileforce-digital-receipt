@@ -5,7 +5,7 @@ import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/login_screen.dart';
 import 'package:digital_receipt/screens/onboarding.dart';
 import 'package:digital_receipt/screens/setup.dart';
-import 'package:digital_receipt/utils/HiveDB.dart';
+import 'package:digital_receipt/services/HiveDB.dart';
 import 'package:hive/hive.dart';
 
 import 'dart:io';
@@ -58,10 +58,16 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 //       enabled: !kReleaseMode,
 //     )
 void main() async {
+  try {
   WidgetsFlutterBinding.ensureInitialized();
   final appDocumentDir = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
+  Hive.registerAdapter<Customer>(CustomerAdapter());
+  await Hive.openBox<Customer>('customer');
   runApp(MyApp());
+  } catch (e) {
+    print("error occurd in main: $e");
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -150,7 +156,7 @@ class _ScreenControllerState extends State<ScreenController> {
   @override
   void initState() {
     super.initState();
-   // initConnect();
+    // initConnect();
 
     initSharedPreferenceDb();
     getCurrentAutoLogoutStatus();

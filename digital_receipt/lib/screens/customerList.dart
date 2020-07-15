@@ -7,6 +7,8 @@ import 'package:digital_receipt/services/email_service.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 // import 'customerDetails/customerDetail.dart';
@@ -128,15 +130,13 @@ class _CustomerListState extends State<CustomerList> {
               ),
             ]),
             Expanded(
-              child: FutureBuilder( 
+              child: FutureBuilder(
                 future: _apiService.getAllCustomers(), // receipts from API
-
                 builder: (context, snapshot) {
                   // If the API returns nothing it means the user has to upgrade to premium
                   // for now it doesn't validate if the user has upgraded to premium
                   /// If the API returns nothing it shows the dialog box `JUST FOR TESTING`
                   ///
-
                   // print(snapshot.data);
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
@@ -169,6 +169,29 @@ class _CustomerListState extends State<CustomerList> {
                         ),
                       ],
                     );
+                  } else if (snapshot.data.length < 1) {
+                    return ValueListenableBuilder(
+                        valueListenable:
+                            Hive.box<Customer>('customer').listenable(),
+                        builder: (context, Box<Customer> box, _) {
+                          return Flexible(
+                          child: ListView.builder(
+                            itemCount: box.values.length,
+                            itemBuilder: (context, index) {
+                              Customer currentCustomer = box.getAt(index);
+                              return customer(
+                                  customerName: currentCustomer.name,
+                                  customerEmail: currentCustomer.email,
+                                  index: index,
+                                  phoneNumber: currentCustomer.phoneNumber,
+                                  address: currentCustomer.address,
+
+                                  // numberOfReceipts: 0,
+                                  );
+                            },
+                          ),
+                        );
+                        });
                   } else {
                     return Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),

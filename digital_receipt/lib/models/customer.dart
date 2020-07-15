@@ -4,7 +4,7 @@ import 'package:hive/hive.dart';
 
 part 'customer.g.dart';
 
-@HiveType()
+@HiveType(typeId: 0)
 class Customer extends ChangeNotifier {
   @HiveField(0)
   String name;

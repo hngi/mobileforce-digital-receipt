@@ -5,12 +5,12 @@ import 'package:hive/hive.dart';
 
 class HiveDb extends ChangeNotifier {
   void addCustomer(Customer customer) {
-    final customerBox = Hive.box('customer');
+    Box<Customer> customerBox = Hive.box<Customer>('customer');
     customerBox.add(customer);
   }
 
-  void addDraft(Receipt receipt) {
-    final draftBox = Hive.box('draft');
-    draftBox.add(receipt);
-  }
+  // void addDraft(Receipt receipt) {
+  //   final draftBox = Hive.box('draft');
+  //   draftBox.add(receipt);
+  // }
 }
