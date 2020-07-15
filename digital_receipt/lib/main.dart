@@ -52,7 +52,8 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 
 void main() => runApp(DevicePreview(
       builder: (_) => MyApp(),
-      enabled: !kReleaseMode,
+      //TODO change back to !kReleaseMode
+      enabled: false,
     ));
 
 class MyApp extends StatelessWidget {
@@ -131,8 +132,6 @@ class _ScreenControllerState extends State<ScreenController> {
     var id = await SharedPreferenceService().getStringValuesSF('BUSINESS_INFO');
     print('id: $id');
   }
-
-
 
   @override
   void initState() {
@@ -231,15 +230,13 @@ class _ScreenControllerState extends State<ScreenController> {
               color: Colors.white,
               child: Center(child: CircularProgressIndicator()),
             );
-            // TODO Reverse if-condition to show OnBoarding
-
           } else if (snapshot.data == 'empty' || _currentAutoLogoutStatus) {
             return LogInScreen();
           } else if (snapshot.hasData &&
               snapshot.data[0] != null &&
               snapshot.data[1] != null) {
             return HomePage();
-          } else if (snapshot.data[1] == null) {
+          } else if (snapshot.data[0] != null && snapshot.data[1] == null) {
             return Setup();
           } else {
             return OnboardingPage();

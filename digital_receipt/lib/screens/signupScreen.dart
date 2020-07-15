@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:digital_receipt/screens/otp_auth.dart';
@@ -351,8 +352,7 @@ class _SignupScreenState extends State<SignupScreen> {
               : BorderSide(color: buttonColor, width: 0),
         ),
         onPressed: () {
-          // setState(() => isloading = true);
-          if (_formKey.currentState.validate()) {
+          if (isLoading == false && _formKey.currentState.validate()) {
             signupUser();
           }
         },
@@ -383,9 +383,9 @@ class _SignupScreenState extends State<SignupScreen> {
     });
 
     var response = await _apiService.otpVerification(_email, _password, _name);
-    var res = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
+      var res = jsonDecode(response.body);
       var otp = res['data']['otp'];
       Navigator.pushReplacement(
         context,
@@ -402,6 +402,7 @@ class _SignupScreenState extends State<SignupScreen> {
       setState(() {
         isLoading = false;
       });
+      var res = jsonDecode(response.body);
       var error = res['error'];
       Fluttertoast.showToast(
         msg: error,

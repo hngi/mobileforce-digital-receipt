@@ -23,7 +23,8 @@ class PinCodeVerificationScreen extends StatefulWidget {
   bool fp;
   PinCodeVerificationScreen({this.otp, this.email, this.name, this.password});
 
-  PinCodeVerificationScreen.forgotPassword({this.email,this.fp = true,this.otp});
+  PinCodeVerificationScreen.forgotPassword(
+      {this.email, this.fp = true, this.otp});
 
   @override
   _PinCodeVerificationScreenState createState() =>
@@ -51,14 +52,6 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
       };
     errorController = StreamController<ErrorAnimationType>();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    errorController.close();
-    textEditingController.clear();
-
-    super.dispose();
   }
 
   ApiService _apiService = ApiService();
@@ -302,7 +295,6 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                     fontSize: 13.0);
                               }
                             }
-                            
                           },
                           child: Padding(
                             padding: EdgeInsets.only(top: 0, bottom: 30),
@@ -465,7 +457,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
     }
   }
 
-    @override
+  @override
   void dispose() {
     errorController.close();
     textEditingController.clear();
