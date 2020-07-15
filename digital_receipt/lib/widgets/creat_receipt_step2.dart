@@ -17,10 +17,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class CreateReceiptStep2 extends StatefulWidget {
-  CreateReceiptStep2({
-    this.carouselController,
-    this.carouselIndex,
-  });
+  CreateReceiptStep2({this.carouselController, this.carouselIndex});
+
   final CarouselController carouselController;
   final CarouselIndex carouselIndex;
 

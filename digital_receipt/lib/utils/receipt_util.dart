@@ -21,7 +21,8 @@ class ReceiptUtil {
   }
 
   static List<Receipt> filterReceipt(List<Receipt> receiptList, String value) {
-    print(value);
+    // print(value);
+    // print("receiptList $receiptList");
     return receiptList
         .where((receipt) =>
             receipt.customerName

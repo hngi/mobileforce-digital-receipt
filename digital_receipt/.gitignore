@@ -41,3 +41,10 @@ app.*.map.json
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+
+lib/main.dart
+lib/screens/analytics.dart
+lib/screens/edit_account_information.dart
+lib/screens/login_screen.dart
+lib/screens/signupScreen.dart
+lib/services/api_service.dart

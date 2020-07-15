@@ -22,7 +22,7 @@ import 'package:digital_receipt/models/receipt.dart';
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
-  static String _urlEndpoint = "https://hng-degeit-receipt.herokuapp.com/v1";
+  static String _urlEndpoint = "http://degeitreceipt.pythonanywhere.com/v1";
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();
@@ -367,7 +367,7 @@ class ApiService {
       var res = await response.stream.bytesToString();
       print(res);
       Fluttertoast.showToast(
-        msg: 'Message sent successfully',
+        msg: 'Message sent successfully',
         fontSize: 12,
         toastLength: Toast.LENGTH_LONG,
         backgroundColor: Colors.green,
@@ -441,9 +441,8 @@ class ApiService {
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
-      var resp = await http.get(
-          'https://hng-degeit-receipt.herokuapp.com/v1/business/user/all',
-          headers: {"token": token});
+      var resp = await http
+          .get('$_urlEndpoint/business/user/all', headers: {"token": token});
       var result;
       resp.statusCode == 200
           ? result = json.decode(resp.body)["data"] as List
@@ -561,7 +560,6 @@ class ApiService {
     } else if (response.statusCode == 400) {
       return false;
     } else {
-      
       return null;
     }
   }
@@ -587,10 +585,10 @@ class ApiService {
           'token': token,
         },
       );
-  
-      print(jsonDecode(response.body)['data']);
 
-      dynamic res = jsonDecode(response.body)['data'] as List;
+      dynamic res = jsonDecode(response.body);
+
+      res = res['data'] as List;
 
       if (response.statusCode == 200) {
         print(response.statusCode);
@@ -601,15 +599,16 @@ class ApiService {
           },
         );
         if (res != null) {
-        print('resid: ${res['user']}');
-          await _sharedPreferenceService.addStringToSF('Business_ID', res['id']);
+          print('resid: ${res['user']}');
+          await _sharedPreferenceService.addStringToSF(
+              'Business_ID', res['id']);
           return AccountData(
             id: res['id'],
             name: res['name'],
             phone: res['phone_number'],
             address: res['address'],
             slogan: res['slogan'],
-            logo: 'https://hng-degeit-receipt.herokuapp.com${res['logo']}',
+            logo: 'http://degeitreceipt.pythonanywhere.com${res['logo']}',
             email: email,
           );
         }
@@ -653,7 +652,7 @@ class ApiService {
     }
   }
 
-  Future getIssuedReceipts() async {
+  Future<List<Receipt>> getIssuedReceipts() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
@@ -686,7 +685,7 @@ class ApiService {
           }
           return _issuedReceipts;
         } else {
-          print("Issued Receipt status code ${response.statusCode}");
+          print("Issued Receipt status code ${json.decode(response.body)}");
           return [];
         }
       }
@@ -804,7 +803,7 @@ class ApiService {
       var uri = '$_urlEndpoint/user/send_email';
       var response = await http.post(
         uri,
-        body: {"email_address": "$email"},
+        body: {"email_address": email},
       );
       /* if (response.statusCode == 200) {
       var data = json.decode(response.body);

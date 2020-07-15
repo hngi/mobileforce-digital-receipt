@@ -1,4 +1,6 @@
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
+
+import 'package:flutter/foundation.dart';
 
 class Customer extends ChangeNotifier {
   String name;
@@ -17,7 +19,6 @@ class Customer extends ChangeNotifier {
   List<Customer> get customerList => _customerList;
 
   List<Customer> tempCustomerList = [];
-
   setName(name) => this.name = name;
   setEmail(email) => this.email = email;
   setPhoneNumber(phoneNumber) => this.phoneNumber = phoneNumber;
@@ -29,6 +30,13 @@ class Customer extends ChangeNotifier {
         phoneNumber: json['phoneNumber'],
         address: json['address'],
       );
+
+ static toMap(Customer customer) => <String, dynamic>{
+        'name': customer.name,
+        'email': customer.email,
+        'phoneNumber': customer.phoneNumber,
+        'address': customer.address
+      };
 
   @override
   String toString() {
@@ -46,6 +54,16 @@ class Customer extends ChangeNotifier {
             email: 'Froschauer@gmail.com',
             phoneNumber: '+234 8123 4567 890',
             address: '2118 Thornridge Cir. Syracuse, UAE'),
+        Customer(
+            name: 'Garole Vroschauer',
+            email: 'Carole@gmail.com',
+            phoneNumber: '+234 8123 4567 890',
+            address: '2118 Thornridge Cir. Syracuse, Ikorodu'),
+        Customer(
+            name: 'Broooooschauer Zarole',
+            email: 'Froschauer@gmail.com',
+            phoneNumber: '+234 8123 4567 890',
+            address: '2118 Thornridge Cir. Syracuse, UAE'),
       ];
 
   set setCustomerList(List<Customer> value) {
@@ -59,9 +77,8 @@ class Customer extends ChangeNotifier {
     _customerList = tempCustomerList
         .where((e) => e.name.toLowerCase().contains(val.toLowerCase()))
         .toList();
-    print('ok: $_customerList');
-    print('kkk: $tempCustomerList');
+    // print('ok: $customerList');
+    // print('kkk: $tempCustomerList');
     notifyListeners();
-    //notifyListeners();
   }
 }

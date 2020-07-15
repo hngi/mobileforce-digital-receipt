@@ -62,7 +62,7 @@ class Receipt extends ChangeNotifier {
     this.products,
     this.total,
   });
-  static String _urlEndpoint = 'https://hng-degeit-receipt.herokuapp.com/v1';
+  static String _urlEndpoint = 'http://degeitreceipt.pythonanywhere.com/v1';
 
   factory Receipt.fromJson(Map<String, dynamic> json) {
     ReceiptCategory convertToEnum({@required string}) {
@@ -246,12 +246,12 @@ class Receipt extends ChangeNotifier {
     print(json.decode(response.body));
     /*  if (response.statusCode == 200) {
       Fluttertoast.showToast(
-        msg: 'Draft updated successfully',
+        msg: 'Draft updated successfully',
         fontSize: 12,
         toastLength: Toast.LENGTH_LONG,
         backgroundColor: Colors.green,
       );
-      return 'Draft updated successfully';
+      return 'Draft updated successfully';
     } else {
       Fluttertoast.showToast(
         msg: 'Sorry something went Wrong, try again',
@@ -272,8 +272,8 @@ class Receipt extends ChangeNotifier {
           body: json.encode(toJson()),
           headers: {"token": token, "Content-Type": "application/json"});
 
-     print(token);
-       print(json.encode(toJson()));
+      print(token);
+      print(json.encode(toJson()));
       // print('${json.decode(response.body)}');
       if (response.statusCode == 200) {
         // print(json.decode(response.body));
@@ -285,6 +285,36 @@ class Receipt extends ChangeNotifier {
     } catch (e) {
       throw (e);
     }
+  }
+
+  List<Receipt> _issuedReceipt = [];
+  List<Receipt> get issuedReceipt => _issuedReceipt;
+
+  filterReceipt(List<Receipt> receiptList, String value) {
+    bool searchReceiptByCustomerName(Receipt receipt, String pattern) {
+      if (receipt.customerName != null) {
+        return receipt.customerName.toLowerCase().contains(value);
+      }
+      return false;
+    }
+
+    bool searchReceiptByDescription(Receipt receipt, String pattern) {
+      if (receipt.description != null) {
+        return receipt.description.toLowerCase().contains(value);
+      }
+      return false;
+    }
+
+    // print("Receipt list : $receiptList");
+    if (receiptList != null) {
+      _issuedReceipt = receiptList
+          .where((receipt) =>
+              searchReceiptByCustomerName(receipt, value) ||
+              searchReceiptByDescription(receipt, value))
+          .toList();
+    }
+
+    notifyListeners();
   }
 }
 

@@ -12,9 +12,14 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CreateReceiptStep1 extends StatefulWidget {
-  const CreateReceiptStep1({this.carouselController, this.carouselIndex});
+  const CreateReceiptStep1(
+      {this.carouselController,
+      this.carouselIndex,
+      this.issuedCustomerReceipt});
+
   final CarouselController carouselController;
   final CarouselIndex carouselIndex;
+  final Receipt issuedCustomerReceipt;
 
   @override
   _CreateReceiptStep1State createState() => _CreateReceiptStep1State();
@@ -40,6 +45,21 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
   final _date = TextEditingController();
 
   List pro = [];
+
+  @override
+  void initState() {
+    if (widget.issuedCustomerReceipt != null) {
+      updateContents();
+    }
+    super.initState();
+  }
+
+  updateContents() {
+    widget.issuedCustomerReceipt.products.forEach((product) {
+      products.add(product);
+      pro.add(product.unitPrice * product.quantity);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +155,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                         });
 
                         ////////////////////////////
-                        
+
                         // int total = pro.fold(0, (p, c) => p+c);
                         // print('total: $total');
                       },
@@ -252,7 +272,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                     key: Key(thisProduct.id),
                     child: ProductItem(
                       title: thisProduct.productDesc,
-                      amount: '₦' + '${thisProduct.amount}',
+                      amount: '₦' +
+                          '${thisProduct.unitPrice * thisProduct.quantity}',
                       index: index,
                     ),
                   );
@@ -414,9 +435,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   sum += e;
                 }
                 print("sum: $sum");
-                
-                Provider.of<Receipt>(context, listen: false)
-                    .setTotal(sum);
+
+                Provider.of<Receipt>(context, listen: false).setTotal(sum);
                 Provider.of<Receipt>(context, listen: false)
                     .setReminderTime(time);
                 Provider.of<Receipt>(context, listen: false)

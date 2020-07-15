@@ -7,6 +7,7 @@ import 'package:digital_receipt/services/email_service.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 // import 'customerDetails/customerDetail.dart';
@@ -21,14 +22,29 @@ class _CustomerListState extends State<CustomerList> {
   String dropdownValue = "Last Upadated";
 
   ApiService _apiService = ApiService();
-
+  // List<Customer> _dummyCustomerList = Customer.dummy();
+  TextEditingController _searchFieldController = TextEditingController();
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration.zero, () {
+      setCustomer();
+    });
+  }
+
+  setCustomer() async {
+    List customerData = await _apiService.getAllCustomers();
+    List<Customer> customersCopy = [];
+    customerData.forEach((customer) {
+      customersCopy.add(Customer.fromJson(customer));
+    });
+    Provider.of<Customer>(context, listen: false).setCustomerList =customersCopy;
+    //
   }
 
   @override
   Widget build(BuildContext context) {
+    var _customerListModel = Provider.of<Customer>(context, listen: false);
     return Scaffold(
       // backgroundColor: Color(0xffE5E5E5),
       appBar: AppBar(
@@ -53,6 +69,7 @@ class _CustomerListState extends State<CustomerList> {
           children: <Widget>[
             SizedBox(height: 10.0),
             TextFormField(
+              controller: _searchFieldController,
               decoration: InputDecoration(
                 hintText: "Type a keyword",
                 hintStyle: TextStyle(
@@ -61,7 +78,10 @@ class _CustomerListState extends State<CustomerList> {
                 prefixIcon: IconButton(
                   icon: Icon(Icons.search),
                   color: Color.fromRGBO(0, 0, 0, 0.38),
-                  onPressed: () {},
+                  onPressed: () {
+                    _customerListModel
+                        .searchCustomerList(_searchFieldController.text);
+                  },
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5),
@@ -79,6 +99,9 @@ class _CustomerListState extends State<CustomerList> {
                   ),
                 ),
               ),
+              onChanged: (value) {
+                _customerListModel.searchCustomerList(value);
+              },
             ),
             SizedBox(height: 30.0),
             Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -134,10 +157,10 @@ class _CustomerListState extends State<CustomerList> {
                 builder: (context, snapshot) {
                   // If the API returns nothing it means the user has to upgrade to premium
                   // for now it doesn't validate if the user has upgraded to premium
-                  /// If the API returns nothing it shows the dialog box `JUST FOR TESTING`
-                  ///
+                  // / If the API returns nothing it shows the dialog box `JUST FOR TESTING`
+                  // /
 
-                  // print(snapshot.data);
+                  // // print(snapshot.data);
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
                       child: CircularProgressIndicator(
@@ -150,22 +173,29 @@ class _CustomerListState extends State<CustomerList> {
                     return Column(
                       children: <Widget>[
                         SizedBox(height: 20.0),
-                        Flexible(
-                          child: ListView.builder(
-                            itemCount: snapshot.data.length,
-                            itemBuilder: (context, index) {
-                              return customer(
-                                  customerName: snapshot.data[index]['name'],
-                                  customerEmail: snapshot.data[index]['email'],
-                                  index: index,
-                                  phoneNumber: snapshot.data[index]
-                                      ['phoneNumber'],
-                                  address: snapshot.data[index]['address']
+                        Consumer<Customer>(
+                          builder: (_, model, child) {
+                            // child:
+                            return Flexible(
+                              child: ListView.builder(
+                                itemCount: model.customerList.length,
+                                itemBuilder: (context, index) {
+                                  return customer(
+                                    customerName:
+                                        model.customerList[index].name,
+                                    customerEmail:
+                                        model.customerList[index].email,
+                                    index: index,
+                                    phoneNumber:
+                                        model.customerList[index].phoneNumber,
+                                    address: model.customerList[index].address,
 
-                                  // numberOfReceipts: 0,
+                                    // numberOfReceipts: 0,
                                   );
-                            },
-                          ),
+                                },
+                              ),
+                            );
+                          },
                         ),
                       ],
                     );
@@ -198,7 +228,6 @@ class _CustomerListState extends State<CustomerList> {
                       ),
                     );
                   }
-                  // }
                 },
               ),
             ),

@@ -13,10 +13,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CreateReceiptStep0 extends StatefulWidget {
-  const CreateReceiptStep0({this.carouselController, this.carouselIndex});
+  const CreateReceiptStep0(
+      {this.carouselController,
+      this.carouselIndex,
+      this.issuedCustomerReceipt});
 
   final CarouselController carouselController;
   final CarouselIndex carouselIndex;
+  final Receipt issuedCustomerReceipt;
   @override
   _CreateReceiptStep0State createState() => _CreateReceiptStep0State();
 }
@@ -65,7 +69,15 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
   @override
   void initState() {
     setCustomer();
+    if (widget.issuedCustomerReceipt != null) {
+      updateContents();
+    }
     super.initState();
+  }
+
+  updateContents() {
+    selectedCategory = widget.issuedCustomerReceipt.category;
+    selectedCustomer = widget.issuedCustomerReceipt.customer;
   }
 
   @override
