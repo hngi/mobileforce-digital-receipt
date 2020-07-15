@@ -128,14 +128,17 @@ class _ScreenControllerState extends State<ScreenController> {
   }
 
   initConnect() async {
-    var id = await SharedPreferenceService().getStringValuesSF('BUSINESS_INFO');
-    print('id: $id');
+    var c;
+    Provider.of<Connected>(context, listen: false).init();
+    Provider.of<Connected>(context, listen: false).stream.listen((event) {
+      print(event);
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    initConnect();
+   // initConnect();
 
     initSharedPreferenceDb();
     getCurrentAutoLogoutStatus();
@@ -243,7 +246,9 @@ class _ScreenControllerState extends State<ScreenController> {
             //  return HomePage();
           } else {
             return OnboardingPage();
+
             //  return HomePage();
+=======
           }
         });
   }
