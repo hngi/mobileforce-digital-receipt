@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:digital_receipt/utils/connected.dart';
 
+import '../utils/receipt_util.dart';
 import 'package:digital_receipt/screens/otp_auth.dart';
 import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/widgets/loading.dart';
@@ -412,6 +414,22 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() {
       isloading = true;
     });
+    var internet = await Connected().checkInternet();
+    if (!internet) {
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return NoInternet();
+        },
+      );
+      setState(() {
+        isloading = false;
+      });
+      return;
+    }
+
+    
+
     print('im res');
     var response = await _apiService.otpVerification(_email, _password, _name);
     var res = jsonDecode(response.body);

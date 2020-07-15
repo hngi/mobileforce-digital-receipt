@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:digital_receipt/constant.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/screens/reset_password.dart';
 import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/gestures.dart';
@@ -185,6 +187,19 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                         height: 45,
                         child: FlatButton(
                           onPressed: () async {
+                            var connected = await Connected().checkInternet();
+                          if (!connected) {
+                            await showDialog(
+                              context: context,
+                              builder: (context) {
+                                return NoInternet();
+                              },
+                            );
+                            setState(() {
+                              isLoading = false;
+                            });
+                            return;
+                          }
                             currentText == widget.otp ? otpValid() : otpError();
                           },
                           padding: EdgeInsets.all(10),
@@ -219,6 +234,19 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                         child: FlatButton(
                           onPressed: () async {
                             if (widget.fp == true) {
+                              var connected = await Connected().checkInternet();
+                          if (!connected) {
+                            await showDialog(
+                              context: context,
+                              builder: (context) {
+                                return NoInternet();
+                              },
+                            );
+                            setState(() {
+                              isLoading = false;
+                            });
+                            return;
+                          }
                               try {
                                 setState(() {
                                   isLoading = true;
