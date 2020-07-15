@@ -40,10 +40,11 @@ class _DashBoardState extends State<DashBoard> {
   callFetch() async {
     var res = await _apiService.fetchAndSetUser();
     if (res != null) {
+     // print('res:::: ${res.phone}');
       Provider.of<Business>(context, listen: false).setAccountData = res;
       var val = Provider.of<Business>(context, listen: false).toJson();
       _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
-      print(val);
+     // print('val:: $val');
     }
   }
 

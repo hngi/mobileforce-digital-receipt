@@ -3,10 +3,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
+import 'package:digital_receipt/utils/connected.dart';
+import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/product_detail.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -374,20 +378,30 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             ),
             SubmitButton(
               onPressed: () {
-                num sum = 0;
-                for (Product e in products) {
-                  sum += e.amount;
-                }
-                print("sum: $sum");
+                if (products.length == 0) {
+                  Fluttertoast.showToast(
+                    msg:
+                        "You need to add at least a product before you can proceed!",
+                    fontSize: 12,
+                    toastLength: Toast.LENGTH_LONG,
+                    backgroundColor: Colors.red,
+                  );
+                } else {
+                  num sum = 0;
+                  for (Product e in products) {
+                    sum += e.amount;
+                  }
+                  print("sum: $sum");
 
-                Provider.of<Receipt>(context, listen: false).setTotal(sum);
-                Provider.of<Receipt>(context, listen: false)
-                    .setReminderTime(time);
-                Provider.of<Receipt>(context, listen: false)
-                    .setReminderDate(date);
-                Provider.of<Receipt>(context, listen: false)
-                    .setProducts(products);
-                widget.carouselController.animateToPage(2);
+                  Provider.of<Receipt>(context, listen: false).setTotal(sum);
+                  Provider.of<Receipt>(context, listen: false)
+                      .setReminderTime(time);
+                  Provider.of<Receipt>(context, listen: false)
+                      .setReminderDate(date);
+                  Provider.of<Receipt>(context, listen: false)
+                      .setProducts(products);
+                  widget.carouselController.animateToPage(2);
+                }
               },
               title: 'Next',
               backgroundColor: Color(0xFF0B57A7),

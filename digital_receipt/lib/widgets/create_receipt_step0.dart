@@ -4,8 +4,10 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/customer_dropdown.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
@@ -647,10 +649,22 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                 title: 'Next',
                 textColor: Colors.white,
                 backgroundColor: Color(0xFF0B57A7),
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState.validate() &&
                       selectedCurrency != null) {
                     _formKey.currentState.save();
+
+                    var connected = await Connected().checkInternet();
+                    if (!connected) {
+                      await showDialog(
+                        context: context,
+                        builder: (context) {
+                          return NoInternet();
+                        },
+                      );
+
+                      return;
+                    }
 
                     Provider.of<Receipt>(context, listen: false)
                         .setCategory(selectedCategory);

@@ -5,6 +5,8 @@ import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/login_screen.dart';
 import 'package:digital_receipt/screens/onboarding.dart';
 import 'package:digital_receipt/screens/setup.dart';
+import 'package:digital_receipt/utils/HiveDB.dart';
+import 'package:hive/hive.dart';
 
 import 'dart:io';
 import 'utils/connected.dart';
@@ -20,6 +22,7 @@ import 'services/sql_database_client.dart';
 import 'services/shared_preference_service.dart';
 import 'services/sql_database_repository.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 
 //BACKGROUND MESSAGE HANDLER
 Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
@@ -54,7 +57,12 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 //       builder: (_) => MyApp(),
 //       enabled: !kReleaseMode,
 //     )
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentDir = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -68,6 +76,9 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(
             create: (context) => Business(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => HiveDb(),
           ),
           ChangeNotifierProvider(
             create: (context) => Receipt(),
@@ -129,7 +140,6 @@ class _ScreenControllerState extends State<ScreenController> {
   }
 
   initConnect() async {
-    var c;
     Provider.of<Connected>(context, listen: false).init();
     Provider.of<Connected>(context, listen: false).stream.listen((event) {
       print(event);
@@ -139,7 +149,7 @@ class _ScreenControllerState extends State<ScreenController> {
   @override
   void initState() {
     super.initState();
-    // initConnect();
+   // initConnect();
 
     initSharedPreferenceDb();
     getCurrentAutoLogoutStatus();
@@ -221,34 +231,35 @@ class _ScreenControllerState extends State<ScreenController> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Future.wait([
-        _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN"),
-        _sharedPreferenceService.getStringValuesSF("BUSINESS_INFO")
-      ]),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        // await _pushNotificationService.initialise();
-        print('snapshots: ${snapshot.data}');
+        future: Future.wait([
+          _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN"),
+          _sharedPreferenceService.getStringValuesSF("BUSINESS_INFO")
+        ]),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          // await _pushNotificationService.initialise();
+          print('snapshots: ${snapshot.data}');
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container(
-            color: Colors.white,
-            child: Center(child: CircularProgressIndicator()),
-          );
-          // TODO Reverse if-condition to show OnBoarding
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Container(
+              color: Colors.white,
+              child: Center(child: CircularProgressIndicator()),
+            );
+            // TODO Reverse if-condition to show OnBoarding
 
-        } else if (snapshot.data[0] == 'empty' || _currentAutoLogoutStatus) {
-          return HomePage();
-        } else if (snapshot.hasData &&
-            snapshot.data[0] != null &&
-            snapshot.data[1] != null) {
-          return HomePage();
-        } else if (snapshot.data[0] != null && snapshot.data[1] == null) {
-          return Setup();
-          //  return HomePage();
-        } else {
-          return OnboardingPage();
-        }
-      },
-    );
+          } else if (snapshot.data[0] == 'empty' || _currentAutoLogoutStatus) {
+            return LogInScreen();
+          } else if (snapshot.hasData &&
+              snapshot.data[0] != null &&
+              snapshot.data[1] != null) {
+            return HomePage();
+          } else if (snapshot.data[0] != null && snapshot.data[1] == null) {
+            return Setup();
+            //  return HomePage();
+          } else {
+            return OnboardingPage();
+
+            //  return HomePage();
+          }
+        });
   }
 }

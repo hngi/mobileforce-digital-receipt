@@ -7,15 +7,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
-import 'package:provider/provider.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 import '../utils/connected.dart';
 import '../services/api_service.dart';
 import '../utils/connected.dart';
-import 'dashboard.dart';
 import 'no_internet_connection.dart';
 import 'signupScreen.dart';
-import 'signupScreen.dart';
+
 
 class LogInScreen extends StatefulWidget {
   @override

@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -41,7 +43,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(
-                          height: 130.0,
+                          height: 30.0,
                         ),
                         Text(
                           'Forgot Password?',
@@ -114,6 +116,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           child: FlatButton(
                             onPressed: () async {
                               if (_formKey.currentState.validate()) {
+                                var connected =
+                                    await Connected().checkInternet();
+                                if (!connected) {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return NoInternet();
+                                    },
+                                  );
+
+                                  return;
+                                }
                                 await verifyUserToResetPassword();
                               }
                             },

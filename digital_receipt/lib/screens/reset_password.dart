@@ -1,5 +1,7 @@
 import 'package:digital_receipt/screens/login_screen.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:flutter/material.dart';
@@ -167,8 +169,21 @@ class _ResetPasswordState extends State<ResetPassword> {
                               setState(() {
                                 isLoading = true;
                               });
-                              print(_passwordController.text);
-                              print(widget.email);
+                              //print(_passwordController.text);
+                              //print(widget.email);
+                              var connected = await Connected().checkInternet();
+                              if (!connected) {
+                                await showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return NoInternet();
+                                  },
+                                );
+                                setState(() {
+                                  isLoading = false;
+                                });
+                                return;
+                              }
                               String response =
                                   await _apiService.resetForgottenPassword(
                                       widget.email, _passwordController.text);

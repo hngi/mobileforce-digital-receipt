@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/screens/change_password_screen.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';
@@ -49,6 +51,16 @@ class _AccountPageState extends State<AccountPage> {
   AccountData _accountData;
 
   Future getImage() async {
+     var internet = await Connected().checkInternet();
+    if (!internet) {
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return NoInternet();
+        },
+      );
+      return;
+    }
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
@@ -184,7 +196,6 @@ class _AccountPageState extends State<AccountPage> {
               ),
               Center(
                 child: Text(
-                  
                   Provider.of<Business>(context).accountData.name,
                   textAlign: TextAlign.center,
                   maxLines: 2,
@@ -280,6 +291,19 @@ class _AccountPageState extends State<AccountPage> {
                   setState(() {
                     _loading = true;
                   });
+                  var internet = await Connected().checkInternet();
+                  if (!internet) {
+                    await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return NoInternet();
+                      },
+                    );
+                    setState(() {
+                      _loading = false;
+                    });
+                    return;
+                  }
                   String token = await _sharedPreferenceService
                       .getStringValuesSF('AUTH_TOKEN');
                   // print('token: $token');
