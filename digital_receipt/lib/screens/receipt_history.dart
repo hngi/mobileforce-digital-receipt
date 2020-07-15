@@ -2,6 +2,7 @@ import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/models/receipt.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import '../constant.dart';
@@ -18,7 +19,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
   bool _showDialog = false;
   //instead of dummyReceiptList use the future data gotten
   List<Receipt> receiptList = [];
-     
+
   // the below is needed so as to create a copy of the list,
   //for sorting and searching functionalities
   List<Receipt> copyReceiptList = [];
@@ -26,12 +27,19 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
   ApiService _apiService = ApiService();
 
   setSort() async {
-    var res = await _apiService.getIssued();
-    setState(() {
-      recieptListData = res;
-      receiptList =  ReceiptUtil.sortReceiptByReceiptNo(recieptListData);
-       copyReceiptList = receiptList;
-    });
+    try {
+      var res = await _apiService.getIssued();
+      setState(() {
+        recieptListData = res;
+        receiptList = ReceiptUtil.sortReceiptByReceiptNo(recieptListData);
+        copyReceiptList = receiptList;
+      });
+    } catch (error) {
+      Fluttertoast.showToast(
+          msg: 'error, try again ',
+          backgroundColor: Colors.red,
+          toastLength: Toast.LENGTH_LONG);
+    }
   }
 
   @override
@@ -333,7 +341,6 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                   child: Text(
-
                     //receipt.products != null ?
                     receipt?.products[0].productDesc ?? '',
                     style: TextStyle(
