@@ -838,4 +838,47 @@ class ApiService {
       return 'false';
     }
   }
+
+  Future googleSignup(String token, String email_address) async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      String fcmToken = await _firebaseMessaging.getToken();
+      String deviceType;
+      //Check deviceType
+      if (Device.get().isAndroid) {
+        deviceType = 'andriod';
+      } else if (Device.get().isIos) {
+        deviceType = 'ios';
+      }
+
+      var uri = 'http://degeitreceipt.pythonanywhere.com/google';
+      var response = await http.post(
+        uri,
+        body: {
+          "deviceType": "$deviceType",
+          "registration_id": "$fcmToken ",
+          "token": "$token"
+        },
+      );
+      print(response.body);
+      print(response.statusCode);
+      print(token);
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        String userId = data["data"]["_id"];
+        // userID = userId;
+        String auth_token = data["data"]["auth_token"];
+
+        //Save details to Shared Preference
+        _sharedPreferenceService.addStringToSF("USER_ID", userId);
+        _sharedPreferenceService.addStringToSF("AUTH_TOKEN", auth_token);
+        _sharedPreferenceService.addStringToSF("EMAIL", email_address);
+        return 'true';
+      }
+      return 'false';
+    } else {
+      return Future.value();
+    }
+  }
 }

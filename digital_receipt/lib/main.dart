@@ -150,7 +150,7 @@ class _ScreenControllerState extends State<ScreenController> {
   @override
   void initState() {
     super.initState();
-   // initConnect();
+    // initConnect();
 
     initSharedPreferenceDb();
     getCurrentAutoLogoutStatus();
@@ -232,33 +232,34 @@ class _ScreenControllerState extends State<ScreenController> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Future.wait([
-          _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN"),
-          _sharedPreferenceService.getStringValuesSF("BUSINESS_INFO")
-        ]),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          // await _pushNotificationService.initialise();
-          print('snapshots: ${snapshot.data}');
+      future: Future.wait([
+        _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN"),
+        _sharedPreferenceService.getStringValuesSF("BUSINESS_INFO")
+      ]),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        // await _pushNotificationService.initialise();
+        print('snapshots: ${snapshot.data}');
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Container(
-              color: Colors.white,
-              child: Center(child: CircularProgressIndicator()),
-            );
-            // TODO Reverse if-condition to show OnBoarding
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container(
+            color: Colors.white,
+            child: Center(child: CircularProgressIndicator()),
+          );
+          // TODO Reverse if-condition to show OnBoarding
 
-          } else if (snapshot.data[0] == 'empty' || _currentAutoLogoutStatus) {
-            return HomePage();
-          } else if (snapshot.hasData &&
-              snapshot.data[0] != null &&
-              snapshot.data[1] != null) {
-            return HomePage();
-          } else if (snapshot.data[0] != null && snapshot.data[1] == null) {
-            return Setup();
-            //  return HomePage();
-          } else {
-            return OnboardingPage();
-          }
-        });
+        } else if (snapshot.data[0] == 'empty' || _currentAutoLogoutStatus) {
+          return HomePage();
+        } else if (snapshot.hasData &&
+            snapshot.data[0] != null &&
+            snapshot.data[1] != null) {
+          return HomePage();
+        } else if (snapshot.data[0] != null && snapshot.data[1] == null) {
+          return Setup();
+          //  return HomePage();
+        } else {
+          return OnboardingPage();
+        }
+      },
+    );
   }
 }
