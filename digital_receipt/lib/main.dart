@@ -52,8 +52,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 
 void main() => runApp(DevicePreview(
       builder: (_) => MyApp(),
-      // TODO replace with !kReleaseMode
-      enabled: false,
+      enabled: kReleaseMode,
     ));
 
 class MyApp extends StatelessWidget {
@@ -129,14 +128,17 @@ class _ScreenControllerState extends State<ScreenController> {
   }
 
   initConnect() async {
-    var id = await SharedPreferenceService().getStringValuesSF('BUSINESS_INFO');
-    print('id: $id');
+    var c;
+    Provider.of<Connected>(context, listen: false).init();
+    Provider.of<Connected>(context, listen: false).stream.listen((event) {
+      print(event);
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    initConnect();
+   // initConnect();
 
     initSharedPreferenceDb();
     getCurrentAutoLogoutStatus();
@@ -231,8 +233,10 @@ class _ScreenControllerState extends State<ScreenController> {
               color: Colors.white,
               child: Center(child: CircularProgressIndicator()),
             );
+            // TODO Reverse if-condition to show OnBoarding
+
           } else if (snapshot.data[0] == 'empty' || _currentAutoLogoutStatus) {
-            return LogInScreen();
+            return HomePage();
           } else if (snapshot.hasData &&
               snapshot.data[0] != null &&
               snapshot.data[1] != null) {
@@ -241,6 +245,7 @@ class _ScreenControllerState extends State<ScreenController> {
             return Setup();
           } else {
             return OnboardingPage();
+             
           }
         });
   }

@@ -23,6 +23,8 @@ class _ProductDetailState extends State<ProductDetail> {
   final productDescController = TextEditingController();
   final quantityController = TextEditingController();
   final unitPriceController = TextEditingController();
+  final taxController = TextEditingController();
+  final discountController = TextEditingController();
 
   bool productAdded = false;
   Product product;
@@ -41,98 +43,42 @@ class _ProductDetailState extends State<ProductDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Container(
-        decoration: BoxDecoration(
-            color: Color(0xFFFFFFFFF),
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-        child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                SizedBox(
-                  height: 1,
-                ),
-                RawMaterialButton(
-                    padding: EdgeInsets.only(
-                        top: 60, bottom: 20, left: 10, right: 50),
-                    constraints: BoxConstraints.tightForFinite(),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Icon(
-                      Icons.close,
-                    ))
-              ],
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(21.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 9),
-                      Text(
-                        'Product description',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 13,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      AppTextFieldForm(
-                          controller: productDescController,
-                          validator: (val) {
-                            if (val.length < 4) {
-                              return "minimum length is 4 charaters";
-                            }
-                            return "";
-                          }),
-                      SizedBox(height: 22),
-                      Text(
-                        'Quantity',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 13,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      AppTextFieldForm(
-                        keyboardType: TextInputType.number,
-                        controller: quantityController,
-                      ),
-                      SizedBox(height: 22),
-                      Text(
-                        'Unit price',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 13,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      AppTextFieldForm(
-                        keyboardType: TextInputType.number,
-                        controller: unitPriceController,
-                      ),
-                      SizedBox(height: 15),
-                      productAdded
-                          ? Center(
-                              child: Text(
-                                product == null
-                                    ? 'Product added'
-                                    : 'Product edited',
+        backgroundColor: Colors.transparent,
+        body: Container(
+            decoration: BoxDecoration(
+                color: Color(0xFFFFFFFFF),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10))),
+            child: Column(children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  SizedBox(
+                    height: 1,
+                  ),
+                  RawMaterialButton(
+                      padding: EdgeInsets.only(
+                          top: 60, bottom: 20, left: 10, right: 50),
+                      constraints: BoxConstraints.tightForFinite(),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Icon(
+                        Icons.close,
+                      ))
+                ],
+              ),
+              Expanded(
+                  child: SingleChildScrollView(
+                      child: Padding(
+                          padding: const EdgeInsets.all(21.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              SizedBox(height: 9),
+                              Text(
+                                'Product description',
                                 style: TextStyle(
                                   fontFamily: 'Montserrat',
                                   fontWeight: FontWeight.normal,
@@ -141,57 +87,157 @@ class _ProductDetailState extends State<ProductDetail> {
                                   color: Color.fromRGBO(0, 0, 0, 0.6),
                                 ),
                               ),
-                            )
-                          : SizedBox(),
-                      SizedBox(height: 20),
-                      SubmitButton(
-                        title: 'Add',
-                        backgroundColor: Color(0xFF0B57A7),
-                        onPressed: () {
-                          try {
-                            widget.onSubmit(
-                              Product(
-                                id: productDescController.text.substring(1, 4) +
-                                    (Random().nextInt(99) + 10).toString(),
-                                productDesc: productDescController.text,
-                                quantity: int.parse(quantityController.text),
-                                unitPrice:
-                                    double.parse(unitPriceController.text),
-                                amount: int.parse(quantityController.text) *
-                                    int.parse(unitPriceController.text),
+                              SizedBox(height: 5),
+                              AppTextFieldForm(
+                                  controller: productDescController,
+                                  validator: (val) {
+                                    if (val.length < 4) {
+                                      return "minimum length is 4 charaters";
+                                    }
+                                    return "";
+                                  }),
+                              SizedBox(height: 22),
+                              Text(
+                                'Quantity',
+                                style: TextStyle(
+                                  fontFamily: 'Montserrat',
+                                  fontWeight: FontWeight.normal,
+                                  letterSpacing: 0.3,
+                                  fontSize: 13,
+                                  color: Color.fromRGBO(0, 0, 0, 0.6),
+                                ),
                               ),
-                            );
-                            setState(() {
-                              productAdded = true;
-                              productDescController..text = "";
-                              quantityController..text = "";
-                              unitPriceController..text = "";
-                            });
-                            Future.delayed(
-                              Duration(seconds: 1),
-                              () {
-                                setState(() {
-                                  productAdded = false;
-                                  product = null;
-                                });
-                              },
-                            );
-                          } catch (e) {
-                            print(e);
-                          }
-                          // Navigator.pop(context);
-                        },
-                        textColor: Colors.white,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
+                              SizedBox(height: 5),
+                              AppTextFieldForm(
+                                keyboardType: TextInputType.number,
+                                controller: quantityController,
+                              ),
+                              SizedBox(height: 22),
+                              Text(
+                                'Unit price',
+                                style: TextStyle(
+                                  fontFamily: 'Montserrat',
+                                  fontWeight: FontWeight.normal,
+                                  letterSpacing: 0.3,
+                                  fontSize: 13,
+                                  color: Color.fromRGBO(0, 0, 0, 0.6),
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              AppTextFieldForm(
+                                keyboardType: TextInputType.number,
+                                controller: unitPriceController,
+                              ),
+                              SizedBox(height: 22),
+                              Text(
+                                'Tax',
+                                style: TextStyle(
+                                  fontFamily: 'Montserrat',
+                                  fontWeight: FontWeight.normal,
+                                  letterSpacing: 0.3,
+                                  fontSize: 13,
+                                  color: Color.fromRGBO(0, 0, 0, 0.6),
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              AppTextFieldForm(
+                                keyboardType: TextInputType.number,
+                                controller: taxController,
+                              ),
+                              SizedBox(height: 22),
+                              Text(
+                                'Discount',
+                                style: TextStyle(
+                                  fontFamily: 'Montserrat',
+                                  fontWeight: FontWeight.normal,
+                                  letterSpacing: 0.3,
+                                  fontSize: 13,
+                                  color: Color.fromRGBO(0, 0, 0, 0.6),
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              AppTextFieldForm(
+                                keyboardType: TextInputType.number,
+                                controller: discountController,
+                              ),
+                              productAdded
+                                  ? Center(
+                                child: Text(
+                                  product == null
+                                      ? 'Product added'
+                                      : 'Product edited',
+                                  style: TextStyle(
+                                    fontFamily: 'Montserrat',
+                                    fontWeight: FontWeight.normal,
+                                    letterSpacing: 0.3,
+                                    fontSize: 13,
+                                    color: Color.fromRGBO(0, 0, 0, 0.6),
+                                  ),
+                                ),
+                              ) : SizedBox(),
+                              SizedBox(height: 20),
+                              SubmitButton(
+                                title: 'Add',
+                                backgroundColor: Color(0xFF0B57A7),
+                                onPressed: () {
+                                  try {
+                                    widget.onSubmit(
+                                      Product(
+                                        id: productDescController.text
+                                            .substring(1, 4) +
+                                            (Random().nextInt(99) + 10)
+                                                .toString(),
+                                        productDesc: productDescController.text,
+                                        quantity: double.parse(
+                                            quantityController.text),
+                                        unitPrice: double.parse(
+                                            unitPriceController.text),
+                                        amount: (double.parse(
+                                            quantityController.text) *
+                                            double.parse(
+                                                unitPriceController.text)) +
+                                            (double.parse(taxController.text)) -
+                                            (double.parse(
+                                                discountController.text) /
+                                                100 *
+                                                (double.parse(quantityController
+                                                    .text) *
+                                                    double.parse(
+                                                        unitPriceController
+                                                            .text))),
+                                        tax: double.parse(taxController.text),
+                                        discount: double.parse(
+                                            discountController.text),
+                                      ),
+                                    );
+                                    setState(() {
+                                      productAdded = true;
+                                      productDescController..text = "";
+                                      quantityController..text = "";
+                                      unitPriceController..text = "";
+                                      taxController..text = "";
+                                      discountController..text = "";
+
+                                    });
+                                    Future.delayed(
+                                      Duration(seconds: 1),
+                                      () {
+                                        setState(() {
+                                          productAdded = false;
+                                          product = null;                                        });
+    });
+    },
     );
+                                  } catch (e) {
+                                    print(e);
+                                  }
+                                  // Navigator.pop(context);
+                                },
+                                textColor: Colors.white,
+                              )
+                            ],
+                          ))))
+            ])));
   }
 
   @override

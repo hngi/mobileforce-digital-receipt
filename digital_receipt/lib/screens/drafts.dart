@@ -143,7 +143,7 @@ class _DraftsState extends State<Drafts> {
         productDesc: e['name'],
         quantity: e['quantity'],
         unitPrice: e['unit_price'].toDouble(),
-        amount: (e['quantity'] * e['unit_price']).toInt(),
+        amount: (e['quantity'] * e['unit_price']),
       );
     });
     List<Product> products = List.from(prod);
