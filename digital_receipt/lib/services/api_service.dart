@@ -190,30 +190,21 @@ class ApiService {
       if (response.statusCode == 200) {
         var res = response.data["data"] as List;
         //print('res:::::: $res');
-        print('res: 0z');
+
 // checks if the length of draft is larger than 100 and checks for internet
         if (res.length >= 100 && connectivityResult) {
           List temp = res.getRange(0, 99).toList();
           await Provider.of<HiveDb>(context, listen: false).addDraft(temp);
-          print('res: 0');
+
           return Provider.of<HiveDb>(context, listen: false).getDraft();
         } else if (res.length < 100 && connectivityResult) {
-          // print('res: 6');
           await Provider.of<HiveDb>(context, listen: false).addDraft(res);
-          // print('hiveDb: ${hiveDb.getDraft()}');
+
           return Provider.of<HiveDb>(context, listen: false).getDraft();
         } else {
           print('res: 9');
           return Provider.of<HiveDb>(context, listen: false).getDraft();
         }
-
-        //hiveDb.addDraft(receipts);
-        // return draft_receipts;
-        /* } else {
-          return null;
-        } */
-
-        // return res;
       } else {
         return null;
       }
