@@ -62,7 +62,7 @@ class Receipt extends ChangeNotifier {
     this.products,
     this.total,
   });
-  static String _urlEndpoint = 'https://hng-degeit-receipt.herokuapp.com/v1';
+  static String _urlEndpoint = 'http://degeitreceipt.pythonanywhere.com/v1';
 
   factory Receipt.fromJson(Map<String, dynamic> json) {
     ReceiptCategory convertToEnum({@required string}) {

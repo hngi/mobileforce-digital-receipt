@@ -22,7 +22,7 @@ import 'package:digital_receipt/models/receipt.dart';
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
-  static String _urlEndpoint = "https://hng-degeit-receipt.herokuapp.com/v1";
+  static String _urlEndpoint = "http://degeitreceipt.pythonanywhere.com/v1";
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();
@@ -442,7 +442,7 @@ class ApiService {
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
       var resp = await http.get(
-          'https://hng-degeit-receipt.herokuapp.com/v1/business/user/all',
+          '$_urlEndpoint/business/user/all',
           headers: {"token": token});
       var result;
       resp.statusCode == 200
@@ -561,7 +561,6 @@ class ApiService {
     } else if (response.statusCode == 400) {
       return false;
     } else {
-      
       return null;
     }
   }
@@ -587,10 +586,10 @@ class ApiService {
           'token': token,
         },
       );
-  
-      print(jsonDecode(response.body)['data']);
 
-      dynamic res = jsonDecode(response.body)['data'] as List;
+      dynamic res = jsonDecode(response.body);
+
+       res = res['data'] as List;
 
       if (response.statusCode == 200) {
         print(response.statusCode);
@@ -601,15 +600,16 @@ class ApiService {
           },
         );
         if (res != null) {
-        print('resid: ${res['user']}');
-          await _sharedPreferenceService.addStringToSF('Business_ID', res['id']);
+          print('resid: ${res['user']}');
+          await _sharedPreferenceService.addStringToSF(
+              'Business_ID', res['id']);
           return AccountData(
             id: res['id'],
             name: res['name'],
             phone: res['phone_number'],
             address: res['address'],
             slogan: res['slogan'],
-            logo: 'https://hng-degeit-receipt.herokuapp.com${res['logo']}',
+            logo: 'http://degeitreceipt.pythonanywhere.com${res['logo']}',
             email: email,
           );
         }
