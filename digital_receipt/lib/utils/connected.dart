@@ -1,8 +1,9 @@
 import 'dart:async';
-import '../constant.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Connected with ChangeNotifier {
   final _controller = StreamController<bool>();

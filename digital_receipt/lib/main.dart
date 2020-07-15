@@ -128,7 +128,6 @@ class _ScreenControllerState extends State<ScreenController> {
   }
 
   initConnect() async {
-    var c;
     Provider.of<Connected>(context, listen: false).init();
     Provider.of<Connected>(context, listen: false).stream.listen((event) {
       print(event);
@@ -236,7 +235,7 @@ class _ScreenControllerState extends State<ScreenController> {
             // TODO Reverse if-condition to show OnBoarding
 
           } else if (snapshot.data[0] == 'empty' || _currentAutoLogoutStatus) {
-            return HomePage();
+            return LogInScreen();
           } else if (snapshot.hasData &&
               snapshot.data[0] != null &&
               snapshot.data[1] != null) {
