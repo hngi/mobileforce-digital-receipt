@@ -13,6 +13,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'currency_dropdown.dart';
+
 class CreateReceiptStep0 extends StatefulWidget {
   const CreateReceiptStep0({this.carouselController, this.carouselIndex});
 
@@ -38,10 +40,11 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
   final TextEditingController _pNumberController = TextEditingController();
   ReceiptCategory selectedCategory;
   Customer selectedCustomer;
+  Currency selectedCurrency;
 
   // Needed to decide weather to create a new customer or not
   List<Customer> customers = [];
-
+List<Currency> currency = Currency.currencyList();
   String _customerName, _customerEmail, _customerAddress, _customerPNumber;
 
   setCustomer() async {
@@ -549,48 +552,97 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               SizedBox(
                 height: 25,
               ),
-                DropdownButtonFormField(
-                items: Currency.currencyList().map<DropdownMenuItem<Currency>>((curr) => DropdownMenuItem(value: curr, child: Row(children: <Widget>[
-                  Text(curr.flag),
-                  SizedBox(width:7),
-                  Text(curr.currencyName),
-                  SizedBox(width:7),
-                  Text(curr.currencySymbol),
-                ],),
-                )).toList(),
-                onChanged: (Currency currency) {
-                  _changeCurrency(currency);
-                                  },
-                                  iconDisabledColor: Color.fromRGBO(0, 0, 0, 0.87),
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.all(15),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      borderSide: BorderSide(
-                                        color: Color(0xFFC8C8C8),
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(),
-                                    //hintText: hintText,
-                                    hintStyle: TextStyle(
-                                      color: Color(0xFF979797),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: 'Montserrat',
-                                    ),
-                                  ),
-                                  hint: Text(
-                                    'Select currency',
-                                    style: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.w500,
-                                      letterSpacing: 0.3,
-                                      fontSize: 14,
-                                      color: Color(0xFF1B1B1B),
-                                    ),
-                                  ),
-                                ), 
+
+
+             
+              
+              GestureDetector(
+                onTap: () async {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CurrencyDropdown(
+                        currency: currency,
+                        onSubmit: (currency) {
+                          setState(() {
+                            selectedCurrency = currency;
+                          });
+                        },
+                      );
+                    },
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Color(0xFFC8C8C8),
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(5.0)),
+                  padding: EdgeInsets.symmetric(horizontal: 13, vertical: 14),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        selectedCurrency != null
+                            ? selectedCurrency.currencyName
+                            : 'Select Currency',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.3,
+                          fontSize: 13,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Spacer(),
+                      Icon(Icons.arrow_drop_down),
+                    ],
+                  ),
+                ),
+              ),
+             
+                // DropdownButtonFormField(
+                // items: Currency.currencyList().map<DropdownMenuItem<Currency>>((curr) => DropdownMenuItem(value: curr, child: Row(children: <Widget>[
+                //   Text(curr.flag),
+                //   SizedBox(width:7),
+                //   Text(curr.currencyName),
+                //   SizedBox(width:7),
+                //   Text(curr.currencySymbol),
+                // ],),
+                // )).toList(),
+                // onChanged: (Currency currency) {
+                //   _changeCurrency(currency);
+                //                   },
+                //                   iconDisabledColor: Color.fromRGBO(0, 0, 0, 0.87),
+                //                   decoration: InputDecoration(
+                //                     contentPadding: EdgeInsets.all(15),
+                //                     enabledBorder: OutlineInputBorder(
+                //                       borderRadius: BorderRadius.circular(5),
+                //                       borderSide: BorderSide(
+                //                         color: Color(0xFFC8C8C8),
+                //                         width: 1.5,
+                //                       ),
+                //                     ),
+                //                     focusedBorder: OutlineInputBorder(),
+                //                     //hintText: hintText,
+                //                     hintStyle: TextStyle(
+                //                       color: Color(0xFF979797),
+                //                       fontSize: 14,
+                //                       fontWeight: FontWeight.w500,
+                //                       fontFamily: 'Montserrat',
+                //                     ),
+                //                   ),
+                //                   hint: Text(
+                //                     'Select currency',
+                //                     style: TextStyle(
+                //                       fontFamily: 'Montserrat',
+                //                       fontWeight: FontWeight.w500,
+                //                       letterSpacing: 0.3,
+                //                       fontSize: 14,
+                //                       color: Color(0xFF1B1B1B),
+                //                     ),
+                //                   ),
+                //                 ), 
                                 SizedBox(
                                   height: 45,
                                 ),
@@ -599,11 +651,14 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                                   textColor: Colors.white,
                                   backgroundColor: Color(0xFF0B57A7),
                                   onPressed: () {
-                                    if (_formKey.currentState.validate()) {
+                                    if (_formKey.currentState.validate() && selectedCurrency  != null) {
                                       _formKey.currentState.save();
                   
                                       Provider.of<Receipt>(context, listen: false)
                                           .setCategory(selectedCategory);
+
+                                      Provider.of<Receipt>(context, listen: false)
+                                          .setCurrency(selectedCurrency);
                   
                                       if (selectedCustomer == null) {
                                         Provider.of<Receipt>(context, listen: false).setCustomer(
@@ -765,7 +820,4 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                       );
                     }
                   
-                    void _changeCurrency(Currency currency) {
-                      print(currency.currencyName);
-                    }
 }

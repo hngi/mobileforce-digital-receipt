@@ -233,7 +233,7 @@ class _ScreenControllerState extends State<ScreenController> {
             // TODO Reverse if-condition to show OnBoarding
 
           } else if (snapshot.data[0] == 'empty' || _currentAutoLogoutStatus) {
-            return LogInScreen();
+            return HomePage();
           } else if (snapshot.hasData &&
               snapshot.data[0] != null &&
               snapshot.data[1] != null) {
@@ -242,6 +242,7 @@ class _ScreenControllerState extends State<ScreenController> {
             return Setup();
           } else {
             return OnboardingPage();
+             
           }
         });
   }

@@ -1,21 +1,21 @@
 import 'package:digital_receipt/constant.dart';
+import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/widgets/contact_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/create_receipt_step0.dart';
 
-class CustomerDropdown extends StatelessWidget {
-  const CustomerDropdown({
-    this.customers,
+class CurrencyDropdown extends StatelessWidget {
+  const CurrencyDropdown({
+    this.currency,
     this.onSubmit,
   });
-  final List customers; 
+  final List currency;
   final Function onSubmit;
-
+  // List<Currency> currency = Currency.currencyList();
   @override
   Widget build(BuildContext context) {
-    List<Customer> customers = Provider.of<Customer>(context).customerList;
     return SizedBox(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -42,10 +42,10 @@ class CustomerDropdown extends StatelessWidget {
                     TextFormField(
                       onChanged: (val) {
                         //print('jhj');
-                        Provider.of<Customer>(context, listen: false).searchCustomerList(val);
+                        searchCurrencyList(val);
                       },
                       decoration: InputDecoration(
-                        hintText: "Search customer",
+                        hintText: "Search currency",
                         hintStyle: TextStyle(
                             color: Color.fromRGBO(0, 0, 0, 0.38),
                             fontFamily: 'Montserrat'),
@@ -72,49 +72,24 @@ class CustomerDropdown extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 20),
-                    customers.isEmpty
-                        ? Expanded(
-                            child: Column(
-                            children: <Widget>[
-                              Expanded(
-                                child: kEmpty,
-                              ),
-                              SizedBox(
-                                height: 30,
-                              ),
-                              Text(
-                                "You have not added any customer!",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 16,
-                                  letterSpacing: 0.3,
-                                  color: Color.fromRGBO(0, 0, 0, 0.87),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                            ],
-                          ))
-                        : Expanded(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: customers.length,
-                              itemBuilder: (context, index) {
-                                return InkWell(
-                                  onTap: () {
-                                    onSubmit(customers[index]);
-                                    Navigator.pop(context);
-                                  },
-                                  child: ContactCard(
-                                    receiptTitle: customers[index].name,
-                                    subtitle: customers[index].phoneNumber,
-                                  ),
-                                );
-                              },
+                    Expanded(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: currency.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              onSubmit(currency[index]);
+                              Navigator.pop(context);
+                            },
+                            child: ListTile(
+                              leading: Text(currency[index].flag),
+                              title: Text(currency[index].currencyName),
                             ),
-                          ),
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -123,5 +98,13 @@ class CustomerDropdown extends StatelessWidget {
         ),
       ),
     );
+  }
+      searchCurrencyList(String val) {
+    //print(_customerList[0].name.contains(val));
+    currency
+        .where((e) => e.name.toLowerCase().contains(val.toLowerCase()))
+        .toList();
+    print('ok: $currency');
+    // print('kkk: $tempCustomerLi');
   }
 }
