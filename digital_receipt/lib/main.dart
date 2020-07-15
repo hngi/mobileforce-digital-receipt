@@ -49,6 +49,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 
   }
 }
+
 // DevicePreview(
 //       builder: (_) => MyApp(),
 //       enabled: !kReleaseMode,
@@ -138,7 +139,7 @@ class _ScreenControllerState extends State<ScreenController> {
   @override
   void initState() {
     super.initState();
-   // initConnect();
+    // initConnect();
 
     initSharedPreferenceDb();
     getCurrentAutoLogoutStatus();
