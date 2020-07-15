@@ -132,13 +132,11 @@ class _ScreenControllerState extends State<ScreenController> {
     print('id: $id');
   }
 
- 
-
   @override
   void initState() {
     super.initState();
     initConnect();
-    
+
     initSharedPreferenceDb();
     getCurrentAutoLogoutStatus();
 
@@ -200,7 +198,6 @@ class _ScreenControllerState extends State<ScreenController> {
         //INSERTING NOTIFICATION TO SQFLITE DB
       },
       onResume: (Map<String, dynamic> message) async {
-        
         print("onResume: $message");
 
         //INSERTING NOTIFICATION TO SQFLITE DB
@@ -249,5 +246,3 @@ class _ScreenControllerState extends State<ScreenController> {
         });
   }
 }
-
-

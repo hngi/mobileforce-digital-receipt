@@ -154,7 +154,8 @@ class _LogInScreenState extends State<LogInScreen> {
                       Validators.patternRegExp(kOneDigitRegex,
                           'Password should contain at least a Digit'),
                       Validators.patternRegExp(kOneSpecialCharRegex,
-                          'Special Character eg.(\$\%#&@)')
+                          'Special Character eg.(\$\ % # & @ _ ^)')
+                          
                     ]),
                     style: TextStyle(
                       color: Color(0xFF2B2B2B),
