@@ -204,7 +204,7 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
                     address: res['data']['address'],
                     slogan: res['data']['slogan'],
                     logo:
-                        'https://hng-degeit-receipt.herokuapp.com${res['data']['logo']}',
+                        'http://degeitreceipt.pythonanywhere.com${res['data']['logo']}',
                     email: email,
                   );
                   setState(() {

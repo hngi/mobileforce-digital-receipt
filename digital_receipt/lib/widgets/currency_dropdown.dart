@@ -45,7 +45,7 @@ class CurrencyDropdown extends StatelessWidget {
                         searchCurrencyList(val);
                       },
                       decoration: InputDecoration(
-                        hintText: "Search customer",
+                        hintText: "Search currency",
                         hintStyle: TextStyle(
                             color: Color.fromRGBO(0, 0, 0, 0.38),
                             fontFamily: 'Montserrat'),
