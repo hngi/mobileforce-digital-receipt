@@ -51,7 +51,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
       ..onTap = () {
         Navigator.pop(context);
       };
-    errorController = StreamController<ErrorAnimationType>();
+    errorController = StreamController<ErrorAnimationType>.broadcast();
     super.initState();
   }
 
@@ -251,37 +251,52 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                 setState(() {
                                   isLoading = true;
                                 });
-                                String response =
+                                print('im res');
+                                var response =
                                     await _apiService.otpVerification(
                                         widget.email,
                                         widget.password,
                                         widget.name);
-                                var res = jsonDecode(response);
-                                print(res['data']['otp']);
-                                var otp = res['data']['otp'];
-                                Fluttertoast.showToast(
-                                    msg: 'OTP sent successfully',
-                                    toastLength: Toast.LENGTH_LONG,
-                                    gravity: ToastGravity.BOTTOM,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.green[600],
-                                    textColor: Colors.white,
-                                    fontSize: 13.0);
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            PinCodeVerificationScreen(
-                                                otp: otp,
-                                                email: widget.email,
-                                                password: widget.password,
-                                                name: widget.name)));
+                                var res = jsonDecode(response.body);
+                                if (response.statusCode == 200) {
+                                  var otp = res['data']['otp'];
+                                  Fluttertoast.showToast(
+                                      msg: 'OTP sent successfully',
+                                      toastLength: Toast.LENGTH_LONG,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.green[600],
+                                      textColor: Colors.white,
+                                      fontSize: 13.0);
+
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PinCodeVerificationScreen(
+                                                  otp: otp,
+                                                  email: widget.email,
+                                                  password: widget.password,
+                                                  name: widget.name)));
+                                } else {
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                  Fluttertoast.showToast(
+                                      msg: '${res.error}',
+                                      toastLength: Toast.LENGTH_LONG,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.green[600],
+                                      textColor: Colors.white,
+                                      fontSize: 13.0);
+                                }
                               } catch (error) {
                                 setState(() {
                                   isLoading = false;
                                 });
                                 Fluttertoast.showToast(
-                                    msg: 'error occured',
+                                    msg: 'An error occurred',
                                     toastLength: Toast.LENGTH_LONG,
                                     gravity: ToastGravity.BOTTOM,
                                     timeInSecForIosWeb: 1,
