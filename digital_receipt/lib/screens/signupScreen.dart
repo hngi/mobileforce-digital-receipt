@@ -1,14 +1,15 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:digital_receipt/screens/otp_auth.dart';
 import 'package:digital_receipt/screens/setup.dart';
-import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:digital_receipt/widgets/loading.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/screens/home_page.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 import '../services/api_service.dart';
 import 'no_internet_connection.dart';
@@ -21,313 +22,332 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  bool isLoading = false;
+  bool isloading = false;
   bool passwordVisible = false;
   var _formKey = GlobalKey<FormState>();
   var _email, _password, _name;
+  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    clientId:
+        "555414249433-qg0gt6hv2assajrufmcgtpi1bu3u02ts.apps.googleusercontent.com",
+    scopes: <String>[
+      'profile',
+      'email',
+    ],
+  );
 
   ApiService _apiService = ApiService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xffF2F8FF),
+        elevation: 0,
+        iconTheme: IconThemeData(color: Color(0xFF0B57A7)),
+      ),
       backgroundColor: Color(0xffF2F8FF),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(16, 0, 16, 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  height: 40,
-                ),
-                Container(
-                  height: 50,
-                  child: kLogo1,
-                ),
-                SizedBox(height: 40.0),
-                Text(
-                  "Sign Up",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Montserrat',
-                    letterSpacing: 0.03,
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  "Create an account",
-                  style: TextStyle(
-                    color: Color(0xff606060),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w300,
-                    fontFamily: 'Montserrat',
-                  ),
-                ),
-                SizedBox(
-                  height: 22,
-                ),
-                Form(
-                  key: _formKey,
+        child: isloading == true
+            ? LoadingIndicator()
+            : SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 0, 16, 16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
+                      SizedBox(
+                        height: 40,
+                      ),
+                      Container(
+                        height: 50,
+                        child: kLogo1,
+                      ),
+                      SizedBox(height: 40.0),
                       Text(
-                        "Name",
+                        "Sign Up",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Montserrat',
+                          letterSpacing: 0.03,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "Create an account",
                         style: TextStyle(
                           color: Color(0xff606060),
-                          fontSize: 13,
-                          fontWeight: FontWeight.normal,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w300,
                           fontFamily: 'Montserrat',
                         ),
                       ),
                       SizedBox(
-                        height: 5,
+                        height: 22,
                       ),
-                      TextFormField(
-                        keyboardType: TextInputType.text,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(
-                              color: Color(0xFFC8C8C8),
-                              width: 1,
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "Name",
+                              style: TextStyle(
+                                color: Color(0xff606060),
+                                fontSize: 13,
+                                fontWeight: FontWeight.normal,
+                                fontFamily: 'Montserrat',
+                              ),
                             ),
-                          ),
-                          focusedBorder: OutlineInputBorder(),
-                        ),
-                        validator: Validators.compose([
-                          Validators.required('Input Name'),
-                          Validators.patternRegExp(RegExp(r"^[A-Z a-z]+$"),
-                              'Only alphabets are allowed'),
-                          Validators.minLength(
-                              3, 'Minimum of 3 characters required for Name'),
-                        ]),
-                        onSaved: (value) {
-                          setState(() {
-                            _name = value;
-                          });
-                        },
-                      ),
-                      SizedBox(height: 22),
-                      Text(
-                        "Email Address",
-                        style: TextStyle(
-                          color: Color(0xff606060),
-                          fontSize: 13,
-                          fontWeight: FontWeight.normal,
-                          fontFamily: 'Montserrat',
+                            SizedBox(
+                              height: 5,
+                            ),
+                            TextFormField(
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(15),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC8C8C8),
+                                    width: 1,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(),
+                              ),
+                              validator: Validators.compose([
+                                Validators.required('Input Name'),
+                                Validators.patternRegExp(
+                                    RegExp(r"^[A-Z a-z]+$"),
+                                    'Only alphabets are allowed'),
+                                Validators.minLength(3,
+                                    'Minimum of 3 characters required for Name'),
+                              ]),
+                              onSaved: (value) {
+                                setState(() {
+                                  _name = value;
+                                });
+                              },
+                            ),
+                            SizedBox(height: 22),
+                            Text(
+                              "Email Address",
+                              style: TextStyle(
+                                color: Color(0xff606060),
+                                fontSize: 13,
+                                fontWeight: FontWeight.normal,
+                                fontFamily: 'Montserrat',
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            TextFormField(
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(15),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC8C8C8),
+                                    width: 1,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(),
+                              ),
+                              validator: Validators.compose([
+                                Validators.required('Input Email Address'),
+                                Validators.email('Invalid Email Address'),
+                              ]),
+                              onSaved: (value) {
+                                setState(() {
+                                  _email = value;
+                                });
+                              },
+                            ),
+                            SizedBox(height: 22),
+                            Text(
+                              "Password",
+                              style: TextStyle(
+                                color: Color(0xFF2B2B2B),
+                                fontSize: 13,
+                                fontWeight: FontWeight.normal,
+                                fontFamily: 'Montserrat',
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            TextFormField(
+                              obscureText: !passwordVisible ? true : false,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(15),
+                                suffixIcon: IconButton(
+                                  icon: passwordVisible
+                                      ? Icon(Icons.remove_red_eye)
+                                      : Icon(Icons.visibility_off),
+                                  color: Colors.grey,
+                                  onPressed: () {
+                                    setState(() =>
+                                        passwordVisible = !passwordVisible);
+                                  },
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC8C8C8),
+                                    width: 1,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(),
+                              ),
+                              validator: Validators.compose([
+                                Validators.required('Input Password'),
+                                Validators.minLength(8,
+                                    'Minimum of 8 characters required for Password'),
+                                Validators.patternRegExp(kOneUpperCaseRegex,
+                                    'Password should contain at least an Uppercase letter'),
+                                Validators.patternRegExp(kOneLowerCaseRegex,
+                                    'Password should contain at least a Lowercase letter'),
+                                Validators.patternRegExp(kOneDigitRegex,
+                                    'Password should contain at least a Digit'),
+                                Validators.patternRegExp(kOneSpecialCharRegex,
+                                    'Special Character eg.(\$\ % # & @ _ ^)')
+                              ]),
+                              onSaved: (value) {
+                                setState(() {
+                                  _password = value;
+                                });
+                              },
+                            ),
+                          ],
                         ),
                       ),
                       SizedBox(
-                        height: 5,
+                        height: 25,
                       ),
-                      TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(
-                              color: Color(0xFFC8C8C8),
-                              width: 1,
-                            ),
+                      Center(
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            text: 'By signing in you agree to our \n',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                letterSpacing: 0.02,
+                                fontWeight: FontWeight.w300,
+                                fontFamily: 'Montserrat',
+                                height: 1.51),
+                            children: [
+                              TextSpan(
+                                text: 'terms of service',
+                                style: TextStyle(
+                                  color: Color(0xFF25CCB3),
+                                  fontSize: 14,
+                                  letterSpacing: 0.02,
+                                  fontWeight: FontWeight.w300,
+                                  fontFamily: 'Montserrat',
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' and ',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  letterSpacing: 0.02,
+                                  fontWeight: FontWeight.w300,
+                                  fontFamily: 'Montserrat',
+                                ),
+                              ),
+                              TextSpan(
+                                text: 'privacy policy',
+                                style: TextStyle(
+                                  color: Color(0xFF25CCB3),
+                                  fontSize: 14,
+                                  letterSpacing: 0.02,
+                                  fontWeight: FontWeight.w300,
+                                  fontFamily: 'Montserrat',
+                                ),
+                              ),
+                            ],
                           ),
-                          focusedBorder: OutlineInputBorder(),
-                        ),
-                        validator: Validators.compose([
-                          Validators.required('Input Email Address'),
-                          Validators.email('Invalid Email Address'),
-                        ]),
-                        onSaved: (value) {
-                          setState(() {
-                            _email = value;
-                          });
-                        },
-                      ),
-                      SizedBox(height: 22),
-                      Text(
-                        "Password",
-                        style: TextStyle(
-                          color: Color(0xFF2B2B2B),
-                          fontSize: 13,
-                          fontWeight: FontWeight.normal,
-                          fontFamily: 'Montserrat',
                         ),
                       ),
                       SizedBox(
-                        height: 5,
+                        height: 20,
                       ),
-                      TextFormField(
-                        obscureText: !passwordVisible ? true : false,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          suffixIcon: IconButton(
-                            icon: passwordVisible
-                                ? Icon(Icons.remove_red_eye)
-                                : Icon(Icons.visibility_off),
-                            color: Colors.grey,
-                            onPressed: () {
-                              setState(
-                                  () => passwordVisible = !passwordVisible);
-                            },
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(
-                              color: Color(0xFFC8C8C8),
-                              width: 1,
+                      button(
+                          name: "Sign Up",
+                          textColor: Colors.white,
+                          buttonColor: Color(0xFF0B57A7),
+                          height: 45,
+                          onPressed: () {}),
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 14.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Expanded(
+                              flex: 2,
+                              child: Divider(
+                                thickness: 1.0,
+                              ),
                             ),
-                          ),
-                          focusedBorder: OutlineInputBorder(),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                'OR',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Divider(
+                                thickness: 1.0,
+                              ),
+                            ),
+                          ],
                         ),
-                        validator: Validators.compose([
-                          Validators.required('Input Password'),
-                          Validators.minLength(8,
-                              'Minimum of 8 characters required for Password'),
-                          Validators.patternRegExp(kOneUpperCaseRegex,
-                              'Password should contain at least an Uppercase letter'),
-                          Validators.patternRegExp(kOneLowerCaseRegex,
-                              'Password should contain at least a Lowercase letter'),
-                          Validators.patternRegExp(kOneDigitRegex,
-                              'Password should contain at least a Digit'),
-                          Validators.patternRegExp(kOneSpecialCharRegex,
-                              'Special Character eg.(\$\%#&@)')
-                        ]),
-                        onSaved: (value) {
-                          setState(() {
-                            _password = value;
-                          });
-                        },
                       ),
+                      Platform.isIOS
+                          ? Column(
+                              children: <Widget>[
+                                button(
+                                    name: "Sign in with Apple",
+                                    textColor: Color(0xffE5E5E5),
+                                    iconPath: "assets/logos/apple-logo.png",
+                                    buttonColor: Color(0xff121212)),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                              ],
+                            )
+                          : SizedBox.shrink(),
+                      button(
+                          name: "Sign in with Google",
+                          textColor: Color(0xff121212),
+                          iconPath: "assets/logos/google-logo.png",
+                          buttonColor: Color(0xffF2F8FF),
+                          border: true,
+                          onPressed: () {
+                            googleSignup();
+                          }),
+                      // SizedBox(
+                      //   height: 20,
+                      // ),
+                      // button(
+                      //     name: "Sign in with Facebook",
+                      //     textColor: Color(0xffE5E5E5),
+                      //     iconPath: "assets/logos/facebook.png",
+                      //     buttonColor: Color(0xFF3b5998)),
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 25,
-                ),
-                Center(
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      text: 'By signing in you agree to our \n',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14,
-                          letterSpacing: 0.02,
-                          fontWeight: FontWeight.w300,
-                          fontFamily: 'Montserrat',
-                          height: 1.51),
-                      children: [
-                        TextSpan(
-                          text: 'terms of service',
-                          style: TextStyle(
-                            color: Color(0xFF25CCB3),
-                            fontSize: 14,
-                            letterSpacing: 0.02,
-                            fontWeight: FontWeight.w300,
-                            fontFamily: 'Montserrat',
-                          ),
-                        ),
-                        TextSpan(
-                          text: ' and ',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            letterSpacing: 0.02,
-                            fontWeight: FontWeight.w300,
-                            fontFamily: 'Montserrat',
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'privacy policy',
-                          style: TextStyle(
-                            color: Color(0xFF25CCB3),
-                            fontSize: 14,
-                            letterSpacing: 0.02,
-                            fontWeight: FontWeight.w300,
-                            fontFamily: 'Montserrat',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                button(
-                    name: "Sign Up",
-                    textColor: Colors.white,
-                    buttonColor: Color(0xFF0B57A7),
-                    height: 45,
-                    onPressed: () {}),
-                // Container(
-                //   padding: EdgeInsets.symmetric(vertical: 14.0),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //     children: <Widget>[
-                //       Expanded(
-                //         flex: 2,
-                //         child: Divider(
-                //           thickness: 1.0,
-                //         ),
-                //       ),
-                //       Padding(
-                //         padding:
-                //             const EdgeInsets.symmetric(horizontal: 8.0),
-                //         child: Text(
-                //           'OR',
-                //           style: TextStyle(color: Colors.grey),
-                //         ),
-                //       ),
-                //       Expanded(
-                //         flex: 2,
-                //         child: Divider(
-                //           thickness: 1.0,
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                // Platform.isIOS
-                //     ? Column(
-                //         children: <Widget>[
-                //           button(
-                //               name: "Sign in with Apple",
-                //               textColor: Color(0xffE5E5E5),
-                //               iconPath: "assets/logos/apple-logo.png",
-                //               buttonColor: Color(0xff121212)),
-                //           SizedBox(
-                //             height: 20,
-                //           ),
-                //         ],
-                //       )
-                //     : SizedBox.shrink(),
-                // button(
-                //   name: "Sign in with Google",
-                //   textColor: Color(0xff121212),
-                //   iconPath: "assets/logos/google-logo.png",
-                //   buttonColor: Color(0xffF2F8FF),
-                //   border: true,
-                // ),
-                // SizedBox(
-                //   height: 20,
-                // ),
-                // button(
-                //     name: "Sign in with Facebook",
-                //     textColor: Color(0xffE5E5E5),
-                //     iconPath: "assets/logos/facebook.png",
-                //     buttonColor: Color(0xFF3b5998)),
-              ],
-            ),
-          ),
-        ),
+              ),
       ),
     );
   }
@@ -354,26 +374,35 @@ class _SignupScreenState extends State<SignupScreen> {
               : BorderSide(color: buttonColor, width: 0),
         ),
         onPressed: () {
-          if (isLoading == false && _formKey.currentState.validate()) {
-            signupUser();
+          // setState(() => isloading = true);
+          if (name == "Sign in with Google") {
+            onPressed();
+          } else if (_formKey.currentState.validate()) {
+            onPressed == "" ? dont() : signupUser();
           }
         },
-        child: isLoading
-            ? ButtonLoadingIndicator(
-                color: Colors.white,
-                width: 20,
-                height: 20,
-              )
-            : Text(
-                'Sign Up',
+        child: Padding(
+          padding: EdgeInsets.all(12.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              iconPath == ""
+                  ? Container()
+                  : Padding(
+                      padding: EdgeInsets.only(right: 8.0),
+                      child: Image.asset("$iconPath", height: 25),
+                    ),
+              Text(
+                "$name",
                 style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Montserrat',
+                  color: textColor,
                   fontSize: 16,
-                  letterSpacing: 0.3,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -381,13 +410,13 @@ class _SignupScreenState extends State<SignupScreen> {
   signupUser() async {
     _formKey.currentState.save();
     setState(() {
-      isLoading = true;
+      isloading = true;
     });
-
+    print('im res');
     var response = await _apiService.otpVerification(_email, _password, _name);
+    var res = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      var res = jsonDecode(response.body);
       var otp = res['data']['otp'];
       Navigator.pushReplacement(
         context,
@@ -402,9 +431,8 @@ class _SignupScreenState extends State<SignupScreen> {
       );
     } else if (response.statusCode == 400) {
       setState(() {
-        isLoading = false;
+        isloading = false;
       });
-      var res = jsonDecode(response.body);
       var error = res['error'];
       Fluttertoast.showToast(
         msg: error,
@@ -414,8 +442,64 @@ class _SignupScreenState extends State<SignupScreen> {
       );
     } else {
       setState(() {
-        isLoading = false;
+        isloading = false;
       });
+      Fluttertoast.showToast(
+        msg: 'Sorry an error occured try again',
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red,
+      );
+    }
+  }
+
+  googleSignup() async {
+    try {
+      final googleUser = await _googleSignIn.signIn();
+      print("Passed");
+      if (googleUser == null) {
+        Fluttertoast.showToast(
+          msg: 'Sign In operation cancelled by user',
+          fontSize: 12,
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.red,
+        );
+        return;
+      } else {
+        print("oKAY");
+      }
+
+      final googleAuthentication = await googleUser.authentication;
+      print(googleUser.email);
+
+      final authCredential = GoogleAuthProvider.getCredential(
+        idToken: googleAuthentication.idToken,
+        accessToken: googleAuthentication.accessToken,
+      );
+      await _firebaseAuth.signInWithCredential(authCredential);
+      var response = await _apiService.googleSignup(
+          googleAuthentication.accessToken, googleUser.email);
+      if (response == "true") {
+        print("Successfull!");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Setup(),
+          ),
+        );
+      } else {
+        print(response);
+        Fluttertoast.showToast(
+          msg: 'Sorry an error occured try again',
+          fontSize: 12,
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.red,
+        );
+        return;
+      }
+    } on PlatformException catch (e) {
+      print(e.message.toString());
+      // return left(const AuthFailure.serverError());
       Fluttertoast.showToast(
         msg: 'Sorry an error occured try again',
         fontSize: 12,
