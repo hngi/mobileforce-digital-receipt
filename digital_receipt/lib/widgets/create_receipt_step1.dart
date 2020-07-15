@@ -3,7 +3,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/product_detail.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
@@ -135,7 +137,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                         });
 
                         ////////////////////////////
-                        
+
                         // int total = pro.fold(0, (p, c) => p+c);
                         // print('total: $total');
                       },
@@ -410,6 +412,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
               height: 55,
             ),
             SubmitButton(
+
               onPressed: () {
                 if (products.length == 0) {
                   Fluttertoast.showToast(
@@ -420,6 +423,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   );
                 }else{
                   num sum = 0;
+
                 for (num e in pro) {
                   sum += e;
                 }

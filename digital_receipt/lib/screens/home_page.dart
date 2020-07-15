@@ -1,4 +1,6 @@
 import 'package:digital_receipt/screens/dashboard.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +25,17 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButton: SafeArea(
         child: FloatingActionButton(
-          onPressed: () {
+          onPressed: () async {
+            var connected = await Connected().checkInternet();
+            if (!connected) {
+              await showDialog(
+                context: context,
+                builder: (context) {
+                  return NoInternet();
+                },
+              );
+              return;
+            }
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => CreateReceiptPage()));
           },

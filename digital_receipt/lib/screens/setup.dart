@@ -2,12 +2,15 @@ import 'dart:io';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import 'no_internet_connection.dart';
 
 class Setup extends StatefulWidget {
   @override
@@ -138,7 +141,7 @@ class _SetupState extends State<Setup> {
               ),
             ),
           ),
-            validator: (value) {
+          validator: (value) {
             if (value.isEmpty) {
               return 'Business slogan empty';
             }
@@ -380,7 +383,19 @@ class _SetupState extends State<Setup> {
                         setState(() {
                           loading = true;
                         });
-
+                        var connected = await Connected().checkInternet();
+                        if (!connected) {
+                          await showDialog(
+                            context: context,
+                            builder: (context) {
+                              return NoInternet();
+                            },
+                          );
+                          setState(() {
+                            loading = false;
+                          });
+                          return;
+                        }
                         var token = await _sharedPreferenceService
                             .getStringValuesSF('AUTH_TOKEN');
 

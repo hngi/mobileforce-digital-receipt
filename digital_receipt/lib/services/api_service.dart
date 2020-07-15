@@ -5,6 +5,7 @@ import 'package:connectivity/connectivity.dart';
 
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/notification.dart';
+import 'package:digital_receipt/utils/connected.dart';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
@@ -12,6 +13,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive/hive.dart';
 import 'device_info_service.dart';
 import 'shared_preference_service.dart';
 import 'package:http/http.dart' as http;
@@ -65,10 +67,10 @@ class ApiService {
       }
 
       try {
-        print(email_address);
-        print(password);
-        print(fcmToken);
-        print(deviceType);
+        //print(email_address);
+        //print(password);
+        //print(fcmToken);
+        //print(deviceType);
         Response response = await _dio.post(
           "/user/login",
           data: {
@@ -98,16 +100,16 @@ class ApiService {
           _sharedPreferenceService.addStringToSF("AUTH_TOKEN", auth_token);
           _sharedPreferenceService.addStringToSF("EMAIL", email_address);
           //
-          print("token :");
-          print(auth_token);
-          print(userId);
+          //print("token :");
+          //print(auth_token);
+          //print(userId);
           return "true";
         } else {
-          print(response.data);
+          //print(response.data);
           return response.data["error"];
         }
       } on DioError catch (error) {
-        print(error);
+        //print(error);
       }
     } else {
       return Future.error('No network Connection');
@@ -575,10 +577,10 @@ class ApiService {
 
     var email = await _sharedPreferenceService.getStringValuesSF('EMAIL');
 
-    var connectivityResult = await (Connectivity().checkConnectivity());
+    var connectivityResult = await Connected().checkInternet();
 
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    print(connectivityResult);
+    if (connectivityResult) {
       var response = await http.get(
         url,
         headers: <String, String>{
@@ -599,7 +601,7 @@ class ApiService {
           },
         );
         if (res != null) {
-          print('resid: ${res['user']}');
+          print('resid: {res}');
           await _sharedPreferenceService.addStringToSF(
               'Business_ID', res['id']);
           return AccountData(
@@ -611,24 +613,47 @@ class ApiService {
             logo: 'http://degeitreceipt.pythonanywhere.com${res['logo']}',
             email: email,
           );
+        } else {
+          var result =
+              await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
+          var res = jsonDecode(result);
+          return AccountData(
+            id: res['id'] ?? '',
+            name: res['name'] ?? '',
+            phone: res['phone'] ?? '',
+            address: res['address'] ?? '',
+            slogan: res['slogan'] ?? '',
+            logo: 'https://degeit-receipt.herokuapp.com${res['logo']}' ?? '',
+            email: email,
+          );
         }
-        return null;
       } else {
         var result =
             await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
         var res = jsonDecode(result);
         return AccountData(
-          id: res['id'],
-          name: res['name'],
-          phone: res['phone_number'],
-          address: res['address'],
-          slogan: res['slogan'],
-          logo: 'https://degeit-receipt.herokuapp.com${res['logo']}',
+          id: res['id'] ?? '',
+          name: res['name'] ?? '',
+          phone: res['phone'] ?? '',
+          address: res['address'] ?? '',
+          slogan: res['slogan'] ?? '',
+          logo: 'https://degeit-receipt.herokuapp.com${res['logo']}' ?? '',
           email: email,
         );
       }
     } else {
-      return null;
+      var result =
+          await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
+      var res = jsonDecode(result);
+      return AccountData(
+        id: res['id'] ?? '',
+        name: res['name'] ?? '',
+        phone: res['phone'] ?? '',
+        address: res['address'] ?? '',
+        slogan: res['slogan'] ?? '',
+        logo: 'https://degeit-receipt.herokuapp.com${res['logo']}' ?? '',
+        email: email,
+      );
     }
   }
 
@@ -756,12 +781,8 @@ class ApiService {
         );
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          //print(data);
-          /*   data["data"].forEach((customer) {
-          _allCustomers.add(Customer.fromJson(customer));
-          Customer.fromJson(customer).toString();
-        }); */
-          //print(data['data']);
+          // Customer customer = new Customer(name:data['data'][0]['name'],email:data['data'][0]['name'],address:data['data'][0][''],phoneNumber:data['data'][0]['phoneNumber'] );
+          // customerBox.add(value)
           return data['data'];
         } else {
           print("All Customers status code ${response.statusCode}");

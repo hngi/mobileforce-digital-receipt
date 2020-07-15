@@ -56,8 +56,12 @@ dependencies:
   url_launcher: ^5.4.11
   random_color: ^1.0.5
   device_preview: ^0.4.5
-  
+  data_connection_checker: 
+
+  hive: ^1.4.1+1
+  hive_flutter: ^0.3.0+2
   google_sign_in: ^4.5.1
+
 
 
 
@@ -80,12 +84,15 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  hive_generator: any
+  build_runner: any
+  quiver: any
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

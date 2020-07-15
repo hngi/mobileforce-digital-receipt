@@ -128,7 +128,7 @@ class _CustomerListState extends State<CustomerList> {
               ),
             ]),
             Expanded(
-              child: FutureBuilder(
+              child: FutureBuilder( 
                 future: _apiService.getAllCustomers(), // receipts from API
 
                 builder: (context, snapshot) {
