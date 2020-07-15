@@ -24,6 +24,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xffF2F8FF),
+        elevation: 0,
+        iconTheme: IconThemeData(color: Color(0xFF0B57A7)),
+      ),
         body: isloading == true
             ? LoadingIndicator()
             : SingleChildScrollView(
@@ -35,7 +40,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(
-                          height: 130.0,
+                          height: 30.0,
                         ),
                         Text(
                           'Forgot Password?',
