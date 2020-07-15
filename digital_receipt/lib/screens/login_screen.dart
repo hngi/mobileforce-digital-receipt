@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 import '../utils/connected.dart';
 import '../services/api_service.dart';
-
+import '../utils/connected.dart';
 import 'dashboard.dart';
 import 'no_internet_connection.dart';
 import 'signupScreen.dart';
@@ -233,7 +233,7 @@ class _LogInScreenState extends State<LogInScreen> {
                             emailString = _emailController.text;
                           }
 // check the internet
-                          var connected = await kInternet();
+                          var connected = await Connected().checkInternet();
                           if (!connected) {
                             await showDialog(
                               context: context,
