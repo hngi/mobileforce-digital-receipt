@@ -175,7 +175,7 @@ class Receipt extends ChangeNotifier {
     }
   }
 
-  void setCategory(ReceiptCategory category) => this.category = category;
+  void setCategory(ReceiptCategory category) => this.category = category; 
 
   void setProducts(List<Product> products) => this.products = products;
 

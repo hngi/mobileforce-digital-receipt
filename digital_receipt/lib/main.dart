@@ -49,11 +49,11 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 
   }
 }
-
-void main() => runApp(DevicePreview(
-      builder: (_) => MyApp(),
-      enabled: kReleaseMode,
-    ));
+// DevicePreview(
+//       builder: (_) => MyApp(),
+//       enabled: !kReleaseMode,
+//     )
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -243,8 +243,12 @@ class _ScreenControllerState extends State<ScreenController> {
             return HomePage();
           } else if (snapshot.data[0] != null && snapshot.data[1] == null) {
             return Setup();
+            //  return HomePage();
           } else {
             return OnboardingPage();
+
+            //  return HomePage();
+=======
           }
         });
   }
