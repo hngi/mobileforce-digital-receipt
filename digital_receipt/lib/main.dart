@@ -239,11 +239,10 @@ class _ScreenControllerState extends State<ScreenController> {
               snapshot.data[1] != null) {
             return HomePage();
           } else if (snapshot.data[1] == null) {
-            // return Setup();
-             return HomePage();
+            return Setup();
           } else {
-            // return OnboardingPage();
-             return HomePage();
+            return OnboardingPage();
+             
           }
         });
   }

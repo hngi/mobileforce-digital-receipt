@@ -10,7 +10,7 @@ class CustomerDropdown extends StatelessWidget {
     this.customers,
     this.onSubmit,
   });
-  final List customers;
+  final List customers; 
   final Function onSubmit;
 
   @override

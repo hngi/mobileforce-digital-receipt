@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:digital_receipt/models/currency.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/product.dart';
@@ -39,6 +40,7 @@ class Receipt extends ChangeNotifier {
   TimeOfDay reminderTime;
   DateTime reminderDate;
   num total;
+  Currency currency;
 
   String get descriptions {
     var desc = new StringBuffer();
@@ -61,6 +63,7 @@ class Receipt extends ChangeNotifier {
     this.customer,
     this.products,
     this.total,
+    this.currency,
   });
   static String _urlEndpoint = 'https://hng-degeit-receipt.herokuapp.com/v1';
 
@@ -116,6 +119,10 @@ class Receipt extends ChangeNotifier {
     return total;
   }
 
+ Currency getCurrency() {
+   return currency;
+ }
+
   void toggleAutoGenReceiptNo() {
     autoGenReceiptNo = !autoGenReceiptNo;
     notifyListeners();
@@ -128,6 +135,11 @@ class Receipt extends ChangeNotifier {
 
   set setPaidStamp(bool val) {
     paidStamp = val;
+    notifyListeners();
+  }
+
+  void setCurrency(Currency currency) {
+    this.currency = currency;
     notifyListeners();
   }
 

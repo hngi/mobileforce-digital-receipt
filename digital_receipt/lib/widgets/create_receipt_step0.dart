@@ -40,10 +40,11 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
   final TextEditingController _pNumberController = TextEditingController();
   ReceiptCategory selectedCategory;
   Customer selectedCustomer;
+  Currency selectedCurrency;
 
   // Needed to decide weather to create a new customer or not
   List<Customer> customers = [];
-
+List<Currency> currency = Currency.currencyList();
   String _customerName, _customerEmail, _customerAddress, _customerPNumber;
 
   setCustomer() async {
@@ -561,6 +562,12 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     context: context,
                     builder: (BuildContext context) {
                       return CurrencyDropdown(
+                        currency: currency,
+                        onSubmit: (currency) {
+                          setState(() {
+                            selectedCurrency = currency;
+                          });
+                        },
                       );
                     },
                   );
@@ -575,7 +582,18 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                   padding: EdgeInsets.symmetric(horizontal: 13, vertical: 14),
                   child: Row(
                     children: <Widget>[
-                      Text('select currency'),
+                      Text(
+                        selectedCurrency != null
+                            ? selectedCurrency.currencyName
+                            : 'Select Currency',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.3,
+                          fontSize: 13,
+                          color: Colors.black,
+                        ),
+                      ),
                       Spacer(),
                       Icon(Icons.arrow_drop_down),
                     ],
@@ -633,11 +651,14 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                                   textColor: Colors.white,
                                   backgroundColor: Color(0xFF0B57A7),
                                   onPressed: () {
-                                    if (_formKey.currentState.validate()) {
+                                    if (_formKey.currentState.validate() && selectedCurrency  != null) {
                                       _formKey.currentState.save();
                   
                                       Provider.of<Receipt>(context, listen: false)
                                           .setCategory(selectedCategory);
+
+                                      Provider.of<Receipt>(context, listen: false)
+                                          .setCurrency(selectedCurrency);
                   
                                       if (selectedCustomer == null) {
                                         Provider.of<Receipt>(context, listen: false).setCustomer(
@@ -799,7 +820,4 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                       );
                     }
                   
-                    void _changeCurrency(Currency currency) {
-                      print(currency.currencyName);
-                    }
 }
