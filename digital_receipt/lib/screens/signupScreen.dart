@@ -4,9 +4,12 @@ import 'dart:io';
 import 'package:digital_receipt/screens/otp_auth.dart';
 import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/widgets/loading.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/screens/home_page.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 import '../services/api_service.dart';
 import 'no_internet_connection.dart';
@@ -23,6 +26,15 @@ class _SignupScreenState extends State<SignupScreen> {
   bool passwordVisible = false;
   var _formKey = GlobalKey<FormState>();
   var _email, _password, _name;
+  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    clientId:
+        "555414249433-qg0gt6hv2assajrufmcgtpi1bu3u02ts.apps.googleusercontent.com",
+    scopes: <String>[
+      'profile',
+      'email',
+    ],
+  );
 
   ApiService _apiService = ApiService();
   @override
@@ -268,55 +280,57 @@ class _SignupScreenState extends State<SignupScreen> {
                           buttonColor: Color(0xFF0B57A7),
                           height: 45,
                           onPressed: () {}),
-                      // Container(
-                      //   padding: EdgeInsets.symmetric(vertical: 14.0),
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      //     children: <Widget>[
-                      //       Expanded(
-                      //         flex: 2,
-                      //         child: Divider(
-                      //           thickness: 1.0,
-                      //         ),
-                      //       ),
-                      //       Padding(
-                      //         padding:
-                      //             const EdgeInsets.symmetric(horizontal: 8.0),
-                      //         child: Text(
-                      //           'OR',
-                      //           style: TextStyle(color: Colors.grey),
-                      //         ),
-                      //       ),
-                      //       Expanded(
-                      //         flex: 2,
-                      //         child: Divider(
-                      //           thickness: 1.0,
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      // Platform.isIOS
-                      //     ? Column(
-                      //         children: <Widget>[
-                      //           button(
-                      //               name: "Sign in with Apple",
-                      //               textColor: Color(0xffE5E5E5),
-                      //               iconPath: "assets/logos/apple-logo.png",
-                      //               buttonColor: Color(0xff121212)),
-                      //           SizedBox(
-                      //             height: 20,
-                      //           ),
-                      //         ],
-                      //       )
-                      //     : SizedBox.shrink(),
-                      // button(
-                      //   name: "Sign in with Google",
-                      //   textColor: Color(0xff121212),
-                      //   iconPath: "assets/logos/google-logo.png",
-                      //   buttonColor: Color(0xffF2F8FF),
-                      //   border: true,
-                      // ),
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 14.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Expanded(
+                              flex: 2,
+                              child: Divider(
+                                thickness: 1.0,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                'OR',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Divider(
+                                thickness: 1.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Platform.isIOS
+                          ? Column(
+                              children: <Widget>[
+                                button(
+                                    name: "Sign in with Apple",
+                                    textColor: Color(0xffE5E5E5),
+                                    iconPath: "assets/logos/apple-logo.png",
+                                    buttonColor: Color(0xff121212)),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                              ],
+                            )
+                          : SizedBox.shrink(),
+                      button(
+                          name: "Sign in with Google",
+                          textColor: Color(0xff121212),
+                          iconPath: "assets/logos/google-logo.png",
+                          buttonColor: Color(0xffF2F8FF),
+                          border: true,
+                          onPressed: () {
+                            googleSignup();
+                          }),
                       // SizedBox(
                       //   height: 20,
                       // ),
@@ -356,7 +370,9 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
         onPressed: () {
           // setState(() => isloading = true);
-          if (_formKey.currentState.validate()) {
+          if (name == "Sign in with Google") {
+            onPressed();
+          } else if (_formKey.currentState.validate()) {
             onPressed == "" ? dont() : signupUser();
           }
         },
@@ -423,6 +439,62 @@ class _SignupScreenState extends State<SignupScreen> {
       setState(() {
         isloading = false;
       });
+      Fluttertoast.showToast(
+        msg: 'Sorry an error occured try again',
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red,
+      );
+    }
+  }
+
+  googleSignup() async {
+    try {
+      final googleUser = await _googleSignIn.signIn();
+      print("Passed");
+      if (googleUser == null) {
+        Fluttertoast.showToast(
+          msg: 'Sign In operation cancelled by user',
+          fontSize: 12,
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.red,
+        );
+        return;
+      } else {
+        print("oKAY");
+      }
+
+      final googleAuthentication = await googleUser.authentication;
+      print(googleUser.email);
+
+      final authCredential = GoogleAuthProvider.getCredential(
+        idToken: googleAuthentication.idToken,
+        accessToken: googleAuthentication.accessToken,
+      );
+      await _firebaseAuth.signInWithCredential(authCredential);
+      var response = await _apiService.googleSignup(
+          googleAuthentication.accessToken, googleUser.email);
+      if (response == "true") {
+        print("Successfull!");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Setup(),
+          ),
+        );
+      } else {
+        print(response);
+        Fluttertoast.showToast(
+          msg: 'Sorry an error occured try again',
+          fontSize: 12,
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.red,
+        );
+        return;
+      }
+    } on PlatformException catch (e) {
+      print(e.message.toString());
+      // return left(const AuthFailure.serverError());
       Fluttertoast.showToast(
         msg: 'Sorry an error occured try again',
         fontSize: 12,
