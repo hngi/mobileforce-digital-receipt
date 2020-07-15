@@ -60,10 +60,11 @@ class _AnalyticsState extends State<Analytics> {
                     _buildTopContent(totalSales: '₦ 0'),
                     Expanded(
                       child: Container(
-                        margin: EdgeInsets.all(80),
+                        margin: EdgeInsets.all(30),
                         child: kEmpty,
                       ),
                     ),
+                    Text('There are no receipts created')
                   ],
                 ),
               );
