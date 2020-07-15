@@ -254,7 +254,9 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                     key: Key(thisProduct.id),
                     child: ProductItem(
                       title: thisProduct.productDesc,
-                      amount: '₦' + '${thisProduct.amount}',
+                      amount: Provider.of<Receipt>(context, listen: false)
+                                          .getCurrency()
+                                          .currencySymbol + '${thisProduct.amount}',
                       index: index,
                     ),
                   );

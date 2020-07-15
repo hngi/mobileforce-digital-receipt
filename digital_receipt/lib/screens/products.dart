@@ -1,3 +1,5 @@
+import 'dart:wasm';
+
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
@@ -65,12 +67,12 @@ class _ProductInformationState extends State<ProductInformation> {
       {int index, String name, int amount, int quantity, int unit}) {
     var newItem = items;
     print('amount: $amount , quant: $quantity and unit: $unit');
-    int newQuant = quantity <= 0 ? newItem[index].quantity : quantity;
+    double newQuant = quantity <= 0 ? newItem[index].quantity : quantity;
     double newUnit = unit <= 0 ? newItem[index].unitPrice : unit;
     double newAmnt = newQuant * newUnit;
     print('amount: $newAmnt , quant: $newQuant and unit: $newUnit');
     newItem[index].productDesc = name == '' ? newItem[index].productDesc : name;
-    newItem[index].amount = newAmnt.round();
+    newItem[index].amount = newAmnt.round() as double;
     newItem[index].quantity = newQuant;
     newItem[index].unitPrice = newUnit;
 
