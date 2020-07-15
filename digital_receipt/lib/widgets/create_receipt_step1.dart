@@ -12,9 +12,14 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CreateReceiptStep1 extends StatefulWidget {
-  const CreateReceiptStep1({this.carouselController, this.carouselIndex});
+  const CreateReceiptStep1(
+      {this.carouselController,
+      this.carouselIndex,
+      this.issuedCustomerReceipt});
+
   final CarouselController carouselController;
   final CarouselIndex carouselIndex;
+  final Receipt issuedCustomerReceipt;
 
   @override
   _CreateReceiptStep1State createState() => _CreateReceiptStep1State();
@@ -38,6 +43,23 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
 
   final _time = TextEditingController();
   final _date = TextEditingController();
+
+  List pro = [];
+
+  @override
+  void initState() {
+    if (widget.issuedCustomerReceipt != null) {
+      updateContents();
+    }
+    super.initState();
+  }
+
+  updateContents() {
+    widget.issuedCustomerReceipt.products.forEach((product) {
+      products.add(product);
+      pro.add(product.unitPrice * product.quantity);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,11 +149,19 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                     context: context,
                     builder: (BuildContext context) => ProductDetail(
                       onSubmit: (product) {
-                        setState(() => products.add(product));
+                        setState(() {
+                          products.add(product);
+                          pro.add(product.amount);
+                        });
+
+                        ////////////////////////////
+
+                        // int total = pro.fold(0, (p, c) => p+c);
+                        // print('total: $total');
                       },
                     ),
                     backgroundColor: Colors.transparent,
-                    isScrollControlled: false,
+                    isScrollControlled: true,
 
                     //barrierColor: Colors.red
                   );
@@ -242,12 +272,13 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                     key: Key(thisProduct.id),
                     child: ProductItem(
                       title: thisProduct.productDesc,
-                      amount: '₦' + '${thisProduct.amount}',
+                      amount: '₦' +
+                          '${thisProduct.unitPrice * thisProduct.quantity}',
                       index: index,
                     ),
                   );
                 }),
-            Row(
+            /* Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
@@ -272,7 +303,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   },
                 ),
               ],
-            ),
+            ), */
             _partPayment
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -399,6 +430,13 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             ),
             SubmitButton(
               onPressed: () {
+                num sum = 0;
+                for (num e in pro) {
+                  sum += e;
+                }
+                print("sum: $sum");
+
+                Provider.of<Receipt>(context, listen: false).setTotal(sum);
                 Provider.of<Receipt>(context, listen: false)
                     .setReminderTime(time);
                 Provider.of<Receipt>(context, listen: false)

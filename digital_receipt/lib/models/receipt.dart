@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/product.dart';
@@ -22,6 +22,7 @@ class Receipt extends ChangeNotifier {
   String issuedDate;
   String customerName;
   String description;
+  String receiptId;
   ReceiptCategory category;
   String totalAmount;
   Customer customer;
@@ -32,38 +33,63 @@ class Receipt extends ChangeNotifier {
   bool partPayment = false;
   bool saveCustomer = false;
   bool issued = false;
-  int fonts;
+  int fonts = 20;
   String partPaymentDateTime;
   String signature;
   TimeOfDay reminderTime;
   DateTime reminderDate;
+  num total;
+
+  String get descriptions {
+    var desc = new StringBuffer();
+    if (products != null) {
+      products.forEach((element) {
+        desc.write('${element.productDesc} x ${element.quantity}, ');
+      });
+    }
+    return desc.toString();
+  }
 
   Receipt({
+    this.receiptId,
     this.receiptNo,
     this.issuedDate,
     this.customerName,
-    this.description,
     this.category,
     this.totalAmount,
     this.fonts,
     this.customer,
     this.products,
+    this.total,
   });
-  static String _urlEndpoint = 'https://hng-degeit-receipt.herokuapp.com/v1';
-  factory Receipt.fromJson(Map<String, dynamic> json) => Receipt(
-        receiptNo:
-            json["receipt_number"] == null ? null : json["receipt_number"],
-        issuedDate: json["date"] == null ? null : json["date"],
-        customerName:
-            json["customer"]["name"] == null ? null : json["customer"]["name"],
-        category: json["category"] == null ? null : json["category"],
-        totalAmount: json["total"] == null ? null : json["total"].toString(),
-       //products: json["products"].isEmpty ? null : json['products']
-      );
+  static String _urlEndpoint = 'http://degeitreceipt.pythonanywhere.com/v1';
+
+  factory Receipt.fromJson(Map<String, dynamic> json) {
+    ReceiptCategory convertToEnum({@required string}) {
+      return ReceiptCategory.values.firstWhere((e) => e.toString() == string);
+    }
+
+    return Receipt(
+      receiptId: json["id"] == null ? null : json["id"],
+      receiptNo: json["receipt_number"] == null ? null : json["receipt_number"],
+      issuedDate: json["date"] == null ? null : json["date"],
+      customerName:
+          json["customer"]["name"] == null ? null : json["customer"]["name"],
+      category: json["customer"]["platform"] == null
+          ? null
+          : convertToEnum(string: json["customer"]["platform"]),
+      totalAmount: json["total"] == null ? null : json["total"].toString(),
+      customer:
+          json["customer"] == null ? null : Customer.fromJson(json["customer"]),
+      products: json["products"].isEmpty
+          ? null
+          : (json['products'] as List).map((e) => Product.fromJson(e)).toList(),
+    );
+  }
 
   @override
   String toString() {
-    return '$receiptNo : $issuedDate : $customerName : $description : $totalAmount : ($category) : $customer : $products';
+    return '$receiptId:  $receiptNo : $issuedDate : $customerName : $description : $totalAmount : ($category) : $customer : $products';
   }
 
   bool shouldGenReceiptNo() {
@@ -86,6 +112,10 @@ class Receipt extends ChangeNotifier {
     return partPayment;
   }
 
+  num getTotal() {
+    return total;
+  }
+
   void toggleAutoGenReceiptNo() {
     autoGenReceiptNo = !autoGenReceiptNo;
     notifyListeners();
@@ -93,6 +123,11 @@ class Receipt extends ChangeNotifier {
 
   void togglePreset() {
     preset = !preset;
+    notifyListeners();
+  }
+
+  set setPaidStamp(bool val) {
+    paidStamp = val;
     notifyListeners();
   }
 
@@ -133,6 +168,9 @@ class Receipt extends ChangeNotifier {
   void setProducts(List<Product> products) => this.products = products;
 
   void setNumber(int receiptNo) {
+    this.customer != null
+        ? print("theirs a customer")
+        : print("no customer object good");
     receiptNo = receiptNo;
   }
 
@@ -154,6 +192,10 @@ class Receipt extends ChangeNotifier {
 
   void setReminderDate(DateTime date) {
     reminderDate = date;
+  }
+
+  void setTotal(num total) {
+    this.total = total;
   }
 
   convertToDateTime() {
@@ -189,22 +231,90 @@ class Receipt extends ChangeNotifier {
     print(json.encode(toJson()));
   }
 
+  Future updatedReceipt(String receiptId) async {
+    print(receiptId);
+    var uri = "$_urlEndpoint/business/receipt/draft/update";
+    var token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+
+    var response = await http.put(uri, body: {
+      'receiptId': receiptId,
+    }, headers: {
+      "token": token,
+    });
+
+    print(response.statusCode);
+    print(json.decode(response.body));
+    /*  if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+        msg: 'Draft updated successfully',
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.green,
+      );
+      return 'Draft updated successfully';
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Sorry something went Wrong, try again',
+        fontSize: 12,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.green,
+      );
+      return 'Sorry something went Wrong, try again';
+    } */
+  }
+
   saveReceipt() async {
     var uri = "$_urlEndpoint/business/receipt/customize";
     var token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
 
-    var response = await http.post(uri,
-        body: json.encode(toJson()),
-        headers: {"token": token, "Content-Type": "application/json"});
+    try {
+      var response = await http.post(uri,
+          body: json.encode(toJson()),
+          headers: {"token": token, "Content-Type": "application/json"});
 
-    print("3");
-    if (response.statusCode == 200) {
-      print(json.decode(response.body));
-      return "successful";
-    } else {
-      print("failed");
-      return "failed";
+      print(token);
+      print(json.encode(toJson()));
+      // print('${json.decode(response.body)}');
+      if (response.statusCode == 200) {
+        // print(json.decode(response.body));
+        return "Receipt saved successfully";
+      } else {
+        print("failed");
+        return "failed";
+      }
+    } catch (e) {
+      throw (e);
     }
+  }
+
+  List<Receipt> _issuedReceipt = [];
+  List<Receipt> get issuedReceipt => _issuedReceipt;
+
+  filterReceipt(List<Receipt> receiptList, String value) {
+    bool searchReceiptByCustomerName(Receipt receipt, String pattern) {
+      if (receipt.customerName != null) {
+        return receipt.customerName.toLowerCase().contains(value);
+      }
+      return false;
+    }
+
+    bool searchReceiptByDescription(Receipt receipt, String pattern) {
+      if (receipt.description != null) {
+        return receipt.description.toLowerCase().contains(value);
+      }
+      return false;
+    }
+
+    // print("Receipt list : $receiptList");
+    if (receiptList != null) {
+      _issuedReceipt = receiptList
+          .where((receipt) =>
+              searchReceiptByCustomerName(receipt, value) ||
+              searchReceiptByDescription(receipt, value))
+          .toList();
+    }
+
+    notifyListeners();
   }
 }
 
@@ -213,7 +323,6 @@ List<Receipt> dummyReceiptList = [
     receiptNo: '0020',
     issuedDate: '12-05-2020',
     customerName: 'Carole Johnson',
-    description: 'Introduction to Numeritical analysis sales',
     totalAmount: '83,000',
     category: ReceiptCategory.WHATSAPP,
   ),
@@ -221,7 +330,6 @@ List<Receipt> dummyReceiptList = [
     receiptNo: '0021',
     issuedDate: '11-04-2020',
     customerName: 'Carole Froschauer',
-    description: 'Cryptocurrency course, intro to after effects',
     totalAmount: '80,000',
     category: ReceiptCategory.WHATSAPP,
   ),
@@ -229,7 +337,6 @@ List<Receipt> dummyReceiptList = [
     receiptNo: '0023',
     issuedDate: '21-07-2020',
     customerName: 'Paul Walker',
-    description: 'Introduction to Programming book sales',
     totalAmount: '6,000',
     category: ReceiptCategory.INSTAGRAM,
   ),
@@ -237,7 +344,6 @@ List<Receipt> dummyReceiptList = [
     receiptNo: '0035',
     issuedDate: '11-04-2020',
     customerName: 'Dwayne Johnson',
-    description: 'Cryptocurrency course, intro to after effects',
     totalAmount: '40,000',
     category: ReceiptCategory.INSTAGRAM,
   ),
@@ -245,7 +351,6 @@ List<Receipt> dummyReceiptList = [
     receiptNo: '0037',
     issuedDate: '29-12-2020',
     customerName: 'Johnson Stones',
-    description: 'Introduction to Numeritical analysis sales',
     totalAmount: '33,000',
     category: ReceiptCategory.TWITTER,
   ),
@@ -253,7 +358,6 @@ List<Receipt> dummyReceiptList = [
     receiptNo: '0021',
     issuedDate: '11-04-2020',
     customerName: 'Kelvin Hart',
-    description: 'Cryptocurrency course, intro to after effects',
     totalAmount: '44,000',
     category: ReceiptCategory.TWITTER,
   ),

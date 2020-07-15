@@ -21,16 +21,18 @@ class ReceiptUtil {
   }
 
   static List<Receipt> filterReceipt(List<Receipt> receiptList, String value) {
+    // print(value);
+    // print("receiptList $receiptList");
     return receiptList
         .where((receipt) =>
             receipt.customerName
-                .replaceAll(new RegExp(r' '), '')
+                //.replaceAll(new RegExp(r' '), '')
                 .toLowerCase()
-                .contains(new RegExp('$value')) ||
+                .contains(value) ||
             receipt.description
-                .replaceAll(new RegExp(r' '), '')
+                // .replaceAll(new RegExp(r' '), '')
                 .toLowerCase()
-                .contains(new RegExp('$value')))
+                .contains(value))
         .toList();
   }
 }

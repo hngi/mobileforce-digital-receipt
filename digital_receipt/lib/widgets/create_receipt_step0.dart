@@ -13,10 +13,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CreateReceiptStep0 extends StatefulWidget {
-  const CreateReceiptStep0({this.carouselController, this.carouselIndex});
+  const CreateReceiptStep0(
+      {this.carouselController,
+      this.carouselIndex,
+      this.issuedCustomerReceipt});
 
   final CarouselController carouselController;
   final CarouselIndex carouselIndex;
+  final Receipt issuedCustomerReceipt;
   @override
   _CreateReceiptStep0State createState() => _CreateReceiptStep0State();
 }
@@ -55,16 +59,25 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
         );
       },
     );
-    setState(() {
-      customers = List.from(res);
-    });
-    res = null;
+
+    Provider.of<Customer>(context, listen: false).setCustomerList =
+        List.from(res);
+
+    //res = null;
   }
 
   @override
   void initState() {
     setCustomer();
+    if (widget.issuedCustomerReceipt != null) {
+      updateContents();
+    }
     super.initState();
+  }
+
+  updateContents() {
+    selectedCategory = widget.issuedCustomerReceipt.category;
+    selectedCustomer = widget.issuedCustomerReceipt.customer;
   }
 
   @override
@@ -226,6 +239,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                   print(value);
                   setState(() {
                     selectedCategory = value;
+                    Provider.of<Receipt>(context).setCategory(selectedCategory);
                   });
                 },
                 value: selectedCategory,
@@ -546,7 +560,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               SizedBox(
                 height: 25,
               ),
-              DropdownButtonFormField(
+              /*  DropdownButtonFormField(
                 items: [],
                 onChanged: (val) {},
                 iconDisabledColor: Color.fromRGBO(0, 0, 0, 0.87),
@@ -578,7 +592,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     color: Color(0xFF1B1B1B),
                   ),
                 ),
-              ),
+              ), */
               SizedBox(
                 height: 45,
               ),
