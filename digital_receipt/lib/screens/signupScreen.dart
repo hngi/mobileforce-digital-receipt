@@ -21,7 +21,7 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  bool isLoading = false;
+  bool isloading = false;
   bool passwordVisible = false;
   var _formKey = GlobalKey<FormState>();
   var _email, _password, _name;
@@ -41,8 +41,9 @@ class _SignupScreenState extends State<SignupScreen> {
                 SizedBox(
                   height: 40,
                 ),
-                Center(
-                  child: Image.asset('assets/images/logo.png', height: 50),
+                Container(
+                  height: 50,
+                  child: kLogo1,
                 ),
                 SizedBox(height: 40.0),
                 Text(
@@ -340,6 +341,7 @@ class _SignupScreenState extends State<SignupScreen> {
     Function onPressed,
     double height = 50,
   }) {
+    // bool loadingSpinner = false;
     return Container(
       width: double.infinity,
       height: height,
@@ -371,7 +373,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   letterSpacing: 0.3,
                   fontWeight: FontWeight.w600,
                 ),
-              ),
+        ),
       ),
     );
   }
@@ -379,7 +381,7 @@ class _SignupScreenState extends State<SignupScreen> {
   signupUser() async {
     _formKey.currentState.save();
     setState(() {
-      isLoading = true;
+      isloading = true;
     });
 
     var response = await _apiService.otpVerification(_email, _password, _name);
@@ -400,7 +402,7 @@ class _SignupScreenState extends State<SignupScreen> {
       );
     } else if (response.statusCode == 400) {
       setState(() {
-        isLoading = false;
+        isloading = false;
       });
       var res = jsonDecode(response.body);
       var error = res['error'];
@@ -412,7 +414,7 @@ class _SignupScreenState extends State<SignupScreen> {
       );
     } else {
       setState(() {
-        isLoading = false;
+        isloading = false;
       });
       Fluttertoast.showToast(
         msg: 'Sorry an error occured try again',

@@ -441,9 +441,8 @@ class ApiService {
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
-      var resp = await http.get(
-          'https://hng-degeit-receipt.herokuapp.com/v1/business/user/all',
-          headers: {"token": token});
+      var resp = await http
+          .get('$_urlEndpoint/business/user/all', headers: {"token": token});
       var result;
       resp.statusCode == 200
           ? result = json.decode(resp.body)["data"] as List
@@ -587,9 +586,9 @@ class ApiService {
         },
       );
 
-      print(jsonDecode(response.body)['data']);
+      dynamic res = jsonDecode(response.body);
 
-      dynamic res = jsonDecode(response.body)['data'] as List;
+      res = res['data'] as List;
 
       if (response.statusCode == 200) {
         print(response.statusCode);
@@ -609,7 +608,7 @@ class ApiService {
             phone: res['phone_number'],
             address: res['address'],
             slogan: res['slogan'],
-            logo: 'https://hng-degeit-receipt.herokuapp.com${res['logo']}',
+            logo: 'http://degeitreceipt.pythonanywhere.com${res['logo']}',
             email: email,
           );
         }
@@ -674,6 +673,7 @@ class ApiService {
         //log(response.body);
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
+          print('data: $data');
           try {
             //log(response.body);
             data["data"].forEach((receipt) {

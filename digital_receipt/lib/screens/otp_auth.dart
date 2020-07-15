@@ -21,9 +21,7 @@ class PinCodeVerificationScreen extends StatefulWidget {
   String email;
   String name;
   String password;
-
-  /// If Otp is for registration on Forgot password
-  bool fp;
+  bool fp = false;
   PinCodeVerificationScreen({this.otp, this.email, this.name, this.password});
 
   PinCodeVerificationScreen.forgotPassword(
@@ -452,10 +450,11 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
     }
   }
 
-  @override
+    @override
   void dispose() {
     errorController.close();
     textEditingController.clear();
+
     super.dispose();
   }
 }

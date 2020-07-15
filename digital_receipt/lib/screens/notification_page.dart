@@ -1,3 +1,4 @@
+import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/notification.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class _NotificationPageState extends State<NotificationPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Image.asset("assets/images/heartbroken 1.png"),
+                       kBrokenHeart,
                         SizedBox(
                           height: 20,
                         ),
