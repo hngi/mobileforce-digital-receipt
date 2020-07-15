@@ -5,6 +5,7 @@ import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/login_screen.dart';
 import 'package:digital_receipt/screens/onboarding.dart';
 import 'package:digital_receipt/screens/setup.dart';
+import 'package:digital_receipt/utils/HiveDB.dart';
 import 'package:hive/hive.dart';
 
 import 'dart:io';
@@ -57,6 +58,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 //       enabled: !kReleaseMode,
 //     )
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   final appDocumentDir = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
   runApp(MyApp());
@@ -74,6 +76,9 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(
             create: (context) => Business(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => HiveDb(),
           ),
           ChangeNotifierProvider(
             create: (context) => Receipt(),
@@ -253,9 +258,6 @@ class _ScreenControllerState extends State<ScreenController> {
             //  return HomePage();
           } else {
             return OnboardingPage();
-
-            //  return HomePage();
-=======
           }
         });
   }

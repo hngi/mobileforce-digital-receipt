@@ -12,6 +12,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive/hive.dart';
 import 'device_info_service.dart';
 import 'shared_preference_service.dart';
 import 'package:http/http.dart' as http;
@@ -756,12 +757,8 @@ class ApiService {
         );
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          //print(data);
-          /*   data["data"].forEach((customer) {
-          _allCustomers.add(Customer.fromJson(customer));
-          Customer.fromJson(customer).toString();
-        }); */
-          //print(data['data']);
+          // Customer customer = new Customer(name:data['data'][0]['name'],email:data['data'][0]['name'],address:data['data'][0][''],phoneNumber:data['data'][0]['phoneNumber'] );
+          // customerBox.add(value)
           return data['data'];
         } else {
           print("All Customers status code ${response.statusCode}");
