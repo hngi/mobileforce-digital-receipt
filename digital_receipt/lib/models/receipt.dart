@@ -288,7 +288,7 @@ class Receipt extends ChangeNotifier {
        print(json.encode(toJson()));
       // print('${json.decode(response.body)}');
       if (response.statusCode == 200) {
-        // print(json.decode(response.body));
+         print(json.decode(response.body));
         return "Receipt saved successfully";
       } else {
         print("failed");
