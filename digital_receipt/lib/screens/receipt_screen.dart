@@ -481,7 +481,9 @@ Widget ReceiptScreenLayout(
                               Padding(
                                 padding: const EdgeInsets.only(top: 15.0),
                                 child: Text(
-                                  '₦' +
+                                  Provider.of<Receipt>(context, listen: false)
+                                          .getCurrency()
+                                          .currencySymbol +
                                       Provider.of<Receipt>(context,
                                               listen: false)
                                           .getTotal()
