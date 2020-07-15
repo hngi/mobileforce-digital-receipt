@@ -441,9 +441,8 @@ class ApiService {
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
-      var resp = await http.get(
-          '$_urlEndpoint/business/user/all',
-          headers: {"token": token});
+      var resp = await http
+          .get('$_urlEndpoint/business/user/all', headers: {"token": token});
       var result;
       resp.statusCode == 200
           ? result = json.decode(resp.body)["data"] as List
@@ -589,7 +588,7 @@ class ApiService {
 
       dynamic res = jsonDecode(response.body);
 
-       res = res['data'] as List;
+      res = res['data'] as List;
 
       if (response.statusCode == 200) {
         print(response.statusCode);
@@ -674,6 +673,7 @@ class ApiService {
         //log(response.body);
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
+          print('data: $data');
           try {
             //log(response.body);
             data["data"].forEach((receipt) {

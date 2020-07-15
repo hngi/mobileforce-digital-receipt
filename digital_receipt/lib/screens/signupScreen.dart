@@ -41,9 +41,9 @@ class _SignupScreenState extends State<SignupScreen> {
                       SizedBox(
                         height: 40,
                       ),
-                      Center(
-                        child:
-                            Image.asset('assets/images/logo.png', height: 50),
+                      Container(
+                        height: 50,
+                        child: kLogo1,
                       ),
                       SizedBox(height: 40.0),
                       Text(

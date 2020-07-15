@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/screens/reset_password.dart';
 import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/services/api_service.dart';
@@ -54,8 +55,6 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
     super.initState();
   }
 
-
-
   ApiService _apiService = ApiService();
   bool isLoading = false;
 
@@ -79,9 +78,9 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                     SizedBox(height: 5),
                     Padding(
                         padding: EdgeInsets.only(bottom: 10, top: 16),
-                        child: Image.asset(
-                          'assets/images/logo.png',
+                        child: Container(
                           height: 40,
+                          child: kLogo1,
                         )),
                     Padding(
                       padding: EdgeInsets.only(top: 20, left: 14),
@@ -453,7 +452,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
     }
   }
 
-    @override
+  @override
   void dispose() {
     errorController.close();
     textEditingController.clear();

@@ -79,11 +79,10 @@ class _LogInScreenState extends State<LogInScreen> {
                   SizedBox(
                     height: 34,
                   ),
-                  Center(
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      height: 50,
-                    ),
+                  Container(
+                    alignment: Alignment.center,
+                    height: 50,
+                    child: kLogo1,
                   ),
                   SizedBox(
                     height: 20,
@@ -155,7 +154,6 @@ class _LogInScreenState extends State<LogInScreen> {
                           'Password should contain at least a Digit'),
                       Validators.patternRegExp(kOneSpecialCharRegex,
                           'Special Character eg.(\$\ % # & @ _ ^)')
-                          
                     ]),
                     style: TextStyle(
                       color: Color(0xFF2B2B2B),
