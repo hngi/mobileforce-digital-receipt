@@ -12,6 +12,8 @@ class HiveDb extends ChangeNotifier {
     customerBox.add(customer);
   }
 
+  /* FOR DRAFT PAGE */
+
   initDraftBox() async {
     draftBox = await Hive.openBox('draft');
    // print('object:: $draftBox');
