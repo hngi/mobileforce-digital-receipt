@@ -4,7 +4,6 @@ import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
-import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/product_detail.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
@@ -208,6 +207,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                             onSubmit: (product) {
                               setState(() {
                                 products[index] = product;
+                                Navigator.pop(context);
                               });
                             },
                           ),
@@ -215,8 +215,9 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                       },
                       title: thisProduct.productDesc,
                       amount: Provider.of<Receipt>(context, listen: false)
-                                          .getCurrency()
-                                          .currencySymbol + '${thisProduct.amount}',
+                              .getCurrency()
+                              .currencySymbol +
+                          '${thisProduct.amount}',
                       index: index,
                     ),
                   );

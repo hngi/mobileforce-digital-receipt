@@ -138,7 +138,7 @@ class _ScreenControllerState extends State<ScreenController> {
   @override
   void initState() {
     super.initState();
-   // initConnect();
+    // initConnect();
 
     initSharedPreferenceDb();
     getCurrentAutoLogoutStatus();
@@ -245,7 +245,6 @@ class _ScreenControllerState extends State<ScreenController> {
             return Setup();
           } else {
             return OnboardingPage();
-             
           }
         });
   }
