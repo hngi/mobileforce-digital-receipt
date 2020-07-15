@@ -51,7 +51,7 @@ class _AccountPageState extends State<AccountPage> {
   AccountData _accountData;
 
   Future getImage() async {
-     var internet = await Connected().checkInternet();
+    var internet = await Connected().checkInternet();
     if (!internet) {
       await showDialog(
         context: context,
@@ -169,10 +169,10 @@ class _AccountPageState extends State<AccountPage> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
                         ),
-                        child: image == null
+                        child: Provider.of<Business>(context).accountData.logo == ''
                             ? Image.network(
                                 Provider.of<Business>(context).accountData.logo)
-                            : Image.asset(image)),
+                            : Icon(Icons.person)),
                     onTap: getImage,
                   ),
                   Container(

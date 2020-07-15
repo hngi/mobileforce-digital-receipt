@@ -8,19 +8,31 @@ class Product {
   double discount;
 
   Product(
-      {this.id, this.productDesc, this.quantity, this.amount, this.unitPrice,this.tax,this.discount});
+      {this.id,
+      this.productDesc,
+      this.quantity,
+      this.amount,
+      this.unitPrice,
+      this.tax,
+      this.discount});
   // please let no one delete this  #francis22
   Product.receipt(
-      {this.productDesc, this.quantity, this.amount, this.unitPrice,this.tax,this.discount});
+      {this.productDesc,
+      this.quantity,
+      this.amount,
+      this.unitPrice,
+      this.tax,
+      this.discount});
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-        // End point returns id as an int!
-        id: json['id'].toString(),
-        productDesc: json['name'] as String,
-        quantity: json['quantity'] as double,
-        unitPrice: (json['unit_price'] as double),
-        amount: json['amount'] as double);
+      // End point returns id as an int!
+      id: json['id'].toString(),
+      productDesc: json['name'] as String,
+      quantity: json['quantity']?.toDouble(),
+      unitPrice: (json['unit_price']?.toDouble()),
+      amount: json['amount']?.toDouble(),
+    );
   }
   Map<String, dynamic> toJson() => {
         "name": productDesc,
