@@ -28,7 +28,7 @@ class _CreateNewProductState extends State<CreateNewProduct> {
 
   _submitProduct() {
     final product = _productDesc.text;
-    final int quantity = _quantity.text == '' ? 0 : int.parse(_quantity.text);
+    final double quantity = _quantity.text == '' ? 0 : int.parse(_quantity.text);
     final double unit =
         _unitPrice.text == '' ? 0 : double.parse(_unitPrice.text);
     final double totalAmount = unit * quantity;
@@ -60,7 +60,7 @@ class _CreateNewProductState extends State<CreateNewProduct> {
           productDesc: product,
           quantity: quantity,
           unitPrice: unit,
-          amount: totalAmount.round()));
+          amount: totalAmount.round() as double));
     }
 
     Navigator.of(context).pop();
