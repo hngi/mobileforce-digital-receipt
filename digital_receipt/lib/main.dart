@@ -5,6 +5,8 @@ import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/login_screen.dart';
 import 'package:digital_receipt/screens/onboarding.dart';
 import 'package:digital_receipt/screens/setup.dart';
+import 'package:digital_receipt/utils/HiveDB.dart';
+import 'package:hive/hive.dart';
 
 import 'dart:io';
 import 'utils/connected.dart';
@@ -20,6 +22,7 @@ import 'services/sql_database_client.dart';
 import 'services/shared_preference_service.dart';
 import 'services/sql_database_repository.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 
 //BACKGROUND MESSAGE HANDLER
 Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
@@ -54,7 +57,12 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 //       builder: (_) => MyApp(),
 //       enabled: !kReleaseMode,
 //     )
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentDir = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -68,6 +76,9 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(
             create: (context) => Business(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => HiveDb(),
           ),
           ChangeNotifierProvider(
             create: (context) => Receipt(),
@@ -139,7 +150,7 @@ class _ScreenControllerState extends State<ScreenController> {
   @override
   void initState() {
     super.initState();
-    // initConnect();
+   // initConnect();
 
     initSharedPreferenceDb();
     getCurrentAutoLogoutStatus();
