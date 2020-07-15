@@ -411,14 +411,21 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             ),
             SubmitButton(
               onPressed: () {
-                num sum = 0;
+                if (products.length == 0) {
+                  Fluttertoast.showToast(
+                    msg: "You need to add at least a product before you can proceed!",
+                    fontSize: 12,
+                    toastLength: Toast.LENGTH_LONG,
+                    backgroundColor: Colors.red,
+                  );
+                }else{
+                  num sum = 0;
                 for (num e in pro) {
                   sum += e;
                 }
                 print("sum: $sum");
-                
-                Provider.of<Receipt>(context, listen: false)
-                    .setTotal(sum);
+
+                Provider.of<Receipt>(context, listen: false).setTotal(sum);
                 Provider.of<Receipt>(context, listen: false)
                     .setReminderTime(time);
                 Provider.of<Receipt>(context, listen: false)
@@ -426,6 +433,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                 Provider.of<Receipt>(context, listen: false)
                     .setProducts(products);
                 widget.carouselController.animateToPage(2);
+                }
               },
               title: 'Next',
               backgroundColor: Color(0xFF0B57A7),
