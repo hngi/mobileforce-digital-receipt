@@ -8,7 +8,7 @@ final kPrimaryColor = Color(0xFF0B57A7);
 
 final kOneDigitRegex = RegExp(r'^(?=.*?[0-9]).{8,}$');
 
-final kOneSpecialCharRegex = RegExp(r'^(?=.*?[!@#\$&*~]).{8,}$');
+final kOneSpecialCharRegex = RegExp(r'^(?=.*?[!@#_^\$&*~]).{8,}$');
 
 final kOneUpperCaseRegex = RegExp(r'^(?=.*?[A-Z]).{8,}$');
 
