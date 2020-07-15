@@ -28,6 +28,11 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xffF2F8FF),
+        elevation: 0,
+        iconTheme: IconThemeData(color: Color(0xFF0B57A7)),
+      ),
       backgroundColor: Color(0xffF2F8FF),
       body: SafeArea(
         child: isloading == true
