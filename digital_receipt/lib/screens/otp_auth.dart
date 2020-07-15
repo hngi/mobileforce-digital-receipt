@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/screens/reset_password.dart';
 import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/services/api_service.dart';
@@ -20,6 +21,8 @@ class PinCodeVerificationScreen extends StatefulWidget {
   String email;
   String name;
   String password;
+
+  /// If Otp is for registration on Forgot password
   bool fp;
   PinCodeVerificationScreen({this.otp, this.email, this.name, this.password});
 
@@ -65,261 +68,253 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
     print(widget.password);
     return Scaffold(
       backgroundColor: Colors.white,
-      body: isLoading == true
-          ? LoadingIndicator()
-          : GestureDetector(
-              onTap: () {
-                FocusScope.of(context).requestFocus(FocusNode());
-              },
-              child: Container(
-                child: ListView(
-                  children: <Widget>[
-                    SizedBox(height: 50),
-                    Padding(
-                        padding: EdgeInsets.only(bottom: 10),
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                          height: 40,
-                        )),
-                    Padding(
-                      padding: EdgeInsets.only(top: 44, left: 16),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Verification',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 22),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          top: 10, bottom: 10, left: 18, right: 10),
-                      child: RichText(
-                        text: TextSpan(
-                            text:
-                                "An email was sent to you Enter the verification code contained in the email here",
-                            style:
-                                TextStyle(color: Colors.black54, fontSize: 17)),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      child: Form(
-                        key: formKey,
-                        child: Container(
-                          // width: MediaQuery.of(context).size.width /3,
-                          child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 20, left: 20, right: 30, bottom: 50),
-                              child: Container(
-                                child: PinCodeTextField(
-                                  length: 4,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  obsecureText: true,
-                                  animationType: AnimationType.fade,
-                                  validator: (v) {
-                                    if (v.length < 3) {
-                                      return "I'm from validator";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  pinTheme: PinTheme(
-                                    shape: PinCodeFieldShape.box,
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(10),
-                                        topRight: Radius.circular(10),
-                                        bottomLeft: Radius.circular(10),
-                                        bottomRight: Radius.circular(10)),
-                                    fieldHeight: 50,
-                                    fieldWidth: 50,
-                                  ),
-                                  animationDuration:
-                                      Duration(milliseconds: 300),
-                                  backgroundColor: Colors.white,
-                                  errorAnimationController: errorController,
-                                  autoDisposeControllers: false,
-                                  controller: textEditingController,
-                                  onCompleted: (value) async {
-                                    /*value == widget.otp
-                                        ? otpValid()
-                                        : otpError();*/
-                                  },
-                                  onChanged: (value) {
-                                    print(value);
-                                    print(widget.email);
-                                    print(widget.fp);
-                                    setState(() {
-                                      currentText = value;
-                                    });
-                                  },
-                                ),
-                              )),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 0),
-                        child: Text(
-                          hasError
-                              ? "*Please fill up all the cells properly"
-                              : "",
-                          style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                      //
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: SizedBox(
-                        width: double.infinity,
-                        height: 45,
-                        child: FlatButton(
-                          onPressed: () async {
-                            currentText == widget.otp ? otpValid() : otpError();
-                          },
-                          padding: EdgeInsets.all(10),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: isLoading
-                              ? ButtonLoadingIndicator(
-                                  color: Colors.white,
-                                  width: 20,
-                                  height: 20,
-                                )
-                              : Text(
-                                  'Continue',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Montserrat',
-                                    fontSize: 16,
-                                    letterSpacing: 0.3,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                          color: Color(0xFF0B57A7),
-                        ),
-                      ),
-                      //
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 16.0, horizontal: 30),
-                      child: ButtonTheme(
-                        height: 40,
-                        child: FlatButton(
-                          onPressed: () async {
-                            if (widget.fp == true) {
-                              try {
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                await verifyUserToResetPassword();
-                                Fluttertoast.showToast(
-                                    msg: 'OTP sent successfully',
-                                    toastLength: Toast.LENGTH_LONG,
-                                    gravity: ToastGravity.BOTTOM,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.green[600],
-                                    textColor: Colors.white,
-                                    fontSize: 13.0);
-                              } catch (error) {
-                                setState(() {
-                                  isLoading = false;
-                                });
-                                Fluttertoast.showToast(
-                                    msg: 'error occured',
-                                    toastLength: Toast.LENGTH_LONG,
-                                    gravity: ToastGravity.BOTTOM,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.green[600],
-                                    textColor: Colors.white,
-                                    fontSize: 13.0);
-                                textEditingController.clear();
-                              }
-                            } else {
-                              try {
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                String response =
-                                    await _apiService.otpVerification(
-                                        widget.email,
-                                        widget.password,
-                                        widget.name);
-                                var res = jsonDecode(response);
-                                print(res['data']['otp']);
-                                var otp = res['data']['otp'];
-                                Fluttertoast.showToast(
-                                    msg: 'OTP sent successfully',
-                                    toastLength: Toast.LENGTH_LONG,
-                                    gravity: ToastGravity.BOTTOM,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.green[600],
-                                    textColor: Colors.white,
-                                    fontSize: 13.0);
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            PinCodeVerificationScreen(
-                                                otp: otp,
-                                                email: widget.email,
-                                                password: widget.password,
-                                                name: widget.name)));
-                              } catch (error) {
-                                setState(() {
-                                  isLoading = false;
-                                });
-                                Fluttertoast.showToast(
-                                    msg: 'error occured',
-                                    toastLength: Toast.LENGTH_LONG,
-                                    gravity: ToastGravity.BOTTOM,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.green[600],
-                                    textColor: Colors.white,
-                                    fontSize: 13.0);
-                              }
-                            }
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 0, bottom: 30),
-                            child: Center(
-                                child: Text(
-                              "Resend OTP",
-                              style: TextStyle(
-                                  color: Colors.grey[700],
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold),
-                            )),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 14,
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                  ],
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Container(
+          child: ListView(
+            children: <Widget>[
+              SizedBox(height: 50),
+              Padding(
+                  padding: EdgeInsets.only(bottom: 10),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    height: 40,
+                  )),
+              Padding(
+                padding: EdgeInsets.only(top: 44, left: 16),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Verification',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
-            ),
+              Padding(
+                padding:
+                    EdgeInsets.only(top: 10, bottom: 10, left: 18, right: 10),
+                child: RichText(
+                  text: TextSpan(
+                      text:
+                          "An email was sent to you Enter the verification code contained in the email here",
+                      style: TextStyle(color: Colors.black54, fontSize: 17)),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                child: Form(
+                  key: formKey,
+                  child: Container(
+                    // width: MediaQuery.of(context).size.width /3,
+                    child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 20, left: 20, right: 30, bottom: 50),
+                        child: Container(
+                          child: PinCodeTextField(
+                            length: 4,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            obsecureText: true,
+                            animationType: AnimationType.fade,
+                            validator: (v) {
+                              if (v.length < 3) {
+                                return "I'm from validator";
+                              } else {
+                                return null;
+                              }
+                            },
+                            pinTheme: PinTheme(
+                              borderWidth: 1,
+                              shape: PinCodeFieldShape.box,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(5),
+                                  topRight: Radius.circular(5),
+                                  bottomLeft: Radius.circular(5),
+                                  bottomRight: Radius.circular(5)),
+                              fieldHeight: 50,
+                              fieldWidth: 50,
+                            ),
+                            animationDuration: Duration(milliseconds: 200),
+                            backgroundColor: Colors.white,
+                            errorAnimationController: errorController,
+                            autoDisposeControllers: false,
+                            controller: textEditingController,
+                            onCompleted: (value) async {
+                              /*value == widget.otp
+                                        ? otpValid()
+                                        : otpError();*/
+                            },
+                            onChanged: (value) {
+                              print(value);
+                              print(widget.email);
+                              print(widget.fp);
+                              setState(() {
+                                currentText = value;
+                              });
+                            },
+                          ),
+                        )),
+                  ),
+                ),
+              ),
+              Container(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 0),
+                  child: Text(
+                    hasError ? "*Please fill up all the cells properly" : "",
+                    style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+                //
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 45,
+                  child: FlatButton(
+                    onPressed: () async {
+                      if (!isLoading) {
+                        currentText == widget.otp ? otpValid() : otpError();
+                      }
+                    },
+                    padding: EdgeInsets.all(10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: isLoading
+                        ? ButtonLoadingIndicator(
+                            color: Colors.white,
+                            width: 20,
+                            height: 20,
+                          )
+                        : Text(
+                            'Continue',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Montserrat',
+                              fontSize: 16,
+                              letterSpacing: 0.3,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                    color: kPrimaryColor,
+                  ),
+                ),
+                //
+              ),
+              Container(
+                margin:
+                    const EdgeInsets.symmetric(vertical: 16.0, horizontal: 30),
+                child: ButtonTheme(
+                  height: 40,
+                  child: FlatButton(
+                    onPressed: () async {
+                      if (widget.fp == true) {
+                        try {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          await verifyUserToResetPassword();
+                          Fluttertoast.showToast(
+                              msg: 'OTP sent successfully',
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.green[600],
+                              textColor: Colors.white,
+                              fontSize: 13.0);
+                        } catch (error) {
+                          setState(() {
+                            isLoading = false;
+                          });
+                          Fluttertoast.showToast(
+                              msg: 'error occurred',
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.green[600],
+                              textColor: Colors.white,
+                              fontSize: 13.0);
+                          textEditingController.clear();
+                        }
+                      } else {
+                        try {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          String response = await _apiService.otpVerification(
+                              widget.email, widget.password, widget.name);
+                          var res = jsonDecode(response);
+                          print(res['data']['otp']);
+                          var otp = res['data']['otp'];
+                          Fluttertoast.showToast(
+                              msg: 'OTP sent successfully',
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.green[600],
+                              textColor: Colors.white,
+                              fontSize: 13.0);
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PinCodeVerificationScreen(
+                                          otp: otp,
+                                          email: widget.email,
+                                          password: widget.password,
+                                          name: widget.name)));
+                        } catch (error) {
+                          setState(() {
+                            isLoading = false;
+                          });
+                          Fluttertoast.showToast(
+                              msg: 'error occured',
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.green[600],
+                              textColor: Colors.white,
+                              fontSize: 13.0);
+                        }
+                      }
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 0, bottom: 30),
+                      child: Center(
+                          child: Text(
+                        "Resend OTP",
+                        style: TextStyle(
+                            color: Colors.grey[700],
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
+                      )),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 14,
+              ),
+              SizedBox(
+                height: 16,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -461,7 +456,6 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
   void dispose() {
     errorController.close();
     textEditingController.clear();
-
     super.dispose();
   }
 }

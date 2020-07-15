@@ -561,7 +561,6 @@ class ApiService {
     } else if (response.statusCode == 400) {
       return false;
     } else {
-      
       return null;
     }
   }
@@ -587,7 +586,7 @@ class ApiService {
           'token': token,
         },
       );
-  
+
       print(jsonDecode(response.body)['data']);
 
       dynamic res = jsonDecode(response.body)['data'] as List;
@@ -601,8 +600,9 @@ class ApiService {
           },
         );
         if (res != null) {
-        print('resid: ${res['user']}');
-          await _sharedPreferenceService.addStringToSF('Business_ID', res['id']);
+          print('resid: ${res['user']}');
+          await _sharedPreferenceService.addStringToSF(
+              'Business_ID', res['id']);
           return AccountData(
             id: res['id'],
             name: res['name'],
