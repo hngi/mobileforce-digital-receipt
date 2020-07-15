@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../constant.dart';
+
 class UpgradeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -26,21 +28,15 @@ class UpgradeScreen extends StatelessWidget {
                 Column(
                   children: <Widget>[
                     SizedBox(
-                      height: 14,
+                      height: 20,
                     ),
                     Container(
                       height: 113.0,
-                      width: 111.49,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/group52.png'),
-                          fit: BoxFit.fill,
-                        ),
-                        shape: BoxShape.rectangle,
-                      ),
+                      //width: 111.49,
+                      child: kBlush,
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
                     SizedBox(
                       child: Text(
