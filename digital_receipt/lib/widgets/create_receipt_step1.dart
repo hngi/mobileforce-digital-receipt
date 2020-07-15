@@ -412,19 +412,18 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
               height: 55,
             ),
             SubmitButton(
-              onPressed: () async {
-                var connected = await Connected().checkInternet();
-                if (!connected) {
-                  await showDialog(
-                    context: context,
-                    builder: (context) {
-                      return NoInternet();
-                    },
-                  );
 
-                  return;
-                }
-                num sum = 0;
+              onPressed: () {
+                if (products.length == 0) {
+                  Fluttertoast.showToast(
+                    msg: "You need to add at least a product before you can proceed!",
+                    fontSize: 12,
+                    toastLength: Toast.LENGTH_LONG,
+                    backgroundColor: Colors.red,
+                  );
+                }else{
+                  num sum = 0;
+
                 for (num e in pro) {
                   sum += e;
                 }
@@ -438,6 +437,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                 Provider.of<Receipt>(context, listen: false)
                     .setProducts(products);
                 widget.carouselController.animateToPage(2);
+                }
               },
               title: 'Next',
               backgroundColor: Color(0xFF0B57A7),
