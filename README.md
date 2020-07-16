@@ -1,1 +1,0 @@
-# mobileforce-digital-receipt
