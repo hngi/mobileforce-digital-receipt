@@ -4,10 +4,8 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
-import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/services/api_service.dart';
-import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/customer_dropdown.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
@@ -42,11 +40,13 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
   final TextEditingController _pNumberController = TextEditingController();
   ReceiptCategory selectedCategory;
   Customer selectedCustomer;
-  Currency selectedCurrency;
+  Currency selectedCurrency = Currency.currencyList().elementAt(0);
 
   // Needed to decide weather to create a new customer or not
   List<Customer> customers = [];
+  
   List<Currency> currency = Currency.currencyList();
+
   String _customerName, _customerEmail, _customerAddress, _customerPNumber;
 
   setCustomer() async {
@@ -555,7 +555,10 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                 height: 25,
               ),
 
-              GestureDetector(
+
+             
+              
+                GestureDetector(
                 onTap: () async {
                   showDialog(
                     context: context,
@@ -589,7 +592,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w500,
                           letterSpacing: 0.3,
-                          fontSize: 13,
+                          fontSize: 16,
                           color: Colors.black,
                         ),
                       ),
@@ -599,236 +602,226 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                   ),
                 ),
               ),
-
-              // DropdownButtonFormField(
-              // items: Currency.currencyList().map<DropdownMenuItem<Currency>>((curr) => DropdownMenuItem(value: curr, child: Row(children: <Widget>[
-              //   Text(curr.flag),
-              //   SizedBox(width:7),
-              //   Text(curr.currencyName),
-              //   SizedBox(width:7),
-              //   Text(curr.currencySymbol),
-              // ],),
-              // )).toList(),
-              // onChanged: (Currency currency) {
-              //   _changeCurrency(currency);
-              //                   },
-              //                   iconDisabledColor: Color.fromRGBO(0, 0, 0, 0.87),
-              //                   decoration: InputDecoration(
-              //                     contentPadding: EdgeInsets.all(15),
-              //                     enabledBorder: OutlineInputBorder(
-              //                       borderRadius: BorderRadius.circular(5),
-              //                       borderSide: BorderSide(
-              //                         color: Color(0xFFC8C8C8),
-              //                         width: 1.5,
-              //                       ),
-              //                     ),
-              //                     focusedBorder: OutlineInputBorder(),
-              //                     //hintText: hintText,
-              //                     hintStyle: TextStyle(
-              //                       color: Color(0xFF979797),
-              //                       fontSize: 14,
-              //                       fontWeight: FontWeight.w500,
-              //                       fontFamily: 'Montserrat',
-              //                     ),
-              //                   ),
-              //                   hint: Text(
-              //                     'Select currency',
-              //                     style: TextStyle(
-              //                       fontFamily: 'Montserrat',
-              //                       fontWeight: FontWeight.w500,
-              //                       letterSpacing: 0.3,
-              //                       fontSize: 14,
-              //                       color: Color(0xFF1B1B1B),
-              //                     ),
-              //                   ),
-              //                 ),
-              SizedBox(
-                height: 45,
-              ),
-              SubmitButton(
-                title: 'Next',
-                textColor: Colors.white,
-                backgroundColor: Color(0xFF0B57A7),
-                onPressed: () async {
-                  if (_formKey.currentState.validate() &&
-                      selectedCurrency != null) {
-                    _formKey.currentState.save();
-
-                    var connected = await Connected().checkInternet();
-                    if (!connected) {
-                      await showDialog(
-                        context: context,
-                        builder: (context) {
-                          return NoInternet();
-                        },
-                      );
-
-                      return;
-                    }
-
-                    Provider.of<Receipt>(context, listen: false)
-                        .setCategory(selectedCategory);
-
-                    Provider.of<Receipt>(context, listen: false)
-                        .setCurrency(selectedCurrency);
-
-                    if (selectedCustomer == null) {
-                      Provider.of<Receipt>(context, listen: false).setCustomer(
-                        Customer(
-                          name: _customerName,
-                          email: _customerEmail,
-                          phoneNumber: _customerPNumber,
-                          address: _customerAddress,
+             
+                // DropdownButtonFormField(
+                // items: Currency.currencyList().map<DropdownMenuItem<Currency>>((curr) => DropdownMenuItem(value: curr, child: Row(children: <Widget>[
+                //   Text(curr.flag),
+                //   SizedBox(width:7),
+                //   Text(curr.currencyName),
+                //   SizedBox(width:7),
+                //   Text(curr.currencySymbol),
+                // ],),
+                // )).toList(),
+                // onChanged: (Currency currency) {
+                //   _changeCurrency(currency);
+                //                   },
+                //                   iconDisabledColor: Color.fromRGBO(0, 0, 0, 0.87),
+                //                   decoration: InputDecoration(
+                //                     contentPadding: EdgeInsets.all(15),
+                //                     enabledBorder: OutlineInputBorder(
+                //                       borderRadius: BorderRadius.circular(5),
+                //                       borderSide: BorderSide(
+                //                         color: Color(0xFFC8C8C8),
+                //                         width: 1.5,
+                //                       ),
+                //                     ),
+                //                     focusedBorder: OutlineInputBorder(),
+                //                     //hintText: hintText,
+                //                     hintStyle: TextStyle(
+                //                       color: Color(0xFF979797),
+                //                       fontSize: 14,
+                //                       fontWeight: FontWeight.w500,
+                //                       fontFamily: 'Montserrat',
+                //                     ),
+                //                   ),
+                //                   hint: Text(
+                //                     'Select currency',
+                //                     style: TextStyle(
+                //                       fontFamily: 'Montserrat',
+                //                       fontWeight: FontWeight.w500,
+                //                       letterSpacing: 0.3,
+                //                       fontSize: 14,
+                //                       color: Color(0xFF1B1B1B),
+                //                     ),
+                //                   ),
+                //                 ), 
+                                SizedBox(
+                                  height: 45,
+                                ),
+                                SubmitButton(
+                                  title: 'Next',
+                                  textColor: Colors.white,
+                                  backgroundColor: Color(0xFF0B57A7),
+                                  onPressed: () {
+                                    if (_formKey.currentState.validate()) {
+                                      _formKey.currentState.save();
+                  
+                                      Provider.of<Receipt>(context, listen: false)
+                                          .setCategory(selectedCategory);
+                                      Provider.of<Receipt>(context, listen: false)
+                                          .setCurrency(selectedCurrency);
+                  
+                                      if (selectedCustomer == null) {
+                                        Provider.of<Receipt>(context, listen: false).setCustomer(
+                                          Customer(
+                                            name: _customerName,
+                                            email: _customerEmail,
+                                            phoneNumber: _customerPNumber,
+                                            address: _customerAddress,
+                                          ),
+                                        );
+                                      } else {
+                                        Provider.of<Receipt>(context, listen: false)
+                                            .setCustomer(selectedCustomer);
+                                      }
+                  
+                                      print(Provider.of<Receipt>(context, listen: false));
+                                      widget.carouselController.animateToPage(1);
+                                    }
+                                  },
+                                )
+                              ],
+                            ),
+                          ),
                         ),
                       );
-                    } else {
-                      Provider.of<Receipt>(context, listen: false)
-                          .setCustomer(selectedCustomer);
                     }
-
-                    print(Provider.of<Receipt>(context, listen: false));
-                    widget.carouselController.animateToPage(1);
-                  }
-                },
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _addressController.dispose();
-    _pNumberController.dispose();
-    super.dispose();
-  }
-
-  void _selectCustomerDropdown(BuildContext context,
-      {Function(Customer) onSubmit}) {
-    Dialog simpleDialog = Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: <Widget>[
-            TextFormField(
-              decoration: InputDecoration(
-                hintText: "Search customer",
-                hintStyle: TextStyle(
-                    color: Color.fromRGBO(0, 0, 0, 0.38),
-                    fontFamily: 'Montserrat'),
-                prefixIcon: IconButton(
-                  icon: Icon(Icons.search),
-                  color: Color.fromRGBO(0, 0, 0, 0.38),
-                  onPressed: () {},
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  borderSide: BorderSide(
-                    color: Color.fromRGBO(0, 0, 0, 0.12),
-                    width: 1,
-                  ),
-                ),
-                contentPadding: EdgeInsets.all(15),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  borderSide: BorderSide(
-                    color: Color(0xFFC8C8C8),
-                    width: 1.5,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: customers.length,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      onSubmit(customers[index]);
-                      Navigator.pop(context);
-                    },
-                    child: ContactCard(
-                      receiptTitle: customers[index].name,
-                      subtitle: customers[index].phoneNumber,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-    showDialog(
-        context: context, builder: (BuildContext context) => simpleDialog);
-  }
-
-  Widget ContactCard({String receiptNo, total, date, receiptTitle, subtitle}) {
-    return SizedBox(
-      child: Column(
-        children: <Widget>[
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Color(0xFF539C30),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Container(
-              margin: EdgeInsets.only(left: 5.0),
-              decoration: BoxDecoration(
-                color: Color(0xFFE2EAF3),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
-                    child: Text(
-                      "$receiptTitle",
-                      style: TextStyle(
-                        color: Color.fromRGBO(0, 0, 0, 0.87),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Montserrat',
-                        letterSpacing: 0.03,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(10.0, 5.0, 102.0, 5.0),
-                    child: Text(
-                      "$subtitle",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w100,
-                        height: 1.43,
-                        fontFamily: 'Montserrat',
-                        letterSpacing: 0.3,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-        ],
-      ),
-    );
-  }
+                  
+                    @override
+                    void dispose() {
+                      _nameController.dispose();
+                      _emailController.dispose();
+                      _addressController.dispose();
+                      _pNumberController.dispose();
+                      super.dispose();
+                    }
+                  
+                    void _selectCustomerDropdown(BuildContext context,
+                        {Function(Customer) onSubmit}) {
+                      Dialog simpleDialog = Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: "Search customer",
+                                  hintStyle: TextStyle(
+                                      color: Color.fromRGBO(0, 0, 0, 0.38),
+                                      fontFamily: 'Montserrat'),
+                                  prefixIcon: IconButton(
+                                    icon: Icon(Icons.search),
+                                    color: Color.fromRGBO(0, 0, 0, 0.38),
+                                    onPressed: () {},
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    borderSide: BorderSide(
+                                      color: Color.fromRGBO(0, 0, 0, 0.12),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  contentPadding: EdgeInsets.all(15),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC8C8C8),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              Expanded(
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: customers.length,
+                                  itemBuilder: (context, index) {
+                                    return InkWell(
+                                      onTap: () {
+                                        onSubmit(customers[index]);
+                                        Navigator.pop(context);
+                                      },
+                                      child: ContactCard(
+                                        receiptTitle: customers[index].name,
+                                        subtitle: customers[index].phoneNumber,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                      showDialog(
+                          context: context, builder: (BuildContext context) => simpleDialog);
+                    }
+                  
+                    Widget ContactCard({String receiptNo, total, date, receiptTitle, subtitle}) {
+                      return SizedBox(
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Color(0xFF539C30),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Container(
+                                margin: EdgeInsets.only(left: 5.0),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFE2EAF3),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
+                                      child: Text(
+                                        "$receiptTitle",
+                                        style: TextStyle(
+                                          color: Color.fromRGBO(0, 0, 0, 0.87),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: 'Montserrat',
+                                          letterSpacing: 0.03,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.fromLTRB(10.0, 5.0, 102.0, 5.0),
+                                      child: Text(
+                                        "$subtitle",
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w100,
+                                          height: 1.43,
+                                          fontFamily: 'Montserrat',
+                                          letterSpacing: 0.3,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  
+                    void _changeCurrency(Currency currency) {
+                      print(currency.currencyName);
+                    }
 }
