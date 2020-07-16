@@ -62,8 +62,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final appDocumentDir = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
-  Hive.registerAdapter<Customer>(CustomerAdapter());
-  await Hive.openBox<Customer>('customer');
   runApp(MyApp());
   } catch (e) {
     print("error occurd in main: $e");

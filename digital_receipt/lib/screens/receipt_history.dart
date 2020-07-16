@@ -1,9 +1,11 @@
 import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../constant.dart';
 
@@ -28,7 +30,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
 
   setSort() async {
     try {
-      var res = await _apiService.getIssued();
+      var res = await _apiService.getIssued(context);
       setState(() {
         recieptListData = res;
         receiptList = ReceiptUtil.sortReceiptByReceiptNo(recieptListData);
@@ -44,6 +46,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
 
   @override
   void initState() {
+     Provider.of<HiveDb>(context, listen: false).initReceiptHistoryBox();
     setSort();
     super.initState();
   }
@@ -199,7 +202,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
             ]),
             Expanded(
               child: FutureBuilder(
-                future: _apiService.getIssued(), // receipts from API
+                future: _apiService.getIssued(context), // receipts from API
                 builder: (context, snapshot) {
                   recieptListData = snapshot.data;
                   // If the API returns nothing it means the user has to upgrade to premium

@@ -4,11 +4,13 @@ import 'package:digital_receipt/screens/customer_list_detail.dart';
 
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/email_service.dart';
+import 'package:digital_receipt/services/hiveDb.dart';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'; 
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 // import 'customerDetails/customerDetail.dart';
@@ -26,6 +28,7 @@ class _CustomerListState extends State<CustomerList> {
 
   @override
   void initState() {
+    Provider.of<HiveDb>(context, listen: false).initCustomerBox();
     super.initState();
   }
 
@@ -129,9 +132,9 @@ class _CustomerListState extends State<CustomerList> {
                 ),
               ),
             ]),
-            Expanded(
+            Expanded( 
               child: FutureBuilder(
-                future: _apiService.getAllCustomers(), // receipts from API
+                future: _apiService.getAllCustomers(context), // receipts from API
                 builder: (context, snapshot) {
                   // If the API returns nothing it means the user has to upgrade to premium
                   // for now it doesn't validate if the user has upgraded to premium
@@ -169,29 +172,6 @@ class _CustomerListState extends State<CustomerList> {
                         ),
                       ],
                     );
-                  } else if (snapshot.data.length < 1) {
-                    return ValueListenableBuilder(
-                        valueListenable:
-                            Hive.box<Customer>('customer').listenable(),
-                        builder: (context, Box<Customer> box, _) {
-                          return Flexible(
-                          child: ListView.builder(
-                            itemCount: box.values.length,
-                            itemBuilder: (context, index) {
-                              Customer currentCustomer = box.getAt(index);
-                              return customer(
-                                  customerName: currentCustomer.name,
-                                  customerEmail: currentCustomer.email,
-                                  index: index,
-                                  phoneNumber: currentCustomer.phoneNumber,
-                                  address: currentCustomer.address,
-
-                                  // numberOfReceipts: 0,
-                                  );
-                            },
-                          ),
-                        );
-                        });
                   } else {
                     return Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
