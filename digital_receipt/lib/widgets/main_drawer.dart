@@ -118,7 +118,7 @@ class MainDrawer extends StatelessWidget {
                       },
                       child: Row(
                         children: <Widget>[
-                          Icon(Icons.history, color: Colors.white, size: 22.0),
+                          Icon(Icons.store, color: Colors.white, size: 22.0),
                           SizedBox(width: 15.0),
                           Text(
                             'Inventory',
