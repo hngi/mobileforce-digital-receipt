@@ -40,7 +40,7 @@ class _DraftsState extends State<Drafts> {
         actions: <Widget>[],
       ),
       body: FutureBuilder(
-          future: _apiService.getDraft(context), // receipts from API
+          future: _apiService.getDraft(context),// receipts from API
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               //print('Sna[hot:: ${snapshot.data}');

@@ -1,18 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 
-
-part 'customer.g.dart';
-
-@HiveType()
 class Customer extends ChangeNotifier {
-  @HiveField(0)
   String name;
-  @HiveField(1)
   String email;
-  @HiveField(2)
   String phoneNumber;
-  @HiveField(3)
   String address;
 
   Customer({
