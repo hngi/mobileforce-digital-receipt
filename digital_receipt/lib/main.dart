@@ -58,11 +58,14 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 //       enabled: !kReleaseMode,
 //     )
 void main() async {
+  try {
   WidgetsFlutterBinding.ensureInitialized();
   final appDocumentDir = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
-  
   runApp(MyApp());
+  } catch (e) {
+    print("error occurd in main: $e");
+  }
 }
 
 class MyApp extends StatelessWidget {
