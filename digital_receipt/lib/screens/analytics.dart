@@ -46,37 +46,37 @@ class _AnalyticsState extends State<Analytics> {
         ),
       ),
       body: FutureBuilder<AnalyticsData>(
-        future: generateContent(),
-        builder: (context, snapshot) {
-          Widget content;
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            content = _buildLoadingState();
-          } else if (!snapshot.hasData) {
-            // If Empty
-            content = Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
-              child: Column(
-                children: <Widget>[
-                  _buildTopContent(totalSales: '₦ 0'),
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.all(30),
-                      child: kEmpty,
+          future: generateContent(),
+          builder: (context, snapshot) {
+            Widget content;
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              content = _buildLoadingState();
+            } else if (!snapshot.hasData) {
+              // If Empty
+              content = Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
+                child: Column(
+                  children: <Widget>[
+                    _buildTopContent(totalSales: '₦ 0'),
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.all(30),
+                        child: kEmpty,
+                      ),
                     ),
-                  ),
-                  Text('There are no receipts created')
-                ],
-              ),
-            );
-          } else if (snapshot.hasData) {
-            // Contains Data
-            content = _buildGridView(snapshot.data);
-          } else {
-            // If Something went wrong
-            content = _buildLoadingState();
-          }
-          return content;
-        },
+                    Text('There are no receipts created')
+                  ],
+                ),
+              );
+            } else if (snapshot.hasData) {
+              // Contains Data
+              content = _buildGridView(snapshot.data);
+            } else {
+              // If Something went wrong
+              content = _buildLoadingState();
+            }
+            return content;
+          },
       ),
     );
   }

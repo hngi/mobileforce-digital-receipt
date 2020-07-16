@@ -12,6 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:random_color/random_color.dart';
 import '../services/email_service.dart';
+import '../utils/connected.dart';
 import '../constant.dart';
 
 final ApiService _apiService = ApiService();
@@ -39,10 +40,11 @@ class _DashBoardState extends State<DashBoard> {
   callFetch() async {
     var res = await _apiService.fetchAndSetUser();
     if (res != null) {
+     // print('res:::: ${res.phone}');
       Provider.of<Business>(context, listen: false).setAccountData = res;
       var val = Provider.of<Business>(context, listen: false).toJson();
       _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
-      print(val);
+     // print('val:: $val');
     }
   }
 
@@ -166,14 +168,14 @@ class _DashBoardState extends State<DashBoard> {
           subtitle: '₦$amnt',
           color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
-       /*  FlatButton(
+        FlatButton(
           onPressed: () async {
             var h =
                 await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
             print(h);
           },
-          child: Text('Test mail'),
-        ), */
+          child: Text('${Provider.of<Connected>(context).stream}'),
+        ),
       ],
     );
   }

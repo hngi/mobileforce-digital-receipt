@@ -7,15 +7,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
-import 'package:provider/provider.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 import '../utils/connected.dart';
 import '../services/api_service.dart';
-
-import 'dashboard.dart';
+import '../utils/connected.dart';
 import 'no_internet_connection.dart';
 import 'signupScreen.dart';
-import 'signupScreen.dart';
+
 
 class LogInScreen extends StatefulWidget {
   @override
@@ -79,11 +77,10 @@ class _LogInScreenState extends State<LogInScreen> {
                   SizedBox(
                     height: 34,
                   ),
-                  Center(
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      height: 50,
-                    ),
+                  Container(
+                    alignment: Alignment.center,
+                    height: 50,
+                    child: kLogo1,
                   ),
                   SizedBox(
                     height: 20,
@@ -234,7 +231,7 @@ class _LogInScreenState extends State<LogInScreen> {
                             emailString = _emailController.text;
                           }
 // check the internet
-                          var connected = await kInternet();
+                          var connected = await Connected().checkInternet();
                           if (!connected) {
                             await showDialog(
                               context: context,

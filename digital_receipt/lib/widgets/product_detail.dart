@@ -20,6 +20,8 @@ class _ProductDetailState extends State<ProductDetail> {
   final productDescController = TextEditingController();
   final quantityController = TextEditingController();
   final unitPriceController = TextEditingController();
+  final taxController = TextEditingController();
+  final discountController = TextEditingController();
 
   bool productAdded = false;
 
@@ -111,7 +113,38 @@ class _ProductDetailState extends State<ProductDetail> {
                                 keyboardType: TextInputType.number,
                                 controller: unitPriceController,
                               ),
-                              SizedBox(height: 15),
+                              SizedBox(height: 22),
+                              Text(
+                                'Tax',
+                                style: TextStyle(
+                                  fontFamily: 'Montserrat',
+                                  fontWeight: FontWeight.normal,
+                                  letterSpacing: 0.3,
+                                  fontSize: 13,
+                                  color: Color.fromRGBO(0, 0, 0, 0.6),
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              AppTextFieldForm(
+                                keyboardType: TextInputType.number,
+                                controller: taxController,
+                              ),
+                              SizedBox(height: 22),
+                              Text(
+                                'Discount',
+                                style: TextStyle(
+                                  fontFamily: 'Montserrat',
+                                  fontWeight: FontWeight.normal,
+                                  letterSpacing: 0.3,
+                                  fontSize: 13,
+                                  color: Color.fromRGBO(0, 0, 0, 0.6),
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              AppTextFieldForm(
+                                keyboardType: TextInputType.number,
+                                controller: discountController,
+                              ),
                               productAdded
                                   ? Center(
                                       child: Text(
@@ -139,13 +172,26 @@ class _ProductDetailState extends State<ProductDetail> {
                                             (Random().nextInt(99) + 10)
                                                 .toString(),
                                         productDesc: productDescController.text,
-                                        quantity:
-                                            int.parse(quantityController.text),
+                                        quantity: double.parse(
+                                            quantityController.text),
                                         unitPrice: double.parse(
                                             unitPriceController.text),
-                                        amount: int.parse(
-                                                quantityController.text) *
-                                            int.parse(unitPriceController.text),
+                                        amount: (double.parse(
+                                                    quantityController.text) *
+                                                double.parse(
+                                                    unitPriceController.text)) +
+                                            (double.parse(taxController.text)) -
+                                            (double.parse(
+                                                    discountController.text) /
+                                                100 *
+                                                (double.parse(quantityController
+                                                        .text) *
+                                                    double.parse(
+                                                        unitPriceController
+                                                            .text))),
+                                        tax: double.parse(taxController.text),
+                                        discount: double.parse(
+                                            discountController.text),
                                       ),
                                     );
                                     setState(() {
@@ -153,6 +199,8 @@ class _ProductDetailState extends State<ProductDetail> {
                                       productDescController..text = "";
                                       quantityController..text = "";
                                       unitPriceController..text = "";
+                                      taxController..text = "";
+                                      discountController..text = "";
                                     });
                                     Future.delayed(
                                       Duration(seconds: 1),
@@ -179,6 +227,8 @@ class _ProductDetailState extends State<ProductDetail> {
     productDescController.dispose();
     quantityController.dispose();
     unitPriceController.dispose();
+    taxController.dispose();
+    discountController.dispose();
     super.dispose();
   }
 }

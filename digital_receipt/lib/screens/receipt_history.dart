@@ -33,10 +33,8 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
       var res = await _apiService.getIssued();
       setState(() {
         recieptListData = res;
-
         receiptList = ReceiptUtil.sortReceiptByReceiptNo(recieptListData);
         copyReceiptList = receiptList;
-        // print("Receipt amount ${copyReceiptList[0].products[0].amount}");
       });
     } catch (error) {
       Fluttertoast.showToast(
@@ -356,18 +354,18 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
-                    child: Text(
-                      //receipt.products != null ?
-                      receipt?.products[0].productDesc ?? '',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w300,
-                        fontFamily: 'Montserrat',
-                        letterSpacing: 0.03,
-                      ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
+                  child: Text(
+                    //receipt.products != null ?
+                    receipt?.products[0].productDesc ?? '',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w300,
+                      fontFamily: 'Montserrat',
+                      letterSpacing: 0.03,
                     ),
                   ),
                   Align(

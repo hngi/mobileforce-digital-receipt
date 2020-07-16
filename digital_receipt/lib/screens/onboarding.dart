@@ -45,10 +45,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
               });
             },
             itemBuilder: (context, index) {
-              return SliderTile(
-                imageAssetPath: slides[index].getImageAssetPath(),
-                title: slides[index].getTitle(),
-                desc: slides[index].getDesc(),
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: SliderTile(
+                  image: slides[index].getImageAssetPath(),
+                  title: slides[index].getTitle(),
+                  desc: slides[index].getDesc(),
+                ),
               );
             }),
       ),
@@ -154,44 +157,46 @@ class _OnboardingPageState extends State<OnboardingPage> {
 }
 
 class SliderTile extends StatelessWidget {
-  String imageAssetPath, title, desc;
-  SliderTile({this.imageAssetPath, this.title, this.desc});
+  Widget image;
+  String title, desc;
+  SliderTile({this.image, this.title, this.desc});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Image.asset(imageAssetPath),
-          SizedBox(
-            height: 20,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      //crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        SizedBox(
+          
+          child: image,
+           height: MediaQuery.of(context).size.height - 400,
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            color: Color.fromRGBO(0, 0, 0, 0.87),
           ),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-              color: Color.fromRGBO(0, 0, 0, 0.87),
-            ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          desc,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontWeight: FontWeight.w300,
+            fontSize: 16,
+            letterSpacing: 0.3,
+            color: Color.fromRGBO(0, 0, 0, 0.87),
           ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            desc,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontWeight: FontWeight.w300,
-              fontSize: 16,
-              letterSpacing: 0.3,
-              color: Color.fromRGBO(0, 0, 0, 0.87),
-            ),
-          )
-        ],
-      ),
+        )
+      ],
     );
   }
 }

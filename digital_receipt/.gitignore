@@ -48,3 +48,4 @@ lib/screens/edit_account_information.dart
 lib/screens/login_screen.dart
 lib/screens/signupScreen.dart
 lib/services/api_service.dart
+pubspec.lock

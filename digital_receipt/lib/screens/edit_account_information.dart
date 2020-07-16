@@ -1,4 +1,6 @@
+import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -188,6 +190,20 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
                 });
                 _formKey.currentState.save();
                 // }
+
+                var internet = await Connected().checkInternet();
+                if (!internet) {
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return NoInternet();
+                    },
+                  );
+                  setState(() {
+                    loading = false;
+                  });
+                  return;
+                }
 
                 var email =
                     await _sharedPreferenceService.getStringValuesSF('EMAIL');

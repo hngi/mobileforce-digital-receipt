@@ -82,7 +82,7 @@ class ReceiptItem extends StatelessWidget {
                     ),
                     Container(
                       child: Text(
-                          '₦${Provider.of<Receipt>(context, listen: false).products[index].unitPrice}'
+                         Provider.of<Receipt>(context, listen: false).getCurrency().currencySymbol +'${Provider.of<Receipt>(context, listen: false).products[index].unitPrice}'
                               .toString()),
                     ),
                   ],
@@ -136,7 +136,7 @@ class ReceiptItem extends StatelessWidget {
                     )),
                     Container(
                       child: Text(
-                        '₦' +
+                        Provider.of<Receipt>(context, listen: false).getCurrency().currencySymbol +
                             Provider.of<Receipt>(context, listen: false)
                                 .products[index]
                                 .amount
