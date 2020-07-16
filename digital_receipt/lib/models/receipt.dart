@@ -288,12 +288,12 @@ class Receipt extends ChangeNotifier {
 //     final customerBox = Hive.box('customer');
 //     final receiptHistoryBox = Hive.box('receiptHistory');
 //     final draftBox = Hive.box('draft');
-    HiveDb hd = HiveDb();
-    if (issued == true) {
-      hd.addCustomer(customer);
-    } else if (issued == false) {
-      // hd.addDraft(receipt);
-    }
+    // HiveDb hd = HiveDb();
+    // if (issued == true) {
+    //   hd.addCustomer(customer);
+    // } else if (issued == false) {
+    //   // hd.addDraft(receipt);
+    // }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
     try {

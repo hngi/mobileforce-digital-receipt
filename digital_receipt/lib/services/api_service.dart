@@ -214,7 +214,7 @@ class ApiService {
   }
 
   /// This function gets all issued receipts from the database.
-  Future<List<Receipt>> getIssued() async {
+  Future<List<Receipt>> getIssued(context) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
@@ -241,6 +241,28 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
+        var res = response.data["data"] as List;
+        //print('res:::::: $res');
+
+// checks if the length of history is larger than 100 and checks for internet
+        if (res.length >= 100) {
+          List temp = res.getRange(0, 99).toList();
+          await Provider.of<HiveDb>(context, listen: false)
+              .addReceiptHistory(temp);
+
+          return Provider.of<HiveDb>(context, listen: false)
+              .getReceiptHistory();
+        } else if (res.length < 100) {
+          await Provider.of<HiveDb>(context, listen: false)
+              .addReceiptHistory(res);
+
+          return Provider.of<HiveDb>(context, listen: false)
+              .getReceiptHistory();
+        } else {
+          print('res: 9');
+          return Provider.of<HiveDb>(context, listen: false)
+              .getReceiptHistory();
+        }
         List<Receipt> issued_receipts = [];
         response.data["data"].forEach((data) {
           Receipt receipt = Receipt.fromJson(data);
@@ -252,11 +274,9 @@ class ApiService {
       } else {
         return null;
       }
-      /*  } on DioError catch (error) {
-      print(error);
-    } */
     } else {
-      return Future.error('No network Connection');
+      return Provider.of<HiveDb>(context, listen: false).getReceiptHistory() ??
+          Future.error('No network Connection');
     }
   }
 
@@ -775,7 +795,7 @@ class ApiService {
     }
   }
 
-  Future getAllCustomers() async {
+  Future getAllCustomers(context) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
@@ -795,19 +815,34 @@ class ApiService {
           },
         );
         if (response.statusCode == 200) {
-          var data = jsonDecode(response.body);
-          // Customer customer = new Customer(name:data['data'][0]['name'],email:data['data'][0]['name'],address:data['data'][0][''],phoneNumber:data['data'][0]['phoneNumber'] );
-          // customerBox.add(value)
-          return data['data'];
-        } else {
-          print("All Customers status code ${response.statusCode}");
-          return [];
-        }
+          // var res = response.data["data"] as List;
+          var res = jsonDecode(response.body)['data'];
+// checks if the length of history is larger than 100 and checks for internet
+          if (res.length >= 100) {
+            List temp = res.getRange(0, 99).toList();
+            await Provider.of<HiveDb>(context, listen: false).addCustomer(temp);
+
+            return Provider.of<HiveDb>(context, listen: false).getCustomer();
+          } else if (res.length < 100) {
+            await Provider.of<HiveDb>(context, listen: false).addCustomer(res);
+
+            return Provider.of<HiveDb>(context, listen: false).getCustomer();
+          } else {
+            print('res: 9');
+            return Provider.of<HiveDb>(context, listen: false).getCustomer();
+          }
+          } else {
+            var res = jsonDecode(response.body)['data'];
+            return res;
+          }
       }
-      return [];
     } else {
-      return [];
-    }
+      return Provider.of<HiveDb>(context, listen: false).getCustomer() ??
+          Future.error('No network Connection');
+
+      
+        }
+  
   }
 
   Future<Map<String, dynamic>> getIssuedReceipt2() async {

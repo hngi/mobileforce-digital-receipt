@@ -121,6 +121,7 @@ class _DraftsState extends State<Drafts> {
                             letterSpacing: 0.3,
                             color: Color.fromRGBO(0, 0, 0, 0.87),
                           ),
+
                         ),
                       ),
                       SizedBox(
