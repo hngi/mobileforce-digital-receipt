@@ -132,7 +132,7 @@ class _DashBoardState extends State<DashBoard> {
                         recNo = recInfo(userData)['recNo'];
                         deptIssued = recInfo(userData)['dept'];
                         amnt = recInfo(userData)['total'];
-                      });
+                     });
                     },
                     child: buildGridView(recNo, deptIssued, amnt),
                   ),

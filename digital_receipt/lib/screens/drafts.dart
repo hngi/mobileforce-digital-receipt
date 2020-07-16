@@ -17,9 +17,9 @@ class Drafts extends StatefulWidget {
 
 class _DraftsState extends State<Drafts> {
   ApiService _apiService = ApiService();
+  var draftData;
   @override
   void initState() {
-    Provider.of<HiveDb>(context, listen: false).initDraftBox();
     super.initState();
   }
 
@@ -39,90 +39,106 @@ class _DraftsState extends State<Drafts> {
         ),
         actions: <Widget>[],
       ),
-      body: FutureBuilder(
-          future: _apiService.getDraft(context), // receipts from API
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              //print('Sna[hot:: ${snapshot.data}');
-              return Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 1.5,
-                ),
-              );
-            } else if (snapshot.connectionState == ConnectionState.done &&
-                snapshot.hasData) {
-              //print('sbap:: {snapshot.data.length}');
-              return ListView.builder(
-                padding: EdgeInsets.only(
-                  top: 30,
-                  left: 16,
-                  right: 16,
-                  bottom: 16,
-                ),
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, index) {
-                  Receipt receipt = Receipt.fromJson(snapshot.data[index]);
-                  DateTime date =
-                      DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
-                  return GestureDetector(
-                    onTap: () {
-                      setReceipt(snapshot.data[index]);
-                      // print(Provider.of<Receipt>(context, listen: false));
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  ReceiptScreenFromCustomer()));
-                    },
-                    child: receiptCard(
-                        receiptNo: receipt.receiptNo,
-                        total: receipt.totalAmount,
-                        date: "${date.day}/${date.month}/${date.year}",
-                        receiptTitle: receipt.customerName,
-                        subtitle: "Crptocurrency, intro to after effects"),
-                  );
-                },
-              );
-            } else {
-              return Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      child: kBrokenHeart,
-                      height: 170,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Center(
-                      child: Text(
-                        "There are no draft receipts created!",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w300,
-                          fontSize: 16,
-                          letterSpacing: 0.3,
-                          color: Color.fromRGBO(0, 0, 0, 0.87),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          refreshDraft() async {
+            draftData = await _apiService.getDraft();
+            print(draftData);
+          }
+
+         // setState(() {
+            refreshDraft();
+         // });
+        },
+        child: FutureBuilder(
+            future: _apiService.getDraft(), // receipts from API
+            builder: (context, snapshot) {
+              draftData = snapshot.data;
+              print('Sna[hot:: ${snapshot.data}');
+              print('Sna[hot:: ${snapshot.connectionState}');
+              if (snapshot.connectionState == ConnectionState.waiting ||
+                  snapshot.data == null) {
+                //print('Sna[hot:: ${snapshot.data}');
+                return Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 1.5,
+                  ),
+                );
+              } else if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData) {
+                //print('sbap:: {snapshot.data.length}');
+                return ListView.builder(
+                  padding: EdgeInsets.only(
+                    top: 30,
+                    left: 16,
+                    right: 16,
+                    bottom: 16,
+                  ),
+                  itemCount: draftData.length,
+                  itemBuilder: (context, index) {
+                    Receipt receipt = Receipt.fromJson(draftData[index]);
+                    DateTime date =
+                        DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
+                    return GestureDetector(
+                      onTap: () {
+                        setReceipt(draftData.data[index]);
+                        // print(Provider.of<Receipt>(context, listen: false));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    ReceiptScreenFromCustomer()));
+                      },
+                      child: receiptCard(
+                          receiptNo: receipt.receiptNo,
+                          total: receipt.totalAmount,
+                          date: "${date.day}/${date.month}/${date.year}",
+                          receiptTitle: receipt.customerName,
+                          subtitle: "receipt"),
+                    );
+                  },
+                );
+              } else {
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        child: kBrokenHeart,
+                        height: 170,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Center(
+                        child: Text(
+                          "There are no draft receipts created!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 16,
+                            letterSpacing: 0.3,
+                            color: Color.fromRGBO(0, 0, 0, 0.87),
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                  ],
-                ),
-              );
-              // Center(
-              //   child: Text("There are no draft receipts created",
-              //       style: TextStyle(
-              //           fontWeight: FontWeight.bold, fontSize: 16.0)),
-              // );
-            }
+                      SizedBox(
+                        height: 30,
+                      ),
+                    ],
+                  ),
+                );
+                // Center(
+                //   child: Text("There are no draft receipts created",
+                //       style: TextStyle(
+                //           fontWeight: FontWeight.bold, fontSize: 16.0)),
+                // );
+              }
 
-            // }
-          }),
+              // }
+            }),
+      ),
     );
   }
 
