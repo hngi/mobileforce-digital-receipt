@@ -204,15 +204,6 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                 future: _apiService.getIssued(), // receipts from API
                 builder: (context, snapshot) {
                   recieptListData = snapshot.data;
-                  // If the API returns nothing it means the user has to upgrade to premium
-                  // for now it doesn't validate if the user has upgraded to premium
-                  /// If the API returns nothing it shows the dialog box `JUST FOR TESTING`
-                  ///
-                  /// Uncomment the if statement
-                  // if (!snapshot.hasData) {
-                  //   return _showAlertDialog();
-                  // }
-                  // else {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
                       child: CircularProgressIndicator(
