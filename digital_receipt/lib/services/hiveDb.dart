@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 class HiveDb extends ChangeNotifier {
-
-
   /* FOR Customer PAGE */
   Future<void> addCustomer(List customer) async {
     var customerBox = await Hive.openBox('customer');
@@ -17,7 +15,7 @@ class HiveDb extends ChangeNotifier {
   }
 
   getCustomer() async {
-     var customerBox = await Hive.openBox('customer');
+    var customerBox = await Hive.openBox('customer');
     var customer = customerBox.get('customer');
     if (customerBox != null) {
       return jsonDecode(customer);
@@ -25,18 +23,25 @@ class HiveDb extends ChangeNotifier {
   }
 
   /* FOR ReeceiptHistory PAGE */
-  Future<void> addReceiptHistory(List receipts) async {
-    var receiptHistoryBox = await Hive.openBox('receiptHistory');
+  Future<void> addReceiptHistory(receipts) async {
+    var customerBox = await Hive.openBox('receipt_history');
+    //print(customerBox);
     var res = json.encode(receipts);
-    await receiptHistoryBox.put('receiptHistory', res);
+    await customerBox.put('receipts', res);
   }
 
-  getReceiptHistory() async {
-    var receiptHistory = await Hive.openBox('receiptHistory');
-
-    var receipt = receiptHistory.get('receiptHistory');
-    if (receipt != null) {
-      return jsonDecode(receipt);
+  Future getReceiptHistory() async {
+    var receiptHistory = await Hive.openBox('receipt_history');
+    var receipts = receiptHistory.get('receipts');
+    if (receipts != null) {
+      dynamic res = jsonDecode(receipts);
+      List val = [];
+      await Future.forEach(res, (e) {
+        Receipt temp = Receipt.fromJson(e);
+        //print(temp);
+        val.add(temp);
+      });
+      return List<Receipt>.from(val);
     }
   }
 
@@ -55,7 +60,7 @@ class HiveDb extends ChangeNotifier {
   }
 
   /* FOR HOMESCREEN */
-  Future<void> addDashboardInfo( receipts) async {
+  Future<void> addDashboardInfo(receipts) async {
     var draftBox = await Hive.openBox('dashboard_info');
     var res = json.encode(receipts);
     await draftBox.put('dashboard_info', res);

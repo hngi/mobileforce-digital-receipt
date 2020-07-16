@@ -214,10 +214,9 @@ class ApiService {
   }
 
   /// This function gets all issued receipts from the database.
-  Future<List<Receipt>> getIssued() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+  Future getIssued() async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -241,39 +240,35 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        print('issued gets');
-        print(response.statusCode);
-        var res = response.data["data"] as List;
-        //print('res:::::: $res');
-
-// checks if the length of history is larger than 100 and checks for internet
-        if (res.length >= 100) {
-          List temp = res.getRange(0, 99).toList();
-          await hiveDb.addReceiptHistory(temp);
-
-          return hiveDb.getReceiptHistory();
-        } else if (res.length < 100) {
-          await hiveDb.addReceiptHistory(res);
-
-          return hiveDb.getReceiptHistory();
-        } else {
-          print('res: 9');
-          return hiveDb.getReceiptHistory();
-        }
+        /*  print(response.data["data"]);
         List<Receipt> issued_receipts = [];
-        response.data["data"].forEach((data) {
+        await Future.forEach(response.data["data"], (data) {
           Receipt receipt = Receipt.fromJson(data);
           issued_receipts.add(receipt);
         });
-        // var res = response.data["data"] as List;
-        // print('res:::::: ${res.length}');
-        return issued_receipts;
+        print(issued_receipts); */
+        /*   response.data["data"].forEach((data) {
+          
+        }); */
+
+        if (response.data["data"].length >= 100) {
+          List temp = response.data["data"].getRange(0, 99).toList();
+          await hiveDb.addReceiptHistory(temp);
+          return hiveDb.getReceiptHistory();
+        } else if (response.data["data"].length < 100) {
+          await hiveDb.addReceiptHistory(response.data["data"]);
+          //await hiveDb.getReceiptHistory();
+          return hiveDb.getReceiptHistory();
+        } else {
+          return hiveDb.getReceiptHistory();
+        }
+
+        //return issued_receipts;
       } else {
         return null;
       }
     } else {
-      return hiveDb.getReceiptHistory() ??
-          Future.error('No network Connection');
+      return hiveDb.getReceiptHistory();
     }
   }
 
