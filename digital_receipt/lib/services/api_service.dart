@@ -164,7 +164,7 @@ class ApiService {
     }
   }
 
-  Future getDraft(context) async {
+  Future getDraft() async {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -191,25 +191,25 @@ class ApiService {
         var res = response.data["data"] as List;
         //print('res:::::: $res');
 
-// checks if the length of draft is larger than 100 and checks for internet
+        // checks if the length of draft is larger than 100 and checks for internet
         if (res.length >= 100 && connectivityResult) {
           List temp = res.getRange(0, 99).toList();
-          await Provider.of<HiveDb>(context, listen: false).addDraft(temp);
+          await hiveDb.addDraft(temp);
 
-          return Provider.of<HiveDb>(context, listen: false).getDraft();
+          return hiveDb.getDraft();
         } else if (res.length < 100 && connectivityResult) {
-          await Provider.of<HiveDb>(context, listen: false).addDraft(res);
+          await hiveDb.addDraft(res);
 
-          return Provider.of<HiveDb>(context, listen: false).getDraft();
+          return hiveDb.getDraft();
         } else {
           print('res: 9');
-          return Provider.of<HiveDb>(context, listen: false).getDraft();
+          return hiveDb.getDraft();
         }
       } else {
         return null;
       }
     } else {
-      return Provider.of<HiveDb>(context, listen: false).getDraft() ?? null;
+      return hiveDb.getDraft() ?? null;
     }
   }
 

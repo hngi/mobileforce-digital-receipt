@@ -66,23 +66,16 @@ class HiveDb extends ChangeNotifier {
 
   /* FOR DRAFT PAGE */
 
-  initDraftBox() async {
-    draftBox = await Hive.openBox('draft');
-   // print('object:: $draftBox');
-    notifyListeners();
-  }
-
   Future<void> addDraft(List receipts) async {
-    print(draftBox);
+    var draftBox = await Hive.openBox('draft');
     var res = json.encode(receipts);
     await draftBox.put('draft', res);
   }
 
-  getDraft() {
+  Future getDraft() async {
+    // print('dfdf');
+    var draftBox = await Hive.openBox('draft');
     var draft = draftBox.get('draft');
-    if (draft != null) {
-      return jsonDecode(draft);
-    }
+    return json.decode(draft);
   }
-  
 }
