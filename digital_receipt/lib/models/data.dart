@@ -41,7 +41,7 @@ List<SliderModel> getSlides() {
   sliderModel.setImageAssetPath(kOnboarding);
   sliderModel.setTile("Create digital receipts");
   sliderModel.setDesc(
-      "Create digital receipts for sales on the go. Quick,easy fast process");
+      "Create digital receipts for sales on the go. Quick, easy fast process");
   slides.add(sliderModel);
 
   sliderModel = new SliderModel();
@@ -49,8 +49,7 @@ List<SliderModel> getSlides() {
   //2
   sliderModel.setImageAssetPath(kOnboarding2);
   sliderModel.setTile("Track sales");
-  sliderModel.setDesc("Keep a tab of all your sales and receipts"
-      "with our handy analytics tools");
+  sliderModel.setDesc("Keep a tab of all your sales and receipts with our handy analytics tools");
   slides.add(sliderModel);
 
   sliderModel = new SliderModel();

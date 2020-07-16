@@ -839,23 +839,25 @@ class ApiService {
   Future<Map<String, dynamic>> getIssuedReceipt2() async {
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
-    var connectivityResult = await (Connectivity().checkConnectivity());
+    var connectivityResult = await Connected().checkInternet();
     String url = '$_urlEndpoint/business/receipt/issued';
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    if (connectivityResult) {
       final http.Response res = await http.get(url, headers: <String, String>{
         "token": token,
       }).catchError((err) => print(err));
 
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
-        print(data);
-        return data;
+        //print(data);
+        await hiveDb.addDashboardInfo(data);
+        var val = await hiveDb.getDashboardInfo();
+        return val;
       } else {
         return null;
       }
     } else {
-      return null;
+      var val = await hiveDb.getDashboardInfo();
+      return val;
     }
   }
 

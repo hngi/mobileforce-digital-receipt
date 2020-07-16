@@ -14,6 +14,8 @@ class Connected with ChangeNotifier {
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         // print('connected');
         return true;
+      } else {
+        return false;
       }
     } on SocketException catch (_) {
       return false;

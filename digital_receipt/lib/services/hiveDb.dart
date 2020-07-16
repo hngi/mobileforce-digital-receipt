@@ -9,7 +9,6 @@ class HiveDb extends ChangeNotifier {
 
 
   /* FOR Customer PAGE */
-
   Future<void> addCustomer(List customer) async {
     var customerBox = await Hive.openBox('customer');
     //print(customerBox);
@@ -26,8 +25,6 @@ class HiveDb extends ChangeNotifier {
   }
 
   /* FOR ReeceiptHistory PAGE */
-
-
   Future<void> addReceiptHistory(List receipts) async {
     var receiptHistoryBox = await Hive.openBox('receiptHistory');
     var res = json.encode(receipts);
@@ -44,7 +41,6 @@ class HiveDb extends ChangeNotifier {
   }
 
   /* FOR DRAFT PAGE */
-
   Future<void> addDraft(List receipts) async {
     var draftBox = await Hive.openBox('draft');
     var res = json.encode(receipts);
@@ -55,6 +51,20 @@ class HiveDb extends ChangeNotifier {
     // print('dfdf');
     var draftBox = await Hive.openBox('draft');
     var draft = draftBox.get('draft');
+    return json.decode(draft);
+  }
+
+  /* FOR HOMESCREEN */
+  Future<void> addDashboardInfo( receipts) async {
+    var draftBox = await Hive.openBox('dashboard_info');
+    var res = json.encode(receipts);
+    await draftBox.put('dashboard_info', res);
+  }
+
+  Future getDashboardInfo() async {
+    // print('dfdf');
+    var draftBox = await Hive.openBox('dashboard_info');
+    var draft = draftBox.get('dashboard_info');
     return json.decode(draft);
   }
 }
