@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:digital_receipt/models/account.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/providers/business.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:flutter/material.dart';
@@ -40,11 +41,34 @@ class _DashBoardState extends State<DashBoard> {
   callFetch() async {
     var res = await _apiService.fetchAndSetUser();
     if (res != null) {
-     // print('res:::: ${res.phone}');
+      // print('res:::: ${res.phone}');
       Provider.of<Business>(context, listen: false).setAccountData = res;
       var val = Provider.of<Business>(context, listen: false).toJson();
       _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
-     // print('val:: $val');
+       //print('val:: $val');
+    }
+  }
+
+  Future refreshPage() async {
+    var connected = await Connected().checkInternet();
+    if (!connected) {
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return NoInternet();
+        },
+      );
+
+      //return;
+    } else {
+      await callFetch();
+      var snapshot = await _apiService.getIssuedReceipt2();
+      var userData = snapshot;
+      setState(() {
+        recNo = recInfo(userData)['recNo'];
+        deptIssued = recInfo(userData)['dept'];
+        amnt = recInfo(userData)['total'];
+      });
     }
   }
 
@@ -85,30 +109,38 @@ class _DashBoardState extends State<DashBoard> {
               if (snapshot.connectionState == ConnectionState.done &&
                   !snapshot.hasData) {
                 return Expanded(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Center(
-                        child: SizedBox(
-                      height: 200,
-                      child: kEmpty,
-                    )),
-                    SizedBox(
-                      height: 20,
+                    child: RefreshIndicator(
+                  onRefresh: () async {
+                    await refreshPage();
+                  },
+                  child: Center(
+                    child: ListView(
+                      shrinkWrap: true,
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Center(
+                            child: SizedBox(
+                          height: 200,
+                          child: kEmpty,
+                        )),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Nothing to see here. Click the plus icon to create a receipt',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color.fromRGBO(0, 0, 0, 0.6),
+                            fontSize: 16,
+                            letterSpacing: 0.03,
+                            fontWeight: FontWeight.normal,
+                            fontFamily: 'Montserrat',
+                            height: 1.43,
+                          ),
+                        )
+                      ],
                     ),
-                    Text(
-                      'Nothing to see here. Click the plus icon to create a receipt',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color.fromRGBO(0, 0, 0, 0.6),
-                        fontSize: 16,
-                        letterSpacing: 0.03,
-                        fontWeight: FontWeight.normal,
-                        fontFamily: 'Montserrat',
-                        height: 1.43,
-                      ),
-                    )
-                  ],
+                  ),
                 ));
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return Expanded(
@@ -126,13 +158,7 @@ class _DashBoardState extends State<DashBoard> {
                 return Expanded(
                   child: RefreshIndicator(
                     onRefresh: () async {
-                      var snapshot = await _apiService.getIssuedReceipt2();
-                      var userData = snapshot;
-                      setState(() {
-                        recNo = recInfo(userData)['recNo'];
-                        deptIssued = recInfo(userData)['dept'];
-                        amnt = recInfo(userData)['total'];
-                     });
+                      await refreshPage();
                     },
                     child: buildGridView(recNo, deptIssued, amnt),
                   ),

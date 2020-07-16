@@ -1,6 +1,8 @@
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/product.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -46,9 +48,21 @@ class _DraftsState extends State<Drafts> {
             print(draftData);
           }
 
-         // setState(() {
-            refreshDraft();
-         // });
+          var connected = await Connected().checkInternet();
+          if (!connected) {
+            await showDialog(
+              context: context,
+              builder: (context) {
+                return NoInternet();
+              },
+            );
+          } else {
+            await refreshDraft();
+          }
+
+          // setState(() {
+          //refreshDraft();
+          // });
         },
         child: FutureBuilder(
             future: _apiService.getDraft(), // receipts from API
@@ -121,7 +135,6 @@ class _DraftsState extends State<Drafts> {
                             letterSpacing: 0.3,
                             color: Color.fromRGBO(0, 0, 0, 0.87),
                           ),
-
                         ),
                       ),
                       SizedBox(
