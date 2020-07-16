@@ -81,7 +81,7 @@ class _DraftsState extends State<Drafts> {
                         DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
                     return GestureDetector(
                       onTap: () {
-                        setReceipt(draftData.data[index]);
+                        setReceipt(draftData[index]);
                         // print(Provider.of<Receipt>(context, listen: false));
                         Navigator.push(
                             context,
