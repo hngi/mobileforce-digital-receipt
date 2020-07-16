@@ -50,7 +50,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
   String _customerName, _customerEmail, _customerAddress, _customerPNumber;
 
   setCustomer() async {
-    dynamic res = await ApiService().getAllCustomers(context);
+    dynamic res = await ApiService().getAllCustomers();
     res = res.map(
       (e) {
         return Customer(

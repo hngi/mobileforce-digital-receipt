@@ -30,7 +30,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
 
   setSort() async {
     try {
-      var res = await _apiService.getIssued(context);
+      var res = await _apiService.getIssued();
       setState(() {
         recieptListData = res;
         receiptList = ReceiptUtil.sortReceiptByReceiptNo(recieptListData);
@@ -46,7 +46,6 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
 
   @override
   void initState() {
-     Provider.of<HiveDb>(context, listen: false).initReceiptHistoryBox();
     setSort();
     super.initState();
   }
@@ -202,7 +201,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
             ]),
             Expanded(
               child: FutureBuilder(
-                future: _apiService.getIssued(context), // receipts from API
+                future: _apiService.getIssued(), // receipts from API
                 builder: (context, snapshot) {
                   recieptListData = snapshot.data;
                   // If the API returns nothing it means the user has to upgrade to premium

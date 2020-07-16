@@ -28,7 +28,6 @@ class _CustomerListState extends State<CustomerList> {
 
   @override
   void initState() {
-    Provider.of<HiveDb>(context, listen: false).initCustomerBox();
     super.initState();
   }
 
@@ -134,7 +133,7 @@ class _CustomerListState extends State<CustomerList> {
             ]),
             Expanded( 
               child: FutureBuilder(
-                future: _apiService.getAllCustomers(context), // receipts from API
+                future: _apiService.getAllCustomers(), // receipts from API
                 builder: (context, snapshot) {
                   // If the API returns nothing it means the user has to upgrade to premium
                   // for now it doesn't validate if the user has upgraded to premium
