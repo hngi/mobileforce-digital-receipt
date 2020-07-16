@@ -323,15 +323,6 @@ class _ProductDetailState extends State<ProductDetail> {
     );
   }
 
-  /*'Bag',
-  'Bottle',
-  'Box',
-  'g',
-  'Kg',
-  'Ltr',
-  'Mtr',
-  'Pcs',
-*/
   @override
   void dispose() {
     productDescController.dispose();
