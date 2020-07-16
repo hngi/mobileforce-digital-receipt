@@ -217,7 +217,8 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                         : Column(
                             children: <Widget>[
                               SizedBox(height: 20.0),
-                              Flexible(
+                         receiptList.length != 0 &&
+                                      recieptListData.length != 0 ?    Flexible(
                                 child: ListView.builder(
                                   itemCount: receiptList.length ??
                                       recieptListData.length,
@@ -227,7 +228,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                                         recieptListData[index]);
                                   },
                                 ),
-                              ),
+                              ): Flexible(child: kEmpty),
                             ],
                           );
                   } else {
