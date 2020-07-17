@@ -832,7 +832,7 @@ class ApiService {
     }
   }
 
-  Future getAllCustomers() async {
+  Future getAllInventories() async {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
       var uri = "$_urlEndpoint/customer/all";
