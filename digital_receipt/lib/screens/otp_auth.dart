@@ -120,6 +120,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                             length: 4,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             obsecureText: true,
+                            textInputType: TextInputType.number,
                             animationType: AnimationType.fade,
                             validator: (v) {
                               if (v.length < 3) {

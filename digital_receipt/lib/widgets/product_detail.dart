@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
@@ -23,6 +24,12 @@ class _ProductDetailState extends State<ProductDetail> {
   final unitPriceController = TextEditingController();
   final taxController = TextEditingController();
   final discountController = TextEditingController();
+  final FocusNode _productDescFocus = FocusNode();
+  final FocusNode _quantityDropdownFocus = FocusNode();
+  final FocusNode _quantityFocus = FocusNode();
+  final FocusNode _unitPriceFocus = FocusNode();
+  final FocusNode _taxFocus = FocusNode();
+  final FocusNode _discountFocus = FocusNode();
 
   bool productAdded = false;
   Product product;
@@ -61,6 +68,23 @@ class _ProductDetailState extends State<ProductDetail> {
       }
     }
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    productDescController.dispose();
+    quantityController.dispose();
+    unitPriceController.dispose();
+    taxController.dispose();
+    discountController.dispose();
+
+    _productDescFocus.dispose();
+    _quantityDropdownFocus.dispose();
+    _quantityFocus.dispose();
+    _unitPriceFocus.dispose();
+    _taxFocus.dispose();
+    _discountFocus.dispose();
+    super.dispose();
   }
 
   @override
@@ -112,6 +136,11 @@ class _ProductDetailState extends State<ProductDetail> {
                       ),
                       SizedBox(height: 5),
                       AppTextFieldForm(
+                          focusNode: _productDescFocus,
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (value) => _changeFocus(
+                              from: _productDescFocus,
+                              to: _quantityDropdownFocus),
                           controller: productDescController,
                           validator: (val) {
                             if (val.length < 1) {
@@ -137,10 +166,14 @@ class _ProductDetailState extends State<ProductDetail> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
                               border: Border.all(
-                                color: Color.fromRGBO(0, 0, 0, 0.12),
+                                color: _quantityDropdownFocus.hasFocus
+                                    ? Colors.black
+                                    : Color.fromRGBO(0, 0, 0, 0.12),
                               ),
                             ),
                             child: DropdownButton<Unit>(
+                              focusColor: kPrimaryColor,
+                              focusNode: _quantityDropdownFocus,
                               value: dropdownValue,
                               hint: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -173,13 +206,19 @@ class _ProductDetailState extends State<ProductDetail> {
                               onChanged: (Unit value) {
                                 print(value);
                                 setState(() => dropdownValue = value);
-                                // No logic Implemented
+                                _changeFocus(
+                                    from: _quantityDropdownFocus,
+                                    to: _quantityFocus);
                               },
                             ),
                           ),
                           SizedBox(width: 8),
                           Expanded(
                             child: AppTextFieldForm(
+                              focusNode: _quantityFocus,
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (value) => _changeFocus(
+                                  from: _quantityFocus, to: _unitPriceFocus),
                               keyboardType: TextInputType.number,
                               controller: quantityController,
                             ),
@@ -199,6 +238,10 @@ class _ProductDetailState extends State<ProductDetail> {
                       ),
                       SizedBox(height: 5),
                       AppTextFieldForm(
+                        focusNode: _unitPriceFocus,
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (value) =>
+                            _changeFocus(from: _unitPriceFocus, to: _taxFocus),
                         keyboardType: TextInputType.number,
                         controller: unitPriceController,
                       ),
@@ -215,6 +258,10 @@ class _ProductDetailState extends State<ProductDetail> {
                       ),
                       SizedBox(height: 5),
                       AppTextFieldForm(
+                        focusNode: _taxFocus,
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (value) =>
+                            _changeFocus(from: _taxFocus, to: _discountFocus),
                         keyboardType: TextInputType.number,
                         controller: taxController,
                       ),
@@ -231,6 +278,12 @@ class _ProductDetailState extends State<ProductDetail> {
                       ),
                       SizedBox(height: 5),
                       AppTextFieldForm(
+                        focusNode: _discountFocus,
+                        textInputAction: TextInputAction.done,
+                        onFieldSubmitted: (value) {
+                          _discountFocus.unfocus();
+                          submitForm();
+                        },
                         keyboardType: TextInputType.number,
                         controller: discountController,
                       ),
@@ -255,60 +308,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         title: 'Add',
                         backgroundColor: Color(0xFF0B57A7),
                         onPressed: () {
-                          try {
-                            if (dropdownValue == null) {
-                              Fluttertoast.showToast(
-                                msg: "Add quantity unit",
-                                toastLength: Toast.LENGTH_LONG,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.red,
-                                textColor: Colors.white,
-                                fontSize: 16.0,
-                              );
-                              return;
-                            }
-                            widget.onSubmit(
-                              Product(
-                                id: productDescController.text.substring(1, 4) +
-                                    (Random().nextInt(99) + 10).toString(),
-                                productDesc: productDescController.text,
-                                quantity: double.parse(quantityController.text),
-                                unitPrice:
-                                    double.parse(unitPriceController.text),
-                                unit: dropdownValue.getShortName(
-                                    int.parse(quantityController.text)),
-                                amount: (double.parse(quantityController.text) *
-                                        double.parse(
-                                            unitPriceController.text)) +
-                                    (double.parse(taxController.text)) -
-                                    (double.parse(discountController.text) /
-                                        100 *
-                                        (double.parse(quantityController.text) *
-                                            double.parse(
-                                                unitPriceController.text))),
-                                tax: double.parse(taxController.text),
-                                discount: double.parse(discountController.text),
-                              ),
-                            );
-                            setState(() {
-                              productAdded = true;
-                              dropdownValue = null;
-                              productDescController..text = "";
-                              quantityController..text = "";
-                              unitPriceController..text = "";
-                              taxController..text = "";
-                              discountController..text = "";
-                            });
-                            Future.delayed(Duration(seconds: 1), () {
-                              setState(() {
-                                productAdded = false;
-                                product = null;
-                              });
-                            });
-                          } catch (e) {
-                            print(e);
-                          }
+                          submitForm();
                         },
                         textColor: Colors.white,
                       )
@@ -323,11 +323,63 @@ class _ProductDetailState extends State<ProductDetail> {
     );
   }
 
-  @override
-  void dispose() {
-    productDescController.dispose();
-    quantityController.dispose();
-    unitPriceController.dispose();
-    super.dispose();
+  void submitForm() {
+    FocusScope.of(context).unfocus();
+
+    try {
+      if (dropdownValue == null) {
+        Fluttertoast.showToast(
+          msg: "Add quantity unit",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        return;
+      }
+      widget.onSubmit(
+        Product(
+          id: productDescController.text.substring(1, 4) +
+              (Random().nextInt(99) + 10).toString(),
+          productDesc: productDescController.text,
+          quantity: double.parse(quantityController.text),
+          unitPrice: double.parse(unitPriceController.text),
+          unit: dropdownValue.getShortName(int.parse(quantityController.text)),
+          amount: (double.parse(quantityController.text) *
+                  double.parse(unitPriceController.text)) +
+              (double.parse(taxController.text)) -
+              (double.parse(discountController.text) /
+                  100 *
+                  (double.parse(quantityController.text) *
+                      double.parse(unitPriceController.text))),
+          tax: double.parse(taxController.text),
+          discount: double.parse(discountController.text),
+        ),
+      );
+      setState(() {
+        productAdded = true;
+        dropdownValue = null;
+        productDescController..text = "";
+        quantityController..text = "";
+        unitPriceController..text = "";
+        taxController..text = "";
+        discountController..text = "";
+      });
+      Future.delayed(Duration(seconds: 1), () {
+        setState(() {
+          productAdded = false;
+          product = null;
+        });
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void _changeFocus({FocusNode from, FocusNode to}) {
+    from.unfocus();
+    FocusScope.of(context).requestFocus(to);
   }
 }

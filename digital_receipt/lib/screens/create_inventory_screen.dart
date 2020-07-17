@@ -28,8 +28,8 @@ class _CreateInventoryState extends State<CreateInventory> {
   final _quantityControl = TextEditingController();
   final _unitPriceControl = TextEditingController();
   final _categoryControl = TextEditingController();
-  final _taxControl = TextEditingController();
-  final _discountControl = TextEditingController();
+  final _taxControl = TextEditingController()..text = '0';
+  final _discountControl = TextEditingController()..text = '0';
 
   bool loading = false;
   var status;
@@ -56,6 +56,7 @@ class _CreateInventoryState extends State<CreateInventory> {
           height: 5,
         ),
         TextFormField(
+          
           controller: _categoryControl,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
@@ -160,6 +161,7 @@ class _CreateInventoryState extends State<CreateInventory> {
           height: 5,
         ),
         TextFormField(
+          keyboardType: TextInputType.number,
           controller: _unitPriceControl,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
@@ -212,6 +214,7 @@ class _CreateInventoryState extends State<CreateInventory> {
           height: 5,
         ),
         TextFormField(
+          keyboardType: TextInputType.number,
           controller: _quantityControl,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
@@ -264,6 +267,7 @@ class _CreateInventoryState extends State<CreateInventory> {
           height: 5,
         ),
         TextFormField(
+          keyboardType: TextInputType.number,
           controller: _discountControl,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
@@ -316,6 +320,7 @@ class _CreateInventoryState extends State<CreateInventory> {
           height: 5,
         ),
         TextFormField(
+          keyboardType: TextInputType.number,
           controller: _taxControl,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
@@ -471,8 +476,8 @@ class _CreateInventoryState extends State<CreateInventory> {
                               loading = true;
                             });
                             var resp = await _apiService.addInventory(
-                                category,
-                                item,
+                                category.toUpperCase(),
+                                item.toUpperCase(),
                                 double.parse(unitPrice),
                                 double.parse(quantity),
                                 'kg');
@@ -483,9 +488,11 @@ class _CreateInventoryState extends State<CreateInventory> {
                                 _quantityControl..text = "";
                                 _unitPriceControl..text = "";
                                 _categoryControl..text = "";
+
                                 _taxControl..text = "";
                                 _discountControl..text = "";*/
                               }); 
+
                               Fluttertoast.showToast(
                                 msg: 'created successfully',
                                 toastLength: Toast.LENGTH_LONG,
