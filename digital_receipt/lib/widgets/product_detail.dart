@@ -585,7 +585,7 @@ class InventoryDialog extends StatelessWidget {
                                   child: ContactCard(
                                     receiptTitle: inventories[index].title,
                                     subtitle:
-                                        'UNIT PRICE: N ${Utils.formatNumber(inventories[index].unitPrice.round().toDouble())}',
+                                        'UNIT PRICE: N ${Utils.formatNumber(inventories[index].unitPrice.round().toDouble() ?? 0)}',
                                   ),
                                 );
                               },
