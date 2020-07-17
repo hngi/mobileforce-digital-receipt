@@ -4,10 +4,17 @@ import 'package:digital_receipt/screens/customer_list_detail.dart';
 
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/email_service.dart';
+import 'package:digital_receipt/services/hiveDb.dart';
+import 'package:digital_receipt/utils/connected.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
+
+import 'no_internet_connection.dart';
 
 // import 'customerDetails/customerDetail.dart';
 
@@ -21,6 +28,12 @@ class _CustomerListState extends State<CustomerList> {
   String dropdownValue = "Last Upadated";
 
   ApiService _apiService = ApiService();
+  var customerList;
+
+  refreshCustomerList() async {
+   customerList = await _apiService.getAllCustomers();
+    //print(res);
+  }
 
   @override
   void initState() {
@@ -128,78 +141,93 @@ class _CustomerListState extends State<CustomerList> {
               ),
             ]),
             Expanded(
-              child: FutureBuilder(
-                future: _apiService.getAllCustomers(), // receipts from API
-
-                builder: (context, snapshot) {
-                  // If the API returns nothing it means the user has to upgrade to premium
-                  // for now it doesn't validate if the user has upgraded to premium
-                  /// If the API returns nothing it shows the dialog box `JUST FOR TESTING`
-                  ///
-
-                  // print(snapshot.data);
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 1.5,
-                      ),
-                    );
-                  } else if (snapshot.connectionState == ConnectionState.done &&
-                      snapshot.hasData &&
-                      snapshot.data.length > 0) {
-                    return Column(
-                      children: <Widget>[
-                        SizedBox(height: 20.0),
-                        Flexible(
-                          child: ListView.builder(
-                            itemCount: snapshot.data.length,
-                            itemBuilder: (context, index) {
-                              return customer(
-                                  customerName: snapshot.data[index]['name'],
-                                  customerEmail: snapshot.data[index]['email'],
-                                  index: index,
-                                  phoneNumber: snapshot.data[index]
-                                      ['phoneNumber'],
-                                  address: snapshot.data[index]['address']
-
-                                  // numberOfReceipts: 0,
-                                  );
-                            },
-                          ),
-                        ),
-                      ],
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  var connected = await Connected().checkInternet();
+                  if (!connected) {
+                    await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return NoInternet();
+                      },
                     );
                   } else {
-                    return Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                    await refreshCustomerList();
+                  }
+                },
+                child: FutureBuilder(
+                  future: _apiService.getAllCustomers(), // receipts from API
+                  builder: (context, snapshot) {
+                    // If the API returns nothing it means the user has to upgrade to premium
+                    // for now it doesn't validate if the user has upgraded to premium
+                    /// If the API returns nothing it shows the dialog box `JUST FOR TESTING`
+                    ///
+                    // print(snapshot.data);
+                    customerList = snapshot.data;
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 1.5,
+                        ),
+                      );
+                    } else if (snapshot.connectionState ==
+                            ConnectionState.done &&
+                        snapshot.hasData &&
+                        snapshot.data.length > 0) {
+                      return Column(
                         children: <Widget>[
-                          kBrokenHeart,
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Center(
-                            child: Text(
-                              "You don't have any customer!",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w300,
-                                fontSize: 16,
-                                letterSpacing: 0.3,
-                                color: Color.fromRGBO(0, 0, 0, 0.87),
-                              ),
+                          SizedBox(height: 20.0),
+                          Flexible(
+                            child: ListView.builder(
+                              itemCount: customerList.length,
+                              itemBuilder: (context, index) {
+                                return customer(
+                                    customerName: customerList[index]['name'],
+                                    customerEmail: customerList[index]['email'],
+                                    index: index,
+                                    phoneNumber: customerList[index]
+                                        ['phoneNumber'],
+                                    address: customerList[index]['address']
+
+                                    // numberOfReceipts: 0,
+                                    );
+                              },
                             ),
                           ),
-                          SizedBox(
-                            height: 30,
-                          ),
                         ],
-                      ),
-                    );
-                  }
-                  // }
-                },
+                      );
+                    } else {
+                      return Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            kBrokenHeart,
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Center(
+                              child: Text(
+                                "You don't have any customer!",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 16,
+                                  letterSpacing: 0.3,
+                                  color: Color.fromRGBO(0, 0, 0, 0.87),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    // }
+                  },
+                ),
               ),
             ),
           ],

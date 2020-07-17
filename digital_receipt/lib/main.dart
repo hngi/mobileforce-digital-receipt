@@ -5,6 +5,8 @@ import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/login_screen.dart';
 import 'package:digital_receipt/screens/onboarding.dart';
 import 'package:digital_receipt/screens/setup.dart';
+import 'package:digital_receipt/services/hiveDb.dart';
+import 'package:hive/hive.dart';
 
 import 'dart:io';
 import 'utils/connected.dart';
@@ -20,6 +22,7 @@ import 'services/sql_database_client.dart';
 import 'services/shared_preference_service.dart';
 import 'services/sql_database_repository.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 
 //BACKGROUND MESSAGE HANDLER
 Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
@@ -50,10 +53,20 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
   }
 }
 
-void main() => runApp(DevicePreview(
-      builder: (_) => MyApp(),
-      enabled: !kReleaseMode,
-    ));
+// DevicePreview(
+//       builder: (_) => MyApp(),
+//       enabled: !kReleaseMode,
+//     )
+void main() async {
+  try {
+  WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentDir = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
+  runApp(MyApp());
+  } catch (e) {
+    print("error occurd in main: $e");
+  }
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -67,6 +80,9 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(
             create: (context) => Business(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => HiveDb(),
           ),
           ChangeNotifierProvider(
             create: (context) => Receipt(),
@@ -128,17 +144,17 @@ class _ScreenControllerState extends State<ScreenController> {
   }
 
   initConnect() async {
-    var id = await SharedPreferenceService().getStringValuesSF('BUSINESS_INFO');
-    print('id: $id');
+    Provider.of<Connected>(context, listen: false).init();
+    Provider.of<Connected>(context, listen: false).stream.listen((event) {
+      print(event);
+    });
   }
-
- 
 
   @override
   void initState() {
     super.initState();
-    initConnect();
-    
+    // initConnect();
+
     initSharedPreferenceDb();
     getCurrentAutoLogoutStatus();
 
@@ -200,7 +216,6 @@ class _ScreenControllerState extends State<ScreenController> {
         //INSERTING NOTIFICATION TO SQFLITE DB
       },
       onResume: (Map<String, dynamic> message) async {
-        
         print("onResume: $message");
 
         //INSERTING NOTIFICATION TO SQFLITE DB
@@ -226,7 +241,7 @@ class _ScreenControllerState extends State<ScreenController> {
         ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // await _pushNotificationService.initialise();
-          print('snapshots: ${snapshot.data}');
+          // print('snapshots: ${snapshot.data}');
 
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(
@@ -241,7 +256,7 @@ class _ScreenControllerState extends State<ScreenController> {
               snapshot.data[0] != null &&
               snapshot.data[1] != null) {
             return HomePage();
-          } else if (snapshot.data[1] == null) {
+          } else if (snapshot.data[0] != null && snapshot.data[1] == null) {
             return Setup();
           } else {
             return OnboardingPage();
@@ -249,5 +264,3 @@ class _ScreenControllerState extends State<ScreenController> {
         });
   }
 }
-
-

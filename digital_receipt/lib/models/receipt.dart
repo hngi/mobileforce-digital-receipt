@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:digital_receipt/models/currency.dart';
+import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/product.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 import 'dart:convert';
@@ -16,7 +19,9 @@ import 'dart:convert';
 SharedPreferenceService _sharedPreferenceService = SharedPreferenceService();
 enum ReceiptCategory { WHATSAPP, INSTAGRAM, FACEBOOK, TWITTER, REDIT, OTHERS }
 
-class Receipt extends ChangeNotifier {
+// part 'receipt.g.dart';
+
+class Receipt extends ChangeNotifier { 
   String receiptNo;
   bool autoGenReceiptNo = true;
   String issuedDate;
@@ -39,6 +44,7 @@ class Receipt extends ChangeNotifier {
   TimeOfDay reminderTime;
   DateTime reminderDate;
   num total;
+  Currency currency;
 
   String get descriptions {
     var desc = new StringBuffer();
@@ -61,8 +67,9 @@ class Receipt extends ChangeNotifier {
     this.customer,
     this.products,
     this.total,
+    this.currency,
   });
-  static String _urlEndpoint = 'https://hng-degeit-receipt.herokuapp.com/v1';
+  static String _urlEndpoint = 'http://degeitreceipt.pythonanywhere.com/v1';
 
   factory Receipt.fromJson(Map<String, dynamic> json) {
     ReceiptCategory convertToEnum({@required string}) {
@@ -116,6 +123,10 @@ class Receipt extends ChangeNotifier {
     return total;
   }
 
+  Currency getCurrency() {
+    return currency;
+  }
+
   void toggleAutoGenReceiptNo() {
     autoGenReceiptNo = !autoGenReceiptNo;
     notifyListeners();
@@ -128,6 +139,11 @@ class Receipt extends ChangeNotifier {
 
   set setPaidStamp(bool val) {
     paidStamp = val;
+    notifyListeners();
+  }
+
+  void setCurrency(Currency currency) {
+    this.currency = currency;
     notifyListeners();
   }
 
@@ -267,16 +283,29 @@ class Receipt extends ChangeNotifier {
     var uri = "$_urlEndpoint/business/receipt/customize";
     var token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
 
+    // Hive goes here
+// /////////////////////////////////////////////////////////////////////////////////////////////////////
+//     final customerBox = Hive.box('customer');
+//     final receiptHistoryBox = Hive.box('receiptHistory');
+//     final draftBox = Hive.box('draft');
+    // HiveDb hd = HiveDb();
+    // if (issued == true) {
+    //   hd.addCustomer(customer);
+    // } else if (issued == false) {
+    //   // hd.addDraft(receipt);
+    // }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
     try {
       var response = await http.post(uri,
           body: json.encode(toJson()),
           headers: {"token": token, "Content-Type": "application/json"});
 
-     print(token);
-       print(json.encode(toJson()));
+      print(token);
+      print(json.encode(toJson()));
       // print('${json.decode(response.body)}');
       if (response.statusCode == 200) {
-        // print(json.decode(response.body));
+        print(json.decode(response.body));
         return "Receipt saved successfully";
       } else {
         print("failed");

@@ -5,6 +5,7 @@ import 'package:connectivity/connectivity.dart';
 
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/notification.dart';
+import 'package:digital_receipt/utils/connected.dart';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
@@ -12,6 +13,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'device_info_service.dart';
 import 'shared_preference_service.dart';
 import 'package:http/http.dart' as http;
@@ -19,10 +22,13 @@ import '../models/account.dart';
 
 import '../models/receipt.dart';
 import 'package:digital_receipt/models/receipt.dart';
+import './hiveDb.dart';
+
+final HiveDb hiveDb = HiveDb();
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
-  static String _urlEndpoint = "https://hng-degeit-receipt.herokuapp.com/v1";
+  static String _urlEndpoint = "http://degeitreceipt.pythonanywhere.com/v1";
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();
@@ -65,10 +71,10 @@ class ApiService {
       }
 
       try {
-        print(email_address);
-        print(password);
-        print(fcmToken);
-        print(deviceType);
+        //print(email_address);
+        //print(password);
+        //print(fcmToken);
+        //print(deviceType);
         Response response = await _dio.post(
           "/user/login",
           data: {
@@ -98,16 +104,16 @@ class ApiService {
           _sharedPreferenceService.addStringToSF("AUTH_TOKEN", auth_token);
           _sharedPreferenceService.addStringToSF("EMAIL", email_address);
           //
-          print("token :");
-          print(auth_token);
-          print(userId);
+          //print("token :");
+          //print(auth_token);
+          //print(userId);
           return "true";
         } else {
-          print(response.data);
+          //print(response.data);
           return response.data["error"];
         }
       } on DioError catch (error) {
-        print(error);
+        //print(error);
       }
     } else {
       return Future.error('No network Connection');
@@ -145,6 +151,7 @@ class ApiService {
             Receipt receipt = Receipt.fromJson(data);
             draft_receipts.add(receipt);
           });
+
           return draft_receipts;
         } else {
           return null;
@@ -158,9 +165,8 @@ class ApiService {
   }
 
   Future getDraft() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -183,24 +189,34 @@ class ApiService {
 
       if (response.statusCode == 200) {
         var res = response.data["data"] as List;
-        print('res:::::: ${res.length}');
-        return res;
+        //print('res:::::: $res');
+
+        // checks if the length of draft is larger than 100 and checks for internet
+        if (res.length >= 100 && connectivityResult) {
+          List temp = res.getRange(0, 99).toList();
+          await hiveDb.addDraft(temp);
+
+          return hiveDb.getDraft();
+        } else if (res.length < 100 && connectivityResult) {
+          await hiveDb.addDraft(res);
+
+          return hiveDb.getDraft();
+        } else {
+          print('res: 9');
+          return hiveDb.getDraft();
+        }
       } else {
         return null;
       }
-      /*  } on DioError catch (error) {
-      print(error);
-    } */
     } else {
-      return Future.error('No network Connection');
+      return hiveDb.getDraft() ?? null;
     }
   }
 
   /// This function gets all issued receipts from the database.
-  Future<List<Receipt>> getIssued() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+  Future getIssued() async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -224,22 +240,35 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
+        /*  print(response.data["data"]);
         List<Receipt> issued_receipts = [];
-        response.data["data"].forEach((data) {
+        await Future.forEach(response.data["data"], (data) {
           Receipt receipt = Receipt.fromJson(data);
           issued_receipts.add(receipt);
         });
-        // var res = response.data["data"] as List;
-        // print('res:::::: ${res.length}');
-        return issued_receipts;
+        print(issued_receipts); */
+        /*   response.data["data"].forEach((data) {
+          
+        }); */
+
+        if (response.data["data"].length >= 100) {
+          List temp = response.data["data"].getRange(0, 99).toList();
+          await hiveDb.addReceiptHistory(temp);
+          return hiveDb.getReceiptHistory();
+        } else if (response.data["data"].length < 100) {
+          await hiveDb.addReceiptHistory(response.data["data"]);
+          //await hiveDb.getReceiptHistory();
+          return hiveDb.getReceiptHistory();
+        } else {
+          return hiveDb.getReceiptHistory();
+        }
+
+        //return issued_receipts;
       } else {
         return null;
       }
-      /*  } on DioError catch (error) {
-      print(error);
-    } */
     } else {
-      return Future.error('No network Connection');
+      return hiveDb.getReceiptHistory();
     }
   }
 
@@ -441,9 +470,8 @@ class ApiService {
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
-      var resp = await http.get(
-          'https://hng-degeit-receipt.herokuapp.com/v1/business/user/all',
-          headers: {"token": token});
+      var resp = await http
+          .get('$_urlEndpoint/business/user/all', headers: {"token": token});
       var result;
       resp.statusCode == 200
           ? result = json.decode(resp.body)["data"] as List
@@ -561,7 +589,6 @@ class ApiService {
     } else if (response.statusCode == 400) {
       return false;
     } else {
-      
       return null;
     }
   }
@@ -577,20 +604,20 @@ class ApiService {
 
     var email = await _sharedPreferenceService.getStringValuesSF('EMAIL');
 
-    var connectivityResult = await (Connectivity().checkConnectivity());
+    var connectivityResult = await Connected().checkInternet();
 
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    print(connectivityResult);
+    if (connectivityResult) {
       var response = await http.get(
         url,
         headers: <String, String>{
           'token': token,
         },
       );
-  
-      print(jsonDecode(response.body)['data']);
 
-      dynamic res = jsonDecode(response.body)['data'] as List;
+      dynamic res = jsonDecode(response.body);
+
+      res = res['data'] as List;
 
       if (response.statusCode == 200) {
         print(response.statusCode);
@@ -601,35 +628,59 @@ class ApiService {
           },
         );
         if (res != null) {
-        print('resid: ${res['user']}');
-          await _sharedPreferenceService.addStringToSF('Business_ID', res['id']);
+          print('resid: {res}');
+          await _sharedPreferenceService.addStringToSF(
+              'Business_ID', res['id']);
           return AccountData(
             id: res['id'],
             name: res['name'],
             phone: res['phone_number'],
             address: res['address'],
             slogan: res['slogan'],
-            logo: 'https://hng-degeit-receipt.herokuapp.com${res['logo']}',
+            logo: 'http://degeitreceipt.pythonanywhere.com${res['logo']}',
+            email: email,
+          );
+        } else {
+          var result =
+              await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
+          var res = jsonDecode(result);
+          return AccountData(
+            id: res['id'] ?? '',
+            name: res['name'] ?? '',
+            phone: res['phone'] ?? '',
+            address: res['address'] ?? '',
+            slogan: res['slogan'] ?? '',
+            logo: 'https://degeit-receipt.herokuapp.com${res['logo']}' ?? '',
             email: email,
           );
         }
-        return null;
       } else {
         var result =
             await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
         var res = jsonDecode(result);
         return AccountData(
-          id: res['id'],
-          name: res['name'],
-          phone: res['phone_number'],
-          address: res['address'],
-          slogan: res['slogan'],
-          logo: 'https://degeit-receipt.herokuapp.com${res['logo']}',
+          id: res['id'] ?? '',
+          name: res['name'] ?? '',
+          phone: res['phone'] ?? '',
+          address: res['address'] ?? '',
+          slogan: res['slogan'] ?? '',
+          logo: 'https://degeit-receipt.herokuapp.com${res['logo']}' ?? '',
           email: email,
         );
       }
     } else {
-      return null;
+      var result =
+          await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
+      var res = jsonDecode(result);
+      return AccountData(
+        id: res['id'] ?? '',
+        name: res['name'] ?? '',
+        phone: res['phone'] ?? '',
+        address: res['address'] ?? '',
+        slogan: res['slogan'] ?? '',
+        logo: 'https://degeit-receipt.herokuapp.com${res['logo']}' ?? '',
+        email: email,
+      );
     }
   }
 
@@ -674,6 +725,7 @@ class ApiService {
         //log(response.body);
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
+          print('data: $data');
           try {
             //log(response.body);
             data["data"].forEach((receipt) {
@@ -755,45 +807,54 @@ class ApiService {
           },
         );
         if (response.statusCode == 200) {
-          var data = jsonDecode(response.body);
-          //print(data);
-          /*   data["data"].forEach((customer) {
-          _allCustomers.add(Customer.fromJson(customer));
-          Customer.fromJson(customer).toString();
-        }); */
-          //print(data['data']);
-          return data['data'];
+          // var res = response.data["data"] as List;
+          var res = jsonDecode(response.body)['data'];
+// checks if the length of history is larger than 100 and checks for internet
+          if (res.length >= 100) {
+            List temp = res.getRange(0, 99).toList();
+            await hiveDb.addCustomer(temp);
+
+            return hiveDb.getCustomer();
+          } else if (res.length < 100) {
+            await hiveDb.addCustomer(res);
+
+            return hiveDb.getCustomer();
+          } else {
+            print('res: 9');
+            return hiveDb.getCustomer();
+          }
         } else {
-          print("All Customers status code ${response.statusCode}");
-          return [];
+          var res = jsonDecode(response.body)['data'];
+          return res;
         }
       }
-      return [];
     } else {
-      return [];
+      return hiveDb.getCustomer() ?? Future.error('No network Connection');
     }
   }
 
   Future<Map<String, dynamic>> getIssuedReceipt2() async {
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
-    var connectivityResult = await (Connectivity().checkConnectivity());
+    var connectivityResult = await Connected().checkInternet();
     String url = '$_urlEndpoint/business/receipt/issued';
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    if (connectivityResult) {
       final http.Response res = await http.get(url, headers: <String, String>{
         "token": token,
       }).catchError((err) => print(err));
 
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
-        print(data);
-        return data;
+        //print(data);
+        await hiveDb.addDashboardInfo(data);
+        var val = await hiveDb.getDashboardInfo();
+        return val;
       } else {
         return null;
       }
     } else {
-      return null;
+      var val = await hiveDb.getDashboardInfo();
+      return val;
     }
   }
 
@@ -839,6 +900,49 @@ class ApiService {
       return 'false';
     } else {
       return 'false';
+    }
+  }
+
+  Future googleSignup(String token, String email_address) async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      String fcmToken = await _firebaseMessaging.getToken();
+      String deviceType;
+      //Check deviceType
+      if (Device.get().isAndroid) {
+        deviceType = 'andriod';
+      } else if (Device.get().isIos) {
+        deviceType = 'ios';
+      }
+
+      var uri = 'http://degeitreceipt.pythonanywhere.com/google';
+      var response = await http.post(
+        uri,
+        body: {
+          "deviceType": "$deviceType",
+          "registration_id": "$fcmToken ",
+          "token": "$token"
+        },
+      );
+      print(response.body);
+      print(response.statusCode);
+      print(token);
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        String userId = data["data"]["_id"];
+        // userID = userId;
+        String auth_token = data["data"]["auth_token"];
+
+        //Save details to Shared Preference
+        _sharedPreferenceService.addStringToSF("USER_ID", userId);
+        _sharedPreferenceService.addStringToSF("AUTH_TOKEN", auth_token);
+        _sharedPreferenceService.addStringToSF("EMAIL", email_address);
+        return 'true';
+      }
+      return 'false';
+    } else {
+      return Future.value();
     }
   }
 }

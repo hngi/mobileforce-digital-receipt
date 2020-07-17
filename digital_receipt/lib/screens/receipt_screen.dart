@@ -7,6 +7,8 @@ import 'package:digital_receipt/providers/business.dart';
 import 'package:digital_receipt/screens/generate_pdf.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/email_service.dart';
+import 'package:digital_receipt/services/hiveDb.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:digital_receipt/widgets/receipt_item.dart';
@@ -20,6 +22,7 @@ import 'package:pdf/pdf.dart';
 import 'package:provider/provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../constant.dart';
+import 'no_internet_connection.dart';
 
 final pdf = pw.Document();
 
@@ -481,7 +484,9 @@ Widget ReceiptScreenLayout(
                               Padding(
                                 padding: const EdgeInsets.only(top: 15.0),
                                 child: Text(
-                                  '₦' +
+                                  Provider.of<Receipt>(context, listen: false)
+                                          .getCurrency()
+                                          .currencySymbol +
                                       Provider.of<Receipt>(context,
                                               listen: false)
                                           .getTotal()
@@ -612,7 +617,17 @@ Widget ReceiptScreenLayout(
                 color: Colors.white, height: 20, width: 20),
         onPressed: () async {
           loadingStart();
-
+          var connected = await Connected().checkInternet();
+          if (!connected) {
+            await showDialog(
+              context: context,
+              builder: (context) {
+                return NoInternet();
+              },
+            );
+            loadingStop();
+            return;
+          }
           var res = await sendPDF(context);
           if (res != null) {
             // Provider.of<Receipt>(context, listen: false).showJson();

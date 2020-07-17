@@ -1,8 +1,11 @@
 import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/models/receipt.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../constant.dart';
 
@@ -18,7 +21,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
   bool _showDialog = false;
   //instead of dummyReceiptList use the future data gotten
   List<Receipt> receiptList = [];
-     
+
   // the below is needed so as to create a copy of the list,
   //for sorting and searching functionalities
   List<Receipt> copyReceiptList = [];
@@ -26,12 +29,19 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
   ApiService _apiService = ApiService();
 
   setSort() async {
-    var res = await _apiService.getIssued();
-    setState(() {
-      recieptListData = res;
-      receiptList =  ReceiptUtil.sortReceiptByReceiptNo(recieptListData);
-       copyReceiptList = receiptList;
-    });
+    try {
+      var res = await _apiService.getIssued();
+      setState(() {
+        recieptListData = res;
+        receiptList = ReceiptUtil.sortReceiptByReceiptNo(recieptListData);
+        copyReceiptList = receiptList;
+      });
+    } catch (error) {
+      Fluttertoast.showToast(
+          msg: 'error, try again ',
+          backgroundColor: Colors.red,
+          toastLength: Toast.LENGTH_LONG);
+    }
   }
 
   @override
@@ -194,15 +204,6 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                 future: _apiService.getIssued(), // receipts from API
                 builder: (context, snapshot) {
                   recieptListData = snapshot.data;
-                  // If the API returns nothing it means the user has to upgrade to premium
-                  // for now it doesn't validate if the user has upgraded to premium
-                  /// If the API returns nothing it shows the dialog box `JUST FOR TESTING`
-                  ///
-                  /// Uncomment the if statement
-                  // if (!snapshot.hasData) {
-                  //   return _showAlertDialog();
-                  // }
-                  // else {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
                       child: CircularProgressIndicator(
@@ -216,7 +217,8 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                         : Column(
                             children: <Widget>[
                               SizedBox(height: 20.0),
-                              Flexible(
+                         receiptList.length != 0 &&
+                                      recieptListData.length != 0 ?    Flexible(
                                 child: ListView.builder(
                                   itemCount: receiptList.length ??
                                       recieptListData.length,
@@ -226,7 +228,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                                         recieptListData[index]);
                                   },
                                 ),
-                              ),
+                              ): Flexible(child: kEmpty),
                             ],
                           );
                   } else {
@@ -333,7 +335,6 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                   child: Text(
-
                     //receipt.products != null ?
                     receipt?.products[0].productDesc ?? '',
                     style: TextStyle(
