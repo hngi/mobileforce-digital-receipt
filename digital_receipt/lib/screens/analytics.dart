@@ -8,10 +8,13 @@ import 'package:intl/intl.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:random_color/random_color.dart';
+import 'package:digital_receipt/services/hiveDb.dart';
+import 'package:connectivity/connectivity.dart';
 import '../constant.dart';
 import '../widgets/analytics_card.dart';
 
 final ApiService _apiService = ApiService();
+final HiveDb hiveDb = HiveDb();
 
 class Analytics extends StatefulWidget {
   @override
@@ -21,8 +24,54 @@ class Analytics extends StatefulWidget {
 class _AnalyticsState extends State<Analytics> {
   final numberFormat = new NumberFormat("₦#,##0.#", "en_US");
 
+  // Future<AnalyticsData> generateContent() async {
+  //   List<Receipt> issuedReceipts = await _apiService.getIssuedReceipts();
+  //   if (issuedReceipts != null && issuedReceipts.length > 0) {
+  //     return await generateDataFromReceipts(issuedReceipts);
+  //   } else {
+  //     return Future.value();
+  //   }
+  // }
+
+  Future<List<Receipt>> getReceipts() async {
+    // Receipts from API/database
+    List<Receipt> issuedReceipts = [];
+    // Receipts from Local Database
+    List<Receipt> issuedReceiptsDB = [];
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      // gets receipts from API
+      Map receiptsAPI = await _apiService.getIssuedReceipt2();
+      // Convert API/database data to a receipt
+      receiptsAPI['data'].forEach((receipt) {
+        issuedReceipts.add(Receipt.fromJson(receipt));
+      });
+      //  stores API/database data into local database
+      await hiveDb.addReceiptAnalytic(receiptsAPI['data']);
+      //  gets data from local database
+      List receiptsFromDB = await hiveDb.getAnalyticData();
+      // Convert local database data to a receipt
+      receiptsFromDB.forEach((receipt) {
+        issuedReceiptsDB.add(Receipt.fromJson(receipt));
+      });
+
+      issuedReceipts = issuedReceiptsDB;
+    } else {
+      //  gets data from local database
+      List receiptsFromDB = await hiveDb.getAnalyticData();
+      // Convert local database data to a receipt
+      receiptsFromDB.forEach((receipt) {
+        issuedReceipts.add(Receipt.fromJson(receipt));
+      });
+      issuedReceipts = issuedReceipts;
+    }
+    return issuedReceipts;
+  }
+
   Future<AnalyticsData> generateContent() async {
-    List<Receipt> issuedReceipts = await _apiService.getIssuedReceipts();
+    List<Receipt> issuedReceipts = await getReceipts();
     if (issuedReceipts != null && issuedReceipts.length > 0) {
       return await generateDataFromReceipts(issuedReceipts);
     } else {
@@ -46,37 +95,37 @@ class _AnalyticsState extends State<Analytics> {
         ),
       ),
       body: FutureBuilder<AnalyticsData>(
-          future: generateContent(),
-          builder: (context, snapshot) {
-            Widget content;
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              content = _buildLoadingState();
-            } else if (!snapshot.hasData) {
-              // If Empty
-              content = Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
-                child: Column(
-                  children: <Widget>[
-                    _buildTopContent(totalSales: '₦ 0'),
-                    Expanded(
-                      child: Container(
-                        margin: EdgeInsets.all(30),
-                        child: kEmpty,
-                      ),
+        future: generateContent(),
+        builder: (context, snapshot) {
+          Widget content;
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            content = _buildLoadingState();
+          } else if (!snapshot.hasData) {
+            // If Empty
+            content = Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
+              child: Column(
+                children: <Widget>[
+                  _buildTopContent(totalSales: '₦ 0'),
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.all(30),
+                      child: kEmpty,
                     ),
-                    Text('There are no receipts created')
-                  ],
-                ),
-              );
-            } else if (snapshot.hasData) {
-              // Contains Data
-              content = _buildGridView(snapshot.data);
-            } else {
-              // If Something went wrong
-              content = _buildLoadingState();
-            }
-            return content;
-          },
+                  ),
+                  Text('There are no receipts created')
+                ],
+              ),
+            );
+          } else if (snapshot.hasData) {
+            // Contains Data
+            content = _buildGridView(snapshot.data);
+          } else {
+            // If Something went wrong
+            content = _buildLoadingState();
+          }
+          return content;
+        },
       ),
     );
   }
