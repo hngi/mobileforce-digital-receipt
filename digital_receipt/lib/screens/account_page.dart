@@ -108,50 +108,57 @@ class _AccountPageState extends State<AccountPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Center(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => UpgradeScreen()));
-                  },
-                  child: Container(
-                    height: 133,
-                    width: double.infinity,
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Color(0xFF76DBC9)
-                        /*  gradient: LinearGradient(
-                          colors: [Colors.teal[100], Colors.teal[300]],
-                          begin: Alignment.topRight,
-                          end: Alignment.bottomLeft,
-                        ) */
-                        ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Text(
-                              'Unlock Amazing Features',
-                              style: CustomText.displayn,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              'Upgrade to premium',
-                              style: CustomText.display1,
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+            children: <Widget>[ 
+
+//////////////////////////////// 
+///please do no delet this comment #Francis
+/////////////////////////////////////////////
+              // Center(
+              //   child: GestureDetector(
+              //     onTap: () {
+              //       Navigator.push(context,
+              //           MaterialPageRoute(builder: (_) => UpgradeScreen()));
+              //     },
+              //     child: Container(
+              //       height: 133,
+              //       width: double.infinity,
+              //       padding: EdgeInsets.all(10),
+              //       decoration: BoxDecoration(
+              //           borderRadius: BorderRadius.circular(5),
+              //           color: Color(0xFF76DBC9)
+              //           /*  gradient: LinearGradient(
+              //             colors: [Colors.teal[100], Colors.teal[300]],
+              //             begin: Alignment.topRight,
+              //             end: Alignment.bottomLeft,
+              //           ) */
+              //           ),
+              //       child: Column(
+              //         mainAxisAlignment: MainAxisAlignment.center,
+              //         children: <Widget>[
+              //           Column(
+              //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //             children: <Widget>[
+              //               Text(
+              //                 'Unlock Amazing Features',
+              //                 style: CustomText.displayn,
+              //               ),
+              //               SizedBox(
+              //                 height: 5,
+              //               ),
+              //               Text(
+              //                 'Upgrade to premium',
+              //                 style: CustomText.display1,
+              //               )
+              //             ],
+              //           )
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
+//////////////////////////////// 
+///please do no delet this comment #Francis
+/////////////////////////////////////////////
               SizedBox(
                 height: 45,
               ),
