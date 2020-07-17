@@ -994,19 +994,18 @@ class ApiService {
     double price,
     double quantity,
     String unit,
-
   ) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
       var uri = '$_urlEndpoint/business/inventory/add';
-       String token =
-        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
       var response = await http.post(
         uri,
-        headers: {"token":token},
+        headers: {"token": token},
         body: {
-          "category_name": "$category", 
+          "category_name": "$category",
           "product_name": "$productName",
           "quantity": "$quantity",
           "price": "$price",
