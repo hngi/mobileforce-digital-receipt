@@ -53,7 +53,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 child: Text("Sort By"),
               ),
               Container(
-                width: 150,
+                width: MediaQuery.of(context).size.width - 110,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(
@@ -98,13 +98,13 @@ class _InventoryScreenState extends State<InventoryScreen> {
                   SizedBox(height: 20.0),
                   Flexible(
                     child: ListView.builder(
-                      itemCount: 2,
+                      itemCount: 1,
                       itemBuilder: (context, index) {
                         return _buildInventoryItem(
-                          header: 'Shoes',
+                          // header: 'Shoes',
                           color: Colors.red,
                           items: List<Inventory>.generate(
-                            4,
+                            6,
                             (index) => Inventory(
                                 category: 'Shoe',
                                 title: 'Nike Air Max',
@@ -127,7 +127,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
   }
 
   Widget _buildInventoryItem(
-      {final String header, final List items, Color color}) {
+      {final List items, Color color}) {
     Widget _buildInventory(Inventory inventory) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 15),
@@ -308,17 +308,17 @@ class _InventoryScreenState extends State<InventoryScreen> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            '$header',
-            style: TextStyle(
-              fontFamily: 'Montserrat',
-              color: Color.fromRGBO(0, 0, 0, 0.87),
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.3,
-              fontSize: 22,
-              //color: Colors.white,
-            ),
-          ),
+          // Text(
+          //   '$header',
+          //   style: TextStyle(
+          //     fontFamily: 'Montserrat',
+          //     color: Color.fromRGBO(0, 0, 0, 0.87),
+          //     fontWeight: FontWeight.w600,
+          //     letterSpacing: 0.3,
+          //     fontSize: 22,
+          //     //color: Colors.white,
+          //   ),
+          // ),
           SizedBox(
             height: 20,
           ),
