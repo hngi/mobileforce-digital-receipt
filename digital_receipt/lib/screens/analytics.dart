@@ -4,6 +4,7 @@ import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:intl/intl.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:flutter/material.dart';
@@ -183,7 +184,7 @@ class _AnalyticsState extends State<Analytics> {
             FittedBox(
               fit: BoxFit.fitWidth,
               child: Text(
-                '$subTitle',
+                '₦$subTitle',
                 textScaleFactor: 0.8,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -219,7 +220,8 @@ class _AnalyticsState extends State<Analytics> {
     List<Widget> items = [];
     RandomColor _color = RandomColor();
     data.gridItems.forEach((key, value) {
-      items.add(buildCard(key, numberFormat.format(value),
+    //print(value);
+      items.add(buildCard(key, Utils.formatNumber(value),
           _color.randomColor(colorBrightness: ColorBrightness.light)));
     });
     return SingleChildScrollView(

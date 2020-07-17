@@ -1,5 +1,6 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:digital_receipt/models/customer.dart';
+import 'package:digital_receipt/models/inventory.dart';
 
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/login_screen.dart';
@@ -59,10 +60,10 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 //     )
 void main() async {
   try {
-  WidgetsFlutterBinding.ensureInitialized();
-  final appDocumentDir = await getApplicationDocumentsDirectory();
-  Hive.init(appDocumentDir.path);
-  runApp(MyApp());
+    WidgetsFlutterBinding.ensureInitialized();
+    final appDocumentDir = await getApplicationDocumentsDirectory();
+    Hive.init(appDocumentDir.path);
+    runApp(MyApp());
   } catch (e) {
     print("error occurd in main: $e");
   }
@@ -89,6 +90,9 @@ class MyApp extends StatelessWidget {
           ),
           ChangeNotifierProvider(
             create: (context) => Customer(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Inventory(),
           ),
           ChangeNotifierProvider(
             create: (context) => Connected(),

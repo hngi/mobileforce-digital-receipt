@@ -239,6 +239,7 @@ class Receipt extends ChangeNotifier {
           "deleted": false,
           "partPayment": partPayment,
           "partPaymentDateTime": convertToDateTime(),
+          "currency": currency.toString() ?? '₦'
         },
         "products": products,
       };
