@@ -482,15 +482,17 @@ class _CreateInventoryState extends State<CreateInventory> {
                                 double.parse(quantity),
                                 'kg');
                             if (resp == 'true') {
-                              setState(() {
+                               setState(() {
                                 loading = false;
-                                 _itemControl..text="";
+                               /*  _itemControl..text="";
                                 _quantityControl..text = "";
                                 _unitPriceControl..text = "";
                                 _categoryControl..text = "";
-                                _taxControl..text = "0";
-                                _discountControl..text = "0";
-                              });
+
+                                _taxControl..text = "";
+                                _discountControl..text = "";*/
+                              }); 
+
                               Fluttertoast.showToast(
                                 msg: 'created successfully',
                                 toastLength: Toast.LENGTH_LONG,
