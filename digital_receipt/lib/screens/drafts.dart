@@ -3,6 +3,7 @@ import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/utils/connected.dart';
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -295,7 +296,7 @@ class _DraftsState extends State<Drafts> {
                               ),
                             ),
                             TextSpan(
-                              text: ' N$total ',
+                              text: ' N${Utils.formatNumber(total)} ',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,

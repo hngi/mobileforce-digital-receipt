@@ -1,6 +1,7 @@
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/screens/create_inventory_screen.dart';
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 
 class InventoryScreen extends StatefulWidget {
@@ -182,7 +183,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                               height: 6,
                             ),
                             Text(
-                              "N ${inventory.unitPrice.round()}",
+                              "N ${Utils.formatNumber(inventory.unitPrice.round().toDouble())}",
                               style: TextStyle(
                                 color: Color.fromRGBO(0, 0, 0, 0.87),
                                 fontSize: 14,
@@ -213,7 +214,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                               height: 6,
                             ),
                             Text(
-                              "${inventory.quantity}%",
+                              "${Utils.formatNumber(inventory.quantity.toDouble())}%",
                               style: TextStyle(
                                 color: Color.fromRGBO(0, 0, 0, 0.87),
                                 fontSize: 14,
@@ -244,7 +245,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                               height: 6,
                             ),
                             Text(
-                              "${inventory.discount}%",
+                              "${Utils.formatNumber(inventory.discount.toDouble())}%",
                               style: TextStyle(
                                 color: Color.fromRGBO(0, 0, 0, 0.87),
                                 fontSize: 14,
@@ -275,7 +276,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                               height: 6,
                             ),
                             Text(
-                              "${inventory.tax}",
+                              "${Utils.formatNumber(inventory.tax.toDouble())}",
                               style: TextStyle(
                                 color: Color.fromRGBO(0, 0, 0, 0.87),
                                 fontSize: 14,

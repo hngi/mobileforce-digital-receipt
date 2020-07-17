@@ -22,6 +22,7 @@ import 'package:digital_receipt/models/account.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/providers/business.dart';
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
@@ -413,7 +414,7 @@ class Invoice {
                 width: 15,
               ),
               pw.Container(
-                child: pw.Text('₦${thisProduct.unitPrice}'),
+                child: pw.Text('₦${Utils.formatNumber(thisProduct.unitPrice)}'),
               ),
             ],
           ),
@@ -477,7 +478,7 @@ class Invoice {
               )),
               pw.Container(
                 child: pw.Text(
-                  '₦${thisProduct.amount}',
+                  '₦${Utils.formatNumber(thisProduct.amount)}',
                   style: pw.TextStyle(
                     color: PdfColors.black,
                     fontSize: 14,
@@ -525,7 +526,7 @@ class Invoice {
               pw.Padding(
                 padding: const pw.EdgeInsets.only(top: 15.0),
                 child: pw.Text(
-                  '₦${_total.toString()}',
+                  '₦${Utils.formatNumber(_total)}',
                   style: pw.TextStyle(
                     color: PdfColors.black,
                     fontSize: 14,
