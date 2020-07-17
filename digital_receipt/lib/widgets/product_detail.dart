@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/product.dart';
+import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +59,7 @@ class _ProductDetailState extends State<ProductDetail> {
 
   @override
   void initState() {
+    ApiService().getAllInventories();
     product = widget.product;
     if (product != null) {
       productDescController.text = product.productDesc;
@@ -97,8 +100,8 @@ class _ProductDetailState extends State<ProductDetail> {
     productDescController.text = selectedInventory.title;
     quantityController.text = '1';
     unitPriceController.text = selectedInventory.unitPrice.round().toString();
-    taxController.text = selectedInventory.tax.round().toString();
-    discountController.text = selectedInventory.discount.round().toString();
+    taxController.text = selectedInventory.tax?.round().toString();
+    discountController.text = selectedInventory.discount?.round().toString();
     if (selectedInventory.unit != null) {
       dropdownValue = units.firstWhere((unit) {
         if (unit.singular == product.unit || unit.plural == product.unit) {
@@ -580,7 +583,8 @@ class InventoryDialog extends StatelessWidget {
                                   },
                                   child: ContactCard(
                                     receiptTitle: inventories[index].title,
-                                    subtitle: inventories[index].discount,
+                                    subtitle:
+                                        'UNIT PRICE: N ${Utils.formatNumber(inventories[index].unitPrice.round().toDouble())}',
                                   ),
                                 );
                               },

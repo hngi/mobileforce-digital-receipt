@@ -48,33 +48,12 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
   final _date = TextEditingController();
 
   getInventories() async {
-    Provider.of<Inventory>(context, listen: false).setInventoryList =
-        List<Inventory>.generate(
-      6,
-      (index) => Inventory(
-          category: 'Shoe',
-          title: 'Nike Air Max',
-          unitPrice: 70000.0,
-          quantity: 20,
-          discount: 10,
-          tax: 2),
-    );
-    /*dynamic res = await ApiService().getAllInventories();
-    res = res.map(
-      (e) {
-        return Inventory(
-          category: e['address'],
-          email: e['email'],
-          phoneNumber: e['phoneNumber'],
-          name: e['name'],
-        );
-      },
-    );
-
-    Provider.of<Customer>(context, listen: false).setCustomerList =
-        List.from(res);
-
-    //res = null;*/
+    try {
+      Provider.of<Inventory>(context, listen: false).setInventoryList =
+          await ApiService().getAllInventories();
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
