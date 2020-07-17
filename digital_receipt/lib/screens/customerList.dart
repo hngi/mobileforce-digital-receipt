@@ -26,7 +26,7 @@ class CustomerList extends StatefulWidget {
 
 class _CustomerListState extends State<CustomerList> {
   String dropdownValue = "Last Upadated";
-
+  TextEditingController _searchFieldController = TextEditingController();
   ApiService _apiService = ApiService();
   var customerList;
 
@@ -38,10 +38,24 @@ class _CustomerListState extends State<CustomerList> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration.zero, () {
+      setCustomer();
+    });
+  }
+
+  setCustomer() async {
+    List customerData = await _apiService.getAllCustomers();
+    List<Customer> customersCopy = [];
+    customerData.forEach((customer) {
+      customersCopy.add(Customer.fromJson(customer));
+    });
+    Provider.of<Customer>(context, listen: false).setCustomerList =
+        customersCopy;
   }
 
   @override
   Widget build(BuildContext context) {
+    var _customerListModel = Provider.of<Customer>(context, listen: false);
     return Scaffold(
       // backgroundColor: Color(0xffE5E5E5),
       appBar: AppBar(
@@ -74,7 +88,10 @@ class _CustomerListState extends State<CustomerList> {
                 prefixIcon: IconButton(
                   icon: Icon(Icons.search),
                   color: Color.fromRGBO(0, 0, 0, 0.38),
-                  onPressed: () {},
+                  onPressed: () {
+                    _customerListModel
+                        .searchCustomerList(_searchFieldController.text);
+                  },
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5),
@@ -92,6 +109,9 @@ class _CustomerListState extends State<CustomerList> {
                   ),
                 ),
               ),
+              onChanged: (value) {
+                _customerListModel.searchCustomerList(value);
+              },
             ),
             SizedBox(height: 30.0),
             Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -177,23 +197,30 @@ class _CustomerListState extends State<CustomerList> {
                       return Column(
                         children: <Widget>[
                           SizedBox(height: 20.0),
-                          Flexible(
-                            child: ListView.builder(
-                              itemCount: customerList.length,
-                              itemBuilder: (context, index) {
-                                return customer(
-                                    customerName: customerList[index]['name'],
-                                    customerEmail: customerList[index]['email'],
+                          Consumer<Customer>(
+                          builder: (_, model, child) {
+                            // child:
+                            return Flexible(
+                              child: ListView.builder(
+                                itemCount: model.customerList.length,
+                                itemBuilder: (context, index) {
+                                  return customer(
+                                    customerName:
+                                        model.customerList[index].name,
+                                    customerEmail:
+                                        model.customerList[index].email,
                                     index: index,
-                                    phoneNumber: customerList[index]
-                                        ['phoneNumber'],
-                                    address: customerList[index]['address']
+                                    phoneNumber:
+                                        model.customerList[index].phoneNumber,
+                                    address: model.customerList[index].address,
 
                                     // numberOfReceipts: 0,
-                                    );
-                              },
-                            ),
-                          ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
                         ],
                       );
                     } else {
