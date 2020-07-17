@@ -10,20 +10,20 @@ class CustomerDropdown extends StatelessWidget {
     this.customers,
     this.onSubmit,
   });
-  final List customers; 
+  final List customers;
   final Function onSubmit;
 
   @override
   Widget build(BuildContext context) {
     List<Customer> customers = Provider.of<Customer>(context).customerList;
     return SizedBox(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Padding(
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Padding(
             padding: const EdgeInsets.only(
               top: 100,
               bottom: 10,
@@ -42,7 +42,8 @@ class CustomerDropdown extends StatelessWidget {
                     TextFormField(
                       onChanged: (val) {
                         //print('jhj');
-                        Provider.of<Customer>(context, listen: false).searchCustomerList(val);
+                        Provider.of<Customer>(context, listen: false)
+                            .searchCustomerList(val);
                       },
                       decoration: InputDecoration(
                         hintText: "Search customer",

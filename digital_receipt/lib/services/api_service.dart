@@ -722,7 +722,7 @@ class ApiService {
             'token': token,
           },
         );
-        //log(response.body);
+        log(response.body);
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           print('data: $data');

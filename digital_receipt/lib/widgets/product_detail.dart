@@ -4,6 +4,7 @@ import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ProductDetail extends StatefulWidget {
   final Function(Product) onSubmit;
@@ -26,6 +27,21 @@ class _ProductDetailState extends State<ProductDetail> {
   bool productAdded = false;
   Product product;
 
+  Unit dropdownValue;
+
+  List<Unit> units = [
+    Unit(fullName: 'Gram', singular: 'g', plural: 'g'),
+    Unit(fullName: 'Meter', singular: 'm', plural: 'm'),
+    Unit(fullName: 'Kilogram', singular: 'Kg', plural: 'Kg'),
+    Unit(fullName: 'Litre', singular: 'Ltr', plural: 'Ltr'),
+    Unit(fullName: 'Box', singular: 'Box', plural: 'Boxes'),
+    Unit(fullName: 'Bag', singular: 'Bag', plural: 'Bags'),
+    Unit(fullName: 'Bottle', singular: 'Bottle', plural: 'Bottles'),
+    Unit(fullName: 'Rolls', singular: 'Rol', plural: 'Rol'),
+    Unit(fullName: 'Pieces', singular: 'Pcs', plural: 'Pcs'),
+    Unit(fullName: 'Pack', singular: 'Pac', plural: 'Pac'),
+  ];
+
   @override
   void initState() {
     product = widget.product;
@@ -35,6 +51,14 @@ class _ProductDetailState extends State<ProductDetail> {
       unitPriceController.text = product.unitPrice.round().toString();
       taxController.text = product.tax.round().toString();
       discountController.text = product.discount.round().toString();
+      if (product.unit != null) {
+        dropdownValue = units.firstWhere((unit) {
+          if (unit.singular == product.unit || unit.plural == product.unit) {
+            return true;
+          }
+          return false;
+        });
+      }
     }
     super.initState();
   }
@@ -107,9 +131,60 @@ class _ProductDetailState extends State<ProductDetail> {
                         ),
                       ),
                       SizedBox(height: 5),
-                      AppTextFieldForm(
-                        keyboardType: TextInputType.number,
-                        controller: quantityController,
+                      Row(
+                        children: <Widget>[
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                color: Color.fromRGBO(0, 0, 0, 0.12),
+                              ),
+                            ),
+                            child: DropdownButton<Unit>(
+                              value: dropdownValue,
+                              hint: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Unit',
+                                  style: TextStyle(
+                                    fontFamily: 'Montserrat',
+                                    fontWeight: FontWeight.normal,
+                                    letterSpacing: 0.3,
+                                    fontSize: 16,
+                                    color: Color(0xFF1B1B1B),
+                                  ),
+                                ),
+                              ),
+                              underline: Divider(),
+                              items: units.map(
+                                (Unit unit) {
+                                  return DropdownMenuItem<Unit>(
+                                    value: unit,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 8.0),
+                                      child: Text(
+                                        unit.fullName,
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ).toList(),
+                              onChanged: (Unit value) {
+                                print(value);
+                                setState(() => dropdownValue = value);
+                                // No logic Implemented
+                              },
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: AppTextFieldForm(
+                              keyboardType: TextInputType.number,
+                              controller: quantityController,
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(height: 22),
                       Text(
@@ -181,6 +256,18 @@ class _ProductDetailState extends State<ProductDetail> {
                         backgroundColor: Color(0xFF0B57A7),
                         onPressed: () {
                           try {
+                            if (dropdownValue == null) {
+                              Fluttertoast.showToast(
+                                msg: "Add quantity unit",
+                                toastLength: Toast.LENGTH_LONG,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                                fontSize: 16.0,
+                              );
+                              return;
+                            }
                             widget.onSubmit(
                               Product(
                                 id: productDescController.text.substring(1, 4) +
@@ -189,6 +276,8 @@ class _ProductDetailState extends State<ProductDetail> {
                                 quantity: double.parse(quantityController.text),
                                 unitPrice:
                                     double.parse(unitPriceController.text),
+                                unit: dropdownValue.getShortName(
+                                    int.parse(quantityController.text)),
                                 amount: (double.parse(quantityController.text) *
                                         double.parse(
                                             unitPriceController.text)) +
@@ -204,6 +293,7 @@ class _ProductDetailState extends State<ProductDetail> {
                             );
                             setState(() {
                               productAdded = true;
+                              dropdownValue = null;
                               productDescController..text = "";
                               quantityController..text = "";
                               unitPriceController..text = "";
