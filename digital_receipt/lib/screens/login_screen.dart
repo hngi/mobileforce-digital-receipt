@@ -14,7 +14,6 @@ import '../utils/connected.dart';
 import 'no_internet_connection.dart';
 import 'signupScreen.dart';
 
-
 class LogInScreen extends StatefulWidget {
   @override
   _LogInScreenState createState() => _LogInScreenState();
@@ -29,6 +28,9 @@ class _LogInScreenState extends State<LogInScreen> {
   String _cachedEmailText;
   Future<dynamic> _emailTextFuture;
   Widget _futureEMAILText;
+
+  final FocusNode _emailFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
 
   ApiService _apiService = ApiService();
   static SharedPreferenceService _sharedPreferenceService =
@@ -59,6 +61,13 @@ class _LogInScreenState extends State<LogInScreen> {
         }
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
+    super.dispose();
   }
 
   @override
@@ -139,6 +148,11 @@ class _LogInScreenState extends State<LogInScreen> {
                     height: 5,
                   ),
                   TextFormField(
+                    focusNode: _passwordFocus,
+                    onFieldSubmitted: (value) {
+                      _passwordFocus.unfocus();
+                      login();
+                    },
                     controller: _passwordController,
                     validator: Validators.compose([
                       Validators.required('Input Password'),
@@ -214,73 +228,7 @@ class _LogInScreenState extends State<LogInScreen> {
                     width: double.infinity,
                     height: 45,
                     child: FlatButton(
-                      onPressed: () async {
-                        if (_formKey.currentState.validate()) {
-                          _formKey.currentState.save();
-                          setState(() {
-                            isLoading = true;
-                          });
-
-                          String emailString;
-                          if (_cachedEmailText != null) {
-                            if (_emailController.text.isNotEmpty)
-                              emailString = _emailController.text;
-                            else
-                              emailString = _cachedEmailText;
-                          } else {
-                            emailString = _emailController.text;
-                          }
-// check the internet
-                          var connected = await Connected().checkInternet();
-                          if (!connected) {
-                            await showDialog(
-                              context: context,
-                              builder: (context) {
-                                return NoInternet();
-                              },
-                            );
-                            setState(() {
-                              isLoading = false;
-                            });
-                            return;
-                          }
-
-                          String api_response = await _apiService.loginUser(
-                            emailString,
-                            _passwordController.text,
-                          );
-                          if (api_response == "true") {
-                            Fluttertoast.showToast(
-                                msg: 'Logged in successfully',
-                                toastLength: Toast.LENGTH_LONG,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.green,
-                                textColor: Colors.white,
-                                fontSize: 16.0);
-
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomePage(),
-                              ),
-                            );
-                          } else {
-                            setState(() {
-                              isLoading = false;
-                            });
-                            Fluttertoast.showToast(
-                                msg: api_response ??
-                                    'Sorry something went Wrong, try again',
-                                toastLength: Toast.LENGTH_LONG,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.red,
-                                textColor: Colors.white,
-                                fontSize: 16.0);
-                          }
-                        }
-                      },
+                      onPressed: () async => login(),
                       padding: EdgeInsets.all(10),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5),
@@ -386,6 +334,80 @@ class _LogInScreenState extends State<LogInScreen> {
     );
   }
 
+  void login() async {
+    FocusScope.of(context).unfocus();
+
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      setState(() {
+        isLoading = true;
+      });
+
+      String emailString;
+      if (_cachedEmailText != null) {
+        if (_emailController.text.isNotEmpty)
+          emailString = _emailController.text;
+        else
+          emailString = _cachedEmailText;
+      } else {
+        emailString = _emailController.text;
+      }
+// check the internet
+      var connected = await Connected().checkInternet();
+      if (!connected) {
+        await showDialog(
+          context: context,
+          builder: (context) {
+            return NoInternet();
+          },
+        );
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+
+      String api_response = await _apiService.loginUser(
+        emailString,
+        _passwordController.text,
+      );
+      if (api_response == "true") {
+        Fluttertoast.showToast(
+            msg: 'Logged in successfully',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0);
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ),
+        );
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        Fluttertoast.showToast(
+            msg: api_response ?? 'Sorry something went Wrong, try again',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
+    }
+  }
+
+  void _changeFocus({FocusNode from, FocusNode to}) {
+    from.unfocus();
+    FocusScope.of(context).requestFocus(to);
+  }
+
   Container _buildFacebookLogin() {
     return Container(
       child: SizedBox(
@@ -482,6 +504,10 @@ class _LogInScreenState extends State<LogInScreen> {
     WidgetsBinding.instance
         .addPostFrameCallback((_) => _emailController.text = text);
     return TextFormField(
+      focusNode: _emailFocus,
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (value) =>
+          _changeFocus(from: _emailFocus, to: _passwordFocus),
       controller: _emailController,
       validator: Validators.compose([
         Validators.required('Input Email Address'),
