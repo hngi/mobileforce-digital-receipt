@@ -100,8 +100,9 @@ class _ProductDetailState extends State<ProductDetail> {
     productDescController.text = selectedInventory.title;
     quantityController.text = '1';
     unitPriceController.text = selectedInventory.unitPrice.round().toString();
-    taxController.text = selectedInventory.tax?.round().toString();
-    discountController.text = selectedInventory.discount?.round().toString();
+    taxController.text = (selectedInventory.tax?.round()?.toString()) ?? '';
+    discountController.text =
+        selectedInventory.discount?.round()?.toString() ?? '';
     if (selectedInventory.unit != null) {
       dropdownValue = units.firstWhere((unit) {
         if (unit.singular == product.unit || unit.plural == product.unit) {
