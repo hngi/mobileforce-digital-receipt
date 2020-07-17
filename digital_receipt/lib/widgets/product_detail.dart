@@ -40,7 +40,7 @@ class _ProductDetailState extends State<ProductDetail> {
   bool productAdded = false;
   Product product;
 
-  Unit dropdownValue;
+  Unit unitValue;
 
   List<Unit> units = [
     Unit(fullName: 'Gram', singular: 'g', plural: 'g'),
@@ -68,7 +68,7 @@ class _ProductDetailState extends State<ProductDetail> {
       taxController.text = product.tax.round().toString();
       discountController.text = product.discount.round().toString();
       if (product.unit != null) {
-        dropdownValue = units.firstWhere((unit) {
+        unitValue = units.firstWhere((unit) {
           if (unit.singular == product.unit || unit.plural == product.unit) {
             return true;
           }
@@ -104,13 +104,14 @@ class _ProductDetailState extends State<ProductDetail> {
     discountController.text =
         selectedInventory.discount?.round()?.toString() ?? '';
     if (selectedInventory.unit != null) {
-      dropdownValue = units.firstWhere((unit) {
+      unitValue = units.firstWhere((unit) {
         if (unit.singular == product.unit || unit.plural == product.unit) {
           return true;
         }
         return false;
       });
     }
+    selectedInventory = null;
   }
 
   @override
@@ -268,7 +269,7 @@ class _ProductDetailState extends State<ProductDetail> {
                             child: DropdownButton<Unit>(
                               focusColor: kPrimaryColor,
                               focusNode: _quantityDropdownFocus,
-                              value: dropdownValue,
+                              value: unitValue,
                               hint: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
@@ -299,7 +300,7 @@ class _ProductDetailState extends State<ProductDetail> {
                               ).toList(),
                               onChanged: (Unit value) {
                                 print(value);
-                                setState(() => dropdownValue = value);
+                                setState(() => unitValue = value);
                                 _changeFocus(
                                     from: _quantityDropdownFocus,
                                     to: _quantityFocus);
@@ -419,20 +420,19 @@ class _ProductDetailState extends State<ProductDetail> {
 
   void submitForm() {
     FocusScope.of(context).unfocus();
-
+    if (unitValue == null) {
+      Fluttertoast.showToast(
+        msg: "Add quantity unit",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
+    }
     try {
-      if (dropdownValue == null) {
-        Fluttertoast.showToast(
-          msg: "Add quantity unit",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
-        return;
-      }
       widget.onSubmit(
         Product(
           id: productDescController.text.substring(1, 4) +
@@ -440,7 +440,7 @@ class _ProductDetailState extends State<ProductDetail> {
           productDesc: productDescController.text,
           quantity: double.parse(quantityController.text),
           unitPrice: double.parse(unitPriceController.text),
-          unit: dropdownValue.getShortName(int.parse(quantityController.text)),
+          unit: unitValue.getShortName(int.parse(quantityController.text)),
           amount: (double.parse(quantityController.text) *
                   double.parse(unitPriceController.text)) +
               (double.parse(taxController.text)) -
@@ -454,7 +454,7 @@ class _ProductDetailState extends State<ProductDetail> {
       );
       setState(() {
         productAdded = true;
-        dropdownValue = null;
+        unitValue = null;
         selectedInventory = null;
         productDescController..text = "";
         quantityController..text = "";
