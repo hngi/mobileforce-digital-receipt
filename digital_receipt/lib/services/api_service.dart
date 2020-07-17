@@ -864,6 +864,7 @@ class ApiService {
           } catch (e) {
             print(e);
           }
+          print(_inventories);
           return _inventories;
         } else {
           var res = jsonDecode(response.body)['data'];
