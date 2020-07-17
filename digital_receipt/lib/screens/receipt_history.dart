@@ -52,6 +52,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
 
   @override
   Widget build(BuildContext context) {
+    var _issuedReceiptModel = Provider.of<Receipt>(context, listen: true);
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       // backgroundColor: Color(0xffE5E5E5),
@@ -84,11 +85,13 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
             SizedBox(height: 10.0),
             TextFormField(
               controller: _controller,
-              onChanged: (value) async {
+               onChanged: (value) async {
                 await Future.delayed(Duration(milliseconds: 700));
                 setState(() {
-                  receiptList = ReceiptUtil.filterReceipt(
+                  
+                   _issuedReceiptModel.filterReceipt(
                       recieptListData, _controller.text);
+                  receiptList = _issuedReceiptModel.issuedReceipt;
                 });
               },
               decoration: InputDecoration(
@@ -98,10 +101,13 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                   icon: Icon(Icons.search),
                   color: Colors.grey,
                   onPressed: () {
-                    setState(() {
-                      receiptList = ReceiptUtil.filterReceipt(
-                          recieptListData, _controller.text);
-                    });
+                    // await Future.delayed(Duration(milliseconds: 700));
+                    // print("recieptListData $recieptListData");
+                setState(() {
+                   _issuedReceiptModel.filterReceipt(
+                      recieptListData, _controller.text);
+                  receiptList = _issuedReceiptModel.issuedReceipt;
+                });
                   },
                 ),
                 border: OutlineInputBorder(
@@ -120,6 +126,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                   ),
                 ),
               ),
+             
             ),
             SizedBox(height: 30.0),
             Row(mainAxisAlignment: MainAxisAlignment.end, children: [
