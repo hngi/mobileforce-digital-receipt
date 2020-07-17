@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'dart:io';
 
@@ -12,6 +13,7 @@ import 'package:digital_receipt/widgets/loading.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -80,6 +82,15 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
     } else {
       print("no file");
     }
+  }
+
+  setPreReceipt(String result) {
+    var temp = json.decode(result)['receiptData'];
+    Provider.of<Receipt>(context, listen: false).setIssueDate(temp['date']);
+    Provider.of<Receipt>(context, listen: false)
+        .setNumber(temp['receipt_number']);
+    Provider.of<Receipt>(context, listen: false).receiptId =
+        temp['id'];
   }
 
   bool isLoading = false;
@@ -492,6 +503,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               height: 50,
               width: double.infinity,
               child: FlatButton(
+                color: Color(0xFF0B57A7),
                 onPressed: () async {
                   setState(() {
                     isLoading = true;
@@ -502,16 +514,24 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                       .setColor(hexCode: _hexCodeController.text);
                   Provider.of<Receipt>(context, listen: false).setFont(24);
 
-                  var result =
+                  Response result =
                       await Provider.of<Receipt>(context, listen: false)
                           .saveReceipt();
 
-                  if (result == "Receipt saved successfully") {
+                  if (result.statusCode == 200) {
                     setState(() {
                       isLoading = false;
                     });
+                    setPreReceipt(result.body);
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReceiptScreen(),
+                      ),
+                    );
                     Fluttertoast.showToast(
-                        msg: "Receipt saved successfully",
+                        msg: "Receipt saved to draft",
                         toastLength: Toast.LENGTH_LONG,
                         gravity: ToastGravity.BOTTOM,
                         timeInSecForIosWeb: 1,
@@ -533,61 +553,27 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   }
                 },
                 shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Color(0xFF0B57A7), width: 1.5),
+                    //side: BorderSide(color: Color(0xFF0B57A7), width: 1.5),
                     borderRadius: BorderRadius.circular(5)),
                 child: isLoading
                     ? ButtonLoadingIndicator(
-                        color: kPrimaryColor,
+                        color: Colors.white,
                         width: 20,
                         height: 20,
                       )
                     : Text(
-                        'Save to drafts',
+                        'Generate Receipt',
                         style: TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w600,
                           letterSpacing: 0.3,
                           fontSize: 18,
-                          color: Colors.black,
+                          color: Colors.white,
                         ),
                       ),
               ),
             ),
-            SizedBox(height: 25),
-            SubmitButton(
-              onPressed: () async {
-                if (Provider.of<Receipt>(context, listen: false)
-                    .shouldGenReceiptNo()) {
-                  Provider.of<Receipt>(context, listen: false)
-                      .setNumber(Random().nextInt(999) + 100);
-                } else {
-                  try {
-                    Provider.of<Receipt>(context, listen: false)
-                        .setNumber(int.parse(_receiptNumberController.text));
-                  } catch (e) {
-                    print(e);
-                  }
-                }
-                Provider.of<Receipt>(context, listen: false)
-                    .setIssueDate(_dateTextController.text);
-                Provider.of<Receipt>(context, listen: false)
-                    .setColor(hexCode: _hexCodeController.text);
-                Provider.of<Receipt>(context, listen: false)
-                    .setFont(int.parse(fontVal));
-
-                /* await Provider.of<Receipt>(context, listen: false)
-                          .saveReceipt(); */
-
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ReceiptScreen(),
-                    ));
-              },
-              title: 'Generate Receipt',
-              textColor: Colors.white,
-              backgroundColor: Color(0xFF0B57A7),
-            ),
+            // SizedBox(height: 25),
           ],
         ),
       ),

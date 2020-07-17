@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
       floatingActionButton: SafeArea(
         child: FloatingActionButton(
           onPressed: () async {
-            var connected = await Connected().checkInternet();
+           /*  var connected = await Connected().checkInternet();
             if (!connected) {
               await showDialog(
                 context: context,
@@ -35,7 +35,7 @@ class HomePage extends StatelessWidget {
                 },
               );
               return;
-            }
+            } */
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => CreateReceiptPage()));
           },

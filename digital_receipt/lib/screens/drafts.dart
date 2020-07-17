@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
@@ -71,7 +73,7 @@ class _DraftsState extends State<Drafts> {
               draftData = snapshot.data;
               print('Sna[hot:: ${snapshot.data}');
               print('Sna[hot:: ${snapshot.connectionState}');
-              if (snapshot.connectionState == ConnectionState.waiting ) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 print('here');
                 //print('Sna[hot:: ${snapshot.data}');
                 return Center(
@@ -190,6 +192,7 @@ class _DraftsState extends State<Drafts> {
       ..receiptNo = snapshot['receipt_number']
       ..receiptId = snapshot['id']
       ..products = products
+      ..currency = Receipt().currencyFromJson(snapshot['currency'])
       ..customer = Customer(
         name: snapshot['customer']['name'],
         email: snapshot['customer']['email'],
