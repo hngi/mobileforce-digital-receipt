@@ -788,9 +788,8 @@ class ApiService {
   }
 
   Future getAllCustomers() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = "$_urlEndpoint/customer/all";
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
@@ -809,7 +808,7 @@ class ApiService {
         if (response.statusCode == 200) {
           // var res = response.data["data"] as List;
           var res = jsonDecode(response.body)['data'];
-// checks if the length of history is larger than 100 and checks for internet
+          // checks if the length of history is larger than 100 and checks for internet
           if (res.length >= 100) {
             List temp = res.getRange(0, 99).toList();
             await hiveDb.addCustomer(temp);
