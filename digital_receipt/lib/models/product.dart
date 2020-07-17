@@ -34,6 +34,9 @@ class Product {
       quantity: json['quantity']?.toDouble(),
       unitPrice: (json['unit_price']?.toDouble()),
       amount: json['amount']?.toDouble(),
+     tax: json['tax_amount'],
+     discount:  double.parse(json['discount']),
+     unit: json['discount']
     );
   }
 
@@ -41,6 +44,10 @@ class Product {
         "name": productDesc,
         "quantity": quantity,
         "unit_price": unitPrice,
+        "category_name": 'test',
+        "tax_amount": tax,
+        "discount": discount,
+        "unit": unit
       };
 
   static List<Product> dummy() => [];
