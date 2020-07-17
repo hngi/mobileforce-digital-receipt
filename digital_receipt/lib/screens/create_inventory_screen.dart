@@ -1,9 +1,9 @@
-
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'no_internet_connection.dart';
 
@@ -17,13 +17,19 @@ final SharedPreferenceService _sharedPreferenceService =
     SharedPreferenceService();
 
 class _CreateInventoryState extends State<CreateInventory> {
-  
   String category;
   String item;
   String unitPrice;
   String quantity;
   String discount;
   String tax;
+
+  final _itemControl = TextEditingController();
+  final _quantityControl = TextEditingController();
+  final _unitPriceControl = TextEditingController();
+  final _categoryControl = TextEditingController();
+  final _taxControl = TextEditingController();
+  final _discountControl = TextEditingController();
 
   bool loading = false;
   var status;
@@ -50,6 +56,7 @@ class _CreateInventoryState extends State<CreateInventory> {
           height: 5,
         ),
         TextFormField(
+          controller: _categoryControl,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -81,7 +88,6 @@ class _CreateInventoryState extends State<CreateInventory> {
     );
   }
 
-
   Widget _buildItem(formLabel) {
     return Column(
       children: <Widget>[
@@ -102,6 +108,7 @@ class _CreateInventoryState extends State<CreateInventory> {
           height: 5,
         ),
         TextFormField(
+          controller: _itemControl,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -153,6 +160,7 @@ class _CreateInventoryState extends State<CreateInventory> {
           height: 5,
         ),
         TextFormField(
+          controller: _unitPriceControl,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -177,7 +185,7 @@ class _CreateInventoryState extends State<CreateInventory> {
             return null;
           },
           onSaved: (String value) {
-            unitPrice =  value;
+            unitPrice = value;
           },
         )
       ],
@@ -204,6 +212,7 @@ class _CreateInventoryState extends State<CreateInventory> {
           height: 5,
         ),
         TextFormField(
+          controller: _quantityControl,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -255,6 +264,7 @@ class _CreateInventoryState extends State<CreateInventory> {
           height: 5,
         ),
         TextFormField(
+          controller: _discountControl,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -306,6 +316,7 @@ class _CreateInventoryState extends State<CreateInventory> {
           height: 5,
         ),
         TextFormField(
+          controller: _taxControl,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -455,6 +466,42 @@ class _CreateInventoryState extends State<CreateInventory> {
                                 loading = false;
                               });
                               return;
+                            }
+                            setState(() {
+                              loading = true;
+                            });
+                            var resp = await _apiService.addInventory(
+                                category,
+                                item,
+                                double.parse(unitPrice),
+                                double.parse(quantity),
+                                'kg');
+                            if (resp == 'true') {
+                              setState(() {
+                                loading = false;
+                                 _itemControl..text="";
+                                _quantityControl..text = "";
+                                _unitPriceControl..text = "";
+                                _categoryControl..text = "";
+                                _taxControl..text = "";
+                                _discountControl..text = "";
+                              });
+                              Fluttertoast.showToast(
+                                msg: 'created successfully',
+                                toastLength: Toast.LENGTH_LONG,
+                                backgroundColor: Colors.grey[700],
+                                textColor: Colors.white,
+                              );
+                            } else {
+                              setState(() {
+                                loading = false;
+                              });
+                              Fluttertoast.showToast(
+                                msg: 'an error occured',
+                                toastLength: Toast.LENGTH_LONG,
+                                backgroundColor: Colors.grey[700],
+                                textColor: Colors.white,
+                              );
                             }
                           }
                         },
