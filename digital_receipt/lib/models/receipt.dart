@@ -316,6 +316,37 @@ class Receipt extends ChangeNotifier {
       throw (e);
     }
   }
+  List<Receipt> _issuedReceipt = [];
+  List<Receipt> get issuedReceipt => _issuedReceipt;
+
+  filterReceipt(List<Receipt> receiptList, String value) {
+    
+    bool searchReceiptByCustomerName(Receipt receipt, String pattern) {
+      if (receipt.customerName != null) {
+        return receipt.customerName.toLowerCase().contains(value);
+      }
+      return false;
+    }
+
+    bool searchReceiptByDescription(Receipt receipt, String pattern) {
+      if (receipt.description != null) {
+        return receipt.description.toLowerCase().contains(value);
+      }
+      return false;
+      
+     
+    }
+   if (receiptList.isNotEmpty) {
+        _issuedReceipt = receiptList
+            .where((receipt) =>
+                searchReceiptByCustomerName(receipt, value) ||
+                searchReceiptByDescription(receipt, value))
+            .toList();
+      }
+
+      notifyListeners();
+    print("Receipt list : $receiptList");
+  }
 }
 
 List<Receipt> dummyReceiptList = [
