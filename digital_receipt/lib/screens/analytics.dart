@@ -4,6 +4,7 @@ import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:intl/intl.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:flutter/material.dart';
@@ -46,37 +47,37 @@ class _AnalyticsState extends State<Analytics> {
         ),
       ),
       body: FutureBuilder<AnalyticsData>(
-          future: generateContent(),
-          builder: (context, snapshot) {
-            Widget content;
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              content = _buildLoadingState();
-            } else if (!snapshot.hasData) {
-              // If Empty
-              content = Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
-                child: Column(
-                  children: <Widget>[
-                    _buildTopContent(totalSales: '₦ 0'),
-                    Expanded(
-                      child: Container(
-                        margin: EdgeInsets.all(30),
-                        child: kEmpty,
-                      ),
+        future: generateContent(),
+        builder: (context, snapshot) {
+          Widget content;
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            content = _buildLoadingState();
+          } else if (!snapshot.hasData) {
+            // If Empty
+            content = Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
+              child: Column(
+                children: <Widget>[
+                  _buildTopContent(totalSales: '₦ 0'),
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.all(30),
+                      child: kEmpty,
                     ),
-                    Text('There are no receipts created')
-                  ],
-                ),
-              );
-            } else if (snapshot.hasData) {
-              // Contains Data
-              content = _buildGridView(snapshot.data);
-            } else {
-              // If Something went wrong
-              content = _buildLoadingState();
-            }
-            return content;
-          },
+                  ),
+                  Text('There are no receipts created')
+                ],
+              ),
+            );
+          } else if (snapshot.hasData) {
+            // Contains Data
+            content = _buildGridView(snapshot.data);
+          } else {
+            // If Something went wrong
+            content = _buildLoadingState();
+          }
+          return content;
+        },
       ),
     );
   }
@@ -134,7 +135,7 @@ class _AnalyticsState extends State<Analytics> {
             FittedBox(
               fit: BoxFit.fitWidth,
               child: Text(
-                '$subTitle',
+                '₦$subTitle',
                 textScaleFactor: 0.8,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -170,7 +171,8 @@ class _AnalyticsState extends State<Analytics> {
     List<Widget> items = [];
     RandomColor _color = RandomColor();
     data.gridItems.forEach((key, value) {
-      items.add(buildCard(key, numberFormat.format(value),
+    //print(value);
+      items.add(buildCard(key, Utils.formatNumber(value),
           _color.randomColor(colorBrightness: ColorBrightness.light)));
     });
     return SingleChildScrollView(

@@ -71,8 +71,8 @@ class _DraftsState extends State<Drafts> {
               draftData = snapshot.data;
               print('Sna[hot:: ${snapshot.data}');
               print('Sna[hot:: ${snapshot.connectionState}');
-              if (snapshot.connectionState == ConnectionState.waiting ||
-                  snapshot.data == null) {
+              if (snapshot.connectionState == ConnectionState.waiting ) {
+                print('here');
                 //print('Sna[hot:: ${snapshot.data}');
                 return Center(
                   child: CircularProgressIndicator(
@@ -296,7 +296,8 @@ class _DraftsState extends State<Drafts> {
                               ),
                             ),
                             TextSpan(
-                              text: ' N${Utils.formatNumber(total)} ',
+                              text:
+                                  ' N${Utils.formatNumber(double.parse(total))} ',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
