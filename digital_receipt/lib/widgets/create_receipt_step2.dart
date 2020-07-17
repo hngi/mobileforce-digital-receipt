@@ -45,10 +45,6 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
   TextEditingController _hexCodeController = TextEditingController()
     ..text = "F14C4C";
 
-  final FocusNode _receiptNumberFocus = FocusNode();
-  final FocusNode _dateTextFocus = FocusNode();
-  final FocusNode _hexCodeFocus = FocusNode();
-
   bool autoReceiptNo = true;
   String fontVal = "100";
   DateTime date = DateTime.now();
@@ -57,14 +53,6 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _receiptNumberFocus.dispose();
-    _dateTextFocus.dispose();
-    _hexCodeFocus.dispose();
-    super.dispose();
   }
 
   Future getImageSignature() async {
@@ -172,10 +160,6 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             ),
             SizedBox(height: 5),
             AppTextFieldForm(
-              focusNode: _receiptNumberFocus,
-              textInputAction: TextInputAction.next,
-              onFieldSubmitted: (value) =>
-                  _changeFocus(from: _receiptNumberFocus, to: _dateTextFocus),
               controller: _receiptNumberController,
             ),
             SizedBox(
@@ -220,7 +204,6 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             ),
             SizedBox(height: 5),
             DateTimeInputTextField(
-                focusNode: _dateTextFocus,
                 controller: _dateTextController,
                 onTap: () async {
                   final DateTime picked = await showDatePicker(
@@ -230,7 +213,6 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                     lastDate: date.add(Duration(days: 365)),
                   );
 
-                  _dateTextFocus.unfocus();
                   if (picked != null && picked != date) {
                     setState(() {
                       date = picked;
@@ -427,9 +409,6 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             ),
             SizedBox(height: 20),
             AppTextFieldForm(
-              focusNode: _hexCodeFocus,
-              textInputAction: TextInputAction.next,
-              onFieldSubmitted: (value) => _hexCodeFocus.unfocus(),
               controller: _hexCodeController,
               hintText: 'Enter Brand color hex code',
               hintColor: Color.fromRGBO(0, 0, 0, 0.38),
@@ -592,11 +571,6 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
         ),
       ),
     );
-  }
-
-  void _changeFocus({FocusNode from, FocusNode to}) {
-    from.unfocus();
-    FocusScope.of(context).requestFocus(to);
   }
 }
 

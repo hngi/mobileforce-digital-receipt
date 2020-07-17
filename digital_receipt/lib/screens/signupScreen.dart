@@ -41,20 +41,7 @@ class _SignupScreenState extends State<SignupScreen> {
     ],
   );
 
-  final FocusNode _nameFocus = FocusNode();
-  final FocusNode _emailFocus = FocusNode();
-  final FocusNode _passwordFocus = FocusNode();
-
   ApiService _apiService = ApiService();
-
-  @override
-  void dispose() {
-    _nameFocus.dispose();
-    _emailFocus.dispose();
-    _passwordFocus.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,10 +109,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         height: 5,
                       ),
                       TextFormField(
-                        focusNode: _nameFocus,
-                        textInputAction: TextInputAction.next,
-                        onFieldSubmitted: (value) =>
-                            _changeFocus(from: _nameFocus, to: _emailFocus),
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(15),
@@ -165,10 +148,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         height: 5,
                       ),
                       TextFormField(
-                        focusNode: _emailFocus,
-                        textInputAction: TextInputAction.next,
-                        onFieldSubmitted: (value) =>
-                            _changeFocus(from: _emailFocus, to: _passwordFocus),
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(15),
@@ -205,12 +184,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         height: 5,
                       ),
                       TextFormField(
-                        focusNode: _passwordFocus,
-                        textInputAction: TextInputAction.done,
-                        onFieldSubmitted: (value) {
-                          _passwordFocus.unfocus();
-                          signupUser();
-                        },
                         obscureText: !passwordVisible ? true : false,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(15),
@@ -455,8 +428,6 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   signupUser() async {
-    FocusScope.of(context).unfocus();
-
     _formKey.currentState.save();
     setState(() {
       isLoading = true;
@@ -518,8 +489,6 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   googleSignup() async {
-    FocusScope.of(context).unfocus();
-
     try {
       setState(() {
         isLoading = true;
@@ -594,11 +563,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   dont() {
     print('check if to login or signup');
-  }
-
-  void _changeFocus({FocusNode from, FocusNode to}) {
-    from.unfocus();
-    FocusScope.of(context).requestFocus(to);
   }
 }
 
