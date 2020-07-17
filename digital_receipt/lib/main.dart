@@ -1,10 +1,12 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:digital_receipt/models/customer.dart';
+import 'package:digital_receipt/models/inventory.dart';
 
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/login_screen.dart';
 import 'package:digital_receipt/screens/onboarding.dart';
 import 'package:digital_receipt/screens/setup.dart';
+import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:hive/hive.dart';
 
@@ -59,10 +61,10 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 //     )
 void main() async {
   try {
-  WidgetsFlutterBinding.ensureInitialized();
-  final appDocumentDir = await getApplicationDocumentsDirectory();
-  Hive.init(appDocumentDir.path);
-  runApp(MyApp());
+    WidgetsFlutterBinding.ensureInitialized();
+    final appDocumentDir = await getApplicationDocumentsDirectory();
+    Hive.init(appDocumentDir.path);
+    runApp(MyApp());
   } catch (e) {
     print("error occurd in main: $e");
   }
@@ -89,6 +91,9 @@ class MyApp extends StatelessWidget {
           ),
           ChangeNotifierProvider(
             create: (context) => Customer(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Inventory(),
           ),
           ChangeNotifierProvider(
             create: (context) => Connected(),
@@ -130,6 +135,7 @@ class _ScreenControllerState extends State<ScreenController> {
       SharedPreferenceService();
   static SqlDbClient sqlDbClient = SqlDbClient();
   SqlDbRepository _sqlDbRepository = SqlDbRepository(sqlDbClient: sqlDbClient);
+  ApiService _apiService = ApiService();
 
   //Initializing SQL Database.
   initSharedPreferenceDb() async {
@@ -141,6 +147,18 @@ class _ScreenControllerState extends State<ScreenController> {
   getCurrentAutoLogoutStatus() async {
     _currentAutoLogoutStatus =
         await _sharedPreferenceService.getBoolValuesSF("AUTO_LOGOUT") ?? false;
+    if (_currentAutoLogoutStatus) {
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      // print('token: $token');
+      if (token != null) {
+        var res = await _apiService.logOutUser(token);
+        print(res);
+        if (res == true) {
+          return LogInScreen();
+        }
+      }
+    }
   }
 
   initConnect() async {

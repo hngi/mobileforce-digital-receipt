@@ -72,4 +72,17 @@ class HiveDb extends ChangeNotifier {
     var draft = draftBox.get('dashboard_info');
     return json.decode(draft);
   }
+
+  /* FOR ANALYTIC PAGE */
+  Future<void> addReceiptAnalytic(List receipts) async {
+    var analyticBox = await Hive.openBox('analytics');
+    var res = json.encode(receipts);
+    await analyticBox.put('analytics', res);
+  }
+
+  Future getAnalyticData() async {
+    var analyticBox = await Hive.openBox('analytics');
+    var analyticData = analyticBox.get('analytics');
+    return json.decode(analyticData);
+  }
 }

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 
 import 'package:digital_receipt/models/customer.dart';
+import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/notification.dart';
 import 'package:digital_receipt/utils/connected.dart';
 
@@ -832,6 +833,49 @@ class ApiService {
     }
   }
 
+  Future getAllInventories() async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = "$_urlEndpoint/business/inventory/all";
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      List<Inventory> _inventories = [];
+
+      if (connectivityResult == ConnectivityResult.mobile ||
+          connectivityResult == ConnectivityResult.wifi) {
+        var response = await http.get(
+          Uri.encodeFull(uri),
+          headers: <String, String>{
+            'token': token,
+          },
+        );
+        if (response.statusCode == 200) {
+          log(response.body);
+          var data = jsonDecode(response.body)['data'];
+          print('data: $data');
+          try {
+            //log(response.body);
+            data.forEach((inventory) {
+              _inventories.add(Inventory.fromJson(inventory));
+            });
+            log(_inventories.toString());
+          } catch (e) {
+            print(e);
+          }
+          print(_inventories);
+          return _inventories;
+        } else {
+          var res = jsonDecode(response.body)['data'];
+          return res;
+        }
+      }
+    } else {
+      return [];
+    }
+  }
+
   Future<Map<String, dynamic>> getIssuedReceipt2() async {
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
@@ -952,13 +996,12 @@ class ApiService {
     double quantity,
     String unit,
   ) async {
-    var connectivityResult = await Connected().checkInternet();
-    if (connectivityResult) {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
       var uri = '$_urlEndpoint/business/inventory/add';
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
-
-      print(token);
       var response = await http.post(
         uri,
         headers: {"token": token},
@@ -981,4 +1024,7 @@ class ApiService {
       return 'false';
     }
   }
+
+
+
 }
