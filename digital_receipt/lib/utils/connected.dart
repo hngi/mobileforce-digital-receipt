@@ -10,7 +10,10 @@ class Connected with ChangeNotifier {
 
   Future<bool> checkInternet() async {
     try {
-      final result = await InternetAddress.lookup('google.com');
+      final result = await InternetAddress.lookup('google.com')
+          .timeout(Duration(seconds: 3), onTimeout: (){
+            return [];
+          });
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         // print('connected');
         return true;
