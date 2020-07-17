@@ -832,6 +832,51 @@ class ApiService {
     }
   }
 
+  Future getAllCustomers() async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = "$_urlEndpoint/customer/all";
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      List<Customer> _allCustomers = [];
+
+      if (connectivityResult == ConnectivityResult.mobile ||
+          connectivityResult == ConnectivityResult.wifi) {
+        var response = await http.get(
+          Uri.encodeFull(uri),
+          headers: <String, String>{
+            'token': token,
+          },
+        );
+        if (response.statusCode == 200) {
+          // var res = response.data["data"] as List;
+          var res = jsonDecode(response.body)['data'];
+          // checks if the length of history is larger than 100 and checks for internet
+          if (res.length >= 100) {
+            List temp = res.getRange(0, 99).toList();
+            await hiveDb.addCustomer(temp);
+
+            return hiveDb.getCustomer();
+          } else if (res.length < 100) {
+            await hiveDb.addCustomer(res);
+
+            return hiveDb.getCustomer();
+          } else {
+            print('res: 9');
+            return hiveDb.getCustomer();
+          }
+        } else {
+          var res = jsonDecode(response.body)['data'];
+          return res;
+        }
+      }
+    } else {
+      return hiveDb.getCustomer() ?? Future.error('No network Connection');
+    }
+  }
+
   Future<Map<String, dynamic>> getIssuedReceipt2() async {
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
@@ -951,26 +996,25 @@ class ApiService {
     double price,
     double quantity,
     String unit,
-
   ) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
       var uri = '$_urlEndpoint/business/inventory/add';
-       String token =
-        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
       var response = await http.post(
         uri,
-        headers: {"token":token},
+        headers: {"token": token},
         body: {
-          "category_name": "$category", 
+          "category_name": "$category",
           "product_name": "$productName",
           "quantity": "$quantity",
           "price": "$price",
           "unit": "$unit"
           // "discount": "$newPassword"
           // "tax": "$newPassword"
-          },
+        },
       );
       print(response.body);
       if (response.statusCode == 200) {

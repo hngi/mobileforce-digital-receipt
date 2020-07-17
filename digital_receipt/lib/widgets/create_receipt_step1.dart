@@ -5,6 +5,7 @@ import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
+import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/product_detail.dart';
@@ -41,6 +42,31 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
 
   final _time = TextEditingController();
   final _date = TextEditingController();
+
+  setCustomer() async {
+    dynamic res = await ApiService().getAllCustomers();
+    res = res.map(
+      (e) {
+        return Customer(
+          address: e['address'],
+          email: e['email'],
+          phoneNumber: e['phoneNumber'],
+          name: e['name'],
+        );
+      },
+    );
+
+    Provider.of<Customer>(context, listen: false).setCustomerList =
+        List.from(res);
+
+    //res = null;
+  }
+
+  @override
+  void initState() {
+    setCustomer();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -161,6 +187,51 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                     Icon(
                       Icons.add,
                     )
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 29),
+            GestureDetector(
+              onTap: () async {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return CustomerDropdown(
+                      customers: customers,
+                      onSubmit: (customer) {
+                        setState(() {
+                          selectedCustomer = customer;
+                        });
+                      },
+                    );
+                  },
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Color(0xFFC8C8C8),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(5.0)),
+                padding: EdgeInsets.symmetric(horizontal: 13, vertical: 14),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      selectedCustomer != null
+                          ? selectedCustomer.name
+                          : 'Select Customer',
+                      style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.3,
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Spacer(),
+                    Icon(Icons.arrow_drop_down),
                   ],
                 ),
               ),
@@ -408,6 +479,128 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
               textColor: Colors.white,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class CustomerDropdown extends StatelessWidget {
+  const CustomerDropdown({
+    this.customers,
+    this.onSubmit,
+  });
+  final List customers;
+  final Function onSubmit;
+
+  @override
+  Widget build(BuildContext context) {
+    List<Inventory> customers = Provider.of<Customer>(context).customerList;
+    return SizedBox(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: 100,
+              bottom: 10,
+            ),
+            child: Center(
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Color(0xFFF2F8FF),
+                ),
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width - 32,
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                      onChanged: (val) {
+                        //print('jhj');
+                        Provider.of<Customer>(context, listen: false)
+                            .searchCustomerList(val);
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Search customer",
+                        hintStyle: TextStyle(
+                            color: Color.fromRGBO(0, 0, 0, 0.38),
+                            fontFamily: 'Montserrat'),
+                        prefixIcon: IconButton(
+                          icon: Icon(Icons.search),
+                          color: Color.fromRGBO(0, 0, 0, 0.38),
+                          onPressed: () {},
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: BorderSide(
+                            color: Color.fromRGBO(0, 0, 0, 0.12),
+                            width: 1,
+                          ),
+                        ),
+                        contentPadding: EdgeInsets.all(15),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: BorderSide(
+                            color: Color(0xFFC8C8C8),
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    customers.isEmpty
+                        ? Expanded(
+                            child: Column(
+                            children: <Widget>[
+                              Expanded(
+                                child: kEmpty,
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Text(
+                                "You have not added any customer!",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 16,
+                                  letterSpacing: 0.3,
+                                  color: Color.fromRGBO(0, 0, 0, 0.87),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                            ],
+                          ))
+                        : Expanded(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: customers.length,
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                  onTap: () {
+                                    onSubmit(customers[index]);
+                                    Navigator.pop(context);
+                                  },
+                                  child: ContactCard(
+                                    receiptTitle: customers[index].name,
+                                    subtitle: customers[index].phoneNumber,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
