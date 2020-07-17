@@ -1,6 +1,7 @@
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:number_display/number_display.dart';
 
 class ReceiptUtil {
   static List<Receipt> sortReceiptByCategory(List<Receipt> receiptList,
@@ -63,5 +64,12 @@ class ReceiptUtil {
           backgroundColor: Colors.red,
           toastLength: Toast.LENGTH_LONG);
     }
+  }
+}
+
+class Utils {
+  static String formatNumber(double amount) {
+    final display = createDisplay(length: 8);
+    return display(amount);
   }
 }
