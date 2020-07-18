@@ -5,6 +5,7 @@ import 'package:digital_receipt/screens/update_inventory_screen.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class InventoryScreen extends StatefulWidget {
   @override
@@ -131,7 +132,13 @@ class _InventoryScreenState extends State<InventoryScreen> {
                       child: ListView.builder(
                         itemCount: inventory.length,
                         itemBuilder: (context, index) {
-                          return _buildInventory(inventory[index]);
+                          return GestureDetector(
+                              onLongPress: () async {
+                                await _confirmInventoryDelete(
+                                    inventory[index].id,
+                                    inventory[index].title);
+                              },
+                              child: _buildInventory(inventory[index]));
                         },
                       ),
                     ),
@@ -322,5 +329,74 @@ class _InventoryScreenState extends State<InventoryScreen> {
             ),
           ),
         ));
+  }
+
+  _confirmInventoryDelete(String id, String title) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.all(10),
+            // insetPadding: EdgeInsets.all(50),
+            title: Text(
+              "Are sure you want to delete $title ?",
+              style: TextStyle(
+                fontSize: 15,
+              ),
+            ),
+            content: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              padding: EdgeInsets.all(30.0),
+              child: Expanded(
+                child: ListBody(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        MaterialButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          color: Colors.blue[50],
+                          child: Padding(
+                            padding: const EdgeInsets.all(18.0),
+                            child: Text(
+                              'cancel',
+                              style: TextStyle(
+                                  fontSize: 13, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        MaterialButton(
+                          onPressed: () async {
+                            var resp =
+                                await _apiService.deleteInventoryItem(id: id);
+                            if (resp == 'false') {
+                              Navigator.push(context, MaterialPageRoute(builder:(_)=> InventoryScreen()));
+                              Fluttertoast.showToast(msg: 'an error occured');
+                            } else {
+                              Navigator.push(context, MaterialPageRoute(builder:(_)=> InventoryScreen()));
+                              print('successful');
+                            }
+                          },
+                          color: Colors.red,
+                          child: Padding(
+                            padding: const EdgeInsets.all(18.0),
+                            child: Text(
+                              'delete',
+                              style: TextStyle(
+                                  fontSize: 13, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 }
