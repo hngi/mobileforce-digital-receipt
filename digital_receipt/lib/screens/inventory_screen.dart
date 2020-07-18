@@ -159,112 +159,113 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
   Widget _buildInventory(Inventory inventory) {
     return InkWell(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => UpdateInventory(
-            inventory: inventory,
-          ),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 15),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Color(0xff539C30),
-            borderRadius: BorderRadius.circular(5),
-          ),
+        onTap: () {
+          /* Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UpdateInventory(
+                inventory: inventory,
+              ),
+            ),
+          ); */
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 15),
           child: Container(
-            margin: EdgeInsets.only(left: 5.0),
+            width: double.infinity,
             decoration: BoxDecoration(
-              color: Color(0xffE8F1FB),
+              color: Color(0xff539C30),
               borderRadius: BorderRadius.circular(5),
             ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    inventory.title,
-                    style: TextStyle(
-                      color: Color.fromRGBO(0, 0, 0, 0.87),
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.3,
-                      fontSize: 16,
-                      //color: Colors.white,
+            child: Container(
+              margin: EdgeInsets.only(left: 5.0),
+              decoration: BoxDecoration(
+                color: Color(0xffE8F1FB),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      inventory.title,
+                      style: TextStyle(
+                        color: Color.fromRGBO(0, 0, 0, 0.87),
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.3,
+                        fontSize: 16,
+                        //color: Colors.white,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 14,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 3,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              "UNIT PRICE",
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.87),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w300,
-                                fontFamily: 'Montserrat',
-                                letterSpacing: 0.03,
+                    SizedBox(
+                      height: 14,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 3,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                "UNIT PRICE",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(0, 0, 0, 0.87),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w300,
+                                  fontFamily: 'Montserrat',
+                                  letterSpacing: 0.03,
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              height: 6,
-                            ),
-                            Text(
-                              inventory.unitPrice.toString(),
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.87),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'Montserrat',
-                                letterSpacing: 0.03,
+                              SizedBox(
+                                height: 6,
                               ),
-                            ),
-                          ],
+                              Text(
+                                inventory.unitPrice.toString(),
+                                style: TextStyle(
+                                  color: Color.fromRGBO(0, 0, 0, 0.87),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Montserrat',
+                                  letterSpacing: 0.03,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              "QTY",
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.87),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w300,
-                                fontFamily: 'Montserrat',
-                                letterSpacing: 0.03,
+                        Expanded(
+                          flex: 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                "QTY",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(0, 0, 0, 0.87),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w300,
+                                  fontFamily: 'Montserrat',
+                                  letterSpacing: 0.03,
+                                ),
                               ),
-                            ),
-                        
-                                                  SizedBox(
-                            height: 6,
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text(
+                                '${(inventory.quantity).toString()}',
+                                style: TextStyle(
+                                  color: Color.fromRGBO(0, 0, 0, 0.87),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Montserrat',
+                                  letterSpacing: 0.03,
+                                ),
+                              ),
+                            ],
                           ),
-                          Text(
-                            '${(inventory.quantity).toString()}',
-                            style: TextStyle(
-                              color: Color.fromRGBO(0, 0, 0, 0.87),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Montserrat',
-                              letterSpacing: 0.03,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                        ),
 /*                     Expanded(
                       flex: 3,
                       child: Column(
@@ -328,15 +329,14 @@ class _InventoryScreenState extends State<InventoryScreen> {
                       ),
                     ),
                   */
+                      ],
+                    ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-      )
-    );
+        ));
   }
 
   // List<Widget> itemsWidget = [];
