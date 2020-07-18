@@ -194,14 +194,14 @@ class _DashBoardState extends State<DashBoard> {
           subtitle: '₦$amnt',
           color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
-        FlatButton(
+        /* FlatButton(
           onPressed: () async {
             var h =
                 await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
             print(h);
           },
           child: Text('${Provider.of<Connected>(context).stream}'),
-        ),
+        ), */
       ],
     );
   }

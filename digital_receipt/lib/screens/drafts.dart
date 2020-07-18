@@ -112,7 +112,8 @@ class _DraftsState extends State<Drafts> {
                           total: receipt.totalAmount,
                           date: "${date.day}/${date.month}/${date.year}",
                           receiptTitle: receipt.customerName,
-                          subtitle: "receipt",currency: receipt.currency ),
+                          subtitle: receipt.products[0].productDesc,
+                          currency: receipt.currency),
                     );
                   },
                 );
@@ -176,12 +177,13 @@ class _DraftsState extends State<Drafts> {
 
     var prod = snapshot['products'].map((e) {
       return Product(
-        id: e['id'].toString(),
-        productDesc: e['name'],
-        quantity: e['quantity'].toDouble(),
-        unitPrice: e['unit_price'].toDouble(),
-        amount: (e['quantity'] * e['unit_price']).toDouble(),
-      );
+          id: e['id'].toString(),
+          productDesc: e['name'],
+          quantity: e['quantity'].toDouble(),
+          unitPrice: e['unit_price'].toDouble(),
+          amount: (e['quantity'] * e['unit_price']).toDouble(),
+          tax: e['tax_amount'],
+          discount: double.parse(e['discount']));
     });
     List<Product> products = List.from(prod);
     // print(products);
@@ -204,7 +206,13 @@ class _DraftsState extends State<Drafts> {
     /* String id, String productDesc, int quantity, int amount, int unitPrice */
   }
 
-  Widget receiptCard({String receiptNo, total, date, receiptTitle, subtitle, Currency currency}) {
+  Widget receiptCard(
+      {String receiptNo,
+      total,
+      date,
+      receiptTitle,
+      subtitle,
+      Currency currency}) {
     return SizedBox(
       child: Column(
         children: <Widget>[
@@ -301,7 +309,7 @@ class _DraftsState extends State<Drafts> {
                             ),
                             TextSpan(
                               text:
-                                  'N${Utils.formatNumber(double.parse(total))} ',
+                                  '${Utils.formatNumber(double.parse(total))}',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,

@@ -270,9 +270,9 @@ Widget ReceiptScreenLayout(
               children: <Widget>[
                 Expanded(
                     child: Column(
-                  //crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   // mainAxisSize: MainAxisSize.max,
-                  // mainAxisAlignment: MainAxisAlignment.start,
+                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
                       color: Color(int.parse("0xFF" +
