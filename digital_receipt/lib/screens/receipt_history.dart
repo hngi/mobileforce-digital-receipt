@@ -285,13 +285,13 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
   Widget receiptCard(Receipt receipt) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(
+        /* Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => CreateReceiptPage(
               issuedCustomerReceipt: receipt,
             ),
           ),
-        );
+        ); */
         // print(receipt.products[0].amount);
       },
       child: Column(
