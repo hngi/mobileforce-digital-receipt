@@ -16,7 +16,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
   List<Inventory> inventory;
   List<Inventory> inventoryData;
   List<String> inventoryCategories;
-  String dropdownValue = "DEFAULT";
+  String dropdownValue = "ALL";
   ApiService _apiService = ApiService();
 
   @override
@@ -109,7 +109,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                       child: DropdownButton(
                         value: dropdownValue,
                         underline: Divider(),
-                        items: (["DEFAULT"] + inventoryCategories)
+                        items: (["ALL"] + inventoryCategories)
                             .map<DropdownMenuItem<String>>(
                           (String value) {
                             return DropdownMenuItem<String>(
@@ -125,7 +125,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                           },
                         ).toList(),
                         onChanged: (String value) {
-                          if (value != "DEFAULT") {
+                          if (value != "ALL") {
                             setState(() {
                               dropdownValue = value;
                             });
