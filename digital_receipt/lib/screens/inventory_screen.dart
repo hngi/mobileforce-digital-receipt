@@ -4,6 +4,7 @@ import 'package:digital_receipt/screens/create_inventory_screen.dart';
 import 'package:digital_receipt/screens/update_inventory_screen.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 
 class InventoryScreen extends StatefulWidget {
@@ -13,7 +14,9 @@ class InventoryScreen extends StatefulWidget {
 
 class _InventoryScreenState extends State<InventoryScreen> {
   List<Inventory> inventory;
-  String dropdownValue = "Category";
+  List<Inventory> inventoryData;
+  List<String> inventoryCategories;
+  String dropdownValue = "DEFAULT";
   ApiService _apiService = ApiService();
 
   @override
@@ -26,8 +29,17 @@ class _InventoryScreenState extends State<InventoryScreen> {
     await _apiService.getAllInventories().then((value) {
       print('value of resp : $value');
       setState(() {
-        inventory = value;
+        inventoryData = value;
+        inventory = inventoryData..shuffle();
       });
+      List<String> tempList = [];
+      inventory.forEach((element) {
+        print(element.category);
+        tempList.add(element.category);
+      });
+      inventoryCategories = tempList.toSet().toList();
+      print(inventory);
+      print(inventoryCategories);
     });
   }
 
@@ -97,9 +109,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
                       child: DropdownButton(
                         value: dropdownValue,
                         underline: Divider(),
-                        items: <String>[
-                          'Category',
-                        ].map<DropdownMenuItem<String>>(
+                        items: (["DEFAULT"] + inventoryCategories)
+                            .map<DropdownMenuItem<String>>(
                           (String value) {
                             return DropdownMenuItem<String>(
                               value: value,
@@ -114,8 +125,18 @@ class _InventoryScreenState extends State<InventoryScreen> {
                           },
                         ).toList(),
                         onChanged: (String value) {
-                          setState(() => dropdownValue = value);
-                          // No logic Implemented
+                          if (value != "DEFAULT") {
+                            setState(() {
+                              dropdownValue = value;
+                            });
+                            inventory = sortInventoryByCategory(inventoryData,
+                                category: value);
+                          } else {
+                            setState(() {
+                              dropdownValue = value;
+                            });
+                            inventory = inventoryData..shuffle();
+                          }
                         },
                       ),
                     ),
@@ -322,5 +343,19 @@ class _InventoryScreenState extends State<InventoryScreen> {
             ),
           ),
         ));
+  }
+
+  List<Inventory> sortInventoryByCategory(List<Inventory> inventoryList,
+      {String category}) {
+    try {
+      return inventoryList
+          .where((element) => element.category == category)
+          .toList();
+    } catch (error) {
+      Fluttertoast.showToast(
+          msg: 'error, try again ',
+          backgroundColor: Colors.red,
+          toastLength: Toast.LENGTH_LONG);
+    }
   }
 }
