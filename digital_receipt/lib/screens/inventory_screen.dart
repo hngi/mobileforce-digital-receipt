@@ -251,8 +251,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
                             SizedBox(
                               height: 6,
                             ),
+
                             Text(
-                              (inventory.quantity).toString() + '%',
+                              (inventory.quantity).toString(),
                               style: TextStyle(
                                 color: Color.fromRGBO(0, 0, 0, 0.87),
                                 fontSize: 14,
@@ -260,24 +261,27 @@ class _InventoryScreenState extends State<InventoryScreen> {
                                 fontFamily: 'Montserrat',
                                 letterSpacing: 0.03,
                               ),
+
                             ),
                           ],
                         ),
                       ),
-                      Expanded(
-                        flex: 3,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              "DISCOUNT",
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.87),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w300,
-                                fontFamily: 'Montserrat',
-                                letterSpacing: 0.03,
-                              ),
+
+                    ),
+/*                     Expanded(
+                      flex: 3,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "DISCOUNT",
+                            style: TextStyle(
+                              color: Color.fromRGBO(0, 0, 0, 0.87),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w300,
+                              fontFamily: 'Montserrat',
+                              letterSpacing: 0.03,
+
                             ),
                             SizedBox(
                               height: 6,
@@ -326,10 +330,13 @@ class _InventoryScreenState extends State<InventoryScreen> {
                           ],
                         ),
                       ),
+
                     ],
                   ),
                 ],
               ),
+
+
             ),
           ),
         ),

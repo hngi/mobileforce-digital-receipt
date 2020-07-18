@@ -34,6 +34,7 @@ class _AccountPageState extends State<AccountPage> {
   final String username = "Geek Tutor";
   String label;
   bool _loading = false;
+  String localLogo = '';
   static String loading_text = "loading ...";
   var x = AccountData(
       id: loading_text,
@@ -67,17 +68,32 @@ class _AccountPageState extends State<AccountPage> {
         image = pickedFile.path;
       });
       var res = await _apiService.changeLogo(pickedFile.path);
+      var logo = await SharedPreferenceService().getStringValuesSF('LOGO');
+
+      setState(() {
+        localLogo = logo;
+      });
       print(res);
     }
-    print('nope imahe');
   }
 
   callFetch() async {
     var res = await _apiService.fetchAndSetUser();
+    var logo = await SharedPreferenceService().getStringValuesSF('LOGO');
+
+    setState(() {
+      localLogo = logo;
+    });
     if (res != null) {
       Provider.of<Business>(context, listen: false).setAccountData = res;
       var val = Provider.of<Business>(context, listen: false).toJson();
       _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
+
+      var logo = await SharedPreferenceService().getStringValuesSF('LOGO');
+
+      setState(() {
+        localLogo = logo;
+      });
       print(val);
     }
   }
@@ -108,10 +124,9 @@ class _AccountPageState extends State<AccountPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[ 
-
-//////////////////////////////// 
-///please do no delet this comment #Francis
+            children: <Widget>[
+////////////////////////////////
+              ///please do no delet this comment #Francis
 /////////////////////////////////////////////
               // Center(
               //   child: GestureDetector(
@@ -156,8 +171,8 @@ class _AccountPageState extends State<AccountPage> {
               //     ),
               //   ),
               // ),
-//////////////////////////////// 
-///please do no delet this comment #Francis
+////////////////////////////////
+              ///please do no delet this comment #Francis
 /////////////////////////////////////////////
               SizedBox(
                 height: 45,
@@ -168,19 +183,21 @@ class _AccountPageState extends State<AccountPage> {
                 children: <Widget>[
                   InkWell(
                     child: Container(
-                        height: 50,
-                        constraints: BoxConstraints(
-                          maxWidth: 74,
-                        ),
-                        //width: 65,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Provider.of<Business>(context).accountData.logo == ''
-                            ? Image.network(
-                                Provider.of<Business>(context).accountData.logo)
-                            : Icon(Icons.person)),
-                    onTap: getImage,
+                      height: 50,
+                      constraints: BoxConstraints(
+                        maxWidth: 74,
+                      ),
+                      //width: 65,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: localLogo.isNotEmpty
+                          ? Image.file(File(localLogo))
+                          : Icon(Icons.person),
+                    ),
+                    onTap: () async {
+                      await getImage();
+                    },
                   ),
                   Container(
                     height: 20,
