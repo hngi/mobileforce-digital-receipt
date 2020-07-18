@@ -245,7 +245,7 @@ Widget ReceiptScreenLayout(
                 Expanded(
                   //flex: 3,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal:10.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,12 +309,14 @@ Widget ReceiptScreenLayout(
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal:10.0),
-                  child:logo !=null || logo.isNotEmpty? Image.file(
-                    File(logo),
-                    height: 50,
-                    width: 50,
-                  ): SizedBox.shrink(),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: logo != null && logo !=''
+                      ? Image.file(
+                          File(logo),
+                          height: 50,
+                          width: 50,
+                        )
+                      : SizedBox.shrink(),
                 )
               ],
             ),

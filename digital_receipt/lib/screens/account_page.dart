@@ -191,7 +191,8 @@ class _AccountPageState extends State<AccountPage> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
                       ),
-                      child: localLogo.isNotEmpty
+                      child: localLogo != null &&
+                              localLogo != '' 
                           ? Image.file(File(localLogo))
                           : Icon(Icons.person),
                     ),
