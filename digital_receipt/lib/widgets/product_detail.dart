@@ -255,7 +255,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         ),
                       ),
                       SizedBox(height: 5),
-                      Row(
+                      Row( 
                         children: <Widget>[
                           Container(
                             decoration: BoxDecoration(
@@ -437,7 +437,7 @@ class _ProductDetailState extends State<ProductDetail> {
         Product(
           id: productDescController.text.substring(1, 4) +
               (Random().nextInt(99) + 10).toString(),
-          productDesc: productDescController.text,
+          productDesc: productDescController.text.toUpperCase(),
           quantity: double.parse(quantityController.text),
           unitPrice: double.parse(unitPriceController.text),
           unit: unitValue.getShortName(int.parse(quantityController.text)),
