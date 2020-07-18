@@ -93,42 +93,52 @@ class ReceiptItem extends StatelessWidget {
 
               //quantity of products order and the total price (HEADER)
 
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 5, 10, 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Text(
-                      'Discount: ${Provider.of<Receipt>(context, listen: false).products[index].discount}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        letterSpacing: 0.03,
-                        fontWeight: FontWeight.normal,
-                        height: 1.43,
+              Provider.of<Receipt>(context, listen: false)
+                          .products[index]
+                          .discount !=
+                      null
+                  ? Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 5, 10, 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text(
+                            'Discount: ${Provider.of<Receipt>(context, listen: false).products[index].discount}',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              letterSpacing: 0.03,
+                              fontWeight: FontWeight.normal,
+                              height: 1.43,
+                            ),
+                          )
+                        ],
                       ),
                     )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 5, 10, 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Text(
-                      'Tax: ${Provider.of<Receipt>(context, listen: false).products[index].tax}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        letterSpacing: 0.03,
-                        fontWeight: FontWeight.normal,
-                        height: 1.43,
+                  : SizedBox.shrink(),
+              Provider.of<Receipt>(context, listen: false)
+                          .products[index]
+                          .tax !=
+                      null
+                  ? Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 5, 10, 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text(
+                            'Tax: ${Provider.of<Receipt>(context, listen: false).products[index].tax}',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              letterSpacing: 0.03,
+                              fontWeight: FontWeight.normal,
+                              height: 1.43,
+                            ),
+                          )
+                        ],
                       ),
                     )
-                  ],
-                ),
-              ),
+                  : SizedBox.shrink(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                 child: Row(
