@@ -156,7 +156,9 @@ class _ProductDetailState extends State<ProductDetail> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       SizedBox(height: 9),
-                      product == null
+
+                     product == null
+
                           ? GestureDetector(
                               onTap: () async {
                                 showDialog(

@@ -259,7 +259,7 @@ class _ScreenControllerState extends State<ScreenController> {
         ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // await _pushNotificationService.initialise();
-          // print('snapshots: ${snapshot.data}');
+           print('snapshots: ${snapshot.data}');
 
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(

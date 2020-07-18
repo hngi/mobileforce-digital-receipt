@@ -552,9 +552,10 @@ class _CreateInventoryState extends State<CreateInventory> {
                                 textColor: Colors.white,
                                 fontSize: 16.0,
                               );
-                              setState(() {
-                                loading = false;
-                              });
+                                setState(() {
+                              loading = false;
+                            });
+
                               return;
                             }
                             setState(() {
