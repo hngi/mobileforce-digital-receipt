@@ -1045,8 +1045,8 @@ class ApiService {
         headers: {"token": token},
         body: {
           "inventory_id": "$id",
-          "category": "$category",
-          "name": "$productName",
+          "category_name": "$category",
+          "product_name": "$productName",
           "quantity": "$quantity",
           "price": "$price",
           "unit": "$unit",
