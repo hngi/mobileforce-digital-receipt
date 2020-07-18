@@ -1045,14 +1045,38 @@ class ApiService {
         headers: {"token": token},
         body: {
           "inventory_id": "$id",
-          "category": "$category",
-          "name": "$productName",
+          "category_name": "$category",
+          "product_name": "$productName",
           "quantity": "$quantity",
           "price": "$price",
           "unit": "$unit",
           "discount": "$discount",
           "tax_amount": "$tax",
         },
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        return 'true';
+      }
+      return 'false';
+    } else {
+      return 'false';
+    }
+  }
+
+    Future<String> deleteInventoryItem({
+    String id,
+  }) async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      var uri = '$_urlEndpoint/business/inventory';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      print(token);
+      var response = await http.delete(
+        uri,
+        headers: {"token": token},
       );
       print(response.body);
       if (response.statusCode == 200) {
