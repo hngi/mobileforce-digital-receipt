@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class Inventory extends ChangeNotifier {
+  final String id;
   final String category;
   final String title;
   final double unitPrice;
@@ -10,7 +11,8 @@ class Inventory extends ChangeNotifier {
   final int tax;
 
   Inventory(
-      {this.category,
+      {this.id,
+      this.category,
       this.title,
       this.unitPrice,
       this.quantity,
@@ -29,12 +31,16 @@ class Inventory extends ChangeNotifier {
   setPhoneNumber(phoneNumber) => this.phoneNumber = phoneNumber;
   setAddress(address) => this.address = address;*/
 
-  factory Inventory.fromJson(Map<String, dynamic> json) => Inventory(
-      title: json['name'],
-      quantity: json['quantity']?.round(),
-      unit: json['unit'],
-      unitPrice: (json['price']?.toDouble()),
-      category: json['category']['name']);
+  factory Inventory.fromJson(Map<String, dynamic> json) {
+    print(json);
+    return Inventory(
+      id: json['id'],
+        title: json['name'],
+        quantity: json['quantity']?.round(),
+        unit: json['unit'],
+        unitPrice: (json['price']?.toDouble()),
+        category: json['category']['name']);
+  }
 
   set setInventoryList(List<Inventory> list) {
     _inventoryList = list;
