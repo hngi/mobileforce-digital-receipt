@@ -1,4 +1,6 @@
+import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -13,11 +15,11 @@ class EditAccountInfoScreen extends StatefulWidget {
   @override
   _EditAccountInfoScreenState createState() => _EditAccountInfoScreenState();
 }
+
 final ApiService _apiService = ApiService();
 
 final SharedPreferenceService _sharedPreferenceService =
     SharedPreferenceService();
-
 
 class _EditAccountInfoScreenState extends State<EditAccountInfoScreen> {
   @override
@@ -47,11 +49,13 @@ class _EditAccountInfoScreenState extends State<EditAccountInfoScreen> {
     );
   }
 }
+
 class EditAccountInfoForm extends StatefulWidget {
   const EditAccountInfoForm({Key key}) : super(key: key);
   @override
   _EditAccountInfoFormState createState() => _EditAccountInfoFormState();
 }
+
 class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String phoneNumber;
@@ -64,6 +68,7 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
   void initState() {
     super.initState();
   }
+
   Container _buildInputField(
       {String label,
       TextInputType keyboardType,
@@ -133,6 +138,7 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     var initData = Provider.of<Business>(context).accountData;
@@ -140,7 +146,7 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
       key: _formKey,
       //autovalidate: true,
       child: Column(
-         crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // SizedBox(height: 30),
           Text(
@@ -184,7 +190,21 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
                 });
                 _formKey.currentState.save();
                 // }
-               
+
+                var internet = await Connected().checkInternet();
+                if (!internet) {
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return NoInternet();
+                    },
+                  );
+                  setState(() {
+                    loading = false;
+                  });
+                  return;
+                }
+
                 var email =
                     await _sharedPreferenceService.getStringValuesSF('EMAIL');
                 var res = await _apiService.updateBusinessInfo(
@@ -204,7 +224,7 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
                     address: res['data']['address'],
                     slogan: res['data']['slogan'],
                     logo:
-                        'https://hng-degeit-receipt.herokuapp.com${res['data']['logo']}',
+                        'http://degeitreceipt.pythonanywhere.com${res['data']['logo']}',
                     email: email,
                   );
                   setState(() {
@@ -216,6 +236,16 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
                     gravity: ToastGravity.BOTTOM,
                     timeInSecForIosWeb: 1,
                     backgroundColor: Colors.green,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
+                } else {
+                  Fluttertoast.showToast(
+                    msg: "Sorry something went Wrong, try again",
+                    toastLength: Toast.LENGTH_LONG,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.red,
                     textColor: Colors.white,
                     fontSize: 16.0,
                   );
@@ -245,4 +275,3 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
     );
   }
 }
-

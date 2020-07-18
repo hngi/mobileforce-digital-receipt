@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/screens/change_password_screen.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';
@@ -32,6 +34,7 @@ class _AccountPageState extends State<AccountPage> {
   final String username = "Geek Tutor";
   String label;
   bool _loading = false;
+  String localLogo = '';
   static String loading_text = "loading ...";
   var x = AccountData(
       id: loading_text,
@@ -49,23 +52,48 @@ class _AccountPageState extends State<AccountPage> {
   AccountData _accountData;
 
   Future getImage() async {
+    var internet = await Connected().checkInternet();
+    if (!internet) {
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return NoInternet();
+        },
+      );
+      return;
+    }
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         image = pickedFile.path;
       });
       var res = await _apiService.changeLogo(pickedFile.path);
+      var logo = await SharedPreferenceService().getStringValuesSF('LOGO');
+
+      setState(() {
+        localLogo = logo;
+      });
       print(res);
     }
-    print('nope imahe');
   }
 
   callFetch() async {
     var res = await _apiService.fetchAndSetUser();
+    var logo = await SharedPreferenceService().getStringValuesSF('LOGO');
+
+    setState(() {
+      localLogo = logo;
+    });
     if (res != null) {
       Provider.of<Business>(context, listen: false).setAccountData = res;
       var val = Provider.of<Business>(context, listen: false).toJson();
       _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
+
+      var logo = await SharedPreferenceService().getStringValuesSF('LOGO');
+
+      setState(() {
+        localLogo = logo;
+      });
       print(val);
     }
   }
@@ -97,49 +125,55 @@ class _AccountPageState extends State<AccountPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Center(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => UpgradeScreen()));
-                  },
-                  child: Container(
-                    height: 133,
-                    width: double.infinity,
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Color(0xFF76DBC9)
-                        /*  gradient: LinearGradient(
-                          colors: [Colors.teal[100], Colors.teal[300]],
-                          begin: Alignment.topRight,
-                          end: Alignment.bottomLeft,
-                        ) */
-                        ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Text(
-                              'Unlock Amazing Features',
-                              style: CustomText.displayn,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              'Upgrade to premium',
-                              style: CustomText.display1,
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+////////////////////////////////
+              ///please do no delet this comment #Francis
+/////////////////////////////////////////////
+              // Center(
+              //   child: GestureDetector(
+              //     onTap: () {
+              //       Navigator.push(context,
+              //           MaterialPageRoute(builder: (_) => UpgradeScreen()));
+              //     },
+              //     child: Container(
+              //       height: 133,
+              //       width: double.infinity,
+              //       padding: EdgeInsets.all(10),
+              //       decoration: BoxDecoration(
+              //           borderRadius: BorderRadius.circular(5),
+              //           color: Color(0xFF76DBC9)
+              //           /*  gradient: LinearGradient(
+              //             colors: [Colors.teal[100], Colors.teal[300]],
+              //             begin: Alignment.topRight,
+              //             end: Alignment.bottomLeft,
+              //           ) */
+              //           ),
+              //       child: Column(
+              //         mainAxisAlignment: MainAxisAlignment.center,
+              //         children: <Widget>[
+              //           Column(
+              //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //             children: <Widget>[
+              //               Text(
+              //                 'Unlock Amazing Features',
+              //                 style: CustomText.displayn,
+              //               ),
+              //               SizedBox(
+              //                 height: 5,
+              //               ),
+              //               Text(
+              //                 'Upgrade to premium',
+              //                 style: CustomText.display1,
+              //               )
+              //             ],
+              //           )
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
+////////////////////////////////
+              ///please do no delet this comment #Francis
+/////////////////////////////////////////////
               SizedBox(
                 height: 45,
               ),
@@ -149,19 +183,22 @@ class _AccountPageState extends State<AccountPage> {
                 children: <Widget>[
                   InkWell(
                     child: Container(
-                        height: 50,
-                        constraints: BoxConstraints(
-                          maxWidth: 74,
-                        ),
-                        //width: 65,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: image == null
-                            ? Image.network(
-                                Provider.of<Business>(context).accountData.logo)
-                            : Image.asset(image)),
-                    onTap: getImage,
+                      height: 50,
+                      constraints: BoxConstraints(
+                        maxWidth: 74,
+                      ),
+                      //width: 65,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: localLogo != null &&
+                              localLogo != '' 
+                          ? Image.file(File(localLogo))
+                          : Icon(Icons.person),
+                    ),
+                    onTap: () async {
+                      await getImage();
+                    },
                   ),
                   Container(
                     height: 20,
@@ -185,6 +222,9 @@ class _AccountPageState extends State<AccountPage> {
               Center(
                 child: Text(
                   Provider.of<Business>(context).accountData.name,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: CustomText.display1,
                 ),
               ),
@@ -276,6 +316,19 @@ class _AccountPageState extends State<AccountPage> {
                   setState(() {
                     _loading = true;
                   });
+                  var internet = await Connected().checkInternet();
+                  if (!internet) {
+                    await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return NoInternet();
+                      },
+                    );
+                    setState(() {
+                      _loading = false;
+                    });
+                    return;
+                  }
                   String token = await _sharedPreferenceService
                       .getStringValuesSF('AUTH_TOKEN');
                   // print('token: $token');

@@ -1,5 +1,12 @@
+import 'dart:convert';
+
+import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/product.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
+import 'package:digital_receipt/services/hiveDb.dart';
+import 'package:digital_receipt/utils/connected.dart';
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +23,7 @@ class Drafts extends StatefulWidget {
 
 class _DraftsState extends State<Drafts> {
   ApiService _apiService = ApiService();
+  var draftData;
   @override
   void initState() {
     super.initState();
@@ -37,89 +45,119 @@ class _DraftsState extends State<Drafts> {
         ),
         actions: <Widget>[],
       ),
-      body: FutureBuilder(
-          future: _apiService.getDraft(), // receipts from API
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 1.5,
-                ),
-              );
-            } else if (snapshot.connectionState == ConnectionState.done &&
-                snapshot.hasData) {
-              print('sbap:: {snapshot.data.length}');
-              return ListView.builder(
-                padding: EdgeInsets.only(
-                  top: 30,
-                  left: 16,
-                  right: 16,
-                  bottom: 16,
-                ),
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, index) {
-                  Receipt receipt = Receipt.fromJson(snapshot.data[index]);
-                  DateTime date =
-                      DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
-                  return GestureDetector(
-                    onTap: () {
-                      setReceipt(snapshot.data[index]);
-                      print(Provider.of<Receipt>(context, listen: false));
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  ReceiptScreenFromCustomer()));
-                    },
-                    child: receiptCard(
-                        receiptNo: receipt.receiptNo,
-                        total: receipt.totalAmount,
-                        date: "${date.day}/${date.month}/${date.year}",
-                        receiptTitle: receipt.customerName,
-                        subtitle: "Crptocurrency, intro to after effects"),
-                  );
-                },
-              );
-            } else {
-              return Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      child: kBrokenHeart,
-                      height: 170,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Center(
-                      child: Text(
-                        "There are no draft receipts created!",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w300,
-                          fontSize: 16,
-                          letterSpacing: 0.3,
-                          color: Color.fromRGBO(0, 0, 0, 0.87),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          refreshDraft() async {
+            draftData = await _apiService.getDraft();
+            print(draftData);
+          }
+
+          var connected = await Connected().checkInternet();
+          if (!connected) {
+            await showDialog(
+              context: context,
+              builder: (context) {
+                return NoInternet();
+              },
+            );
+          } else {
+            await refreshDraft();
+          }
+
+          // setState(() {
+          //refreshDraft();
+          // });
+        },
+        child: FutureBuilder(
+            future: _apiService.getDraft(), // receipts from API
+            builder: (context, snapshot) {
+              draftData = snapshot.data;
+              print('Sna[hot:: ${snapshot.data}');
+              print('Sna[hot:: ${snapshot.connectionState}');
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                print('here');
+                //print('Sna[hot:: ${snapshot.data}');
+                return Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 1.5,
+                  ),
+                );
+              } else if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData) {
+                //print('sbap:: {snapshot.data.length}');
+                return ListView.builder(
+                  padding: EdgeInsets.only(
+                    top: 30,
+                    left: 16,
+                    right: 16,
+                    bottom: 16,
+                  ),
+                  itemCount: draftData.length,
+                  itemBuilder: (context, index) {
+                    Receipt receipt = Receipt.fromJson(draftData[index]);
+                    DateTime date =
+                        DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
+                    return GestureDetector(
+                      onTap: () {
+                        setReceipt(draftData[index]);
+                        // print(Provider.of<Receipt>(context, listen: false));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    ReceiptScreenFromCustomer()));
+                      },
+                      child: receiptCard(
+                          receiptNo: receipt.receiptNo,
+                          total: receipt.totalAmount,
+                          date: "${date.day}/${date.month}/${date.year}",
+                          receiptTitle: receipt.customerName,
+                          subtitle: receipt.products[0].productDesc,
+                          currency: receipt.currency),
+                    );
+                  },
+                );
+              } else {
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        child: kBrokenHeart,
+                        height: 170,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Center(
+                        child: Text(
+                          "There are no draft receipts created!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 16,
+                            letterSpacing: 0.3,
+                            color: Color.fromRGBO(0, 0, 0, 0.87),
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                  ],
-                ),
-              );
-              // Center(
-              //   child: Text("There are no draft receipts created",
-              //       style: TextStyle(
-              //           fontWeight: FontWeight.bold, fontSize: 16.0)),
-              // );
-            }
+                      SizedBox(
+                        height: 30,
+                      ),
+                    ],
+                  ),
+                );
+                // Center(
+                //   child: Text("There are no draft receipts created",
+                //       style: TextStyle(
+                //           fontWeight: FontWeight.bold, fontSize: 16.0)),
+                // );
+              }
 
-            // }
-          }),
+              // }
+            }),
+      ),
     );
   }
 
@@ -139,12 +177,13 @@ class _DraftsState extends State<Drafts> {
 
     var prod = snapshot['products'].map((e) {
       return Product(
-        id: e['id'].toString(),
-        productDesc: e['name'],
-        quantity: e['quantity'],
-        unitPrice: e['unit_price'].toDouble(),
-        amount: (e['quantity'] * e['unit_price']).toInt(),
-      );
+          id: e['id'].toString(),
+          productDesc: e['name'],
+          quantity: e['quantity'].toDouble(),
+          unitPrice: e['unit_price'].toDouble(),
+          amount: (e['quantity'] * e['unit_price']).toDouble(),
+          tax: e['tax_amount'],
+          discount: double.parse(e['discount']));
     });
     List<Product> products = List.from(prod);
     // print(products);
@@ -156,6 +195,7 @@ class _DraftsState extends State<Drafts> {
       ..receiptNo = snapshot['receipt_number']
       ..receiptId = snapshot['id']
       ..products = products
+      ..currency = Receipt().currencyFromJson(snapshot['currency'])
       ..customer = Customer(
         name: snapshot['customer']['name'],
         email: snapshot['customer']['email'],
@@ -166,7 +206,13 @@ class _DraftsState extends State<Drafts> {
     /* String id, String productDesc, int quantity, int amount, int unitPrice */
   }
 
-  Widget receiptCard({String receiptNo, total, date, receiptTitle, subtitle}) {
+  Widget receiptCard(
+      {String receiptNo,
+      total,
+      date,
+      receiptTitle,
+      subtitle,
+      Currency currency}) {
     return SizedBox(
       child: Column(
         children: <Widget>[
@@ -174,13 +220,13 @@ class _DraftsState extends State<Drafts> {
             width: double.infinity,
             decoration: BoxDecoration(
               color: Color(0xff539C30),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(5),
             ),
             child: Container(
               margin: EdgeInsets.only(left: 5.0),
               decoration: BoxDecoration(
                 color: Color(0xffE8F1FB),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(5),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,7 +308,8 @@ class _DraftsState extends State<Drafts> {
                               ),
                             ),
                             TextSpan(
-                              text: ' N$total ',
+                              text:
+                                  '${Utils.formatNumber(double.parse(total))}',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,

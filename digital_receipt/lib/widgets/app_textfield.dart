@@ -8,10 +8,14 @@ class AppTextFieldForm extends StatelessWidget {
       this.obscureText,
       this.controller,
       this.validator,
+      this.height,
       this.hintColor,
       this.borderWidth,
       this.onTap,
-      this.onSaved});
+      this.onSaved,
+      this.focusNode,
+      this.textInputAction,
+      this.onFieldSubmitted});
 
   final String hintText;
   final TextInputType keyboardType;
@@ -19,15 +23,23 @@ class AppTextFieldForm extends StatelessWidget {
   final Color hintColor;
   final TextEditingController controller;
   final double borderWidth;
+  final double height;
   final Function(String) validator;
   final Function onSaved;
   final Function onTap;
+  final FocusNode focusNode;
+  final TextInputAction textInputAction;
+  final Function onFieldSubmitted;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller != null ? controller : null,
+      focusNode: focusNode,
+      textInputAction: textInputAction,
+      onFieldSubmitted: onFieldSubmitted,
       style: TextStyle(
+        height: height,
         color: Color(0xFF2B2B2B),
         fontSize: 14,
         fontWeight: FontWeight.w600,

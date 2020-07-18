@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_controller.dart';
+import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
@@ -12,11 +13,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'currency_dropdown.dart';
+
 class CreateReceiptStep0 extends StatefulWidget {
-  const CreateReceiptStep0({this.carouselController, this.carouselIndex});
+  const CreateReceiptStep0(
+      {this.carouselController,
+      this.carouselIndex,
+      this.issuedCustomerReceipt});
 
   final CarouselController carouselController;
   final CarouselIndex carouselIndex;
+  final Receipt issuedCustomerReceipt;
   @override
   _CreateReceiptStep0State createState() => _CreateReceiptStep0State();
 }
@@ -35,11 +42,20 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _pNumberController = TextEditingController();
+  final FocusNode _nameFocus = FocusNode();
+  final FocusNode _emailFocus = FocusNode();
+  final FocusNode _addressFocus = FocusNode();
+  final FocusNode _pNumberFocus = FocusNode();
+  final FocusNode _switchFocus = FocusNode();
+
   ReceiptCategory selectedCategory;
   Customer selectedCustomer;
+  Currency selectedCurrency = Currency.currencyList().elementAt(0);
 
   // Needed to decide weather to create a new customer or not
   List<Customer> customers = [];
+
+  List<Currency> currency = Currency.currencyList();
 
   String _customerName, _customerEmail, _customerAddress, _customerPNumber;
 
@@ -56,19 +72,25 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
       },
     );
 
-      Provider.of<Customer>(context, listen: false).setCustomerList =
-          List.from(res);
-    
+    Provider.of<Customer>(context, listen: false).setCustomerList =
+        List.from(res);
+
     //res = null;
   }
 
   @override
   void initState() {
     setCustomer();
+    if (widget.issuedCustomerReceipt != null) {
+      updateContents();
+    }
     super.initState();
   }
 
-
+  updateContents() {
+    selectedCategory = widget.issuedCustomerReceipt.category;
+    selectedCustomer = widget.issuedCustomerReceipt.customer;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -229,6 +251,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                   print(value);
                   setState(() {
                     selectedCategory = value;
+                    Provider.of<Receipt>(context).setCategory(selectedCategory);
                   });
                 },
                 value: selectedCategory,
@@ -398,6 +421,10 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
               SizedBox(height: 5),
               AppTextFieldForm(
+                focusNode: _nameFocus,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (value) =>
+                    _changeFocus(from: _nameFocus, to: _emailFocus),
                 controller: _nameController,
                 validator: (value) {
                   if (selectedCustomer == null) {
@@ -429,6 +456,10 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
               SizedBox(height: 5),
               AppTextFieldForm(
+                focusNode: _emailFocus,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (value) =>
+                    _changeFocus(from: _emailFocus, to: _addressFocus),
                 keyboardType: TextInputType.emailAddress,
                 controller: _emailController,
                 validator: (value) {
@@ -464,6 +495,10 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
               SizedBox(height: 5),
               AppTextFieldForm(
+                focusNode: _addressFocus,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (value) =>
+                    _changeFocus(from: _addressFocus, to: _pNumberFocus),
                 controller: _addressController,
                 validator: (value) {
                   if (selectedCustomer == null) {
@@ -498,7 +533,10 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
               SizedBox(height: 5),
               AppTextFieldForm(
-                keyboardType: TextInputType.number,
+                focusNode: _pNumberFocus,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (value) => _pNumberFocus.unfocus(),
+                keyboardType: TextInputType.phone,
                 controller: _pNumberController,
                 validator: (value) {
                   if (selectedCustomer == null) {
@@ -535,6 +573,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     ),
                   ),
                   Switch(
+                    focusNode: _switchFocus,
                     value: Provider.of<Receipt>(context, listen: false)
                         .enableSaveCustomer(),
                     onChanged: (val) {
@@ -549,39 +588,92 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               SizedBox(
                 height: 25,
               ),
-             /*  DropdownButtonFormField(
-                items: [],
-                onChanged: (val) {},
-                iconDisabledColor: Color.fromRGBO(0, 0, 0, 0.87),
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(15),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                    borderSide: BorderSide(
-                      color: Color(0xFFC8C8C8),
-                      width: 1.5,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(),
-                  //hintText: hintText,
-                  hintStyle: TextStyle(
-                    color: Color(0xFF979797),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'Montserrat',
+              GestureDetector(
+                onTap: () async {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CurrencyDropdown(
+                        currency: currency,
+                        onSubmit: (currency) {
+                          setState(() {
+                            selectedCurrency = currency;
+                          });
+                        },
+                      );
+                    },
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Color(0xFFC8C8C8),
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(5.0)),
+                  padding: EdgeInsets.symmetric(horizontal: 13, vertical: 14),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        selectedCurrency != null
+                            ? selectedCurrency.currencyName
+                            : 'Select Currency',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.3,
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Spacer(),
+                      Icon(Icons.arrow_drop_down),
+                    ],
                   ),
                 ),
-                hint: Text(
-                  'Select currency',
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.3,
-                    fontSize: 14,
-                    color: Color(0xFF1B1B1B),
-                  ),
-                ),
-              ), */
+              ),
+              // DropdownButtonFormField(
+              // items: Currency.currencyList().map<DropdownMenuItem<Currency>>((curr) => DropdownMenuItem(value: curr, child: Row(children: <Widget>[
+              //   Text(curr.flag),
+              //   SizedBox(width:7),
+              //   Text(curr.currencyName),
+              //   SizedBox(width:7),
+              //   Text(curr.currencySymbol),
+              // ],),
+              // )).toList(),
+              // onChanged: (Currency currency) {
+              //   _changeCurrency(currency);
+              //                   },
+              //                   iconDisabledColor: Color.fromRGBO(0, 0, 0, 0.87),
+              //                   decoration: InputDecoration(
+              //                     contentPadding: EdgeInsets.all(15),
+              //                     enabledBorder: OutlineInputBorder(
+              //                       borderRadius: BorderRadius.circular(5),
+              //                       borderSide: BorderSide(
+              //                         color: Color(0xFFC8C8C8),
+              //                         width: 1.5,
+              //                       ),
+              //                     ),
+              //                     focusedBorder: OutlineInputBorder(),
+              //                     //hintText: hintText,
+              //                     hintStyle: TextStyle(
+              //                       color: Color(0xFF979797),
+              //                       fontSize: 14,
+              //                       fontWeight: FontWeight.w500,
+              //                       fontFamily: 'Montserrat',
+              //                     ),
+              //                   ),
+              //                   hint: Text(
+              //                     'Select currency',
+              //                     style: TextStyle(
+              //                       fontFamily: 'Montserrat',
+              //                       fontWeight: FontWeight.w500,
+              //                       letterSpacing: 0.3,
+              //                       fontSize: 14,
+              //                       color: Color(0xFF1B1B1B),
+              //                     ),
+              //                   ),
+              //                 ),
               SizedBox(
                 height: 45,
               ),
@@ -590,11 +682,15 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                 textColor: Colors.white,
                 backgroundColor: Color(0xFF0B57A7),
                 onPressed: () {
+                  FocusScope.of(context).unfocus();
+
                   if (_formKey.currentState.validate()) {
                     _formKey.currentState.save();
 
                     Provider.of<Receipt>(context, listen: false)
                         .setCategory(selectedCategory);
+                    Provider.of<Receipt>(context, listen: false)
+                        .setCurrency(selectedCurrency);
 
                     if (selectedCustomer == null) {
                       Provider.of<Receipt>(context, listen: false).setCustomer(
@@ -628,7 +724,17 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
     _emailController.dispose();
     _addressController.dispose();
     _pNumberController.dispose();
+    _nameFocus.dispose();
+    _emailFocus.dispose();
+    _addressFocus.dispose();
+    _pNumberFocus.dispose();
+    _switchFocus.dispose();
     super.dispose();
+  }
+
+  void _changeFocus({FocusNode from, FocusNode to}) {
+    from.unfocus();
+    FocusScope.of(context).requestFocus(to);
   }
 
   void _selectCustomerDropdown(BuildContext context,
@@ -754,5 +860,9 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
         ],
       ),
     );
+  }
+
+  void _changeCurrency(Currency currency) {
+    print(currency.currencyName);
   }
 }

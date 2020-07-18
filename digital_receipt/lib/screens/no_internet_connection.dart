@@ -1,135 +1,73 @@
-// import 'dart:async';
+import 'dart:async';
 
-// import 'package:connectivity/connectivity.dart';
-// import 'package:digital_receipt/screens/home_page.dart';
-// import 'package:flutter/material.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:digital_receipt/constant.dart';
+import 'package:digital_receipt/screens/home_page.dart';
+import 'package:flutter/material.dart';
 
+//nav variable to accesss the current state of the navigator
+final GlobalKey<NavigatorState> nav = GlobalKey<NavigatorState>();
 
-// //nav variable to accesss the current state of the navigator
-// final GlobalKey<NavigatorState> nav = GlobalKey<NavigatorState>();
+class NoInternet extends StatefulWidget {
+  @override
+  NoInternetState createState() => NoInternetState();
+}
 
-// class NoInternetConnectivity extends StatefulWidget{
-//   @override
-//   NoInternetConnectivityState createState() => NoInternetConnectivityState();
+class NoInternetState extends State<NoInternet> {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Center(
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.75,
+            width: MediaQuery.of(context).size.width * 0.75,
+            decoration: BoxDecoration(
+              color: Color(0xFFF2F8FF),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  //image container
+                  Center(
+                    child: kEggMonster,
+                  ),
 
-// }
-
-// class NoInternetConnectivityState extends State<NoInternetConnectivity>{
-
-//   StreamSubscription connectivitySubscription;
-
-//   ConnectivityResult _previousResult;
-
-//   @override
-//   void initState(){
-//     super.initState();
-
-//     connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult connectivityResult) {
-//       //CHECK IF CONNECTIVITY RESULT IS NONE, DISPLAY THE NoInternetConnectivityScreen
-//       if (connectivityResult == ConnectivityResult.none) {
-//         nav.currentState.push(MaterialPageRoute(
-//             builder: (BuildContext _) => NoInternetConnectivityScreen()
-//         ));
-//       }
-
-//       _previousResult = connectivityResult;
-//     });
-
-//     @override
-//     void dispose() {
-//       super.dispose();
-
-//       connectivitySubscription.cancel();
-//     }
-
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       navigatorKey: nav,
-//       home: HomePage(),
-//     );
-
-//   }
-// }
-
-// class NoInternetConnectivityScreen extends StatelessWidget {
-
-//   @override
-//   Widget build(BuildContext context) {
-
-//     return Scaffold(
-//         backgroundColor: Color(0xFFF2F8FF),
-//         appBar: AppBar(
-//           backgroundColor: Color(0xFF0B57A7),
-//           title: Text(
-//             'Customer List',
-//             style: TextStyle(
-//               fontFamily: 'Montserrat',
-//               fontWeight: FontWeight.w600,
-//               letterSpacing: 0.3,
-//               fontSize: 16,
-//               //color: Colors.white,
-//             ),
-//           ),
-//         ),
-//         body: Container(
-//             margin: EdgeInsets.all(20),
-//             child: Center(
-//               child: Column(
-//                 children: <Widget>[
-//                   //image container
-//                   Center(
-//                     child: Image.asset('assets/images/egg_monster.png'),
-//                   ),
-
-//                   //text message
-
-//                   Text('NO INTERNET',
-//                     style: TextStyle(
-//                       fontWeight: FontWeight.w500,
-//                       fontSize: 16,
-//                       color: Colors.black54,
-//                       fontFamily: 'Montserrat',
-//                     ),
-//                   ),
-
-//                   Container(
-//                     width: 293,
-//                     height: 69,
-//                     margin: EdgeInsets.all(10),
-//                     child: Column(
-//                       children: <Widget>[
-
-//                         Text('Whoops, You have awoken the',
-//                             style: TextStyle(
-//                               fontSize: 16,
-//                               color: Color(0xFFC8C8C8),
-//                               height: 1.43,
-//                             )),
-
-//                         Text('Egg Monster',
-//                             style: TextStyle(
-//                               fontSize: 16,
-//                               color: Color(0xFFC8C8C8),
-//                               height: 1.43,
-//                             )),
-
-//                         Text('Please check your connection',
-//                             style: TextStyle(
-//                               fontSize: 16,
-//                               color: Color(0xFFC8C8C8),
-//                               height: 1.43,
-//                             )),
-//                       ],
-//                     ),
-//                   ),
-
-//                 ],
-//               ),
-//             )
-//         )
-//     );
-//   }
-// }
+                  //text message
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'NO INTERNET',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: Colors.black87,
+                      // fontFamily: 'Montserrat',
+                    ),
+                  ),
+                  Text(
+                      'Whoops, You have awoken the Egg monster. Please check your connection.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black54,
+                        height: 1.43,
+                      )),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -4,13 +4,17 @@ import 'dart:io';
 import 'package:digital_receipt/models/account.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/providers/business.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:random_color/random_color.dart';
 import '../services/email_service.dart';
+import '../utils/connected.dart';
 import '../constant.dart';
 
 final ApiService _apiService = ApiService();
@@ -35,18 +39,37 @@ class _DashBoardState extends State<DashBoard> {
     super.initState();
   }
 
-  void didChangeDependencies() {
-    callFetch();
-    super.didChangeDependencies();
-  }
-
   callFetch() async {
     var res = await _apiService.fetchAndSetUser();
     if (res != null) {
+      // print('res:::: ${res.phone}');
       Provider.of<Business>(context, listen: false).setAccountData = res;
       var val = Provider.of<Business>(context, listen: false).toJson();
       _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
-      print(val);
+      //print('val:: $val');
+    }
+  }
+
+  Future refreshPage() async {
+    var connected = await Connected().checkInternet();
+    if (!connected) {
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return NoInternet();
+        },
+      );
+
+      //return;
+    } else {
+      await callFetch();
+      var snapshot = await _apiService.getIssuedReceipt2();
+      var userData = snapshot;
+      // setState(() {
+      recNo = recInfo(userData)['recNo'];
+      deptIssued = recInfo(userData)['dept'];
+      amnt = recInfo(userData)['total'];
+      // });
     }
   }
 
@@ -87,30 +110,38 @@ class _DashBoardState extends State<DashBoard> {
               if (snapshot.connectionState == ConnectionState.done &&
                   !snapshot.hasData) {
                 return Expanded(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Center(
-                        child: SizedBox(
-                      height: 200,
-                      child: kEmpty,
-                    )),
-                    SizedBox(
-                      height: 20,
+                    child: RefreshIndicator(
+                  onRefresh: () async {
+                    await refreshPage();
+                  },
+                  child: Center(
+                    child: ListView(
+                      shrinkWrap: true,
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Center(
+                            child: SizedBox(
+                          height: 200,
+                          child: kEmpty,
+                        )),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Nothing to see here. Click the plus icon to create a receipt',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color.fromRGBO(0, 0, 0, 0.6),
+                            fontSize: 16,
+                            letterSpacing: 0.03,
+                            fontWeight: FontWeight.normal,
+                            fontFamily: 'Montserrat',
+                            height: 1.43,
+                          ),
+                        )
+                      ],
                     ),
-                    Text(
-                      'Nothing to see here. Click the plus icon to create a receipt',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color.fromRGBO(0, 0, 0, 0.6),
-                        fontSize: 16,
-                        letterSpacing: 0.03,
-                        fontWeight: FontWeight.normal,
-                        fontFamily: 'Montserrat',
-                        height: 1.43,
-                      ),
-                    )
-                  ],
+                  ),
                 ));
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return Expanded(
@@ -128,13 +159,7 @@ class _DashBoardState extends State<DashBoard> {
                 return Expanded(
                   child: RefreshIndicator(
                     onRefresh: () async {
-                      var snapshot = await _apiService.getIssuedReceipt2();
-                      var userData = snapshot;
-                      setState(() {
-                        recNo = recInfo(userData)['recNo'];
-                        deptIssued = recInfo(userData)['dept'];
-                        amnt = recInfo(userData)['total'];
-                      });
+                      await refreshPage();
                     },
                     child: buildGridView(recNo, deptIssued, amnt),
                   ),
@@ -148,6 +173,7 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   GridView buildGridView(recNo, int deptIssued, double amnt) {
+    RandomColor _color = RandomColor();
     return GridView.count(
       crossAxisSpacing: 16.0,
       mainAxisSpacing: 16.0,
@@ -157,41 +183,26 @@ class _DashBoardState extends State<DashBoard> {
         _singleCard(
           leading: 'No of receipts',
           subtitle: '$recNo',
-          color: Color(0xFF25CCB3),
+          color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
         _singleCard(
           leading: 'Debts',
           subtitle: '$deptIssued',
-          color: Color(0xFFE897A0),
+          color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
         _singleCard(
           leading: 'Total Sales',
-          subtitle: '₦$amnt',
-          color: Color(0xFF25CCB3),
+          subtitle: '₦${Utils.formatNumber(amnt)}',
+          color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
-        /*  FlatButton(
-                  onPressed: () async {
-                    print('canSend');
-                    final EmailService emailService = EmailService();
-                    //final bool canSend = await FlutterMailer.canSendMail();
-
-                    //print(canSend);
-                    emailService.setMail(
-                      body:
-                          '<h1>a long body for the email<h1> <br> with a subset of HTML',
-                      subject: 'Degeit',
-                      recipients: ['2amafav3@gmail.com'],
-                      isHTML: true,
-                      ccRecipients: [],
-                      bccRecipients: [],
-                      attachments: <String>[
-                        '/storage/emulated/0/Download/Outliers.pdf'
-                      ],
-                    );
-                    await emailService.sendMail();
-                  },
-                  child: Text('Test mail'),
-                ), */
+        /* FlatButton(
+          onPressed: () async {
+            var h =
+                await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+            print(h);
+          },
+          child: Text('${Provider.of<Connected>(context).stream}'),
+        ), */
       ],
     );
   }

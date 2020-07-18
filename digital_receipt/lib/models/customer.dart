@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:hive/hive.dart';
 
 class Customer extends ChangeNotifier {
   String name;

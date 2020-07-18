@@ -22,6 +22,7 @@ import 'package:digital_receipt/models/account.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/providers/business.dart';
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
@@ -30,7 +31,9 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:provider/provider.dart';
 
 Future<Uint8List> generatePdf(
-    {PdfPageFormat pageFormat, Receipt receipt, AccountData accountData}) async {
+    {PdfPageFormat pageFormat,
+    Receipt receipt,
+    AccountData accountData}) async {
   final lorem = pw.LoremText();
 
   final invoice = Invoice(receipt, accountData);
@@ -45,10 +48,17 @@ class Invoice {
 
   static final _backgroundColor = PdfColor.fromHex('#F2F8FF');
   static const _lightColor = PdfColors.white;
+  /*
+  THERE IS A BUG HERE I DON'T KNOW HOW TO FIX IT THE TOTAL AMOUNT IS NULL I DON'T KNOW WHY
+*/
 
-  double get _total => receipt.products
-      .map<double>((p) => p.amount.roundToDouble())
-      .reduce((a, b) => a + b);
+  double get _total => receipt.products.map<double>((p) {
+        if (p.amount != null) {
+          return p.amount.roundToDouble();
+        } else {
+          return (p.unitPrice * p.quantity);
+        }
+      }).reduce((a, b) => a + b);
 
   //double get _grandTotal => _total * (1 + tax);
 
@@ -413,7 +423,7 @@ class Invoice {
                 width: 15,
               ),
               pw.Container(
-                child: pw.Text('₦${thisProduct.unitPrice}'),
+                child: pw.Text('₦${Utils.formatNumber(thisProduct.unitPrice)}'),
               ),
             ],
           ),
@@ -477,7 +487,7 @@ class Invoice {
               )),
               pw.Container(
                 child: pw.Text(
-                  '₦${thisProduct.amount}',
+                  "${productAmount(thisProduct)}",
                   style: pw.TextStyle(
                     color: PdfColors.black,
                     fontSize: 14,
@@ -525,7 +535,7 @@ class Invoice {
               pw.Padding(
                 padding: const pw.EdgeInsets.only(top: 15.0),
                 child: pw.Text(
-                  '₦${_total.toString()}',
+                  '₦${Utils.formatNumber(_total)}',
                   style: pw.TextStyle(
                     color: PdfColors.black,
                     fontSize: 14,
@@ -540,6 +550,19 @@ class Invoice {
         ],
       ),
     );
+  }
+
+/*
+  THERE IS A BUG HERE I DON'T KNOW HOW TO FIX IT THE TOTAL AMOUNT IS NULL I DON'T KNOW WHY
+*/
+  String productAmount(Product product) {
+    if (product.amount != null) {
+      print("product amount ${product.amount}");
+      return '₦${Utils.formatNumber(product.amount)}';
+    } else {
+      print("product amount ${product.amount}");
+      return '₦${Utils.formatNumber((product.unitPrice * product.quantity))}';
+    }
   }
 
   pw.Widget _contentFooter() {

@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:digital_receipt/models/currency.dart';
+import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/product.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 import 'dart:convert';
@@ -16,10 +19,13 @@ import 'dart:convert';
 SharedPreferenceService _sharedPreferenceService = SharedPreferenceService();
 enum ReceiptCategory { WHATSAPP, INSTAGRAM, FACEBOOK, TWITTER, REDIT, OTHERS }
 
+// part 'receipt.g.dart';
+
 class Receipt extends ChangeNotifier {
   String receiptNo;
   bool autoGenReceiptNo = true;
   String issuedDate;
+  String secCurrency;
   String customerName;
   String description;
   String receiptId;
@@ -33,12 +39,14 @@ class Receipt extends ChangeNotifier {
   bool partPayment = false;
   bool saveCustomer = false;
   bool issued = false;
-  int fonts;
+  int fonts = 20;
   String partPaymentDateTime;
   String signature;
   TimeOfDay reminderTime;
   DateTime reminderDate;
   num total;
+  String tempReceipt;
+  Currency currency;
 
   String get descriptions {
     var desc = new StringBuffer();
@@ -61,8 +69,9 @@ class Receipt extends ChangeNotifier {
     this.customer,
     this.products,
     this.total,
+    this.currency,
   });
-  static String _urlEndpoint = 'https://hng-degeit-receipt.herokuapp.com/v1';
+  static String _urlEndpoint = 'http://degeitreceipt.pythonanywhere.com/v1';
 
   factory Receipt.fromJson(Map<String, dynamic> json) {
     ReceiptCategory convertToEnum({@required string}) {
@@ -78,6 +87,9 @@ class Receipt extends ChangeNotifier {
       category: json["customer"]["platform"] == null
           ? null
           : convertToEnum(string: json["customer"]["platform"]),
+     /*  currency: json['currency'] == null
+          ? null
+          : Receipt().currencyFromJson(json['currency']), */
       totalAmount: json["total"] == null ? null : json["total"].toString(),
       customer:
           json["customer"] == null ? null : Customer.fromJson(json["customer"]),
@@ -116,6 +128,10 @@ class Receipt extends ChangeNotifier {
     return total;
   }
 
+  Currency getCurrency() {
+    return currency;
+  }
+
   void toggleAutoGenReceiptNo() {
     autoGenReceiptNo = !autoGenReceiptNo;
     notifyListeners();
@@ -128,6 +144,11 @@ class Receipt extends ChangeNotifier {
 
   set setPaidStamp(bool val) {
     paidStamp = val;
+    notifyListeners();
+  }
+
+  void setCurrency(Currency currency) {
+    this.currency = currency;
     notifyListeners();
   }
 
@@ -167,11 +188,12 @@ class Receipt extends ChangeNotifier {
 
   void setProducts(List<Product> products) => this.products = products;
 
-  void setNumber(int receiptNo) {
-    this.customer != null
+  void setNumber(String rNo) {
+    /*  this.customer != null
         ? print("theirs a customer")
-        : print("no customer object good");
-    receiptNo = receiptNo;
+        : print("no customer object good"); */
+    receiptNo = rNo;
+    notifyListeners();
   }
 
   void setIssueDate(String date) {
@@ -223,12 +245,34 @@ class Receipt extends ChangeNotifier {
           "deleted": false,
           "partPayment": partPayment,
           "partPaymentDateTime": convertToDateTime(),
+          "currency": currencyToJson(currency) ?? '₦'
         },
         "products": products,
       };
 
   void showJson() {
     print(json.encode(toJson()));
+  }
+
+  String currencyToJson(Currency currency) {
+    Map<String, dynamic> val = {
+      'name': currency.currencyName,
+      'symbol': currency.currencySymbol,
+      'flag': currency.flag,
+      'id': currency.id
+    };
+    return json.encode(val);
+  }
+
+  Currency currencyFromJson(String val) {
+    
+    var json = jsonDecode(val);
+    return Currency(
+      currencyName: json['name'],
+      currencySymbol: json['symbol'].toString(),
+      flag: json['flag'].toString(),
+      id: json['id'],
+    );
   }
 
   Future updatedReceipt(String receiptId) async {
@@ -242,43 +286,58 @@ class Receipt extends ChangeNotifier {
       "token": token,
     });
 
-    print(response.statusCode);
-    print(json.decode(response.body));
-    /*  if (response.statusCode == 200) {
-      Fluttertoast.showToast(
-        msg: 'Draft updated successfully',
-        fontSize: 12,
-        toastLength: Toast.LENGTH_LONG,
-        backgroundColor: Colors.green,
-      );
-      return 'Draft updated successfully';
-    } else {
-      Fluttertoast.showToast(
-        msg: 'Sorry something went Wrong, try again',
-        fontSize: 12,
-        toastLength: Toast.LENGTH_LONG,
-        backgroundColor: Colors.green,
-      );
-      return 'Sorry something went Wrong, try again';
-    } */
+    return response.statusCode;
   }
 
   saveReceipt() async {
     var uri = "$_urlEndpoint/business/receipt/customize";
     var token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+    print(toJson());
 
-    var response = await http.post(uri,
+    try {
+      var response = await http.post(
+        uri,
         body: json.encode(toJson()),
-        headers: {"token": token, "Content-Type": "application/json"});
+        headers: {"token": token, "Content-Type": "application/json"},
+      );
 
-    print("3");
-    if (response.statusCode == 200) {
-      print(json.decode(response.body));
-      return "Receipt saved successfully";
-    } else {
-      print("failed");
-      return "failed";
+      if (response.statusCode == 200) {
+        //json.decode(response.body);
+        return response;
+      }
+    } catch (e) {
+      throw (e);
     }
+  }
+
+  List<Receipt> _issuedReceipt = [];
+  List<Receipt> get issuedReceipt => _issuedReceipt;
+
+  filterReceipt(List<Receipt> receiptList, String value) {
+    bool searchReceiptByCustomerName(Receipt receipt, String pattern) {
+      if (receipt.customerName != null) {
+        return receipt.customerName.toLowerCase().contains(value);
+      }
+      return false;
+    }
+
+    bool searchReceiptByDescription(Receipt receipt, String pattern) {
+      if (receipt.description != null) {
+        return receipt.description.toLowerCase().contains(value);
+      }
+      return false;
+    }
+
+    if (receiptList.isNotEmpty) {
+      _issuedReceipt = receiptList
+          .where((receipt) =>
+              searchReceiptByCustomerName(receipt, value) ||
+              searchReceiptByDescription(receipt, value))
+          .toList();
+    }
+
+    notifyListeners();
+    print("Receipt list : $receiptList");
   }
 }
 

@@ -1,5 +1,7 @@
 import 'package:digital_receipt/constant.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -82,8 +84,8 @@ class _PasswordFormState extends State<PasswordForm> {
                         'Password should contain at least a Lowercase letter'),
                     Validators.patternRegExp(kOneDigitRegex,
                         'Password should contain at least a Digit'),
-                    Validators.patternRegExp(kOneSpecialCharRegex,
-                        'Password should contain at least a Special Character')
+                    Validators.patternRegExp(
+                        kOneSpecialCharRegex, 'Special Character eg.(\$\%#&@)')
                   ]),
                   style: TextStyle(
                     color: Color(0xFF2B2B2B),
@@ -140,8 +142,8 @@ class _PasswordFormState extends State<PasswordForm> {
                         'Password should contain at least a Lowercase letter'),
                     Validators.patternRegExp(kOneDigitRegex,
                         'Password should contain at least a Digit'),
-                    Validators.patternRegExp(kOneSpecialCharRegex,
-                        'Password should contain at least a Special Character')
+                    Validators.patternRegExp(
+                        kOneSpecialCharRegex, 'Special Character eg.(\$\%#&@)')
                   ]),
                   style: TextStyle(
                     color: Color(0xFF2B2B2B),
@@ -197,8 +199,8 @@ class _PasswordFormState extends State<PasswordForm> {
                         'Password should contain at least a Lowercase letter'),
                     Validators.patternRegExp(kOneDigitRegex,
                         'Password should contain at least a Digit'),
-                    Validators.patternRegExp(kOneSpecialCharRegex,
-                        'Password should contain at least a Special Character')
+                    Validators.patternRegExp(
+                        kOneSpecialCharRegex, 'Special Character eg.(\$\%#&@)')
                   ]),
                   style: TextStyle(
                     color: Color(0xFF2B2B2B),
@@ -244,6 +246,19 @@ class _PasswordFormState extends State<PasswordForm> {
                 setState(() {
                   isLoading = true;
                 });
+                var internet = await Connected().checkInternet();
+                if (!internet) {
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return NoInternet();
+                    },
+                  );
+                  setState(() {
+                    isLoading = false;
+                  });
+                  return;
+                }
                 String apiResponse = await _apiService.changePassword(
                     _currentPassword, _confirmNewPassword);
                 if (apiResponse == "true") {

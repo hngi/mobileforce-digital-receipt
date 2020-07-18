@@ -1,6 +1,7 @@
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/screens/analytics.dart';
 import 'package:digital_receipt/screens/drafts.dart';
+import 'package:digital_receipt/screens/inventory_screen.dart';
 import 'package:digital_receipt/screens/notification_page.dart';
 import 'package:digital_receipt/screens/receipt_screen.dart';
 import 'package:digital_receipt/screens/setup.dart';
@@ -113,6 +114,34 @@ class MainDrawer extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
+                                builder: (context) => InventoryScreen()));
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.store, color: Colors.white, size: 22.0),
+                          SizedBox(width: 15.0),
+                          Text(
+                            'Inventory',
+                            style: TextStyle(
+                                fontFamily: 'Montserrat',
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                                letterSpacing: 0.5),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50.0,
+                    width: double.maxFinite,
+                    child: FlatButton(
+                      highlightColor: Colors.transparent,
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
                                 builder: (context) => NotificationPage()));
                       },
                       child: Row(
@@ -190,7 +219,7 @@ class MainDrawer extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(
+                 /*  SizedBox(
                     height: 50.0,
                     width: double.maxFinite,
                     child: FlatButton(
@@ -222,7 +251,7 @@ class MainDrawer extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ),
+                  ), */
                   SizedBox(
                     height: 50.0,
                     width: double.maxFinite,
