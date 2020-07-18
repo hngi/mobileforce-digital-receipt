@@ -552,9 +552,10 @@ class _CreateInventoryState extends State<CreateInventory> {
                                 textColor: Colors.white,
                                 fontSize: 16.0,
                               );
-                              setState(() {
-                                loading = false;
-                              });
+                                setState(() {
+                              loading = false;
+                            });
+
                               return;
                             }
                             setState(() {
@@ -563,6 +564,7 @@ class _CreateInventoryState extends State<CreateInventory> {
                             print("quantity  unit is $unitValue");
                             print(tax);
                             var resp = await _apiService.addInventory(
+
                               category.toUpperCase(),
                               item.toUpperCase(),
                               double.parse(unitPrice),
