@@ -242,7 +242,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                             height: 6,
                           ),
                           Text(
-                            '${(inventory.quantity).toString()} per/${(inventory.unit).toString()}',
+                            '${(inventory.quantity).toString()}',
                             style: TextStyle(
                               color: Color.fromRGBO(0, 0, 0, 0.87),
                               fontSize: 14,
