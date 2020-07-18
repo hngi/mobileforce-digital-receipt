@@ -248,9 +248,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
                                 letterSpacing: 0.03,
                               ),
                             ),
-
-                          ),
-                          SizedBox(
+                        
+                                                  SizedBox(
                             height: 6,
                           ),
                           Text(
@@ -261,12 +260,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
                               fontWeight: FontWeight.w600,
                               fontFamily: 'Montserrat',
                               letterSpacing: 0.03,
-
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-
                     ),
 /*                     Expanded(
                       flex: 3,
@@ -281,66 +278,64 @@ class _InventoryScreenState extends State<InventoryScreen> {
                               fontWeight: FontWeight.w300,
                               fontFamily: 'Montserrat',
                               letterSpacing: 0.03,
-
                             ),
-                            SizedBox(
-                              height: 6,
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            (inventory.discount).toString() + "%",
+                            style: TextStyle(
+                              color: Color.fromRGBO(0, 0, 0, 0.87),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Montserrat',
+                              letterSpacing: 0.03,
                             ),
-                            Text(
-                              (inventory.discount).toString() + "%",
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.87),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'Montserrat',
-                                letterSpacing: 0.03,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        flex: 2,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              "TAX",
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.87),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w300,
-                                fontFamily: 'Montserrat',
-                                letterSpacing: 0.03,
-                              ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "TAX",
+                            style: TextStyle(
+                              color: Color.fromRGBO(0, 0, 0, 0.87),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w300,
+                              fontFamily: 'Montserrat',
+                              letterSpacing: 0.03,
                             ),
-                            SizedBox(
-                              height: 6,
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            (inventory.tax).toString(),
+                            style: TextStyle(
+                              color: Color.fromRGBO(0, 0, 0, 0.87),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Montserrat',
+                              letterSpacing: 0.03,
                             ),
-                            Text(
-                              (inventory.tax).toString(),
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.87),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'Montserrat',
-                                letterSpacing: 0.03,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-
-                    ],
-                  ),
-                ],
-              ),
-
-
+                    ),
+                  */
+                  ],
+                ),
+              ],
             ),
           ),
         ),
       ),
+      )
     );
   }
 
