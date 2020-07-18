@@ -45,7 +45,7 @@ class _DashBoardState extends State<DashBoard> {
       Provider.of<Business>(context, listen: false).setAccountData = res;
       var val = Provider.of<Business>(context, listen: false).toJson();
       _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
-       //print('val:: $val');
+      //print('val:: $val');
     }
   }
 
@@ -64,11 +64,11 @@ class _DashBoardState extends State<DashBoard> {
       await callFetch();
       var snapshot = await _apiService.getIssuedReceipt2();
       var userData = snapshot;
-      setState(() {
-        recNo = recInfo(userData)['recNo'];
-        deptIssued = recInfo(userData)['dept'];
-        amnt = recInfo(userData)['total'];
-      });
+      // setState(() {
+      recNo = recInfo(userData)['recNo'];
+      deptIssued = recInfo(userData)['dept'];
+      amnt = recInfo(userData)['total'];
+      // });
     }
   }
 
@@ -194,14 +194,14 @@ class _DashBoardState extends State<DashBoard> {
           subtitle: '₦$amnt',
           color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
-        /* FlatButton(
+        FlatButton(
           onPressed: () async {
             var h =
                 await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
             print(h);
           },
           child: Text('${Provider.of<Connected>(context).stream}'),
-        ), */
+        ),
       ],
     );
   }
