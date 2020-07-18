@@ -113,7 +113,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           debugShowCheckedModeBanner: false,
-          home: ScreenController(),
+          home: HomePage(),
         ),
       ),
     );

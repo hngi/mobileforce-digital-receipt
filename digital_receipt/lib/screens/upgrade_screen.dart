@@ -105,7 +105,7 @@ class UpgradeScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 30.0),
                     Container(
-                       padding: EdgeInsets.only(top: 10, left: 10, right: 25, bottom: 10),
+                      padding: EdgeInsets.only(top: 10, left: 10, right: 25, bottom: 10),
                       decoration: BoxDecoration(
                           color: Color(0xFFDFF6F3),
                           borderRadius: BorderRadius.circular(5.0)),
@@ -124,7 +124,7 @@ class UpgradeScreen extends StatelessWidget {
                               letterSpacing: 0.5,
                             ),
                           ),
-                          SizedBox(width: 32.0),
+                          Spacer(),
                           Icon(
                             Icons.check,
                             color: Color(0xFF25CCB3),
@@ -133,7 +133,7 @@ class UpgradeScreen extends StatelessWidget {
                       ),
                     ),
                     Container(
-                       padding: EdgeInsets.only(top: 20, left: 0, right: 25, bottom: 20),
+                      padding: EdgeInsets.only(top: 20, left: 0, right: 25, bottom: 20),
                       decoration: BoxDecoration(
                         color: Color(0xFFF2F8FF),
                         borderRadius: BorderRadius.circular(5.0),
@@ -153,20 +153,20 @@ class UpgradeScreen extends StatelessWidget {
                               letterSpacing: 0.5,
                             ),
                           ),
-                          SizedBox(width: 18.0),
+                          Spacer(),
                           Container(
                             width: 24,
                             height: 24,
                             child:Icon(
-                            Icons.check,
-                            color: Color(0xFF25CCB3),
-                          ),
+                              Icons.check,
+                              color: Color(0xFF25CCB3),
+                            ),
                           )
                         ],
                       ),
                     ),
                     Container(
-                       padding: EdgeInsets.only(top: 10, left: 10, right: 25, bottom: 10),
+                      padding: EdgeInsets.only(top: 10, left: 10, right: 25, bottom: 10),
                       decoration: BoxDecoration(
                           color: Color(0xFFDFF6F3),
                           borderRadius: BorderRadius.circular(5.0)),
@@ -185,14 +185,14 @@ class UpgradeScreen extends StatelessWidget {
                               letterSpacing: 0.5,
                             ),
                           ),
-                          SizedBox(width: 98.0),
+                          Spacer(),
                           Container(
-                            width: 24,
-                            height: 24,
-                            child: Icon(
-                            Icons.check,
-                            color: Color(0xFF25CCB3),
-                          )
+                              width: 24,
+                              height: 24,
+                              child: Icon(
+                                Icons.check,
+                                color: Color(0xFF25CCB3),
+                              )
                           ),
                         ],
                       ),
@@ -217,14 +217,14 @@ class UpgradeScreen extends StatelessWidget {
                               letterSpacing: 0.5,
                             ),
                           ),
-                          SizedBox(width: 82.0),
+                          Spacer(),
                           Container(
-                            width: 24,
-                            height: 24,
-                            child: Icon(
-                            Icons.check,
-                            color: Color(0xFF25CCB3),
-                          )
+                              width: 24,
+                              height: 24,
+                              child: Icon(
+                                Icons.check,
+                                color: Color(0xFF25CCB3),
+                              )
                           ),
                         ],
                       ),
@@ -253,14 +253,14 @@ class UpgradeScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(width: 100.0),
+                          Spacer(),
                           Container(
                             width: 24,
                             height: 24,
                             child: Icon(
-                            Icons.check,
-                            color: Color(0xFF25CCB3),
-                          ),
+                              Icons.check,
+                              color: Color(0xFF25CCB3),
+                            ),
                           ),
                         ],
                       ),

@@ -8,6 +8,7 @@ class AppTextFieldForm extends StatelessWidget {
       this.obscureText,
       this.controller,
       this.validator,
+      this.height,
       this.hintColor,
       this.borderWidth,
       this.onTap,
@@ -19,6 +20,7 @@ class AppTextFieldForm extends StatelessWidget {
   final Color hintColor;
   final TextEditingController controller;
   final double borderWidth;
+  final double height;
   final Function(String) validator;
   final Function onSaved;
   final Function onTap;
@@ -28,6 +30,7 @@ class AppTextFieldForm extends StatelessWidget {
     return TextFormField(
       controller: controller != null ? controller : null,
       style: TextStyle(
+        height: height,
         color: Color(0xFF2B2B2B),
         fontSize: 14,
         fontWeight: FontWeight.w600,

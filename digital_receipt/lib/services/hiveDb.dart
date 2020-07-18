@@ -35,14 +35,14 @@ class HiveDb extends ChangeNotifier {
     var receipts = receiptHistory.get('receipts');
     if (receipts != null) {
       dynamic res = jsonDecode(receipts);
-      List val = [];
-      await Future.forEach(res, (e) {
+      res = res.map((e) {
         Receipt temp = Receipt.fromJson(e);
-        //print(temp);
-        val.add(temp);
+        return temp;
       });
-      return List<Receipt>.from(val);
+      print(res);
+      return List<Receipt>.from(res);
     }
+    return null;
   }
 
   /* FOR DRAFT PAGE */

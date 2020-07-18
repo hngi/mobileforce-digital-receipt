@@ -6,6 +6,7 @@ class Product {
   double amount;
   double tax;
   double discount;
+  String unit;
 
   Product(
       {this.id,
@@ -14,7 +15,8 @@ class Product {
       this.amount,
       this.unitPrice,
       this.tax,
-      this.discount});
+      this.discount,
+      this.unit});
   // please let no one delete this  #francis22
   Product.receipt(
       {this.productDesc,
@@ -34,6 +36,7 @@ class Product {
       amount: json['amount']?.toDouble(),
     );
   }
+
   Map<String, dynamic> toJson() => {
         "name": productDesc,
         "quantity": quantity,
@@ -46,5 +49,17 @@ class Product {
   String toString() {
     // TODO: implement toString
     return '$id : $productDesc : $quantity : $unitPrice : $amount';
+  }
+}
+
+class Unit {
+  final fullName;
+  final singular;
+  final plural;
+
+  Unit({this.fullName, this.singular, this.plural});
+
+  getShortName(value) {
+    return value > 1 ? plural : singular;
   }
 }
