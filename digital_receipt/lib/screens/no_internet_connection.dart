@@ -59,7 +59,7 @@ class NoInternetState extends State<NoInternet> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16,
-                        color: Color(0xFFC8C8C8),
+                        color: Colors.black54,
                         height: 1.43,
                       )),
                 ],

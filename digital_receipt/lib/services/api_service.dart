@@ -452,9 +452,7 @@ class ApiService {
         var businessId = jsonDecode(res)['id'];
         //set the token to null
         await _sharedPreferenceService.addStringToSF('Business_ID', businessId);
-
-        print(
-            'pref: ${await _sharedPreferenceService.getStringValuesSF('Business_ID')}');
+        await _sharedPreferenceService.addStringToSF('LOGO', logo);
         return true;
       }
       return false;
@@ -484,11 +482,7 @@ class ApiService {
 
       String bId =
           await _sharedPreferenceService.getStringValuesSF('Business_ID');
-      print(bId);
-      print(token);
-      print(
-          'pref: ${await _sharedPreferenceService.getStringValuesSF('Business_ID')}');
-      print("im here 1");
+
       String businessId =
           await _sharedPreferenceService.getStringValuesSF('Business_ID');
       print(businessId);
@@ -508,6 +502,7 @@ class ApiService {
       var res = await response.stream.bytesToString();
       print(res);
       if (response.statusCode == 200) {
+        await SharedPreferenceService().addStringToSF('LOGO', logo);
         return res;
       }
       return null;
@@ -864,6 +859,7 @@ class ApiService {
           } catch (e) {
             print(e);
           }
+          print(_inventories);
           return _inventories;
         } else {
           var res = jsonDecode(response.body)['data'];

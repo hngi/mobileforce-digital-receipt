@@ -453,7 +453,7 @@ class _CustomerListState extends State<CustomerList> {
             : SizedBox.shrink(),
         index == 0
             ? Text(
-                'Swipe for more options',
+                'Swipe for more options, longpress to delete',
                 textAlign: TextAlign.center,
               )
             : SizedBox.shrink(),
