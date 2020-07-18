@@ -87,7 +87,7 @@ class Receipt extends ChangeNotifier {
       category: json["customer"]["platform"] == null
           ? null
           : convertToEnum(string: json["customer"]["platform"]),
-     /*  currency: json['currency'] == null
+      /*  currency: json['currency'] == null
           ? null
           : Receipt().currencyFromJson(json['currency']), */
       totalAmount: json["total"] == null ? null : json["total"].toString(),
@@ -265,7 +265,6 @@ class Receipt extends ChangeNotifier {
   }
 
   Currency currencyFromJson(String val) {
-    
     var json = jsonDecode(val);
     return Currency(
       currencyName: json['name'],
@@ -322,6 +321,7 @@ class Receipt extends ChangeNotifier {
     }
 
     bool searchReceiptByDescription(Receipt receipt, String pattern) {
+      print(receipt.products[0].productDesc);
       if (receipt.description != null) {
         return receipt.description.toLowerCase().contains(value);
       }
