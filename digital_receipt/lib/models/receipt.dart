@@ -87,6 +87,7 @@ class Receipt extends ChangeNotifier {
       category: json["customer"]["platform"] == null
           ? null
           : convertToEnum(string: json["customer"]["platform"]),
+         // currency: json['currency'] == null ? null : json['currency'],
       totalAmount: json["total"] == null ? null : json["total"].toString(),
       customer:
           json["customer"] == null ? null : Customer.fromJson(json["customer"]),

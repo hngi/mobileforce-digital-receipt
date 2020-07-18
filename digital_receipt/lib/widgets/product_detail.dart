@@ -104,8 +104,8 @@ class _ProductDetailState extends State<ProductDetail> {
     discountController.text =
         selectedInventory.discount?.round()?.toString() ?? '';
     if (selectedInventory.unit != null) {
-      unitValue = units.firstWhere((unit) {
-        if (unit.singular == product.unit || unit.plural == product.unit) {
+      unitValue = units?.firstWhere((unit) {
+        if (unit.singular == product?.unit || unit.plural == product?.unit) {
           return true;
         }
         return false;
