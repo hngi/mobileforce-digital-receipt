@@ -248,19 +248,19 @@ class _InventoryScreenState extends State<InventoryScreen> {
                                 letterSpacing: 0.03,
                               ),
                             ),
-                            SizedBox(
-                              height: 6,
-                            ),
 
-                            Text(
-                              (inventory.quantity).toString(),
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.87),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'Montserrat',
-                                letterSpacing: 0.03,
-                              ),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            '${(inventory.quantity).toString()}',
+                            style: TextStyle(
+                              color: Color.fromRGBO(0, 0, 0, 0.87),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Montserrat',
+                              letterSpacing: 0.03,
 
                             ),
                           ],

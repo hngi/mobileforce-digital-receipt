@@ -385,15 +385,17 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                                 letterSpacing: 0.03,
                               ),
                             ),
-                            TextSpan(
-                              text: ' N${receipt.totalAmount} ',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w300,
-                                fontFamily: 'Montserrat',
-                                letterSpacing: 0.03,
-                              ),
+
+                          ),
+                          TextSpan(
+                            text: ' ${receipt.totalAmount} ',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300,
+                              fontFamily: 'Montserrat',
+                              letterSpacing: 0.03,
+
                             ),
                           ],
                         ),
