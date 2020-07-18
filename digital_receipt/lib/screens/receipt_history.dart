@@ -227,8 +227,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                          receiptList.length != 0 &&
                                       recieptListData.length != 0 ?    Flexible(
                                 child: ListView.builder(
-                                  itemCount: receiptList.length ??
-                                      recieptListData.length,
+                                  itemCount: recieptListData.length,
                                   itemBuilder: (context, index) {
                                     // HardCoded Receipt details
                                     return receiptCard(receiptList[index] ??

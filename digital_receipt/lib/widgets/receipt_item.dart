@@ -124,7 +124,7 @@ class ReceiptItem extends StatelessWidget {
                         child: Container(
                       padding: const EdgeInsets.fromLTRB(23, 0, 8, 0),
                       child: Text(
-                        'X${Provider.of<Receipt>(context, listen: false).products[index].quantity.toString()}',
+                        'X${Provider.of<Receipt>(context, listen: false).products[index].quantity.toInt().toString()}',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 14,

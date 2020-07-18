@@ -242,7 +242,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                             height: 6,
                           ),
                           Text(
-                            (inventory.quantity).toString() + '%',
+                            '${(inventory.quantity).toString()} per/${(inventory.unit).toString()}',
                             style: TextStyle(
                               color: Color.fromRGBO(0, 0, 0, 0.87),
                               fontSize: 14,
@@ -254,7 +254,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                         ],
                       ),
                     ),
-                    Expanded(
+/*                     Expanded(
                       flex: 3,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,6 +316,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                         ],
                       ),
                     ),
+                  */
                   ],
                 ),
               ],

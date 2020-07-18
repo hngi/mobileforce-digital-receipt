@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
@@ -111,7 +112,7 @@ class _DraftsState extends State<Drafts> {
                           total: receipt.totalAmount,
                           date: "${date.day}/${date.month}/${date.year}",
                           receiptTitle: receipt.customerName,
-                          subtitle: "receipt"),
+                          subtitle: "receipt",currency: receipt.currency ),
                     );
                   },
                 );
@@ -203,7 +204,7 @@ class _DraftsState extends State<Drafts> {
     /* String id, String productDesc, int quantity, int amount, int unitPrice */
   }
 
-  Widget receiptCard({String receiptNo, total, date, receiptTitle, subtitle}) {
+  Widget receiptCard({String receiptNo, total, date, receiptTitle, subtitle, Currency currency}) {
     return SizedBox(
       child: Column(
         children: <Widget>[
@@ -300,7 +301,7 @@ class _DraftsState extends State<Drafts> {
                             ),
                             TextSpan(
                               text:
-                                  ' N${Utils.formatNumber(double.parse(total))} ',
+                                  'N${Utils.formatNumber(double.parse(total))} ',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,

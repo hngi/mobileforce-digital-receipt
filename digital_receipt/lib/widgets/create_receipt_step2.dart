@@ -5,8 +5,10 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/screens/receipt_screen.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/date_time_input_textField.dart';
 import 'package:digital_receipt/widgets/loading.dart';
@@ -89,8 +91,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
     Provider.of<Receipt>(context, listen: false).setIssueDate(temp['date']);
     Provider.of<Receipt>(context, listen: false)
         .setNumber(temp['receipt_number']);
-    Provider.of<Receipt>(context, listen: false).receiptId =
-        temp['id'];
+    Provider.of<Receipt>(context, listen: false).receiptId = temp['id'];
   }
 
   bool isLoading = false;
@@ -505,6 +506,20 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               child: FlatButton(
                 color: Color(0xFF0B57A7),
                 onPressed: () async {
+                  // check the internet
+                  var connected = await Connected().checkInternet();
+                  if (!connected) {
+                    await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return NoInternet();
+                      },
+                    );
+                    setState(() {
+                      isLoading = false;
+                    });
+                    return;
+                  }
                   setState(() {
                     isLoading = true;
                   });
