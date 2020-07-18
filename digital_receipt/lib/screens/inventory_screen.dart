@@ -132,6 +132,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                       child: ListView.builder(
                         itemCount: inventory.length,
                         itemBuilder: (context, index) {
+
                           return GestureDetector(
                               onLongPress: () async {
                                 await _confirmInventoryDelete(
@@ -139,6 +140,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                                     inventory[index].title);
                               },
                               child: _buildInventory(inventory[index]));
+
                         },
                       ),
                     ),
@@ -390,6 +392,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                             ),
                           ),
                         )
+
                       ],
                     ),
                   ],

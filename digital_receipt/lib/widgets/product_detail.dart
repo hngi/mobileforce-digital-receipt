@@ -73,7 +73,7 @@ class _ProductDetailState extends State<ProductDetail> {
             return true;
           }
           return false;
-        });
+        }, orElse: () => null);
       }
     }
     super.initState();
@@ -100,16 +100,17 @@ class _ProductDetailState extends State<ProductDetail> {
     productDescController.text = selectedInventory.title;
     quantityController.text = '1';
     unitPriceController.text = selectedInventory.unitPrice.round().toString();
-    taxController.text = (selectedInventory.tax?.round()?.toString()) ?? '';
+    taxController.text = (selectedInventory.tax?.round()?.toString()) ?? '0';
     discountController.text =
-        selectedInventory.discount?.round()?.toString() ?? '';
+        selectedInventory.discount?.round()?.toString() ?? '0';
     if (selectedInventory.unit != null) {
       unitValue = units?.firstWhere((unit) {
-        if (unit.singular == product?.unit || unit.plural == product?.unit) {
+        if (unit.singular == selectedInventory?.unit ||
+            unit.plural == selectedInventory?.unit) {
           return true;
         }
         return false;
-      });
+      }, orElse: () => null);
     }
     selectedInventory = null;
   }
@@ -155,7 +156,9 @@ class _ProductDetailState extends State<ProductDetail> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       SizedBox(height: 9),
+
                      product == null
+
                           ? GestureDetector(
                               onTap: () async {
                                 showDialog(
@@ -204,7 +207,7 @@ class _ProductDetailState extends State<ProductDetail> {
                           : SizedBox.shrink(),
                       SizedBox(
                         height: 7,
-                      ), 
+                      ),
                       product == null
                           ? Text(
                               'Or, enter Product information',
