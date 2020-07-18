@@ -11,6 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CreateReceiptPage extends StatefulWidget {
+  const CreateReceiptPage({Key key, this.issuedCustomerReceipt})
+      : super(key: key);
+  final Receipt issuedCustomerReceipt;
   @override
   _CreateReceiptPageState createState() => _CreateReceiptPageState();
 }
@@ -65,10 +68,12 @@ class _CreateReceiptPageState extends State<CreateReceiptPage> {
                   CreateReceiptStep0(
                     carouselController: _carouselController,
                     carouselIndex: currentIndex,
+                    issuedCustomerReceipt: widget.issuedCustomerReceipt,
                   ),
                   CreateReceiptStep1(
                     carouselController: _carouselController,
                     carouselIndex: currentIndex,
+                    issuedCustomerReceipt: widget.issuedCustomerReceipt,
                   ),
                   CreateReceiptStep2(
                     carouselController: _carouselController,
