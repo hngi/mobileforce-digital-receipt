@@ -73,7 +73,7 @@ class _ProductDetailState extends State<ProductDetail> {
             return true;
           }
           return false;
-        });
+        }, orElse: () => null);
       }
     }
     super.initState();
@@ -100,16 +100,17 @@ class _ProductDetailState extends State<ProductDetail> {
     productDescController.text = selectedInventory.title;
     quantityController.text = '1';
     unitPriceController.text = selectedInventory.unitPrice.round().toString();
-    taxController.text = (selectedInventory.tax?.round()?.toString()) ?? '';
+    taxController.text = (selectedInventory.tax?.round()?.toString()) ?? '0';
     discountController.text =
-        selectedInventory.discount?.round()?.toString() ?? '';
+        selectedInventory.discount?.round()?.toString() ?? '0';
     if (selectedInventory.unit != null) {
       unitValue = units?.firstWhere((unit) {
-        if (unit.singular == product?.unit || unit.plural == product?.unit) {
+        if (unit.singular == selectedInventory?.unit ||
+            unit.plural == selectedInventory?.unit) {
           return true;
         }
         return false;
-      });
+      }, orElse: () => null);
     }
     selectedInventory = null;
   }
@@ -155,7 +156,7 @@ class _ProductDetailState extends State<ProductDetail> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       SizedBox(height: 9),
-                      /* product == null
+                      product == null
                           ? GestureDetector(
                               onTap: () async {
                                 showDialog(
@@ -204,7 +205,7 @@ class _ProductDetailState extends State<ProductDetail> {
                           : SizedBox.shrink(),
                       SizedBox(
                         height: 7,
-                      ), 
+                      ),
                       product == null
                           ? Text(
                               'Or, enter Product information',
@@ -216,7 +217,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                 color: Color.fromRGBO(0, 0, 0, 0.6),
                               ),
                             )
-                          : SizedBox.shrink(),*/
+                          : SizedBox.shrink(),
                       SizedBox(height: 7),
                       SizedBox(height: 9),
                       Text(
@@ -437,7 +438,7 @@ class _ProductDetailState extends State<ProductDetail> {
         Product(
           id: productDescController.text.substring(1, 4) +
               (Random().nextInt(99) + 10).toString(),
-          productDesc: productDescController.text,
+          productDesc: productDescController.text.toUpperCase(),
           quantity: double.parse(quantityController.text),
           unitPrice: double.parse(unitPriceController.text),
           unit: unitValue.getShortName(int.parse(quantityController.text)),

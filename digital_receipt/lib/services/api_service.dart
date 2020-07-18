@@ -990,6 +990,8 @@ class ApiService {
     double price,
     double quantity,
     String unit,
+    double discount,
+    double tax,
   ) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
@@ -1005,9 +1007,9 @@ class ApiService {
           "product_name": "$productName",
           "quantity": "$quantity",
           "price": "$price",
-          "unit": "$unit"
-          // "discount": "$newPassword"
-          // "tax": "$newPassword"
+          "unit": "$unit",
+          "discount": "$discount",
+          "tax_amount": "$tax",
         },
       );
       print(response.body);
@@ -1028,6 +1030,8 @@ class ApiService {
     double price,
     double quantity,
     String unit,
+    double tax,
+    double discount,
   }) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
@@ -1041,13 +1045,13 @@ class ApiService {
         headers: {"token": token},
         body: {
           "inventory_id": "$id",
-          "category": "$category",
-          "name": "$productName",
+          "category_name": "$category",
+          "product_name": "$productName",
           "quantity": "$quantity",
           "price": "$price",
-          "unit": "$unit"
-          // "discount": "$newPassword"
-          // "tax": "$newPassword"
+          "unit": "$unit",
+          "discount": "$discount",
+          "tax_amount": "$tax",
         },
       );
       print(response.body);

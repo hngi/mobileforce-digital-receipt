@@ -132,18 +132,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
                         itemCount: inventory.length,
                         itemBuilder: (context, index) {
                           return _buildInventory(inventory[index]);
-                          // header: 'Shoes',
-                          // color: Colors.red,
-                          // items: List<Inventory>.generate(
-                          // 6,
-                          // (index) => Inventory(
-                          //     category: inventory[index].category,
-                          //     title: inventory[index].title,
-                          //     unitPrice:inventory[index].unitPrice ,
-                          //     quantity: inventory[index].quantity,
-                          //     discount: inventory[index].discount,
-                          //     tax: inventory[index].tax),
-                          // ),
                         },
                       ),
                     ),
@@ -159,16 +147,14 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
   Widget _buildInventory(Inventory inventory) {
     return InkWell(
-        onTap: () {
-          /* Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => UpdateInventory(
-                inventory: inventory,
+        onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UpdateInventory(
+                  inventory: inventory,
+                ),
               ),
             ),
-          ); */
-        },
         child: Padding(
           padding: const EdgeInsets.only(bottom: 15),
           child: Container(
@@ -266,69 +252,68 @@ class _InventoryScreenState extends State<InventoryScreen> {
                             ],
                           ),
                         ),
-/*                     Expanded(
-                      flex: 3,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            "DISCOUNT",
-                            style: TextStyle(
-                              color: Color.fromRGBO(0, 0, 0, 0.87),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w300,
-                              fontFamily: 'Montserrat',
-                              letterSpacing: 0.03,
-                            ),
+                        Expanded(
+                          flex: 3,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                "DISCOUNT",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(0, 0, 0, 0.87),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w300,
+                                  fontFamily: 'Montserrat',
+                                  letterSpacing: 0.03,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text(
+                                (inventory.discount).toString() + "%",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(0, 0, 0, 0.87),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Montserrat',
+                                  letterSpacing: 0.03,
+                                ),
+                              ),
+                            ],
                           ),
-                          SizedBox(
-                            height: 6,
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                "TAX",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(0, 0, 0, 0.87),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w300,
+                                  fontFamily: 'Montserrat',
+                                  letterSpacing: 0.03,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text(
+                                (inventory.tax).toString(),
+                                style: TextStyle(
+                                  color: Color.fromRGBO(0, 0, 0, 0.87),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Montserrat',
+                                  letterSpacing: 0.03,
+                                ),
+                              ),
+                            ],
                           ),
-                          Text(
-                            (inventory.discount).toString() + "%",
-                            style: TextStyle(
-                              color: Color.fromRGBO(0, 0, 0, 0.87),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Montserrat',
-                              letterSpacing: 0.03,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            "TAX",
-                            style: TextStyle(
-                              color: Color.fromRGBO(0, 0, 0, 0.87),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w300,
-                              fontFamily: 'Montserrat',
-                              letterSpacing: 0.03,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          Text(
-                            (inventory.tax).toString(),
-                            style: TextStyle(
-                              color: Color.fromRGBO(0, 0, 0, 0.87),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Montserrat',
-                              letterSpacing: 0.03,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  */
+                        ),
                       ],
                     ),
                   ],
@@ -338,39 +323,4 @@ class _InventoryScreenState extends State<InventoryScreen> {
           ),
         ));
   }
-
-  // List<Widget> itemsWidget = [];
-  // items.forEach((element) {
-  //   itemsWidget.add(_buildInventory(element));
-  // });
-
-  // return Container(
-  //   child: Column(
-  //     mainAxisSize: MainAxisSize.min,
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: <Widget>[
-  //       // Text(
-  //       //   '$header',
-  //       //   style: TextStyle(
-  //       //     fontFamily: 'Montserrat',
-  //       //     color: Color.fromRGBO(0, 0, 0, 0.87),
-  //       //     fontWeight: FontWeight.w600,
-  //       //     letterSpacing: 0.3,
-  //       //     fontSize: 22,
-  //       //     //color: Colors.white,
-  //       //   ),
-  //       // ),
-  //       SizedBox(
-  //         height: 20,
-  //       ),
-  //       Column(
-  //         children: itemsWidget,
-  //       ),
-  //       SizedBox(
-  //         height: 40,
-  //       )
-  //     ],
-  //   ),
-  // );
 }
-// }
