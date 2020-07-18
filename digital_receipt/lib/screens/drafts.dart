@@ -48,7 +48,10 @@ class _DraftsState extends State<Drafts> {
       body: RefreshIndicator(
         onRefresh: () async {
           refreshDraft() async {
-            draftData = await _apiService.getDraft();
+            var val = await _apiService.getDraft();
+            setState(() {
+              draftData = val;
+            });
             print(draftData);
           }
 
@@ -99,7 +102,8 @@ class _DraftsState extends State<Drafts> {
                         DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
                     return GestureDetector(
                       onTap: () {
-                        setReceipt(draftData[index]);
+                        setReceipt(
+                            snapshot: draftData[index], context: context);
                         // print(Provider.of<Receipt>(context, listen: false));
                         Navigator.push(
                             context,
@@ -159,51 +163,6 @@ class _DraftsState extends State<Drafts> {
             }),
       ),
     );
-  }
-
-  setReceipt(snapshot) {
-    print('color::: ${snapshot['color']}');
-    if (snapshot['color'] != null) {
-      Provider.of<Receipt>(context, listen: false).primaryColorHexCode =
-          snapshot['color'];
-    } else {
-      Provider.of<Receipt>(context, listen: false).primaryColorHexCode =
-          '539C30';
-    }
-
-    if (snapshot['paid_stamp'] == true) {
-      Provider.of<Receipt>(context, listen: false).setPaidStamp = true;
-    }
-
-    var prod = snapshot['products'].map((e) {
-      return Product(
-          id: e['id'].toString(),
-          productDesc: e['name'],
-          quantity: e['quantity'].toDouble(),
-          unitPrice: e['unit_price'].toDouble(),
-          amount: (e['quantity'] * e['unit_price']).toDouble(),
-          tax: e['tax_amount'],
-          discount: double.parse(e['discount']));
-    });
-    List<Product> products = List.from(prod);
-    // print(products);
-    Provider.of<Receipt>(context, listen: false)
-      //   ..setNumber(56)
-      ..customerName = snapshot['customer']['name']
-      ..totalAmount = snapshot['total'].toString()
-      ..total = snapshot['total']
-      ..receiptNo = snapshot['receipt_number']
-      ..receiptId = snapshot['id']
-      ..products = products
-      ..currency = Receipt().currencyFromJson(snapshot['currency'])
-      ..customer = Customer(
-        name: snapshot['customer']['name'],
-        email: snapshot['customer']['email'],
-        phoneNumber: snapshot['customer']['phoneNumber'],
-        address: snapshot['customer']['address'],
-      )
-      ..setIssueDate(snapshot['date']);
-    /* String id, String productDesc, int quantity, int amount, int unitPrice */
   }
 
   Widget receiptCard(
