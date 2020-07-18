@@ -350,7 +350,7 @@ Widget ReceiptScreenLayout(
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: logo != null || logo.isNotEmpty
+                          child: logo != null && logo.isNotEmpty
                               ? Image.file(
                                   File(logo),
                                   height: 50,

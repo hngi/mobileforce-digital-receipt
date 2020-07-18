@@ -161,7 +161,9 @@ class _UpdateInventoryState extends State<UpdateInventory> {
           height: 5,
         ),
         TextFormField(
-          initialValue: widget.inventory.unitPrice == null ? '0' : widget.inventory.unitPrice.toString(),
+          initialValue: widget.inventory.unitPrice == null
+              ? '0'
+              : widget.inventory.unitPrice.toString(),
           keyboardType: TextInputType.number,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
@@ -243,6 +245,7 @@ class _UpdateInventoryState extends State<UpdateInventory> {
           },
           onSaved: (String value) {
             quantity = value;
+            print(quantity);
           },
         )
       ],
@@ -481,15 +484,25 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                             setState(() {
                               loading = true;
                             });
-                            var resp = await _apiService.updateInventory(
-                                id: widget.inventory.id,
+                            print('''
+
+                             id: ${widget.inventory.id},
                                 category: category.toUpperCase(),
                                 productName: item.toUpperCase(),
                                 price: double.parse(unitPrice),
                                 quantity: double.parse(quantity),
-                                unit:   widget.inventory.unit ?? '',
-                                discount: double.parse(discount),
-                                tax: double.parse(tax),);
+                                unit: 'kg');
+''');
+                            var resp = await _apiService.updateInventory(
+                              id: widget.inventory.id,
+                              category: category.toUpperCase(),
+                              productName: item.toUpperCase(),
+                              price: double.parse(unitPrice),
+                              quantity: double.parse(quantity),
+                              unit: widget.inventory.unit ?? '',
+                              discount: double.parse(discount),
+                              tax: double.parse(tax),
+                            );
                             if (resp == 'true') {
                               setState(() {
                                 loading = false;
@@ -501,11 +514,7 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                                 backgroundColor: Colors.green,
                                 textColor: Colors.white,
                               );
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          InventoryScreen()));
+                              Navigator.pop(context);
                             } else {
                               setState(() {
                                 loading = false;

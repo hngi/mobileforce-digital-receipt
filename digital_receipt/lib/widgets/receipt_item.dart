@@ -97,7 +97,8 @@ class ReceiptItem extends StatelessWidget {
                           .products[index]
                           .discount !=
                       null
-                  ? Padding(
+                  ?
+                   Padding(
                       padding: const EdgeInsets.fromLTRB(0, 5, 10, 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
