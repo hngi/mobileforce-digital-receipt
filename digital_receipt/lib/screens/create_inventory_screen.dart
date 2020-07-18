@@ -54,14 +54,12 @@ class _CreateInventoryState extends State<CreateInventory> {
     Unit(fullName: 'Pack', singular: 'Pac', plural: 'Pac'),
   ];
 
-
   void _changeFocus({FocusNode from, FocusNode to}) {
     from.unfocus();
     FocusScope.of(context).requestFocus(to);
   }
 
   final quantityController = TextEditingController();
-
 
   final FocusNode _quantityDropdownFocus = FocusNode();
   final FocusNode _quantityFocus = FocusNode();
@@ -296,14 +294,24 @@ class _CreateInventoryState extends State<CreateInventory> {
             ),
             SizedBox(width: 8),
             Expanded(
-                child: AppTextFieldForm(
-                              focusNode: _quantityFocus,
-                              textInputAction: TextInputAction.next,
-                              onFieldSubmitted: (value) => _changeFocus(
-                                  from: _quantityFocus, to: _unitPriceFocus),
-                              keyboardType: TextInputType.number,
-                              controller: quantityController,
-                            ),),
+              child: AppTextFieldForm(
+                focusNode: _quantityFocus,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (value) =>
+                    _changeFocus(from: _quantityFocus, to: _unitPriceFocus),
+                keyboardType: TextInputType.number,
+                controller: quantityController,
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'quantity empty';
+                  }
+                  return null;
+                },
+                onSaved: (String value) {
+                  quantity = value;
+                },
+              ),
+            ),
           ],
         ),
       ],
@@ -535,15 +543,29 @@ class _CreateInventoryState extends State<CreateInventory> {
                               });
                               return;
                             }
+                            FocusScope.of(context).unfocus();
+                            if (unitValue == null) {
+                              Fluttertoast.showToast(
+                                msg: "Add quantity unit",
+                                toastLength: Toast.LENGTH_LONG,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                                fontSize: 16.0,
+                              );
+                              return;
+                            }
                             setState(() {
                               loading = true;
                             });
+                            print("quantity  unit is $unitValue");
                             var resp = await _apiService.addInventory(
                                 category.toUpperCase(),
                                 item.toUpperCase(),
                                 double.parse(unitPrice),
                                 double.parse(quantity),
-                                'kg');
+                                unitValue.toString());
                             if (resp == 'true') {
                               setState(() {
                                 loading = false;
