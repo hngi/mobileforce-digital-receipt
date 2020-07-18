@@ -20,9 +20,14 @@ import '../constant.dart';
 import 'contact_card.dart';
 
 class CreateReceiptStep1 extends StatefulWidget {
-  const CreateReceiptStep1({this.carouselController, this.carouselIndex});
+  const CreateReceiptStep1(
+      {this.carouselController,
+      this.carouselIndex,
+      this.issuedCustomerReceipt});
+
   final CarouselController carouselController;
   final CarouselIndex carouselIndex;
+  final Receipt issuedCustomerReceipt;
 
   @override
   _CreateReceiptStep1State createState() => _CreateReceiptStep1State();
@@ -59,7 +64,16 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
   @override
   void initState() {
     getInventories();
+    if (widget.issuedCustomerReceipt != null) {
+      updateContents();
+    }
     super.initState();
+  }
+
+  updateContents() {
+    widget.issuedCustomerReceipt.products.forEach((product) {
+      products.add(product);
+    });
   }
 
   @override
@@ -242,7 +256,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                       amount: Provider.of<Receipt>(context, listen: false)
                               .getCurrency()
                               .currencySymbol +
-                          '${thisProduct.amount}',
+                          '${thisProduct.amount ?? (thisProduct.unitPrice * thisProduct.quantity)}',
+                      // '${}',
                       index: index,
                     ),
                   );
@@ -410,7 +425,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                 } else {
                   num sum = 0;
                   for (Product e in products) {
-                    sum += e.amount;
+                    sum += e.amount ?? (e.unitPrice * e.quantity);
                   }
                   print("sum: $sum");
 
