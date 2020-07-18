@@ -1,4 +1,5 @@
 import 'package:digital_receipt/models/inventory.dart';
+import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/screens/create_inventory_screen.dart';
 import 'package:digital_receipt/screens/inventory_screen.dart';
 import 'package:digital_receipt/services/api_service.dart';
@@ -493,12 +494,15 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                                 unit: 'kg');
 ''');
                             var resp = await _apiService.updateInventory(
-                                id: widget.inventory.id,
-                                category: category.toUpperCase(),
-                                productName: item.toUpperCase(),
-                                price: double.parse(unitPrice),
-                                quantity: double.parse(quantity),
-                                unit: '');
+                              id: widget.inventory.id,
+                              category: category.toUpperCase(),
+                              productName: item.toUpperCase(),
+                              price: double.parse(unitPrice),
+                              quantity: double.parse(quantity),
+                              unit: widget.inventory.unit ?? '',
+                              discount: double.parse(discount),
+                              tax: double.parse(tax),
+                            );
                             if (resp == 'true') {
                               setState(() {
                                 loading = false;
