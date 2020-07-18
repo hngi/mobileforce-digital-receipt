@@ -87,6 +87,9 @@ class Receipt extends ChangeNotifier {
       category: json["customer"]["platform"] == null
           ? null
           : convertToEnum(string: json["customer"]["platform"]),
+     /*  currency: json['currency'] == null
+          ? null
+          : Receipt().currencyFromJson(json['currency']), */
       totalAmount: json["total"] == null ? null : json["total"].toString(),
       customer:
           json["customer"] == null ? null : Customer.fromJson(json["customer"]),
@@ -261,7 +264,8 @@ class Receipt extends ChangeNotifier {
     return json.encode(val);
   }
 
-  Currency currencyFromJson(val) {
+  Currency currencyFromJson(String val) {
+    
     var json = jsonDecode(val);
     return Currency(
       currencyName: json['name'],
@@ -305,11 +309,11 @@ class Receipt extends ChangeNotifier {
       throw (e);
     }
   }
+
   List<Receipt> _issuedReceipt = [];
   List<Receipt> get issuedReceipt => _issuedReceipt;
 
   filterReceipt(List<Receipt> receiptList, String value) {
-    
     bool searchReceiptByCustomerName(Receipt receipt, String pattern) {
       if (receipt.customerName != null) {
         return receipt.customerName.toLowerCase().contains(value);
@@ -322,18 +326,17 @@ class Receipt extends ChangeNotifier {
         return receipt.description.toLowerCase().contains(value);
       }
       return false;
-      
-     
     }
-   if (receiptList.isNotEmpty) {
-        _issuedReceipt = receiptList
-            .where((receipt) =>
-                searchReceiptByCustomerName(receipt, value) ||
-                searchReceiptByDescription(receipt, value))
-            .toList();
-      }
 
-      notifyListeners();
+    if (receiptList.isNotEmpty) {
+      _issuedReceipt = receiptList
+          .where((receipt) =>
+              searchReceiptByCustomerName(receipt, value) ||
+              searchReceiptByDescription(receipt, value))
+          .toList();
+    }
+
+    notifyListeners();
     print("Receipt list : $receiptList");
   }
 }

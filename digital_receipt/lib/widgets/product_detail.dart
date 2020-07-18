@@ -104,8 +104,8 @@ class _ProductDetailState extends State<ProductDetail> {
     discountController.text =
         selectedInventory.discount?.round()?.toString() ?? '';
     if (selectedInventory.unit != null) {
-      unitValue = units.firstWhere((unit) {
-        if (unit.singular == product.unit || unit.plural == product.unit) {
+      unitValue = units?.firstWhere((unit) {
+        if (unit.singular == product?.unit || unit.plural == product?.unit) {
           return true;
         }
         return false;
@@ -585,7 +585,7 @@ class InventoryDialog extends StatelessWidget {
                                   child: ContactCard(
                                     receiptTitle: inventories[index].title,
                                     subtitle:
-                                        'UNIT PRICE: N ${Utils.formatNumber(inventories[index].unitPrice.round().toDouble())}',
+                                        'UNIT PRICE: N ${Utils.formatNumber(inventories[index].unitPrice.round().toDouble() ?? 0)}',
                                   ),
                                 );
                               },
