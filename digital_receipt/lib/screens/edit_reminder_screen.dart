@@ -1,5 +1,6 @@
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 
@@ -71,7 +72,7 @@ class _EditReminderScreenState extends State<EditReminderScreen> {
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) => ProductItem(
                   title: items[index].productDesc,
-                  amount: '₦' + items[index].amount.toString(),
+                  amount: '₦${Utils.formatNumber(items[index].amount)}',
                 ),
                 itemCount: items.length,
               ),

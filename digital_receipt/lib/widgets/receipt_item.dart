@@ -81,8 +81,10 @@ class ReceiptItem extends StatelessWidget {
                       width: 15,
                     ),
                     Container(
-                      child: Text(
-                         Provider.of<Receipt>(context, listen: false).getCurrency().currencySymbol +'${Provider.of<Receipt>(context, listen: false).products[index].unitPrice}'
+                      child: Text(Provider.of<Receipt>(context, listen: false)
+                              .getCurrency()
+                              .currencySymbol +
+                          '${Provider.of<Receipt>(context, listen: false).products[index].unitPrice}'
                               .toString()),
                     ),
                   ],
@@ -91,6 +93,53 @@ class ReceiptItem extends StatelessWidget {
 
               //quantity of products order and the total price (HEADER)
 
+              Provider.of<Receipt>(context, listen: false)
+                          .products[index]
+                          .discount !=
+                      null
+                  ?
+                   Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 5, 10, 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text(
+                            'Discount: ${Provider.of<Receipt>(context, listen: false).products[index].discount}',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              letterSpacing: 0.03,
+                              fontWeight: FontWeight.normal,
+                              height: 1.43,
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  : SizedBox.shrink(),
+              Provider.of<Receipt>(context, listen: false)
+                          .products[index]
+                          .tax !=
+                      null
+                  ? Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 5, 10, 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text(
+                            'Tax: ${Provider.of<Receipt>(context, listen: false).products[index].tax}',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              letterSpacing: 0.03,
+                              fontWeight: FontWeight.normal,
+                              height: 1.43,
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  : SizedBox.shrink(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                 child: Row(
@@ -124,7 +173,7 @@ class ReceiptItem extends StatelessWidget {
                         child: Container(
                       padding: const EdgeInsets.fromLTRB(23, 0, 8, 0),
                       child: Text(
-                        'X${Provider.of<Receipt>(context, listen: false).products[index].quantity.toString()}',
+                        'X${Provider.of<Receipt>(context, listen: false).products[index].quantity.toInt().toString()}',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 14,
@@ -136,7 +185,9 @@ class ReceiptItem extends StatelessWidget {
                     )),
                     Container(
                       child: Text(
-                        Provider.of<Receipt>(context, listen: false).getCurrency().currencySymbol +
+                        Provider.of<Receipt>(context, listen: false)
+                                .getCurrency()
+                                .currencySymbol +
                             Provider.of<Receipt>(context, listen: false)
                                 .products[index]
                                 .amount

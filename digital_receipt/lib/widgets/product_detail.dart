@@ -40,7 +40,7 @@ class _ProductDetailState extends State<ProductDetail> {
   bool productAdded = false;
   Product product;
 
-  Unit dropdownValue;
+  Unit unitValue;
 
   List<Unit> units = [
     Unit(fullName: 'Gram', singular: 'g', plural: 'g'),
@@ -68,12 +68,12 @@ class _ProductDetailState extends State<ProductDetail> {
       taxController.text = product.tax.round().toString();
       discountController.text = product.discount.round().toString();
       if (product.unit != null) {
-        dropdownValue = units.firstWhere((unit) {
+        unitValue = units.firstWhere((unit) {
           if (unit.singular == product.unit || unit.plural == product.unit) {
             return true;
           }
           return false;
-        });
+        }, orElse: () => null);
       }
     }
     super.initState();
@@ -100,17 +100,19 @@ class _ProductDetailState extends State<ProductDetail> {
     productDescController.text = selectedInventory.title;
     quantityController.text = '1';
     unitPriceController.text = selectedInventory.unitPrice.round().toString();
-    taxController.text = (selectedInventory.tax?.round()?.toString()) ?? '';
+    taxController.text = (selectedInventory.tax?.round()?.toString()) ?? '0';
     discountController.text =
-        selectedInventory.discount?.round()?.toString() ?? '';
+        selectedInventory.discount?.round()?.toString() ?? '0';
     if (selectedInventory.unit != null) {
-      dropdownValue = units.firstWhere((unit) {
-        if (unit.singular == product.unit || unit.plural == product.unit) {
+      unitValue = units?.firstWhere((unit) {
+        if (unit.singular == selectedInventory?.unit ||
+            unit.plural == selectedInventory?.unit) {
           return true;
         }
         return false;
-      });
+      }, orElse: () => null);
     }
+    selectedInventory = null;
   }
 
   @override
@@ -154,7 +156,9 @@ class _ProductDetailState extends State<ProductDetail> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       SizedBox(height: 9),
-                      product == null
+
+                     product == null
+
                           ? GestureDetector(
                               onTap: () async {
                                 showDialog(
@@ -254,7 +258,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         ),
                       ),
                       SizedBox(height: 5),
-                      Row(
+                      Row( 
                         children: <Widget>[
                           Container(
                             decoration: BoxDecoration(
@@ -268,7 +272,7 @@ class _ProductDetailState extends State<ProductDetail> {
                             child: DropdownButton<Unit>(
                               focusColor: kPrimaryColor,
                               focusNode: _quantityDropdownFocus,
-                              value: dropdownValue,
+                              value: unitValue,
                               hint: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
@@ -299,7 +303,7 @@ class _ProductDetailState extends State<ProductDetail> {
                               ).toList(),
                               onChanged: (Unit value) {
                                 print(value);
-                                setState(() => dropdownValue = value);
+                                setState(() => unitValue = value);
                                 _changeFocus(
                                     from: _quantityDropdownFocus,
                                     to: _quantityFocus);
@@ -419,28 +423,27 @@ class _ProductDetailState extends State<ProductDetail> {
 
   void submitForm() {
     FocusScope.of(context).unfocus();
-
+    if (unitValue == null) {
+      Fluttertoast.showToast(
+        msg: "Add quantity unit",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
+    }
     try {
-      if (dropdownValue == null) {
-        Fluttertoast.showToast(
-          msg: "Add quantity unit",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
-        return;
-      }
       widget.onSubmit(
         Product(
           id: productDescController.text.substring(1, 4) +
               (Random().nextInt(99) + 10).toString(),
-          productDesc: productDescController.text,
+          productDesc: productDescController.text.toUpperCase(),
           quantity: double.parse(quantityController.text),
           unitPrice: double.parse(unitPriceController.text),
-          unit: dropdownValue.getShortName(int.parse(quantityController.text)),
+          unit: unitValue.getShortName(int.parse(quantityController.text)),
           amount: (double.parse(quantityController.text) *
                   double.parse(unitPriceController.text)) +
               (double.parse(taxController.text)) -
@@ -454,7 +457,7 @@ class _ProductDetailState extends State<ProductDetail> {
       );
       setState(() {
         productAdded = true;
-        dropdownValue = null;
+        unitValue = null;
         selectedInventory = null;
         productDescController..text = "";
         quantityController..text = "";

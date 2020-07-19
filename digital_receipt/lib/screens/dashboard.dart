@@ -7,6 +7,7 @@ import 'package:digital_receipt/providers/business.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -45,7 +46,7 @@ class _DashBoardState extends State<DashBoard> {
       Provider.of<Business>(context, listen: false).setAccountData = res;
       var val = Provider.of<Business>(context, listen: false).toJson();
       _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
-       //print('val:: $val');
+      //print('val:: $val');
     }
   }
 
@@ -64,11 +65,11 @@ class _DashBoardState extends State<DashBoard> {
       await callFetch();
       var snapshot = await _apiService.getIssuedReceipt2();
       var userData = snapshot;
-      setState(() {
-        recNo = recInfo(userData)['recNo'];
-        deptIssued = recInfo(userData)['dept'];
-        amnt = recInfo(userData)['total'];
-      });
+      // setState(() {
+      recNo = recInfo(userData)['recNo'];
+      deptIssued = recInfo(userData)['dept'];
+      amnt = recInfo(userData)['total'];
+      // });
     }
   }
 
@@ -191,7 +192,7 @@ class _DashBoardState extends State<DashBoard> {
         ),
         _singleCard(
           leading: 'Total Sales',
-          subtitle: '₦$amnt',
+          subtitle: '₦${Utils.formatNumber(amnt)}',
           color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
         /* FlatButton(

@@ -452,9 +452,7 @@ class ApiService {
         var businessId = jsonDecode(res)['id'];
         //set the token to null
         await _sharedPreferenceService.addStringToSF('Business_ID', businessId);
-
-        print(
-            'pref: ${await _sharedPreferenceService.getStringValuesSF('Business_ID')}');
+        await _sharedPreferenceService.addStringToSF('LOGO', logo);
         return true;
       }
       return false;
@@ -484,11 +482,7 @@ class ApiService {
 
       String bId =
           await _sharedPreferenceService.getStringValuesSF('Business_ID');
-      print(bId);
-      print(token);
-      print(
-          'pref: ${await _sharedPreferenceService.getStringValuesSF('Business_ID')}');
-      print("im here 1");
+
       String businessId =
           await _sharedPreferenceService.getStringValuesSF('Business_ID');
       print(businessId);
@@ -508,6 +502,7 @@ class ApiService {
       var res = await response.stream.bytesToString();
       print(res);
       if (response.statusCode == 200) {
+        await SharedPreferenceService().addStringToSF('LOGO', logo);
         return res;
       }
       return null;
@@ -862,6 +857,7 @@ class ApiService {
           } catch (e) {
             print(e);
           }
+          print(_inventories);
           return _inventories;
         } else {
           var res = jsonDecode(response.body)['data'];
@@ -992,6 +988,8 @@ class ApiService {
     double price,
     double quantity,
     String unit,
+    double discount,
+    double tax,
   ) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
@@ -1007,9 +1005,9 @@ class ApiService {
           "product_name": "$productName",
           "quantity": "$quantity",
           "price": "$price",
-          "unit": "$unit"
-          // "discount": "$newPassword"
-          // "tax": "$newPassword"
+          "unit": "$unit",
+          "discount": "$discount",
+          "tax_amount": "$tax",
         },
       );
       print(response.body);
@@ -1021,4 +1019,95 @@ class ApiService {
       return 'false';
     }
   }
+
+
+  Future<String> updateInventory({
+    String id,
+    String category,
+    String productName,
+    double price,
+    double quantity,
+    String unit,
+    double tax,
+    double discount,
+  }) async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/inventory';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      print(token);
+      var response = await http.put(
+        uri,
+        headers: {"token": token},
+        body: {
+          "inventory_id": "$id",
+          "category_name": "$category",
+          "product_name": "$productName",
+          "quantity": "$quantity",
+          "price": "$price",
+          "unit": "$unit",
+          "discount": "$discount",
+          "tax_amount": "$tax",
+        },
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        return 'true';
+      }
+      return 'false';
+    } else {
+      return 'false';
+    }
+  }
+
+    Future<String> deleteInventoryItem({
+    String id,
+  }) async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      var uri = '$_urlEndpoint/business/inventory';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      print(token);
+      var response = await http.delete(
+        uri,
+        headers: {"token": token},
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        return 'true';
+      }
+      return 'false';
+    } else {
+      return 'false';
+    }
+  }
+
+
+    Future<String> deleteCustomer({
+    String id,
+  }) async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      var uri = '$_urlEndpoint/customer/$id';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      print(token);
+      var response = await http.delete(
+        uri,
+        headers: {"token": token},
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        return 'true';
+      }
+      return 'false';
+    } else {
+      return 'false';
+    }
+  }
+
 }

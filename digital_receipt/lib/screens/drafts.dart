@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
@@ -45,7 +48,10 @@ class _DraftsState extends State<Drafts> {
       body: RefreshIndicator(
         onRefresh: () async {
           refreshDraft() async {
-            draftData = await _apiService.getDraft();
+            var val = await _apiService.getDraft();
+            setState(() {
+              draftData = val;
+            });
             print(draftData);
           }
 
@@ -71,7 +77,7 @@ class _DraftsState extends State<Drafts> {
               draftData = snapshot.data;
               print('Sna[hot:: ${snapshot.data}');
               print('Sna[hot:: ${snapshot.connectionState}');
-              if (snapshot.connectionState == ConnectionState.waiting ) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 print('here');
                 //print('Sna[hot:: ${snapshot.data}');
                 return Center(
@@ -96,7 +102,8 @@ class _DraftsState extends State<Drafts> {
                         DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
                     return GestureDetector(
                       onTap: () {
-                        setReceipt(draftData[index]);
+                        setReceipt(
+                            snapshot: draftData[index], context: context);
                         // print(Provider.of<Receipt>(context, listen: false));
                         Navigator.push(
                             context,
@@ -109,7 +116,8 @@ class _DraftsState extends State<Drafts> {
                           total: receipt.totalAmount,
                           date: "${date.day}/${date.month}/${date.year}",
                           receiptTitle: receipt.customerName,
-                          subtitle: "receipt"),
+                          subtitle: receipt.products[0].productDesc,
+                          currency: receipt.currency),
                     );
                   },
                 );
@@ -157,50 +165,13 @@ class _DraftsState extends State<Drafts> {
     );
   }
 
-  setReceipt(snapshot) {
-    print('color::: ${snapshot['color']}');
-    if (snapshot['color'] != null) {
-      Provider.of<Receipt>(context, listen: false).primaryColorHexCode =
-          snapshot['color'];
-    } else {
-      Provider.of<Receipt>(context, listen: false).primaryColorHexCode =
-          '539C30';
-    }
-
-    if (snapshot['paid_stamp'] == true) {
-      Provider.of<Receipt>(context, listen: false).setPaidStamp = true;
-    }
-
-    var prod = snapshot['products'].map((e) {
-      return Product(
-        id: e['id'].toString(),
-        productDesc: e['name'],
-        quantity: e['quantity'].toDouble(),
-        unitPrice: e['unit_price'].toDouble(),
-        amount: (e['quantity'] * e['unit_price']).toDouble(),
-      );
-    });
-    List<Product> products = List.from(prod);
-    // print(products);
-    Provider.of<Receipt>(context, listen: false)
-      //   ..setNumber(56)
-      ..customerName = snapshot['customer']['name']
-      ..totalAmount = snapshot['total'].toString()
-      ..total = snapshot['total']
-      ..receiptNo = snapshot['receipt_number']
-      ..receiptId = snapshot['id']
-      ..products = products
-      ..customer = Customer(
-        name: snapshot['customer']['name'],
-        email: snapshot['customer']['email'],
-        phoneNumber: snapshot['customer']['phoneNumber'],
-        address: snapshot['customer']['address'],
-      )
-      ..setIssueDate(snapshot['date']);
-    /* String id, String productDesc, int quantity, int amount, int unitPrice */
-  }
-
-  Widget receiptCard({String receiptNo, total, date, receiptTitle, subtitle}) {
+  Widget receiptCard(
+      {String receiptNo,
+      total,
+      date,
+      receiptTitle,
+      subtitle,
+      Currency currency}) {
     return SizedBox(
       child: Column(
         children: <Widget>[
@@ -297,7 +268,7 @@ class _DraftsState extends State<Drafts> {
                             ),
                             TextSpan(
                               text:
-                                  ' N${Utils.formatNumber(double.parse(total))} ',
+                                  '${Utils.formatNumber(double.parse(total))}',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,

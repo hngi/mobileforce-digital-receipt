@@ -7,6 +7,7 @@ import 'package:digital_receipt/providers/business.dart';
 import 'package:digital_receipt/screens/generate_pdf.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:digital_receipt/widgets/receipt_item.dart';
@@ -25,8 +26,10 @@ final pdf = pw.Document();
 
 class ReceiptScreenFromCustomer extends StatefulWidget {
   final Receipt receipt;
+  final String from;
 
-  const ReceiptScreenFromCustomer({Key key, this.receipt}) : super(key: key);
+  const ReceiptScreenFromCustomer({Key key, this.receipt, this.from})
+      : super(key: key);
 
   @override
   _ReceiptScreenFromCustomerState createState() =>
@@ -40,6 +43,7 @@ class _ReceiptScreenFromCustomerState extends State<ReceiptScreenFromCustomer> {
   Future<Uint8List> receiptPdfFuture;
 
   bool _loading = false;
+  String logo;
   /*void generatePdf(BuildContext context) async {
     final String dir = (await getApplicationDocumentsDirectory()).path;
     final String path = '$dir/receipt.pdf';
@@ -60,9 +64,17 @@ class _ReceiptScreenFromCustomerState extends State<ReceiptScreenFromCustomer> {
     receiptPdf = pdf;
   }
 
+  init() async {
+    var val = await SharedPreferenceService().getStringValuesSF('LOGO');
+    setState(() {
+      logo = val;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    init();
     receiptPdfFuture = generatePdf(
       pageFormat: PdfPageFormat.a4,
       receipt: Provider.of<Receipt>(context, listen: false),
@@ -100,7 +112,8 @@ class _ReceiptScreenFromCustomerState extends State<ReceiptScreenFromCustomer> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: <Widget>[
-                    ReceiptScreenLayout(context, _loading, () {
+                    ReceiptScreenLayout(context, _loading, logo, widget.from,
+                        () {
                       setState(() {
                         _loading = true;
                       });
@@ -153,6 +166,8 @@ class _ReceiptScreenFromCustomerState extends State<ReceiptScreenFromCustomer> {
 Widget ReceiptScreenLayout(
     [BuildContext context,
     bool loading,
+    String logo,
+    String from,
     Function loadingStart,
     Function loadingStop]) {
   Future sendMail() async {
@@ -260,8 +275,8 @@ Widget ReceiptScreenLayout(
                 Expanded(
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  // mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
                       color: Color(int.parse("0xFF" +
@@ -270,64 +285,84 @@ Widget ReceiptScreenLayout(
                       height: 13,
                       width: double.infinity,
                     ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Container(
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Column(
+                              // mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Container(
 
-                        //padding: const EdgeInsets.all(10),
+                                    //padding: const EdgeInsets.all(10),
 
-                        child: Center(
-                      child: Text(
-                        businessInfo.name,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                                    child: Text(
+                                  businessInfo.name,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
+                                )),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  businessInfo.address,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 13,
+                                      letterSpacing: 0.03,
+                                      height: 1.43),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  'Tel No: ${businessInfo.phone}',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.normal,
+                                      letterSpacing: 0.03,
+                                      height: 1.43),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  'Email: ${businessInfo.email}',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 13,
+                                      letterSpacing: 0.03,
+                                      fontWeight: FontWeight.normal,
+                                      height: 1.43),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                    )),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Center(
-                      child: Text(
-                        businessInfo.address,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 13,
-                            letterSpacing: 0.03,
-                            height: 1.43),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Center(
-                      child: Text(
-                        'Tel No: ${businessInfo.phone}',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 13,
-                            fontWeight: FontWeight.normal,
-                            letterSpacing: 0.03,
-                            height: 1.43),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Center(
-                      child: Text(
-                        'Email: ${businessInfo.email}',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 13,
-                            letterSpacing: 0.03,
-                            fontWeight: FontWeight.normal,
-                            height: 1.43),
-                      ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: logo != null && logo.isNotEmpty
+                              ? Image.file(
+                                  File(logo),
+                                  height: 50,
+                                  width: 50,
+                                )
+                              : SizedBox.shrink(),
+                        )
+                      ],
                     ),
                     SizedBox(
                       height: 20,
@@ -358,15 +393,10 @@ Widget ReceiptScreenLayout(
                             ),
                           ),
                           Text(
-                            Provider.of<Receipt>(context, listen: false)
-                                        .receiptNo
-                                        .toString() !=
-                                    null
-                                ? 'Receipt No : ' + "AutoGenerated"
-                                : 'Receipt No : ' +
-                                    Provider.of<Receipt>(context, listen: false)
-                                        .receiptNo
-                                        .toString(),
+                            'Receipt No : ' +
+                                Provider.of<Receipt>(context, listen: false)
+                                    .receiptNo
+                                    .toString(),
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 13,
@@ -493,9 +523,9 @@ Widget ReceiptScreenLayout(
                               Padding(
                                 padding: const EdgeInsets.only(top: 15.0),
                                 child: Text(
-                                  Provider.of<Receipt>(context,
-                                              listen: false)
-                                          .getCurrency().currencySymbol +
+                                  Provider.of<Receipt>(context, listen: false)
+                                          .getCurrency()
+                                          .currencySymbol +
                                       Provider.of<Receipt>(context,
                                               listen: false)
                                           .getTotal()
@@ -519,11 +549,12 @@ Widget ReceiptScreenLayout(
                       child: Column(
                         children: <Widget>[
                           Text(
-                            Provider.of<Receipt>(context, listen: false)
-                                .customer
-                                .name
-                                .toString()
-                                .split(" ")[0],
+                            (Provider.of<Receipt>(context, listen: false)
+                                    .customer
+                                    .name
+                                    .toString()
+                                    .split(" ")[0])
+                                .toLowerCase(),
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 27,
@@ -640,14 +671,19 @@ Widget ReceiptScreenLayout(
             loadingStop();
             return;
           }
-          var res = sendPDF(context);
+          if (from == null) {
+            var res = await Provider.of<Receipt>(context, listen: false)
+                .updatedReceipt(
+                    Provider.of<Receipt>(context, listen: false).receiptId);
 
-          // Provider.of<Receipt>(context, listen: false).showJson();
-          if (res != null) {
-            await Provider.of<Receipt>(context, listen: false).updatedReceipt(
-                Provider.of<Receipt>(context, listen: false).receiptId);
+            if (res == 200) {
+              await sendPDF(context);
+              loadingStop();
+            }
+          }else if(from == 'receipt_history'){
+             await sendPDF(context);
+              loadingStop();
           }
-          loadingStop();
         },
       ),
     ),

@@ -1,4 +1,8 @@
+import 'package:digital_receipt/constant.dart';
+import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/product.dart';
+import 'package:digital_receipt/screens/create_inventory_screen.dart';
+import 'package:digital_receipt/screens/inventory_screen.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
@@ -7,32 +11,28 @@ import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../constant.dart';
 import 'no_internet_connection.dart';
 
-class CreateInventory extends StatefulWidget {
+class UpdateInventory extends StatefulWidget {
+  final Inventory inventory;
+
+  UpdateInventory({this.inventory});
+
   @override
-  _CreateInventoryState createState() => _CreateInventoryState();
+  _UpdateInventoryState createState() => _UpdateInventoryState();
 }
 
 final ApiService _apiService = ApiService();
 final SharedPreferenceService _sharedPreferenceService =
     SharedPreferenceService();
 
-class _CreateInventoryState extends State<CreateInventory> {
+class _UpdateInventoryState extends State<UpdateInventory> {
   String category;
   String item;
   String unitPrice;
   String quantity;
   String discount;
   String tax;
-
-  final _itemControl = TextEditingController();
-  final _quantityControl = TextEditingController();
-  final _unitPriceControl = TextEditingController();
-  final _categoryControl = TextEditingController();
-  final _taxControl = TextEditingController()..text = '0';
-  final _discountControl = TextEditingController()..text = '0';
 
   bool loading = false;
   var status;
@@ -81,9 +81,11 @@ class _CreateInventoryState extends State<CreateInventory> {
             ),
           ),
         ),
-        SizedBox(height: 5),
+        SizedBox(
+          height: 5,
+        ),
         TextFormField(
-          controller: _categoryControl,
+          initialValue: widget.inventory.category,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -135,7 +137,7 @@ class _CreateInventoryState extends State<CreateInventory> {
           height: 5,
         ),
         TextFormField(
-          controller: _itemControl,
+          initialValue: widget.inventory.title,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -188,7 +190,7 @@ class _CreateInventoryState extends State<CreateInventory> {
         ),
         TextFormField(
           keyboardType: TextInputType.number,
-          controller: _unitPriceControl,
+          initialValue: widget.inventory.unitPrice.toString(),
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -221,6 +223,7 @@ class _CreateInventoryState extends State<CreateInventory> {
   }
 
   Widget _buildQuantity(formLabel) {
+    quantityController.text = widget.inventory.quantity.toString();
     return Column(
       children: <Widget>[
         Padding(padding: const EdgeInsets.all(3)),
@@ -337,7 +340,7 @@ class _CreateInventoryState extends State<CreateInventory> {
         ),
         TextFormField(
           keyboardType: TextInputType.number,
-          controller: _discountControl,
+          initialValue: widget.inventory.discount.toString(),
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -390,7 +393,7 @@ class _CreateInventoryState extends State<CreateInventory> {
         ),
         TextFormField(
           keyboardType: TextInputType.number,
-          controller: _taxControl,
+          initialValue: widget.inventory.tax.toString(),
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -424,6 +427,7 @@ class _CreateInventoryState extends State<CreateInventory> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.inventory.quantity);
     return Scaffold(
         // backgroundColor: Colors.teal[50],
         appBar: AppBar(
@@ -552,45 +556,40 @@ class _CreateInventoryState extends State<CreateInventory> {
                                 textColor: Colors.white,
                                 fontSize: 16.0,
                               );
-                                setState(() {
-                              loading = false;
-                            });
-
+                              setState(() {
+                                loading = false;
+                              });
                               return;
                             }
                             setState(() {
                               loading = true;
                             });
-                            print("quantity  unit is $unitValue");
-                            print(tax);
-                            var resp = await _apiService.addInventory(
-                              category.toUpperCase(),
-                              item.toUpperCase(),
-                              double.parse(unitPrice),
-                              double.parse(quantity),
-                              unitValue.getShortName(
-                                  int.parse(quantityController.text)),
-                              double.parse(discount),
-                              double.parse(tax),
+                          
+                            var resp = await _apiService.updateInventory(
+                              id: widget.inventory.id,
+                              category: category.toUpperCase(),
+                              productName: item,
+                              price: double.parse(unitPrice),
+                              quantity: double.parse(quantity),
+                              unit: unitValue.toString(),
+                              discount: double.parse(discount),
+                              tax: double.parse(tax),
                             );
                             if (resp == 'true') {
                               setState(() {
                                 loading = false;
-                                /*  _itemControl..text="";
-                                _quantityControl..text = "";
-                                _unitPriceControl..text = "";
-                                _categoryControl..text = "";
-
-                                _taxControl..text = "";
-                                _discountControl..text = "";*/
                               });
 
                               Fluttertoast.showToast(
-                                msg: 'created successfully',
+                                msg: 'updated successfully',
                                 toastLength: Toast.LENGTH_LONG,
                                 backgroundColor: Colors.grey[700],
                                 textColor: Colors.white,
                               );
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => InventoryScreen()));
                             } else {
                               setState(() {
                                 loading = false;
@@ -613,7 +612,7 @@ class _CreateInventoryState extends State<CreateInventory> {
                             ? ButtonLoadingIndicator(
                                 color: Colors.white, height: 20, width: 20)
                             : Text(
-                                'Save',
+                                'Update',
                                 style: TextStyle(
                                   fontFamily: 'Montserrat',
                                   fontSize: 16,

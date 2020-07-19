@@ -9,6 +9,7 @@ import 'package:digital_receipt/utils/connected.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +32,7 @@ class _CustomerListState extends State<CustomerList> {
   var customerList;
 
   refreshCustomerList() async {
-   customerList = await _apiService.getAllCustomers();
+    customerList = await _apiService.getAllCustomers();
     //print(res);
   }
 
@@ -198,29 +199,30 @@ class _CustomerListState extends State<CustomerList> {
                         children: <Widget>[
                           SizedBox(height: 20.0),
                           Consumer<Customer>(
-                          builder: (_, model, child) {
-                            // child:
-                            return Flexible(
-                              child: ListView.builder(
-                                itemCount: model.customerList.length,
-                                itemBuilder: (context, index) {
-                                  return customer(
-                                    customerName:
-                                        model.customerList[index].name,
-                                    customerEmail:
-                                        model.customerList[index].email,
-                                    index: index,
-                                    phoneNumber:
-                                        model.customerList[index].phoneNumber,
-                                    address: model.customerList[index].address,
+                            builder: (_, model, child) {
+                              // child:
+                              return Flexible(
+                                child: ListView.builder(
+                                  itemCount: model.customerList.length,
+                                  itemBuilder: (context, index) {
+                                    return customer(
+                                      customerName:
+                                          model.customerList[index].name,
+                                      customerEmail:
+                                          model.customerList[index].email,
+                                      index: index,
+                                      phoneNumber: model
+                                          .customerList[index].phoneNumber,
+                                      address:
+                                          model.customerList[index].address,
 
-                                    // numberOfReceipts: 0,
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                        ),
+                                      // numberOfReceipts: 0,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       );
                     } else {
@@ -453,7 +455,7 @@ class _CustomerListState extends State<CustomerList> {
             : SizedBox.shrink(),
         index == 0
             ? Text(
-                'Swipe for more options',
+                'Swipe for more options, longpress to delete',
                 textAlign: TextAlign.center,
               )
             : SizedBox.shrink(),
@@ -463,4 +465,77 @@ class _CustomerListState extends State<CustomerList> {
       ],
     );
   }
+
+  //   _confirmCuustomerDelete(String id, String name) {
+  //   return showDialog(
+  //       context: context,
+  //       barrierDismissible: false,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           contentPadding: EdgeInsets.all(10),
+  //           // insetPadding: EdgeInsets.all(50),
+  //           title: Text(
+  //             "Are sure you want to delete $name?",
+  //             style: TextStyle(
+  //               fontSize: 15,
+  //             ),
+  //           ),
+  //           content: SingleChildScrollView(
+  //             scrollDirection: Axis.vertical,
+  //             padding: EdgeInsets.all(30.0),
+  //             child: Expanded(
+  //               child: ListBody(
+  //                 children: <Widget>[
+  //                   Row(
+  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                     children: <Widget>[
+  //                       MaterialButton(
+  //                         onPressed: () {
+  //                           Navigator.pop(context);
+  //                         },
+  //                         color: Colors.blue[50],
+  //                         child: Padding(
+  //                           padding: const EdgeInsets.all(8.0),
+  //                           child: Text(
+  //                             'cancel',
+  //                             style: TextStyle(
+  //                                 fontSize: 13, fontWeight: FontWeight.bold),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       MaterialButton(
+  //                         onPressed: () async {
+  //                           var resp =
+  //                               await _apiService.deleteCustomer(id: id);
+  //                           if (resp == 'false') {
+  //                             Navigator.push(context, MaterialPageRoute(builder:(_)=> CustomerList()));
+  //                             Fluttertoast.showToast(msg: 'an error occured');
+  //                           } else {
+  //                             Navigator.push(context, MaterialPageRoute(builder:(_)=> CustomerList()));
+  //                             print('successful');
+  //                           }
+  //                         },
+  //                         color: Colors.red,
+  //                         child: Padding(
+  //                           padding: const EdgeInsets.all(8.0),
+  //                           child: Text(
+  //                             'delete',
+  //                             style: TextStyle(
+  //                                 fontSize: 13, fontWeight: FontWeight.bold),
+  //                           ),
+  //                         ),
+  //                       )
+
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       });
+
+  // }
 }
+
+
