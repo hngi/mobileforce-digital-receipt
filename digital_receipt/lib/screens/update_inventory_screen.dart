@@ -568,7 +568,6 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                             var resp = await _apiService.updateInventory(
                               id: widget.inventory.id,
                               category: category.toUpperCase(),
-
                               productName: item,
                               price: double.parse(unitPrice),
                               quantity: double.parse(quantity),

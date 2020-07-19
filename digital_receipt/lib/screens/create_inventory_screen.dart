@@ -564,7 +564,6 @@ class _CreateInventoryState extends State<CreateInventory> {
                             print("quantity  unit is $unitValue");
                             print(tax);
                             var resp = await _apiService.addInventory(
-
                               category.toUpperCase(),
                               item.toUpperCase(),
                               double.parse(unitPrice),
