@@ -1066,9 +1066,8 @@ class ApiService {
     Future<String> deleteInventoryItem({
     String id,
   }) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = '$_urlEndpoint/business/inventory';
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');

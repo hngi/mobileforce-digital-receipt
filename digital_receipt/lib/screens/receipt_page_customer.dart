@@ -549,9 +549,9 @@ Widget ReceiptScreenLayout(
                       child: Column(
                         children: <Widget>[
                           Text(
-                            (Provider.of<Receipt>(context, listen: false)
-                                    .customer
-                                    .name
+                            (businessInfo.name
+                                  .split(" ")[0]
+                                  .toLowerCase()
                                     .toString()
                                     .split(" ")[0])
                                 .toLowerCase(),

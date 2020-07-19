@@ -172,7 +172,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             SizedBox(
               height: 24,
             ),
-            Text(
+            /* Text(
               'Add receipt No (Optional)',
               style: TextStyle(
                 fontFamily: 'Montserrat',
@@ -219,7 +219,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             ),
             SizedBox(
               height: 32,
-            ),
+            ), */
             Text(
               'Date',
               style: TextStyle(
@@ -250,7 +250,35 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                     });
                   }
                 }),
-            /*  SizedBox(
+            SizedBox(
+              height: 20,
+            ),
+            /* Text(
+              'Seller\'s name',
+              style: TextStyle(
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.normal,
+                letterSpacing: 0.3,
+                fontSize: 13,
+                color: Color.fromRGBO(0, 0, 0, 0.6),
+              ),
+            ),
+            SizedBox(height: 5),
+            TextFormField(
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(17),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: BorderSide(
+                    color: Color(0xFFC8C8C8),
+                    width: 1,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(),
+                errorStyle: TextStyle(height: 0.5),
+              ),
+            ), */
+/*  SizedBox(
                     height: 30,
                   ),
                   DropdownButtonFormField<String>(
