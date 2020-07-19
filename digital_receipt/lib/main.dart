@@ -65,7 +65,7 @@ void main() async {
     final appDocumentDir = await getApplicationDocumentsDirectory();
     Hive.init(appDocumentDir.path);
     // runApp(MyApp(),);
-    runApp(DevicePreview(builder: (BuildContext context) => MyApp(), enabled: !kReleaseMode,));
+    runApp(DevicePreview(builder: (BuildContext context) => MyApp(), enabled: kReleaseMode,));
   } catch (e) {
     print("error occurd in main: $e");
   }
