@@ -28,7 +28,7 @@ class Customer extends ChangeNotifier {
 
   factory Customer.fromJson(Map<String, dynamic> json) => Customer(
 
-        id: json['id'],
+        id: json['id'].toString(),
         name: json['name'],
         email: json['email'],
         phoneNumber: json['phoneNumber'],
@@ -37,7 +37,7 @@ class Customer extends ChangeNotifier {
 
   @override
   String toString() {
-    return '$name : $email : $phoneNumber : $address';
+    return '$id : $name : $email : $phoneNumber : $address';
   }
 
   static List<Customer> dummy() => [
