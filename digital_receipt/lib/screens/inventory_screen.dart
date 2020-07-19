@@ -386,7 +386,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                           },
                           color: Colors.blue[50],
                           child: Padding(
-                            padding: const EdgeInsets.all(18.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Text(
                               'cancel',
                               style: TextStyle(
@@ -408,7 +408,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                           },
                           color: Colors.red,
                           child: Padding(
-                            padding: const EdgeInsets.all(18.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Text(
                               'delete',
                               style: TextStyle(
