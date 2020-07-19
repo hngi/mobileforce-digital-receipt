@@ -191,8 +191,7 @@ class _AccountPageState extends State<AccountPage> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
                       ),
-                      child: localLogo != null &&
-                              localLogo != '' 
+                      child: localLogo != null && localLogo != ''
                           ? Image.file(File(localLogo))
                           : Icon(Icons.person),
                     ),
@@ -336,12 +335,13 @@ class _AccountPageState extends State<AccountPage> {
                     var res = await _apiService.logOutUser(token);
                     print(res);
                     if (res == true) {
-                      print('logged out');
-                      Navigator.pushReplacement(
+                      // print('logged out');
+                      Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) => LogInScreen(),
                         ),
+                        (route) => false,
                       );
                     } else {
                       Fluttertoast.showToast(

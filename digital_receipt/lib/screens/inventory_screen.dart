@@ -24,8 +24,14 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
   @override
   void initState() {
-    getInventory();
+    //getInventory();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    getInventory();
+    super.didChangeDependencies();
   }
 
   getInventory() async {
@@ -155,7 +161,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
                       child: ListView.builder(
                         itemCount: inventory.length,
                         itemBuilder: (context, index) {
-
                           return GestureDetector(
                               onLongPress: () async {
                                 await _confirmInventoryDelete(
@@ -163,7 +168,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
                                     inventory[index].title);
                               },
                               child: _buildInventory(inventory[index]));
-
                         },
                       ),
                     ),
@@ -356,7 +360,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
         ));
   }
 
-
   _confirmInventoryDelete(String id, String title) {
     return showDialog(
         context: context,
@@ -399,10 +402,16 @@ class _InventoryScreenState extends State<InventoryScreen> {
                             var resp =
                                 await _apiService.deleteInventoryItem(id: id);
                             if (resp == 'false') {
-                              Navigator.push(context, MaterialPageRoute(builder:(_)=> InventoryScreen()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => InventoryScreen()));
                               Fluttertoast.showToast(msg: 'an error occured');
                             } else {
-                              Navigator.push(context, MaterialPageRoute(builder:(_)=> InventoryScreen()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => InventoryScreen()));
                               print('successful');
                             }
                           },
@@ -416,7 +425,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
                             ),
                           ),
                         )
-
                       ],
                     ),
                   ],
@@ -425,21 +433,19 @@ class _InventoryScreenState extends State<InventoryScreen> {
             ),
           );
         });
-
   }
 }
 
-
-  List<Inventory> sortInventoryByCategory(List<Inventory> inventoryList,
-      {String category}) {
-    try {
-      return inventoryList
-          .where((element) => element.category == category)
-          .toList();
-    } catch (error) {
-      Fluttertoast.showToast(
-          msg: 'error, try again ',
-          backgroundColor: Colors.red,
-          toastLength: Toast.LENGTH_LONG);
-    }
+List<Inventory> sortInventoryByCategory(List<Inventory> inventoryList,
+    {String category}) {
+  try {
+    return inventoryList
+        .where((element) => element.category == category)
+        .toList();
+  } catch (error) {
+    Fluttertoast.showToast(
+        msg: 'error, try again ',
+        backgroundColor: Colors.red,
+        toastLength: Toast.LENGTH_LONG);
+  }
 }
