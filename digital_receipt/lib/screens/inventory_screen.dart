@@ -105,7 +105,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                   child: Text("Sort By"),
                 ),
                 Container(
-                  width: MediaQuery.of(context).size.width - 110,
+                  width: MediaQuery.of(context).size.width*0.6,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
                     border: Border.all(
@@ -366,8 +366,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            contentPadding: EdgeInsets.all(10),
-            // insetPadding: EdgeInsets.all(50),
+            // contentPadding: EdgeInsets.all(20),
+            // insetPadding: EdgeInsets.all(20),
             title: Text(
               "Are sure you want to delete $title ?",
               style: TextStyle(
@@ -376,38 +376,49 @@ class _InventoryScreenState extends State<InventoryScreen> {
             ),
             content: SingleChildScrollView(
               scrollDirection: Axis.vertical,
-              padding: EdgeInsets.all(30.0),
+              // padding: EdgeInsets.all(30.0),
               child: Expanded(
                 child: ListBody(
                   children: <Widget>[
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         MaterialButton(
+                          minWidth: 90,
+                          height: 48,
                           onPressed: () {
                             Navigator.pop(context);
                           },
                           color: Colors.blue[50],
-                          child: Padding(
-                            padding: const EdgeInsets.all(18.0),
-                            child: Text(
-                              'cancel',
-                              style: TextStyle(
-                                  fontSize: 13, fontWeight: FontWeight.bold),
-                            ),
+                          child: Text(
+                            'cancel',
+                            style: TextStyle(
+                                fontSize: 13, fontWeight: FontWeight.bold),
                           ),
                         ),
+                        SizedBox(width: 10),
                         MaterialButton(
+                          minWidth: 90,
+                          height: 48,
                           onPressed: () async {
+                            setState(() {
+                              loading = true;
+                            });
                             var resp =
                                 await _apiService.deleteInventoryItem(id: id);
                             if (resp == 'false') {
+                              setState(() {
+                                loading = false;
+                              });
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (_) => InventoryScreen()));
                               Fluttertoast.showToast(msg: 'an error occured');
                             } else {
+                              setState(() {
+                                loading = false;
+                              });
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -416,13 +427,12 @@ class _InventoryScreenState extends State<InventoryScreen> {
                             }
                           },
                           color: Colors.red,
-                          child: Padding(
-                            padding: const EdgeInsets.all(18.0),
-                            child: Text(
-                              'delete',
-                              style: TextStyle(
-                                  fontSize: 13, fontWeight: FontWeight.bold),
-                            ),
+                          child: Text(
+                            'delete',
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
                         )
                       ],
