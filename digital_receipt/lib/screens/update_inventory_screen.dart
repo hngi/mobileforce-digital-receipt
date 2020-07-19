@@ -564,8 +564,7 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                             setState(() {
                               loading = true;
                             });
-                            print("quantity  unit is $unitValue");
-                            print(tax);
+                          
                             var resp = await _apiService.updateInventory(
                               id: widget.inventory.id,
                               category: category.toUpperCase(),
