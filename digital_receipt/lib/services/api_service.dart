@@ -97,6 +97,7 @@ class ApiService {
           print(response.data["status"]);
 
           userId = response.data["data"]["_id"];
+          print(userId);
           // userID = userId;
           auth_token = response.data["data"]["auth_token"];
 
