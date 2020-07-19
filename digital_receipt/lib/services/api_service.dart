@@ -773,9 +773,7 @@ class ApiService {
           var data = jsonDecode(response.body);
           data["data"].forEach((notification) {
             _allNotifications.add(NotificationModel.fromJson(notification));
-            // NotificationModel.fromJson(notification).toString();
           });
-          // print(data);
           return _allNotifications;
         } else {
           print("All notifications status code ${response.statusCode}");

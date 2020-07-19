@@ -9,8 +9,21 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  int _notificationLength = 12;
+  // int _notificationLength = 12;
   ApiService _apiService = ApiService();
+  List<NotificationModel> allNotification = [];
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      setNotification();
+    });
+  }
+
+  void setNotification() async {
+    allNotification = await _apiService.getAllNotifications();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,15 +50,17 @@ class _NotificationPageState extends State<NotificationPage> {
                   ),
                 );
               } else if (snapshot.connectionState == ConnectionState.done) {
-                // print(snapshot.data);
+                print("Notification Page${snapshot.data}");
+                allNotification = snapshot.data;
                 if (snapshot.hasData && snapshot.data.length != 0) {
                   return ListView.builder(
-                    itemCount: snapshot.data == null ? 0 : snapshot.data.length,
+                    itemCount:
+                        allNotification == null ? 0 : allNotification.length,
                     itemBuilder: (BuildContext context, int index) {
                       return SingleNotification(
-                        notificationLength: snapshot.data.length,
-                        body: '${snapshot.data[index].body}',
-                        date: '${snapshot.data[index].date}',
+                        notificationLength: allNotification.length,
+                        body: '${allNotification[index].message}',
+                        date: '${allNotification[index].date}',
                         index: index,
                       );
                     },
@@ -56,7 +71,7 @@ class _NotificationPageState extends State<NotificationPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                       kBrokenHeart,
+                        kBrokenHeart,
                         SizedBox(
                           height: 20,
                         ),

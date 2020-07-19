@@ -38,7 +38,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
     NotificationModel notification = NotificationModel(
       id: message["data"]["id"],
       title: message['data']['title'],
-      body: message['data']['body'],
+      message: message['data']['message'],
       date: message["data"]["date"],
       isRead: message["data"]["isRead"],
     );
@@ -183,7 +183,7 @@ class _ScreenControllerState extends State<ScreenController> {
                       color: Colors.black,
                     ))),
                 title: Text('${message['notification']['title']}'),
-                subtitle: Text('${message['notification']['body']}'),
+                subtitle: Text('${message['notification']['message']}'),
                 trailing: IconButton(
                     icon: Icon(Icons.close),
                     onPressed: () {
@@ -198,7 +198,7 @@ class _ScreenControllerState extends State<ScreenController> {
         NotificationModel notification = NotificationModel(
           id: message["data"]["id"],
           title: message['notification']['title'],
-          body: message['notification']['body'],
+          message: message['notification']['message'],
           date: message["data"]["date"],
           isRead: message["data"]["isRead"],
         );
@@ -212,7 +212,7 @@ class _ScreenControllerState extends State<ScreenController> {
         NotificationModel notification = NotificationModel(
           id: message["data"]["id"],
           title: message['notification']['title'],
-          body: message['notification']['body'],
+          message: message['notification']['message'],
           date: message["data"]["date"],
           isRead: message["data"]["isRead"],
         );
@@ -226,7 +226,7 @@ class _ScreenControllerState extends State<ScreenController> {
         NotificationModel notification = NotificationModel(
           id: message["data"]["id"],
           title: message['notification']['title'],
-          body: message['notification']['body'],
+          message: message['notification']['message'],
           date: message["data"]["date"],
           isRead: message["data"]["isRead"],
         );
