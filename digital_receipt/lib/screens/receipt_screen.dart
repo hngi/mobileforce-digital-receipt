@@ -505,7 +505,7 @@ Widget ReceiptScreenLayout(
                         child: Column(
                           children: <Widget>[
                             Text(
-                              businessInfo.name.split(" ")[0].toLowerCase(),
+                              Provider.of<Receipt>(context).sellerName.split(" ")[0].toLowerCase(),
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 27,
@@ -638,7 +638,7 @@ Widget ReceiptScreenLayout(
   ]);
 }
 
-void sendPDF(BuildContext context) async {
+sendPDF(BuildContext context) async {
   print('inside');
   RenderRepaintBoundary boundary = _globalKey.currentContext.findRenderObject();
   ui.Image image = await boundary.toImage(pixelRatio: 3.0);
