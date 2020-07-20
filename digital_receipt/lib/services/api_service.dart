@@ -1036,7 +1036,7 @@ class ApiService {
   }) async {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
-      var uri = '$_urlEndpoint/business/inventory';
+      var uri = '$_urlEndpoint/business/inventory/$id';
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
       print(token);
@@ -1069,7 +1069,7 @@ class ApiService {
   }) async {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
-      var uri = '$_urlEndpoint/business/inventory';
+      var uri = '$_urlEndpoint/business/inventory/$id';
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
       print(token);
