@@ -680,6 +680,33 @@ class ApiService {
     }
   }
 
+  Future getUserInfo() async {
+    var url = "$_urlEndpoint/user/info";
+
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+
+    var connectivityResult = await Connected().checkInternet();
+
+    if (connectivityResult) {
+      var response = await http.get(
+        url,
+        headers: <String, String>{
+          'token': token,
+        },
+      );
+
+      dynamic res = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return res;
+        }else{
+          return null;
+        }
+
+    }
+  }
+
   Future otpVerification(
     String email,
     password,
@@ -1020,7 +1047,6 @@ class ApiService {
     }
   }
 
-
   Future<String> updateInventory({
     String id,
     String category,
@@ -1061,12 +1087,11 @@ class ApiService {
     }
   }
 
-    Future<String> deleteInventoryItem({
+  Future<String> deleteInventoryItem({
     String id,
   }) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = '$_urlEndpoint/business/inventory';
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
@@ -1085,8 +1110,7 @@ class ApiService {
     }
   }
 
-
-    Future<String> deleteCustomer({
+  Future<String> deleteCustomer({
     String id,
   }) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -1109,5 +1133,4 @@ class ApiService {
       return 'false';
     }
   }
-
 }
