@@ -57,8 +57,10 @@ void main() async {
     WidgetsFlutterBinding.ensureInitialized();
     final appDocumentDir = await getApplicationDocumentsDirectory();
     Hive.init(appDocumentDir.path);
+
     // runApp(MyApp(),);
     runApp(DevicePreview(builder: (BuildContext context) => MyApp(), enabled: kReleaseMode,));
+
   } catch (e) {
     print("error occurd in main: $e");
   }
@@ -178,7 +180,10 @@ class _ScreenControllerState extends State<ScreenController> {
     }
 
     _fcm.configure(
+      
       onMessage: (Map<String, dynamic> message) async {
+        print(message["data"]["id"]);
+        print(message["notification"]["id"]);
         print("onMessage: $message");
         showOverlayNotification((context) {
           return Card(
