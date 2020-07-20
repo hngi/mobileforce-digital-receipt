@@ -15,6 +15,7 @@ import 'package:digital_receipt/widgets/loading.dart';
 import 'package:digital_receipt/widgets/receipt_item.dart';
 
 import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
@@ -619,10 +620,12 @@ Widget ReceiptScreenLayout(
             loadingStop();
             return;
           }
+          
           var res = await Provider.of<Receipt>(context, listen: false)
               .updatedReceipt(
                   Provider.of<Receipt>(context, listen: false).receiptId);
           if (res == 200) {
+            //await compute(sendPDF, context);
             await sendPDF(context);
             loadingStop();
           }
@@ -635,7 +638,7 @@ Widget ReceiptScreenLayout(
   ]);
 }
 
-sendPDF(BuildContext context) async {
+void sendPDF(BuildContext context) async {
   print('inside');
   RenderRepaintBoundary boundary = _globalKey.currentContext.findRenderObject();
   ui.Image image = await boundary.toImage(pixelRatio: 3.0);
