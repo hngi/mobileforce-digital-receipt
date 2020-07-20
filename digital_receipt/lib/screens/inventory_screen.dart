@@ -163,11 +163,11 @@ class _InventoryScreenState extends State<InventoryScreen> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                               onLongPress: () async {
-                                /* await _confirmInventoryDelete(
-                                    inventory[index].id,
-                                    inventory[index].title); */
-                              },
-                              child: _buildInventory(inventory[index], index));
+                                 await _confirmInventoryDelete(
+                                     inventory[index].id,
+                                    inventory[index].title);  },
+                                    child: _buildInventory(inventory[index], index)
+                              );
                         },
                       ),
                     ),
@@ -183,14 +183,14 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
   Widget _buildInventory(Inventory inventory, int index) {
     return GestureDetector(
-       /*  onTap: () => Navigator.push(
+         onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => UpdateInventory(
                   inventory: inventory,
                 ),
               ),
-            ), */
+            ), 
         child: Padding(
           padding: const EdgeInsets.only(bottom: 15),
           child: Column(
@@ -363,13 +363,13 @@ class _InventoryScreenState extends State<InventoryScreen> {
               SizedBox(
                 height: 5,
               ),
-             /*  index == 0
+               index == 0
                   ? Text(
                       //'Tap to update, Longpress to delete inventory',
                       'Longpress to delete inventory',
                       textAlign: TextAlign.center,
                     )
-                  : SizedBox.shrink(), */
+                  : SizedBox.shrink(), 
             ],
           ),
         ));
@@ -442,6 +442,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                             context,
                             MaterialPageRoute(
                                 builder: (_) => InventoryScreen()));
+                                Fluttertoast.showToast(msg: 'item deleted');
                         print('successful');
                       }
                     },
