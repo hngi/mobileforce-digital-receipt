@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:digital_receipt/models/customer.dart';
+import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -84,5 +85,29 @@ class HiveDb extends ChangeNotifier {
     var analyticBox = await Hive.openBox('analytics');
     var analyticData = analyticBox.get('analytics');
     return json.decode(analyticData);
+  }
+
+
+    /* FOR ReeceiptHistory PAGE */
+  Future<void> addInventory(inventories) async {
+    var inventoryBox = await Hive.openBox('inventories');
+    //print(customerBox);
+    var res = json.encode(inventories);
+    await inventoryBox.put('inventories', res);
+  }
+
+  Future getInventory() async {
+    var inventory = await Hive.openBox('inventories');
+    var inventories = inventory.get('inventories');
+    if (inventories != null) {
+      dynamic res = jsonDecode(inventories);
+      res = res.map((e) {
+        Inventory temp = Inventory.fromJson(e);
+        return temp;
+      });
+      print(res);
+      return List<Inventory>.from(res);
+    }
+    return null;
   }
 }
