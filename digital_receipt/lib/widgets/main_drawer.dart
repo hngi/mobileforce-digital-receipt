@@ -1,4 +1,5 @@
 import 'package:digital_receipt/constant.dart';
+import 'package:digital_receipt/screens/about.dart';
 import 'package:digital_receipt/screens/analytics.dart';
 import 'package:digital_receipt/screens/drafts.dart';
 import 'package:digital_receipt/screens/inventory_screen.dart';
@@ -219,7 +220,7 @@ class MainDrawer extends StatelessWidget {
                       ),
                     ),
                   ),
-                 /*  SizedBox(
+                  /*  SizedBox(
                     height: 50.0,
                     width: double.maxFinite,
                     child: FlatButton(
@@ -301,10 +302,44 @@ class MainDrawer extends StatelessWidget {
                       },
                       child: Row(
                         children: <Widget>[
-                          Icon(Icons.settings, color: Colors.white, size: 22.0),
+                          Icon(
+                            Icons.settings,
+                            color: Colors.white,
+                            size: 22.0,
+                          ),
                           SizedBox(width: 15.0),
                           Text(
                             'Preferences',
+                            style: TextStyle(
+                                fontFamily: 'Montserrat',
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                                letterSpacing: 0.5),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50.0,
+                    width: double.maxFinite,
+                    child: FlatButton(
+                      highlightColor: Colors.transparent,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => About(),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.info, color: Colors.white, size: 22.0),
+                          SizedBox(width: 15.0),
+                          Text(
+                            'About',
                             style: TextStyle(
                                 fontFamily: 'Montserrat',
                                 fontSize: 16.0,
