@@ -8,6 +8,7 @@ import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/product_detail.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
@@ -256,7 +257,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                       amount: Provider.of<Receipt>(context, listen: false)
                               .getCurrency()
                               .currencySymbol +
-                          '${thisProduct.amount ?? (thisProduct.unitPrice * thisProduct.quantity)}',
+                          '${Utils.formatNumber(thisProduct.amount) ?? Utils.formatNumber(thisProduct.unitPrice * thisProduct.quantity)}',
                       // '${}',
                       index: index,
                     ),
