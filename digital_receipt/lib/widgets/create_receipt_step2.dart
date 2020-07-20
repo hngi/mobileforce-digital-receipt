@@ -20,8 +20,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-
 import 'button_loading_indicator.dart';
+import 'package:digital_receipt/services/api_service.dart';
 
 class CreateReceiptStep2 extends StatefulWidget {
   CreateReceiptStep2({
@@ -36,6 +36,7 @@ class CreateReceiptStep2 extends StatefulWidget {
 }
 
 class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
+  ApiService _apiService = ApiService();
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
     for (var i = 0; i < list.length; i++) {
@@ -48,6 +49,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
   TextEditingController _receiptNumberController = TextEditingController();
   TextEditingController _hexCodeController = TextEditingController()
     ..text = "F14C4C";
+  TextEditingController _sellerNameController = TextEditingController();
 
   final FocusNode _receiptNumberFocus = FocusNode();
   final FocusNode _dateTextFocus = FocusNode();
@@ -61,6 +63,12 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
   @override
   void initState() {
     super.initState();
+    setSellerName();
+  }
+
+  void setSellerName()async{
+    var user = await _apiService.getUserInfo();
+    _sellerNameController.text = user["name"] ?? '';
   }
 
   @override
@@ -253,7 +261,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             SizedBox(
               height: 20,
             ),
-            /* Text(
+            Text(
               'Seller\'s name',
               style: TextStyle(
                 fontFamily: 'Montserrat',
@@ -265,6 +273,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             ),
             SizedBox(height: 5),
             TextFormField(
+              controller: _sellerNameController,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(17),
                 border: OutlineInputBorder(
@@ -277,7 +286,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                 focusedBorder: OutlineInputBorder(),
                 errorStyle: TextStyle(height: 0.5),
               ),
-            ), */
+            ),
 /*  SizedBox(
                     height: 30,
                   ),
@@ -631,11 +640,12 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   Provider.of<Receipt>(context, listen: false)
                       .setColor(hexCode: _hexCodeController.text);
                   Provider.of<Receipt>(context, listen: false).setFont(24);
+                  Provider.of<Receipt>(context, listen: false)
+                      .setSellerName(_sellerNameController.text);
 
                   Response result =
                       await Provider.of<Receipt>(context, listen: false)
                           .saveReceipt();
-
                   if (result.statusCode == 200) {
                     setState(() {
                       isLoading = false;
