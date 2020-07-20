@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:digital_receipt/screens/receipt_page_customer.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
@@ -106,7 +109,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                     setState(() {
                       _issuedReceiptModel.filterReceipt(
                           recieptListData, _controller.text);
-                      receiptList = _issuedReceiptModel.issuedReceipt;
+                      recieptListData = _issuedReceiptModel.issuedReceipt;
                     });
                   },
                 ),
@@ -227,13 +230,11 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                                       recieptListData.length != 0
                                   ? Flexible(
                                       child: ListView.builder(
-                                        itemCount: receiptList.length ??
-                                            recieptListData.length,
+                                        itemCount: recieptListData.length,
                                         itemBuilder: (context, index) {
                                           // HardCoded Receipt details
                                           return receiptCard(
-                                              receiptList[index] ??
-                                                  recieptListData[index]);
+                                              recieptListData[index], index);
                                         },
                                       ),
                                     )
@@ -282,13 +283,17 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
     );
   }
 
-  Widget receiptCard(Receipt receipt) {
+  Widget receiptCard(Receipt receipt, index) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        var snapshot = await _apiService.getIssuedReceipt2();
+        print(snapshot);
+        setReceipt(context: context, snapshot: snapshot['data'][index]);
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => CreateReceiptPage(
-              issuedCustomerReceipt: receipt,
+            builder: (_) => ReceiptScreenFromCustomer(
+              receipt: receipt,
+              from: 'receipt_history',
             ),
           ),
         );
@@ -385,18 +390,15 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                                 letterSpacing: 0.03,
                               ),
                             ),
-
-                          
-                          TextSpan(
-                            text: ' ${receipt.totalAmount} ',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w300,
-                              fontFamily: 'Montserrat',
-                              letterSpacing: 0.03,
-                            )
-                            ),
+                            TextSpan(
+                                text: ' ${receipt.totalAmount} ',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w300,
+                                  fontFamily: 'Montserrat',
+                                  letterSpacing: 0.03,
+                                )),
                           ],
                         ),
                       ),

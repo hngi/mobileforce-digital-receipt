@@ -81,9 +81,7 @@ class _CreateInventoryState extends State<CreateInventory> {
             ),
           ),
         ),
-        SizedBox(
-          height: 5,
-        ),
+        SizedBox(height: 5),
         TextFormField(
           controller: _categoryControl,
           style: TextStyle(
@@ -557,6 +555,7 @@ class _CreateInventoryState extends State<CreateInventory> {
                                 setState(() {
                               loading = false;
                             });
+
                               return;
                             }
                             setState(() {
@@ -565,14 +564,15 @@ class _CreateInventoryState extends State<CreateInventory> {
                             print("quantity  unit is $unitValue");
                             print(tax);
                             var resp = await _apiService.addInventory(
-                                category.toUpperCase(),
-                                item.toUpperCase(),
-                                double.parse(unitPrice),
-                                double.parse(quantity),
-                                unitValue.toString(),
-                                double.parse(discount),
-                                double.parse(tax),
-                                );
+                              category.toUpperCase(),
+                              item.toUpperCase(),
+                              double.parse(unitPrice),
+                              double.parse(quantity),
+                              unitValue.getShortName(
+                                  int.parse(quantityController.text)),
+                              double.parse(discount),
+                              double.parse(tax),
+                            );
                             if (resp == 'true') {
                               setState(() {
                                 loading = false;

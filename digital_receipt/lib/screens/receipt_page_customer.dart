@@ -26,8 +26,10 @@ final pdf = pw.Document();
 
 class ReceiptScreenFromCustomer extends StatefulWidget {
   final Receipt receipt;
+  final String from;
 
-  const ReceiptScreenFromCustomer({Key key, this.receipt}) : super(key: key);
+  const ReceiptScreenFromCustomer({Key key, this.receipt, this.from})
+      : super(key: key);
 
   @override
   _ReceiptScreenFromCustomerState createState() =>
@@ -110,7 +112,8 @@ class _ReceiptScreenFromCustomerState extends State<ReceiptScreenFromCustomer> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: <Widget>[
-                    ReceiptScreenLayout(context, _loading, logo, () {
+                    ReceiptScreenLayout(context, _loading, logo, widget.from,
+                        () {
                       setState(() {
                         _loading = true;
                       });
@@ -164,6 +167,7 @@ Widget ReceiptScreenLayout(
     [BuildContext context,
     bool loading,
     String logo,
+    String from,
     Function loadingStart,
     Function loadingStop]) {
   Future sendMail() async {
@@ -272,7 +276,7 @@ Widget ReceiptScreenLayout(
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   // mainAxisSize: MainAxisSize.max,
-                   mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
                       color: Color(int.parse("0xFF" +
@@ -350,7 +354,7 @@ Widget ReceiptScreenLayout(
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: logo != null || logo.isNotEmpty
+                          child: logo != null && logo.isNotEmpty
                               ? Image.file(
                                   File(logo),
                                   height: 50,
@@ -545,9 +549,9 @@ Widget ReceiptScreenLayout(
                       child: Column(
                         children: <Widget>[
                           Text(
-                            (Provider.of<Receipt>(context, listen: false)
-                                    .customer
-                                    .name
+                            (businessInfo.name
+                                  .split(" ")[0]
+                                  .toLowerCase()
                                     .toString()
                                     .split(" ")[0])
                                 .toLowerCase(),
@@ -667,12 +671,18 @@ Widget ReceiptScreenLayout(
             loadingStop();
             return;
           }
-          var res = await Provider.of<Receipt>(context, listen: false)
-              .updatedReceipt(
-                  Provider.of<Receipt>(context, listen: false).receiptId);
-          if (res == 200) {
-            await sendPDF(context);
-            loadingStop();
+          if (from == null) {
+            var res = await Provider.of<Receipt>(context, listen: false)
+                .updatedReceipt(
+                    Provider.of<Receipt>(context, listen: false).receiptId);
+
+            if (res == 200) {
+              await sendPDF(context);
+              loadingStop();
+            }
+          }else if(from == 'receipt_history'){
+             await sendPDF(context);
+              loadingStop();
           }
         },
       ),

@@ -1,3 +1,4 @@
+import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/screens/create_inventory_screen.dart';
@@ -5,6 +6,7 @@ import 'package:digital_receipt/screens/inventory_screen.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
+import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -37,6 +39,32 @@ class _UpdateInventoryState extends State<UpdateInventory> {
 
   final _inventoryKey = GlobalKey<FormState>();
 
+  Unit unitValue;
+
+  List<Unit> units = [
+    Unit(fullName: 'Gram', singular: 'g', plural: 'g'),
+    Unit(fullName: 'Meter', singular: 'm', plural: 'm'),
+    Unit(fullName: 'Kilogram', singular: 'Kg', plural: 'Kg'),
+    Unit(fullName: 'Litre', singular: 'Ltr', plural: 'Ltr'),
+    Unit(fullName: 'Box', singular: 'Box', plural: 'Boxes'),
+    Unit(fullName: 'Bag', singular: 'Bag', plural: 'Bags'),
+    Unit(fullName: 'Bottle', singular: 'Bottle', plural: 'Bottles'),
+    Unit(fullName: 'Rolls', singular: 'Rol', plural: 'Rol'),
+    Unit(fullName: 'Pieces', singular: 'Pcs', plural: 'Pcs'),
+    Unit(fullName: 'Pack', singular: 'Pac', plural: 'Pac'),
+  ];
+
+  void _changeFocus({FocusNode from, FocusNode to}) {
+    from.unfocus();
+    FocusScope.of(context).requestFocus(to);
+  }
+
+  final quantityController = TextEditingController();
+
+  final FocusNode _quantityDropdownFocus = FocusNode();
+  final FocusNode _quantityFocus = FocusNode();
+  final FocusNode _unitPriceFocus = FocusNode();
+
   Widget _buildCategory(formLabel) {
     return Column(
       children: <Widget>[
@@ -57,7 +85,7 @@ class _UpdateInventoryState extends State<UpdateInventory> {
           height: 5,
         ),
         TextFormField(
-          initialValue: widget.inventory.category ?? '',
+          initialValue: widget.inventory.category,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -109,7 +137,7 @@ class _UpdateInventoryState extends State<UpdateInventory> {
           height: 5,
         ),
         TextFormField(
-          initialValue: widget.inventory.title ?? '',
+          initialValue: widget.inventory.title,
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -161,8 +189,8 @@ class _UpdateInventoryState extends State<UpdateInventory> {
           height: 5,
         ),
         TextFormField(
-          initialValue: widget.inventory.unitPrice == null ? '0' : widget.inventory.unitPrice.toString(),
           keyboardType: TextInputType.number,
+          initialValue: widget.inventory.unitPrice.toString(),
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -195,6 +223,7 @@ class _UpdateInventoryState extends State<UpdateInventory> {
   }
 
   Widget _buildQuantity(formLabel) {
+    quantityController.text = widget.inventory.quantity.toString();
     return Column(
       children: <Widget>[
         Padding(padding: const EdgeInsets.all(3)),
@@ -213,38 +242,79 @@ class _UpdateInventoryState extends State<UpdateInventory> {
         SizedBox(
           height: 5,
         ),
-        TextFormField(
-          initialValue: widget.inventory.quantity == null
-              ? '0'
-              : widget.inventory.quantity.toString(),
-          keyboardType: TextInputType.number,
-          style: TextStyle(
-            color: Color(0xFF2B2B2B),
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-            height: 1.43,
-            fontFamily: 'Montserrat',
-          ),
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.all(15),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: BorderSide(
-                width: 1,
-                color: Color.fromRGBO(0, 0, 0, 0.12),
+        Row(
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(
+                  color: _quantityDropdownFocus.hasFocus
+                      ? Colors.black
+                      : Color.fromRGBO(0, 0, 0, 0.12),
+                ),
+              ),
+              child: DropdownButton<Unit>(
+                focusColor: kPrimaryColor,
+                focusNode: _quantityDropdownFocus,
+                value: unitValue,
+                hint: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Unit',
+                    style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.normal,
+                      letterSpacing: 0.3,
+                      fontSize: 16,
+                      color: Color(0xFF1B1B1B),
+                    ),
+                  ),
+                ),
+                underline: Divider(),
+                items: units.map(
+                  (Unit unit) {
+                    return DropdownMenuItem<Unit>(
+                      value: unit,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 8.0),
+                        child: Text(
+                          unit.fullName,
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    );
+                  },
+                ).toList(),
+                onChanged: (Unit value) {
+                  print(value);
+                  setState(() => unitValue = value);
+                  _changeFocus(
+                      from: _quantityDropdownFocus, to: _quantityFocus);
+                },
               ),
             ),
-          ),
-          validator: (value) {
-            if (value.isEmpty) {
-              return 'Quantity empty';
-            }
-            return null;
-          },
-          onSaved: (String value) {
-            quantity = value;
-          },
-        )
+            SizedBox(width: 8),
+            Expanded(
+              child: AppTextFieldForm(
+                focusNode: _quantityFocus,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (value) =>
+                    _changeFocus(from: _quantityFocus, to: _unitPriceFocus),
+                keyboardType: TextInputType.number,
+                controller: quantityController,
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'quantity empty';
+                  }
+                  return null;
+                },
+                onSaved: (String value) {
+                  quantity = value;
+                },
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -269,10 +339,8 @@ class _UpdateInventoryState extends State<UpdateInventory> {
           height: 5,
         ),
         TextFormField(
-          initialValue: widget.inventory.discount == null
-              ? '0'
-              : widget.inventory.discount.toString(),
           keyboardType: TextInputType.number,
+          initialValue: widget.inventory.discount.toString(),
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -324,10 +392,8 @@ class _UpdateInventoryState extends State<UpdateInventory> {
           height: 5,
         ),
         TextFormField(
-          initialValue: widget.inventory.tax == null
-              ? '0'
-              : widget.inventory.tax.toString(),
           keyboardType: TextInputType.number,
+          initialValue: widget.inventory.tax.toString(),
           style: TextStyle(
             color: Color(0xFF2B2B2B),
             fontSize: 15,
@@ -361,6 +427,7 @@ class _UpdateInventoryState extends State<UpdateInventory> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.inventory.quantity);
     return Scaffold(
         // backgroundColor: Colors.teal[50],
         appBar: AppBar(
@@ -405,7 +472,7 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                         Container(
                           alignment: Alignment.bottomLeft,
                           child: Text(
-                            'Update inventory',
+                            'Create inventory',
                             style: TextStyle(
                                 fontSize: 23.0,
                                 fontFamily: 'Montserrat',
@@ -420,7 +487,7 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                         Container(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            'Update items to your inventory',
+                            'Add items to your inventory',
                             style: TextStyle(
                                 fontSize: 16.0,
                                 fontFamily: 'Montserrat',
@@ -478,18 +545,36 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                               });
                               return;
                             }
+                            FocusScope.of(context).unfocus();
+                            if (unitValue == null) {
+                              Fluttertoast.showToast(
+                                msg: "Add quantity unit",
+                                toastLength: Toast.LENGTH_LONG,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                                fontSize: 16.0,
+                              );
+                              setState(() {
+                                loading = false;
+                              });
+                              return;
+                            }
                             setState(() {
                               loading = true;
                             });
+                          
                             var resp = await _apiService.updateInventory(
-                                id: widget.inventory.id,
-                                category: category.toUpperCase(),
-                                productName: item.toUpperCase(),
-                                price: double.parse(unitPrice),
-                                quantity: double.parse(quantity),
-                                unit:   widget.inventory.unit ?? '',
-                                discount: double.parse(discount),
-                                tax: double.parse(tax),);
+                              id: widget.inventory.id,
+                              category: category.toUpperCase(),
+                              productName: item,
+                              price: double.parse(unitPrice),
+                              quantity: double.parse(quantity),
+                              unit: unitValue.toString(),
+                              discount: double.parse(discount),
+                              tax: double.parse(tax),
+                            );
                             if (resp == 'true') {
                               setState(() {
                                 loading = false;
@@ -498,14 +583,13 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                               Fluttertoast.showToast(
                                 msg: 'updated successfully',
                                 toastLength: Toast.LENGTH_LONG,
-                                backgroundColor: Colors.green,
+                                backgroundColor: Colors.grey[700],
                                 textColor: Colors.white,
                               );
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          InventoryScreen()));
+                                      builder: (context) => InventoryScreen()));
                             } else {
                               setState(() {
                                 loading = false;

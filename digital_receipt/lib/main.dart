@@ -58,13 +58,14 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 // DevicePreview(
 //       builder: (_) => MyApp(),
 //       enabled: !kReleaseMode,
-//     )
+//     );
 void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     final appDocumentDir = await getApplicationDocumentsDirectory();
     Hive.init(appDocumentDir.path);
-    runApp(MyApp());
+    // runApp(MyApp(),);
+    runApp(DevicePreview(builder: (BuildContext context) => MyApp(), enabled: !kReleaseMode,));
   } catch (e) {
     print("error occurd in main: $e");
   }
@@ -259,7 +260,7 @@ class _ScreenControllerState extends State<ScreenController> {
         ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // await _pushNotificationService.initialise();
-          // print('snapshots: ${snapshot.data}');
+           print('snapshots: ${snapshot.data}');
 
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(

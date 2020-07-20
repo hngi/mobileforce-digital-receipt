@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 
 class Customer extends ChangeNotifier {
+  String id;
   String name;
   String email;
   String phoneNumber;
   String address;
 
   Customer({
+    this.id,
     this.name,
     this.email,
     this.phoneNumber,
@@ -25,6 +27,8 @@ class Customer extends ChangeNotifier {
   setAddress(address) => this.address = address;
 
   factory Customer.fromJson(Map<String, dynamic> json) => Customer(
+
+        id: json['id'].toString(),
         name: json['name'],
         email: json['email'],
         phoneNumber: json['phoneNumber'],
@@ -33,7 +37,7 @@ class Customer extends ChangeNotifier {
 
   @override
   String toString() {
-    return '$name : $email : $phoneNumber : $address';
+    return '$id : $name : $email : $phoneNumber : $address';
   }
 
   static List<Customer> dummy() => [
