@@ -391,7 +391,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                               ),
                             ),
                             TextSpan(
-                                text: ' ${receipt.totalAmount} ',
+                                text: ' ${Utils.formatNumber(double.tryParse(receipt.totalAmount))} ',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,

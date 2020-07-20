@@ -1,5 +1,6 @@
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/screens/receipt_screen.dart';
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -84,7 +85,7 @@ class ReceiptItem extends StatelessWidget {
                       child: Text(Provider.of<Receipt>(context, listen: false)
                               .getCurrency()
                               .currencySymbol +
-                          '${Provider.of<Receipt>(context, listen: false).products[index].unitPrice}'
+                          '${Utils.formatNumber(Provider.of<Receipt>(context, listen: false).products[index].unitPrice)}'
                               .toString()),
                     ),
                   ],
@@ -97,8 +98,7 @@ class ReceiptItem extends StatelessWidget {
                           .products[index]
                           .discount !=
                       null
-                  ?
-                   Padding(
+                  ? Padding(
                       padding: const EdgeInsets.fromLTRB(0, 5, 10, 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -188,10 +188,10 @@ class ReceiptItem extends StatelessWidget {
                         Provider.of<Receipt>(context, listen: false)
                                 .getCurrency()
                                 .currencySymbol +
-                            Provider.of<Receipt>(context, listen: false)
-                                .products[index]
-                                .amount
-                                .toString(),
+                            Utils.formatNumber(
+                                Provider.of<Receipt>(context, listen: false)
+                                    .products[index]
+                                    .amount),
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 14,

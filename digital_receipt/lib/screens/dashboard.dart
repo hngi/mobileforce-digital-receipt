@@ -311,7 +311,7 @@ class _DashBoardState extends State<DashBoard> {
               height: 8.0,
             ),
             Text(
-              leading == 'Total Sales' ? '$subtitle\0' : '$subtitle',
+              '$subtitle',
               textScaleFactor: leading == 'Total Sales' ? 0.7 : null,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
