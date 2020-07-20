@@ -484,7 +484,80 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               hintColor: Color.fromRGBO(0, 0, 0, 0.38),
               borderWidth: 1.5,
             ),
+
             SizedBox(height: 37),
+           /*  Text(
+              'Select a receipt',
+              style: TextStyle(
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.3,
+                fontSize: 16,
+                color: Color.fromRGBO(0, 0, 0, 0.87),
+              ),
+            ),
+            SizedBox(height: 10),
+            SizedBox(
+              height: 200,
+              width: double.infinity,
+              child: ListView.builder(
+                itemCount: 5,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 15),
+                    child: GestureDetector(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Scaffold(
+
+                              );
+                            });
+                      },
+                      child: SizedBox(
+                        height: 200,
+                        width: 150,
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                              height: 200,
+                              width: 150,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  image: DecorationImage(
+                                    image: AssetImage(''),
+                                  ),
+                                  color: Colors.amberAccent),
+                            ),
+                            Container(
+                              height: 200,
+                              width: 150,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                image: DecorationImage(
+                                  image: AssetImage(''),
+                                ),
+                                color: Color.fromRGBO(0, 0, 0, 0.3),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.center,
+                              child: Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ), */
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -536,7 +609,9 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                 ),
               ],
             ),
+
             SizedBox(height: 40),
+
             SizedBox(
               height: 50,
               width: double.infinity,

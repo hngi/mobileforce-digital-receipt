@@ -1,7 +1,6 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/inventory.dart';
-
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/screens/login_screen.dart';
 import 'package:digital_receipt/screens/onboarding.dart';
@@ -9,7 +8,6 @@ import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:hive/hive.dart';
-
 import 'dart:io';
 import 'utils/connected.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -23,7 +21,6 @@ import 'models/receipt.dart';
 import 'services/sql_database_client.dart';
 import 'services/shared_preference_service.dart';
 import 'services/sql_database_repository.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 //BACKGROUND MESSAGE HANDLER
@@ -55,17 +52,15 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
   }
 }
 
-// DevicePreview(
-//       builder: (_) => MyApp(),
-//       enabled: !kReleaseMode,
-//     );
 void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     final appDocumentDir = await getApplicationDocumentsDirectory();
     Hive.init(appDocumentDir.path);
+
     // runApp(MyApp(),);
-    runApp(DevicePreview(builder: (BuildContext context) => MyApp(), enabled: !kReleaseMode,));
+    runApp(DevicePreview(builder: (BuildContext context) => MyApp(), enabled: kReleaseMode,));
+
   } catch (e) {
     print("error occurd in main: $e");
   }
@@ -106,6 +101,7 @@ class MyApp extends StatelessWidget {
             primaryColor: Color(0xFF0B57A7),
             scaffoldBackgroundColor: Color(0xFFF2F8FF),
             accentColor: Color(0xFF25CCB3),
+            
             textTheme: TextTheme(
               bodyText1: TextStyle(
                 fontFamily: 'Montserrat',
@@ -184,7 +180,10 @@ class _ScreenControllerState extends State<ScreenController> {
     }
 
     _fcm.configure(
+      
       onMessage: (Map<String, dynamic> message) async {
+        print(message["data"]["id"]);
+        print(message["notification"]["id"]);
         print("onMessage: $message");
         showOverlayNotification((context) {
           return Card(

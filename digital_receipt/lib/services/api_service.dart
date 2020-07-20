@@ -97,6 +97,7 @@ class ApiService {
           print(response.data["status"]);
 
           userId = response.data["data"]["_id"];
+          print(userId);
           // userID = userId;
           auth_token = response.data["data"]["auth_token"];
 
@@ -1059,7 +1060,7 @@ class ApiService {
   }) async {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
-      var uri = '$_urlEndpoint/business/inventory';
+      var uri = '$_urlEndpoint/business/inventory/$id';
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
       print(token);
@@ -1092,7 +1093,7 @@ class ApiService {
   }) async {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
-      var uri = '$_urlEndpoint/business/inventory';
+      var uri = '$_urlEndpoint/business/inventory/$id';
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
       print(token);
