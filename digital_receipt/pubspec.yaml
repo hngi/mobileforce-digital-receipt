@@ -53,6 +53,7 @@ dependencies:
   pin_code_text_field: ^1.6.0
   pin_code_fields: ^3.1.2
   flare_flutter: ^2.0.3
+  package_info: ^0.4.1
   url_launcher: ^5.4.11
   random_color: ^1.0.5
   device_preview: ^0.4.5
@@ -102,15 +103,11 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/paid-stamp.png
-    - assets/images/signature.png
     - assets/icons/
     - assets/logos/
     - assets/BACKGROUND.jpg
     - assets/gmail.png
     - assets/images/
-    - assets/images/paid-stamp.png
-    - assets/images/signature.png
 
      # For receipt generation
     - assets/fonts/Montserrat/
