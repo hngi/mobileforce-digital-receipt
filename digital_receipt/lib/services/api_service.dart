@@ -681,6 +681,33 @@ class ApiService {
     }
   }
 
+  Future getUserInfo() async {
+    var url = "$_urlEndpoint/user/info";
+
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+
+    var connectivityResult = await Connected().checkInternet();
+
+    if (connectivityResult) {
+      var response = await http.get(
+        url,
+        headers: <String, String>{
+          'token': token,
+        },
+      );
+
+      dynamic res = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return res;
+        }else{
+          return null;
+        }
+
+    }
+  }
+
   Future otpVerification(
     String email,
     password,
@@ -769,9 +796,7 @@ class ApiService {
           var data = jsonDecode(response.body);
           data["data"].forEach((notification) {
             _allNotifications.add(NotificationModel.fromJson(notification));
-            // NotificationModel.fromJson(notification).toString();
           });
-          // print(data);
           return _allNotifications;
         } else {
           print("All notifications status code ${response.statusCode}");
