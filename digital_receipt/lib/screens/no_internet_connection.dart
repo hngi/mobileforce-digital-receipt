@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:connectivity/connectivity.dart';
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:flutter/material.dart';
