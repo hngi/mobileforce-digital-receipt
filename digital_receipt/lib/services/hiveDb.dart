@@ -85,4 +85,18 @@ class HiveDb extends ChangeNotifier {
     var analyticData = analyticBox.get('analytics');
     return json.decode(analyticData);
   }
+
+  /* FOR NOTIFICATION PAGE */
+  Future<void> addNotification(List notification) async {
+    var notificationBox = await Hive.openBox('notification');
+    var res = json.encode(notification);
+
+    await notificationBox.put('notification', res);
+  }
+
+  Future getNotification() async {
+    var notificationBox = await Hive.openBox('notification');
+    var notificationData = notificationBox.get('notification');
+    return json.decode(notificationData);
+  }
 }

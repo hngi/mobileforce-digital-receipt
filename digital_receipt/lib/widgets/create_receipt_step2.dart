@@ -14,6 +14,7 @@ import 'package:digital_receipt/widgets/date_time_input_textField.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
@@ -66,7 +67,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
     setSellerName();
   }
 
-  void setSellerName()async{
+  void setSellerName() async {
     var user = await _apiService.getUserInfo();
     _sellerNameController.text = user["name"] ?? '';
   }
@@ -406,6 +407,16 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               ],
             ),
             SizedBox(height: 20),
+            // ColorPicker(
+            //   pickerColor: Colors.blue,
+            //   displayThumbColor: true,
+            //   // paletteType: PaletteType.rgb,
+            //   onColorChanged: (color) {
+            //     setState(() {
+            //       _hexCodeController.text = color.value.toRadixString(16);
+            //     });
+            //   },
+            // ),
             SizedBox(
               height: 33,
               child: SizedBox(
@@ -486,7 +497,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             ),
 
             SizedBox(height: 37),
-           /*  Text(
+            /*  Text(
               'Select a receipt',
               style: TextStyle(
                 fontFamily: 'Montserrat',

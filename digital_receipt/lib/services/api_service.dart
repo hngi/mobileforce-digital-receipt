@@ -701,10 +701,9 @@ class ApiService {
 
       if (response.statusCode == 200) {
         return res;
-        }else{
-          return null;
-        }
-
+      } else {
+        return null;
+      }
     }
   }
 
@@ -774,7 +773,7 @@ class ApiService {
 
   /// Returns a list of notifications
   /// if there are no notifications it returns an empty list
-  Future<List<NotificationModel>> getAllNotifications() async {
+  Future getAllNotifications() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
@@ -783,7 +782,7 @@ class ApiService {
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
       print(token);
       var connectivityResult = await (Connectivity().checkConnectivity());
-      List<NotificationModel> _allNotifications = [];
+      // List<NotificationModel> _allNotifications = [];
       if (connectivityResult == ConnectivityResult.mobile ||
           connectivityResult == ConnectivityResult.wifi) {
         var response = await http.get(
@@ -794,18 +793,33 @@ class ApiService {
         );
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          data["data"].forEach((notification) {
-            _allNotifications.add(NotificationModel.fromJson(notification));
-          });
-          return _allNotifications;
+          // data["data"].forEach((notification) {
+          //   _allNotifications.add(NotificationModel.fromJson(notification));
+          // });
+          // return _allNotifications;
+          // checks if the length of history is larger than 100 and checks for internet
+          // print("notifications from api ${data['data']}");
+
+          if (data["data"].length >= 100) {
+            List temp = data["data"].getRange(0, 99).toList();
+            await hiveDb.addNotification(temp);
+
+            return hiveDb.getNotification();
+          } else if (data["data"].length < 100) {
+            await hiveDb.addNotification(data["data"]);
+
+            return hiveDb.getNotification();
+          } else {
+            return hiveDb.getNotification();
+          }
         } else {
           print("All notifications status code ${response.statusCode}");
-          return [];
+          // return [];
         }
       }
-      return [];
     } else {
-      return [];
+      return hiveDb.getCustomer() ?? Future.error('No network Connection');
+      ;
     }
   }
 
