@@ -195,14 +195,13 @@ class _DashBoardState extends State<DashBoard> {
           subtitle: '₦${Utils.formatNumber(amnt)}',
           color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
-        /* FlatButton(
+        FlatButton(
           onPressed: () async {
-            var h =
-                await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
-            print(h);
+            var t = DateTime.now().timeZoneName;
+            print(t);
           },
-          child: Text('${Provider.of<Connected>(context).stream}'),
-        ), */
+          child: Text('Test'),
+        ),
       ],
     );
   }
