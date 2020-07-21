@@ -1126,4 +1126,27 @@ class ApiService {
       return 'false';
     }
   }
+
+  Future<String> deleteDraft({
+    String id,
+  }) async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/receipt/$id';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      print(token);
+      var response = await http.delete(
+        uri,
+        headers: {"token": token},
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        return 'true';
+      }
+      return 'false';
+    } else {
+      return 'false';
+    }
+  }
 }
