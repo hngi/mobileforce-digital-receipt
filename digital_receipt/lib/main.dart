@@ -36,7 +36,7 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
     NotificationModel notification = NotificationModel(
       id: message["data"]["id"],
       title: message['data']['title'],
-      body: message['data']['body'],
+      message: message['data']['message'],
       date: message["data"]["date"],
       isRead: message["data"]["isRead"],
     );
@@ -57,8 +57,12 @@ void main() async {
     WidgetsFlutterBinding.ensureInitialized();
     final appDocumentDir = await getApplicationDocumentsDirectory();
     Hive.init(appDocumentDir.path);
+
     // runApp(MyApp(),);
-    runApp(DevicePreview(builder: (BuildContext context) => MyApp(), enabled: kReleaseMode,));
+    runApp(DevicePreview(
+      builder: (BuildContext context) => MyApp(),
+      enabled: kReleaseMode,
+    ));
   } catch (e) {
     print("error occurd in main: $e");
   }
@@ -99,7 +103,6 @@ class MyApp extends StatelessWidget {
             primaryColor: Color(0xFF0B57A7),
             scaffoldBackgroundColor: Color(0xFFF2F8FF),
             accentColor: Color(0xFF25CCB3),
-            
             textTheme: TextTheme(
               bodyText1: TextStyle(
                 fontFamily: 'Montserrat',
@@ -179,6 +182,8 @@ class _ScreenControllerState extends State<ScreenController> {
 
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
+        print(message["data"]["id"]);
+        print(message["notification"]["id"]);
         print("onMessage: $message");
         showOverlayNotification((context) {
           return Card(
@@ -192,7 +197,7 @@ class _ScreenControllerState extends State<ScreenController> {
                       color: Colors.black,
                     ))),
                 title: Text('${message['notification']['title']}'),
-                subtitle: Text('${message['notification']['body']}'),
+                subtitle: Text('${message['notification']['message']}'),
                 trailing: IconButton(
                     icon: Icon(Icons.close),
                     onPressed: () {
@@ -207,7 +212,7 @@ class _ScreenControllerState extends State<ScreenController> {
         NotificationModel notification = NotificationModel(
           id: message["data"]["id"],
           title: message['notification']['title'],
-          body: message['notification']['body'],
+          message: message['notification']['message'],
           date: message["data"]["date"],
           isRead: message["data"]["isRead"],
         );
@@ -221,7 +226,7 @@ class _ScreenControllerState extends State<ScreenController> {
         NotificationModel notification = NotificationModel(
           id: message["data"]["id"],
           title: message['notification']['title'],
-          body: message['notification']['body'],
+          message: message['notification']['message'],
           date: message["data"]["date"],
           isRead: message["data"]["isRead"],
         );
@@ -235,7 +240,7 @@ class _ScreenControllerState extends State<ScreenController> {
         NotificationModel notification = NotificationModel(
           id: message["data"]["id"],
           title: message['notification']['title'],
-          body: message['notification']['body'],
+          message: message['notification']['message'],
           date: message["data"]["date"],
           isRead: message["data"]["isRead"],
         );
@@ -254,7 +259,7 @@ class _ScreenControllerState extends State<ScreenController> {
         ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // await _pushNotificationService.initialise();
-           print('snapshots: ${snapshot.data}');
+          print('snapshots: ${snapshot.data}');
 
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(

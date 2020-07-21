@@ -31,6 +31,7 @@ class Receipt extends ChangeNotifier {
   String receiptId;
   ReceiptCategory category;
   String totalAmount;
+  String sellerName;
   Customer customer;
   List<Product> products;
   String primaryColorHexCode;
@@ -70,6 +71,7 @@ class Receipt extends ChangeNotifier {
     this.products,
     this.total,
     this.currency,
+    this.sellerName,
   });
   static String _urlEndpoint = 'http://degeitreceipt.pythonanywhere.com/v1';
 
@@ -96,12 +98,13 @@ class Receipt extends ChangeNotifier {
       products: json["products"].isEmpty
           ? null
           : (json['products'] as List).map((e) => Product.fromJson(e)).toList(),
+      sellerName: json['sellerName'] == null ? null : json['sellerName'],
     );
   }
 
   @override
   String toString() {
-    return '$receiptId:  $receiptNo : $issuedDate : $customerName : $description : $totalAmount : ($category) : $customer : $products';
+    return '$receiptId:  $receiptNo : $issuedDate : $customerName : $description : $totalAmount : ($category) : $customer : $products $sellerName';
   }
 
   bool shouldGenReceiptNo() {
@@ -188,6 +191,8 @@ class Receipt extends ChangeNotifier {
 
   void setProducts(List<Product> products) => this.products = products;
 
+  void setSellerName(String sellerName) => this.sellerName = sellerName;
+
   void setNumber(String rNo) {
     /*  this.customer != null
         ? print("theirs a customer")
@@ -243,6 +248,7 @@ class Receipt extends ChangeNotifier {
           "paid_stamp": paidStamp,
           "issued": issuedDate == null ? false : true,
           "deleted": false,
+          "sellerName": sellerName,
           "partPayment": partPayment,
           "partPaymentDateTime": convertToDateTime(),
           "currency": currencyToJson(currency) ?? '₦'
