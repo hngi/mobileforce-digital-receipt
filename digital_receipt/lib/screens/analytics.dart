@@ -4,13 +4,14 @@ import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:intl/intl.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:random_color/random_color.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
-import 'package:connectivity/connectivity.dart';
+
 import '../constant.dart';
 import '../widgets/analytics_card.dart';
 
@@ -40,9 +41,8 @@ class _AnalyticsState extends State<Analytics> {
     // Receipts from Local Database
     List<Receipt> issuedReceiptsDB = [];
 
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       // gets receipts from API
       Map receiptsAPI = await _apiService.getIssuedReceipt2();
       // Convert API/database data to a receipt

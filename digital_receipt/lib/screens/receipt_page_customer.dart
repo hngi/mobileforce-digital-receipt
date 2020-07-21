@@ -75,11 +75,11 @@ class _ReceiptScreenFromCustomerState extends State<ReceiptScreenFromCustomer> {
   void initState() {
     super.initState();
     init();
-    receiptPdfFuture = generatePdf(
+    /*  receiptPdfFuture = generatePdf(
       pageFormat: PdfPageFormat.a4,
       receipt: Provider.of<Receipt>(context, listen: false),
       accountData: Provider.of<Business>(context, listen: false).accountData,
-    );
+    ); */
   }
 
   @override
@@ -101,62 +101,23 @@ class _ReceiptScreenFromCustomerState extends State<ReceiptScreenFromCustomer> {
           ),
         ),
       ),
-      body: FutureBuilder<Uint8List>(
-        future: receiptPdfFuture,
-        builder: (context, snapshot) {
-          Widget body;
-          if (snapshot.hasData) {
-            savePdf(snapshot.data);
-            body = SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: <Widget>[
-                    ReceiptScreenLayout(context, _loading, logo, widget.from,
-                        () {
-                      setState(() {
-                        _loading = true;
-                      });
-                    }, () {
-                      setState(() {
-                        _loading = false;
-                      });
-                    })
-                  ],
-                ),
-              ),
-            );
-          } else if (snapshot.hasError) {
-            body = Column(
-              children: <Widget>[
-                Icon(
-                  Icons.error_outline,
-                  color: Colors.red,
-                  size: 60,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: Text('Error: ${snapshot.error}'),
-                )
-              ],
-            );
-          } else {
-            body = Column(
-              children: <Widget>[
-                SizedBox(
-                  child: CircularProgressIndicator(),
-                  width: 60,
-                  height: 60,
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 16),
-                  child: Text('Awaiting result...'),
-                )
-              ],
-            );
-          }
-          return body;
-        },
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: <Widget>[
+              ReceiptScreenLayout(context, _loading, logo, widget.from, () {
+                setState(() {
+                  _loading = true;
+                });
+              }, () {
+                setState(() {
+                  _loading = false;
+                });
+              })
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -549,10 +510,7 @@ Widget ReceiptScreenLayout(
                       child: Column(
                         children: <Widget>[
                           Text(
-                            (businessInfo.name
-                                  .split(" ")[0]
-                                  .toLowerCase()
-                                    .toString()
+                            ( Provider.of<Receipt>(context, listen: false).sellerName
                                     .split(" ")[0])
                                 .toLowerCase(),
                             style: TextStyle(
@@ -680,9 +638,9 @@ Widget ReceiptScreenLayout(
               await sendPDF(context);
               loadingStop();
             }
-          }else if(from == 'receipt_history'){
-             await sendPDF(context);
-              loadingStop();
+          } else if (from == 'receipt_history') {
+            await sendPDF(context);
+            loadingStop();
           }
         },
       ),

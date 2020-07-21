@@ -59,8 +59,10 @@ void main() async {
     Hive.init(appDocumentDir.path);
 
     // runApp(MyApp(),);
-    runApp(DevicePreview(builder: (BuildContext context) => MyApp(), enabled: kReleaseMode,));
-
+    runApp(/* DevicePreview(
+      builder: (BuildContext context) => */ MyApp(),
+      /* enabled: kReleaseMode,
+    ) */);
   } catch (e) {
     print("error occurd in main: $e");
   }
@@ -101,9 +103,20 @@ class MyApp extends StatelessWidget {
             primaryColor: Color(0xFF0B57A7),
             scaffoldBackgroundColor: Color(0xFFF2F8FF),
             accentColor: Color(0xFF25CCB3),
-            
+            appBarTheme: AppBarTheme(
+                textTheme: TextTheme(
+              headline6: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Montserrat',
+                letterSpacing: 0.03,
+              ),
+            )),
             textTheme: TextTheme(
               bodyText1: TextStyle(
+                fontFamily: 'Montserrat',
+              ),
+              headline6: TextStyle(
                 fontFamily: 'Montserrat',
               ),
               bodyText2: TextStyle(
@@ -180,7 +193,6 @@ class _ScreenControllerState extends State<ScreenController> {
     }
 
     _fcm.configure(
-      
       onMessage: (Map<String, dynamic> message) async {
         print(message["data"]["id"]);
         print(message["notification"]["id"]);
@@ -259,7 +271,7 @@ class _ScreenControllerState extends State<ScreenController> {
         ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // await _pushNotificationService.initialise();
-           print('snapshots: ${snapshot.data}');
+          print('snapshots: ${snapshot.data}');
 
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(

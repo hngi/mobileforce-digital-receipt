@@ -3,7 +3,6 @@ import 'dart:math';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_controller.dart';
-import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/screens/receipt_screen.dart';
@@ -11,7 +10,6 @@ import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/date_time_input_textField.dart';
-import 'package:digital_receipt/widgets/loading.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -60,6 +58,12 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
   String fontVal = "100";
   DateTime date = DateTime.now();
   final picker = ImagePicker();
+
+  List<String> receiptTemplate = [
+    'assets/images/Group 168 (1).png',
+    'assets/images/Group 169 (1).png',
+    'assets/images/Group 172 (1).png',
+  ];
 
   @override
   void initState() {
@@ -512,7 +516,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               height: 200,
               width: double.infinity,
               child: ListView.builder(
-                itemCount: 5,
+                itemCount: receiptTemplate.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (BuildContext context, int index) {
                   return Padding(
@@ -523,7 +527,66 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                             context: context,
                             builder: (BuildContext context) {
                               return Scaffold(
-
+                                backgroundColor: Colors.white,
+                                appBar: AppBar(
+                                  title: Text(
+                                    'Preview',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'Montserrat',
+                                      letterSpacing: 0.03,
+                                    ),
+                                  ),
+                                ),
+                                body: SizedBox.expand(
+                                  child: Stack(
+                                    children: <Widget>[
+                                      SingleChildScrollView(
+                                        child: SizedBox(
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: ListView.builder(
+                                            itemCount: receiptTemplate.length,
+                                            scrollDirection: Axis.horizontal,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Image.asset(
+                                                  
+                                                  receiptTemplate[index],
+                                                  fit: BoxFit.cover,
+                                                  height: double.infinity,
+                                                  width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: SubmitButton(
+                                              title: 'Select',
+                                              backgroundColor:
+                                                  Color(0xFF0B57A7),
+                                              textColor: Colors.white,
+                                              onPressed: () {},
+                                            )),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               );
                             });
                       },
@@ -538,9 +601,9 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
                                   image: DecorationImage(
-                                    image: AssetImage(''),
-                                  ),
-                                  color: Colors.amberAccent),
+                                      image: AssetImage(receiptTemplate[index]),
+                                      fit: BoxFit.cover),
+                                  color: Colors.white),
                             ),
                             Container(
                               height: 200,
