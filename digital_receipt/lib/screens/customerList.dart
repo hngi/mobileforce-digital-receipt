@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
@@ -211,8 +210,8 @@ class _CustomerListState extends State<CustomerList> {
                                       customerEmail:
                                           model.customerList[index].email,
                                       index: index,
-                                      phoneNumber: model
-                                          .customerList[index].phoneNumber,
+                                      phoneNumber:
+                                          model.customerList[index].phoneNumber,
                                       address:
                                           model.customerList[index].address,
 
@@ -537,5 +536,3 @@ class _CustomerListState extends State<CustomerList> {
 
   // }
 }
-
-
