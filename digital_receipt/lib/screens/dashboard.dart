@@ -195,14 +195,13 @@ class _DashBoardState extends State<DashBoard> {
           subtitle: '₦${Utils.formatNumber(amnt)}',
           color: _color.randomColor(colorBrightness: ColorBrightness.dark),
         ),
-        /* FlatButton(
+        FlatButton(
           onPressed: () async {
-            var h =
-                await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
-            print(h);
+            var t = DateTime.now().timeZoneName;
+            print(t);
           },
-          child: Text('${Provider.of<Connected>(context).stream}'),
-        ), */
+          child: Text('Test'),
+        ),
       ],
     );
   }
@@ -311,7 +310,7 @@ class _DashBoardState extends State<DashBoard> {
               height: 8.0,
             ),
             Text(
-              leading == 'Total Sales' ? '$subtitle\0' : '$subtitle',
+              '$subtitle',
               textScaleFactor: leading == 'Total Sales' ? 0.7 : null,
               style: TextStyle(
                 fontWeight: FontWeight.bold,

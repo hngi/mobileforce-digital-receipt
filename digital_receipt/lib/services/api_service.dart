@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:connectivity/connectivity.dart';
 
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/inventory.dart';
@@ -49,9 +48,8 @@ class ApiService {
   );
 
   Future<String> loginUser(String email_address, String password) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -123,9 +121,8 @@ class ApiService {
   }
 
   Future<List<Receipt>> getDraftReciepts() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -275,9 +272,8 @@ class ApiService {
   }
 
   Future<String> signinUser(String email, String password, String name) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = '$_urlEndpoint/user/register';
       var response = await http.post(
         uri,
@@ -298,9 +294,8 @@ class ApiService {
   }
 
   Future<bool> logOutUser(String token) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = '$_urlEndpoint/user/logout';
 
       //print(token);
@@ -330,9 +325,8 @@ class ApiService {
     String address,
     String slogan,
   }) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = '$_urlEndpoint/business/info/update';
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
@@ -425,9 +419,8 @@ class ApiService {
     String slogan,
     String logo,
   }) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = Uri.parse('$_urlEndpoint/business/info/create');
       var request = http.MultipartRequest('POST', uri);
       request.fields['name'] = name;
@@ -463,9 +456,8 @@ class ApiService {
   }
 
   Future changeLogo(String logo) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = Uri.parse('$_urlEndpoint/business/info/update');
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
@@ -514,9 +506,8 @@ class ApiService {
 
   Future<String> changePassword(
       String currentPassword, String newPassword) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = '$_urlEndpoint/user/change_password';
       var storedEmail =
           await _sharedPreferenceService.getStringValuesSF('EMAIL');
@@ -681,14 +672,39 @@ class ApiService {
     }
   }
 
+  Future getUserInfo() async {
+    var url = "$_urlEndpoint/user/info";
+
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+
+    var connectivityResult = await Connected().checkInternet();
+
+    if (connectivityResult) {
+      var response = await http.get(
+        url,
+        headers: <String, String>{
+          'token': token,
+        },
+      );
+
+      dynamic res = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return res;
+      } else {
+        return null;
+      }
+    }
+  }
+
   Future otpVerification(
     String email,
     password,
     name,
   ) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = '$_urlEndpoint/user/otp_register';
       var response = await http.post(
         uri,
@@ -702,17 +718,15 @@ class ApiService {
   }
 
   Future<List<Receipt>> getIssuedReceipts() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = "$_urlEndpoint/business/receipt/issued";
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
-      var connectivityResult = await (Connectivity().checkConnectivity());
       List<Receipt> _issuedReceipts = [];
 
-      if (connectivityResult == ConnectivityResult.mobile ||
-          connectivityResult == ConnectivityResult.wifi) {
+      var connectivityResult = await Connected().checkInternet();
+      if (connectivityResult) {
         var response = await http.get(
           Uri.encodeFull(uri),
           headers: <String, String>{
@@ -748,17 +762,15 @@ class ApiService {
   /// Returns a list of notifications
   /// if there are no notifications it returns an empty list
   Future<List<NotificationModel>> getAllNotifications() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = "$_urlEndpoint/user/notification/all";
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
       print(token);
-      var connectivityResult = await (Connectivity().checkConnectivity());
       List<NotificationModel> _allNotifications = [];
-      if (connectivityResult == ConnectivityResult.mobile ||
-          connectivityResult == ConnectivityResult.wifi) {
+      var connectivityResult = await Connected().checkInternet();
+      if (connectivityResult) {
         var response = await http.get(
           Uri.encodeFull(uri),
           headers: <String, String>{
@@ -769,9 +781,7 @@ class ApiService {
           var data = jsonDecode(response.body);
           data["data"].forEach((notification) {
             _allNotifications.add(NotificationModel.fromJson(notification));
-            // NotificationModel.fromJson(notification).toString();
           });
-          // print(data);
           return _allNotifications;
         } else {
           print("All notifications status code ${response.statusCode}");
@@ -791,11 +801,10 @@ class ApiService {
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
-      var connectivityResult = await (Connectivity().checkConnectivity());
       List<Customer> _allCustomers = [];
 
-      if (connectivityResult == ConnectivityResult.mobile ||
-          connectivityResult == ConnectivityResult.wifi) {
+      var connectivityResult = await Connected().checkInternet();
+      if (connectivityResult) {
         var response = await http.get(
           Uri.encodeFull(uri),
           headers: <String, String>{
@@ -836,11 +845,10 @@ class ApiService {
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
-      var connectivityResult = await (Connectivity().checkConnectivity());
       List<Inventory> _inventories = [];
 
-      if (connectivityResult == ConnectivityResult.mobile ||
-          connectivityResult == ConnectivityResult.wifi) {
+      var connectivityResult = await Connected().checkInternet();
+      if (connectivityResult) {
         var response = await http.get(
           Uri.encodeFull(uri),
           headers: <String, String>{
@@ -880,9 +888,8 @@ class ApiService {
           var res = jsonDecode(response.body)['data'];
           return res;
         }
-      } 
-
-    } else {    
+      }
+    } else {
       return hiveDb.getInventory() ?? Future.error('No network Connection');
     }
   }
@@ -896,10 +903,10 @@ class ApiService {
       final http.Response res = await http.get(url, headers: <String, String>{
         "token": token,
       }).catchError((err) => print(err));
-
+      print(res.statusCode);
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
-        //print(data);
+        print(data);
         await hiveDb.addDashboardInfo(data);
         var val = await hiveDb.getDashboardInfo();
         return val;
@@ -913,9 +920,8 @@ class ApiService {
   }
 
   Future forgotPasswordOtpVerification(String email) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = '$_urlEndpoint/user/send_email';
       var response = await http.post(
         uri,
@@ -938,9 +944,8 @@ class ApiService {
     String email,
     String newPassword,
   ) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = '$_urlEndpoint/user/forgot_password';
 
       var response = await http.put(
@@ -958,9 +963,8 @@ class ApiService {
   }
 
   Future googleSignup(String token, String email_address) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       String fcmToken = await _firebaseMessaging.getToken();
       String deviceType;
       //Check deviceType
@@ -1009,9 +1013,8 @@ class ApiService {
     double discount,
     double tax,
   ) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = '$_urlEndpoint/business/inventory/add';
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
@@ -1104,10 +1107,32 @@ class ApiService {
   Future<String> deleteCustomer({
     String id,
   }) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
       var uri = '$_urlEndpoint/customer/$id';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      print(token);
+      var response = await http.delete(
+        uri,
+        headers: {"token": token},
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        return 'true';
+      }
+      return 'false';
+    } else {
+      return 'false';
+    }
+  }
+
+  Future<String> deleteDraft({
+    String id,
+  }) async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/receipt/$id';
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
       print(token);

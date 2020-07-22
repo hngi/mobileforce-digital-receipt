@@ -8,7 +8,6 @@ import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';

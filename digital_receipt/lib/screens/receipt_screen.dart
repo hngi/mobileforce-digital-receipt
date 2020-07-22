@@ -10,11 +10,13 @@ import 'package:digital_receipt/services/email_service.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:digital_receipt/widgets/receipt_item.dart';
 
 import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
@@ -481,10 +483,10 @@ Widget ReceiptScreenLayout(
                                     Provider.of<Receipt>(context, listen: false)
                                             .getCurrency()
                                             .currencySymbol +
-                                        Provider.of<Receipt>(context,
+                                        Utils.formatNumber(double.tryParse(Provider.of<Receipt>(context,
                                                 listen: false)
                                             .getTotal()
-                                            .toString(),
+                                            .toString())),
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,
@@ -504,7 +506,7 @@ Widget ReceiptScreenLayout(
                         child: Column(
                           children: <Widget>[
                             Text(
-                              businessInfo.name.split(" ")[0].toLowerCase(),
+                              Provider.of<Receipt>(context).sellerName.split(" ")[0].toLowerCase(),
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 27,
@@ -619,10 +621,12 @@ Widget ReceiptScreenLayout(
             loadingStop();
             return;
           }
+          
           var res = await Provider.of<Receipt>(context, listen: false)
               .updatedReceipt(
                   Provider.of<Receipt>(context, listen: false).receiptId);
           if (res == 200) {
+            //await compute(sendPDF, context);
             await sendPDF(context);
             loadingStop();
           }

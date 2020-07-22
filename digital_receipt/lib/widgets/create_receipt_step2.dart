@@ -3,7 +3,6 @@ import 'dart:math';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_controller.dart';
-import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/screens/receipt_screen.dart';
@@ -11,7 +10,6 @@ import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/date_time_input_textField.dart';
-import 'package:digital_receipt/widgets/loading.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -20,8 +18,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-
 import 'button_loading_indicator.dart';
+import 'package:digital_receipt/services/api_service.dart';
 
 class CreateReceiptStep2 extends StatefulWidget {
   CreateReceiptStep2({
@@ -36,6 +34,7 @@ class CreateReceiptStep2 extends StatefulWidget {
 }
 
 class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
+  ApiService _apiService = ApiService();
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
     for (var i = 0; i < list.length; i++) {
@@ -48,6 +47,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
   TextEditingController _receiptNumberController = TextEditingController();
   TextEditingController _hexCodeController = TextEditingController()
     ..text = "F14C4C";
+  TextEditingController _sellerNameController = TextEditingController();
 
   final FocusNode _receiptNumberFocus = FocusNode();
   final FocusNode _dateTextFocus = FocusNode();
@@ -58,9 +58,21 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
   DateTime date = DateTime.now();
   final picker = ImagePicker();
 
+  List<String> receiptTemplate = [
+    'assets/images/Group 168 (1).png',
+    'assets/images/Group 169 (1).png',
+    'assets/images/Group 172 (1).png',
+  ];
+
   @override
   void initState() {
     super.initState();
+    setSellerName();
+  }
+
+  void setSellerName() async {
+    var user = await _apiService.getUserInfo();
+    _sellerNameController.text = user["name"] ?? '';
   }
 
   @override
@@ -253,7 +265,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             SizedBox(
               height: 20,
             ),
-            /* Text(
+            Text(
               'Seller\'s name',
               style: TextStyle(
                 fontFamily: 'Montserrat',
@@ -265,6 +277,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             ),
             SizedBox(height: 5),
             TextFormField(
+              controller: _sellerNameController,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(17),
                 border: OutlineInputBorder(
@@ -277,7 +290,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                 focusedBorder: OutlineInputBorder(),
                 errorStyle: TextStyle(height: 0.5),
               ),
-            ), */
+            ),
 /*  SizedBox(
                     height: 30,
                   ),
@@ -492,7 +505,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               height: 200,
               width: double.infinity,
               child: ListView.builder(
-                itemCount: 5,
+                itemCount: receiptTemplate.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (BuildContext context, int index) {
                   return Padding(
@@ -503,7 +516,66 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                             context: context,
                             builder: (BuildContext context) {
                               return Scaffold(
-
+                                backgroundColor: Colors.white,
+                                appBar: AppBar(
+                                  title: Text(
+                                    'Preview',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'Montserrat',
+                                      letterSpacing: 0.03,
+                                    ),
+                                  ),
+                                ),
+                                body: SizedBox.expand(
+                                  child: Stack(
+                                    children: <Widget>[
+                                      SingleChildScrollView(
+                                        child: SizedBox(
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: ListView.builder(
+                                            itemCount: receiptTemplate.length,
+                                            scrollDirection: Axis.horizontal,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Image.asset(
+                                                  
+                                                  receiptTemplate[index],
+                                                  fit: BoxFit.cover,
+                                                  height: double.infinity,
+                                                  width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: SubmitButton(
+                                              title: 'Select',
+                                              backgroundColor:
+                                                  Color(0xFF0B57A7),
+                                              textColor: Colors.white,
+                                              onPressed: () {},
+                                            )),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               );
                             });
                       },
@@ -518,9 +590,9 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
                                   image: DecorationImage(
-                                    image: AssetImage(''),
-                                  ),
-                                  color: Colors.amberAccent),
+                                      image: AssetImage(receiptTemplate[index]),
+                                      fit: BoxFit.cover),
+                                  color: Colors.white),
                             ),
                             Container(
                               height: 200,
@@ -631,11 +703,12 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   Provider.of<Receipt>(context, listen: false)
                       .setColor(hexCode: _hexCodeController.text);
                   Provider.of<Receipt>(context, listen: false).setFont(24);
+                  Provider.of<Receipt>(context, listen: false)
+                      .setSellerName(_sellerNameController.text);
 
                   Response result =
                       await Provider.of<Receipt>(context, listen: false)
                           .saveReceipt();
-
                   if (result.statusCode == 200) {
                     setState(() {
                       isLoading = false;

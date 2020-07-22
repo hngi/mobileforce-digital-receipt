@@ -3,7 +3,7 @@ import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:number_display/number_display.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ReceiptUtil {
@@ -71,7 +71,7 @@ class ReceiptUtil {
 }
 
 setReceipt({snapshot, @required context}) {
-  print('color::: ${snapshot['color']}');
+  print('color::: ${snapshot['sellerName']}');
   if (snapshot['color'] != null) {
     Provider.of<Receipt>(context, listen: false).primaryColorHexCode =
         snapshot['color'];
@@ -102,6 +102,7 @@ setReceipt({snapshot, @required context}) {
     ..total = snapshot['total']
     ..receiptNo = snapshot['receipt_number']
     ..receiptId = snapshot['id']
+    ..sellerName = snapshot['sellerName'] ?? ''
     ..products = products
     ..currency = Receipt().currencyFromJson(snapshot['currency'])
     ..customer = Customer(
@@ -116,7 +117,12 @@ setReceipt({snapshot, @required context}) {
 
 class Utils {
   static String formatNumber(double amount) {
-    final display = createDisplay(length: 8);
-    return display(amount);
+    NumberFormat numberFormat;
+    if (amount >= 1000000)
+      numberFormat = new NumberFormat.compact();
+    else
+      numberFormat = new NumberFormat();
+
+    return numberFormat.format(amount);
   }
 }

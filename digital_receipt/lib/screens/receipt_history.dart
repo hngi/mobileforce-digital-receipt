@@ -361,7 +361,9 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                     padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                     child: Text(
                       //receipt.products != null ?
-                      receipt?.products[0].productDesc ?? '',
+                      receipt?.products != null
+                          ? receipt?.products[0].productDesc ?? ''
+                          : '',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 14,
@@ -391,7 +393,8 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                               ),
                             ),
                             TextSpan(
-                                text: ' ${receipt.totalAmount} ',
+                                text:
+                                    ' ${Utils.formatNumber(double.tryParse(receipt.totalAmount))} ',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,

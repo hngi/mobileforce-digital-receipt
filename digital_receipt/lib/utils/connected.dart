@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'dart:convert';
