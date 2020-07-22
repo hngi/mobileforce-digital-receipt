@@ -8,9 +8,12 @@ import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/services/notification.dart';
+import 'package:digital_receipt/utils/theme_manager.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'dart:io';
 import 'screens/second_screen.dart';
 import 'utils/connected.dart';
@@ -88,8 +91,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
-   void _requestIOSPermissions() {
+  void _requestIOSPermissions() {
     flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin>()
@@ -166,38 +168,39 @@ class _MyAppState extends State<MyApp> {
             create: (context) => Connected(),
           ),
         ],
-        child: MaterialApp(
-          title: 'Degeit',
-          theme: ThemeData(
-            primaryColor: Color(0xFF0B57A7),
-            scaffoldBackgroundColor: Color(0xFFF2F8FF),
-            accentColor: Color(0xFF25CCB3),
-            appBarTheme: AppBarTheme(
-                textTheme: TextTheme(
-              headline6: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Montserrat',
-                letterSpacing: 0.03,
-              ),
-            )),
-            textTheme: TextTheme(
-              bodyText1: TextStyle(
-                fontFamily: 'Montserrat',
-              ),
-              headline6: TextStyle(
-                fontFamily: 'Montserrat',
-              ),
-              bodyText2: TextStyle(
-                fontFamily: 'Montserrat',
-              ),
-              button: TextStyle(
-                fontFamily: 'Montserrat',
+        child: ThemeProvider(
+          child: ThemeConsumer(
+            child: Builder(
+              builder: (themeContext) => MaterialApp(
+                title: 'Degeit',
+                theme: ThemeProvider.themeOf(themeContext).data,
+                debugShowCheckedModeBanner: false,
+                home: ScreenController(),
               ),
             ),
           ),
-          debugShowCheckedModeBanner: false,
-          home: ScreenController(),
+          themes: [ThemeManager.light(), ThemeManager.dark()],
+          saveThemesOnChange: true,
+          // Please do not change anything on this Callback
+          onInitCallback: (controller, previouslySavedThemeFuture) async {
+            String savedTheme = await previouslySavedThemeFuture;
+
+            if (savedTheme != null) {
+              // If previous theme saved, use saved theme
+              controller.setTheme(savedTheme);
+            } else {
+              // If previous theme not found, use platform default
+              Brightness platformBrightness =
+                  SchedulerBinding.instance.window.platformBrightness;
+              if (platformBrightness == Brightness.dark) {
+                controller.setTheme(ThemeManager.darkTheme);
+              } else {
+                controller.setTheme(ThemeManager.lightTheme);
+              }
+              // Forget the saved theme(which were saved just now by previous lines)
+              controller.forgetSavedTheme();
+            }
+          },
         ),
       ),
     );

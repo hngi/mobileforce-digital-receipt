@@ -15,6 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../constant.dart';
 import 'currency_dropdown.dart';
 
 class CreateReceiptStep0 extends StatefulWidget {
@@ -278,7 +279,8 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                   print(value);
                   setState(() {
                     selectedCategory = value;
-                    Provider.of<Receipt>(context, listen: false).setCategory(selectedCategory);
+                    Provider.of<Receipt>(context, listen: false)
+                        .setCategory(selectedCategory);
                   });
                 },
                 value: selectedCategory,
@@ -453,6 +455,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                 suffixIcon: IconButton(
                   icon: isPickingContact
                       ? ButtonLoadingIndicator(
+                          color: kPrimaryColor,
                           height: 20,
                           width: 20,
                         )
