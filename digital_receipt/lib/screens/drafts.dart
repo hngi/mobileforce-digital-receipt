@@ -102,6 +102,7 @@ class _DraftsState extends State<Drafts> {
                         DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
                     return GestureDetector(
                       onTap: () {
+                        //print(draftData[index]);
                         setReceipt(
                             snapshot: draftData[index], context: context);
                         // print(Provider.of<Receipt>(context, listen: false));
@@ -116,7 +117,9 @@ class _DraftsState extends State<Drafts> {
                           total: receipt.totalAmount,
                           date: "${date.day}/${date.month}/${date.year}",
                           receiptTitle: receipt.customerName,
-                          subtitle: receipt.products[0].productDesc,
+                          subtitle: receipt.products != null
+                              ? receipt.products[0].productDesc
+                              : '',
                           currency: receipt.currency),
                     );
                   },
