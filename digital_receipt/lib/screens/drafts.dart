@@ -100,6 +100,7 @@ class _DraftsState extends State<Drafts> {
                     Receipt receipt = Receipt.fromJson(draftData[index]);
                     DateTime date =
                         DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
+
                     return Dismissible(
                       onDismissed: (direction) async {
                         String response = await _apiService.deleteDraft(
@@ -137,6 +138,7 @@ class _DraftsState extends State<Drafts> {
                             subtitle: receipt.products[0].productDesc,
                             currency: receipt.currency),
                       ),
+
                     );
                   },
                 );

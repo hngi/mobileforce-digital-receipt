@@ -903,10 +903,10 @@ class ApiService {
       final http.Response res = await http.get(url, headers: <String, String>{
         "token": token,
       }).catchError((err) => print(err));
-
+      print(res.statusCode);
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
-        //print(data);
+        print(data);
         await hiveDb.addDashboardInfo(data);
         var val = await hiveDb.getDashboardInfo();
         return val;
