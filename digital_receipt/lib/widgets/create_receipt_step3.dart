@@ -77,7 +77,7 @@ class _SellerSignatureScreenState extends State<SellerSignatureScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Row(
-                    children: map<Widget>([1, 1, 2], (index, url) {
+                    children: map<Widget>([0, 1, 2, 3], (index, url) {
                       print(index);
                       return GestureDetector(
                         onTap: () {
@@ -100,7 +100,7 @@ class _SellerSignatureScreenState extends State<SellerSignatureScreen> {
                                         color: Color.fromRGBO(0, 0, 0, 0.16))
                                   ]),
                             ),
-                            index != 2 ? SizedBox(width: 10) : SizedBox.shrink()
+                            index != 3 ? SizedBox(width: 10) : SizedBox.shrink()
                           ],
                         ),
                       );
@@ -195,15 +195,16 @@ class _SellerSignatureScreenState extends State<SellerSignatureScreen> {
     showImage(context);
     ByteData pngBytes =
         await signatureImage.toByteData(format: ui.ImageByteFormat.png);
-    //_preferenceService
     // function to be performed on gotten image to be placed below
+    String encode = base64Encode(pngBytes.buffer.asUint8List());
+    _preferenceService.addStringToSF("ISSUER_SIGNATURE", encode);
   }
 
   Future<Null> showImage(BuildContext context) async {
     ByteData pngBytes =
         await signatureImage.toByteData(format: ui.ImageByteFormat.png);
     print(pngBytes);
-    String encode  = base64Encode(pngBytes.buffer.asUint8List());
+    String encode = base64Encode(pngBytes.buffer.asUint8List());
     return showDialog<Null>(
         context: context,
         builder: (BuildContext context) {
@@ -218,7 +219,25 @@ class _SellerSignatureScreenState extends State<SellerSignatureScreen> {
                 letterSpacing: 0.03,
               ),
             ),
-            content: Image.memory(base64Decode(encode)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Image.memory(base64Decode(encode)),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      widget.carouselController.animateToPage(3);
+                    },
+                    child: Text(
+                      'DONE',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           );
         });
   }
@@ -295,8 +314,10 @@ class SignaturePainter extends CustomPainter {
         // Offset ofsett = Offset();
         // print(size.height);
 
-        Offset dx =  points[i].translate(2, dimensions == null ? - 280 :  -dimensions.height/2.3);
-        Offset dy = points[i + 1].translate(2, dimensions == null ? - 280 :  -dimensions.height/2.3);
+        Offset dx = points[i]
+            .translate(2, dimensions == null ? -280 : -dimensions.height / 2.3);
+        Offset dy = points[i + 1]
+            .translate(2, dimensions == null ? -280 : -dimensions.height / 2.3);
 
         canvas.drawLine(dx, dy, paint);
       }

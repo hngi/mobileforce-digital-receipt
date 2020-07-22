@@ -136,7 +136,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Row(
-                    children: map<Widget>([1, 1, 2], (index, url) {
+                    children: map<Widget>([0, 1, 2, 3], (index, url) {
                       print(index);
                       return GestureDetector(
                         onTap: () {
@@ -159,7 +159,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                                         color: Color.fromRGBO(0, 0, 0, 0.16))
                                   ]),
                             ),
-                            index != 2 ? SizedBox(width: 10) : SizedBox.shrink()
+                            index != 3 ? SizedBox(width: 10) : SizedBox.shrink()
                           ],
                         ),
                       );
