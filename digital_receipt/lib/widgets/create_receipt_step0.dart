@@ -251,7 +251,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                   print(value);
                   setState(() {
                     selectedCategory = value;
-                    Provider.of<Receipt>(context).setCategory(selectedCategory);
+                    Provider.of<Receipt>(context, listen: false).setCategory(selectedCategory);
                   });
                 },
                 value: selectedCategory,
