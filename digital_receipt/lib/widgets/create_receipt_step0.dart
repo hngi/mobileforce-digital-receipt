@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_controller.dart';
+import 'package:digital_receipt/widgets/button_loading_indicator.dart';
+import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
@@ -29,6 +31,8 @@ class CreateReceiptStep0 extends StatefulWidget {
 }
 
 class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
+  var getContactFromPhone;
+
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
     for (var i = 0; i < list.length; i++) {
@@ -94,6 +98,29 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
 
   @override
   Widget build(BuildContext context) {
+    bool isPickingContact = false;
+    Function getContactFromPhone = () async {
+      setState(() {
+        isPickingContact = true;
+      });
+      if (await FlutterContactPicker.hasPermission()) {
+        final PhoneContact contact =
+            await FlutterContactPicker.pickPhoneContact();
+        setState(() {
+          _nameController.text = contact.fullName;
+          _pNumberController.text = contact.phoneNumber.number;
+        });
+      } else {
+        final granted = await FlutterContactPicker.requestPermission();
+        showDialog(
+            context: context,
+            child: AlertDialog(
+                title: const Text('Granted: '), content: Text('$granted')));
+      }
+      setState(() {
+        isPickingContact = false;
+      });
+    };
     // SendReceiptService srs = Provider.of<SendReceiptService>(context);
     return SingleChildScrollView(
       child: Padding(
@@ -423,6 +450,18 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               AppTextFieldForm(
                 focusNode: _nameFocus,
                 textInputAction: TextInputAction.next,
+                suffixIcon: IconButton(
+                  icon: isPickingContact
+                      ? ButtonLoadingIndicator(
+                          height: 20,
+                          width: 20,
+                        )
+                      : Icon(
+                          Icons.contacts,
+                          color: Colors.black26,
+                        ),
+                  onPressed: getContactFromPhone,
+                ),
                 onFieldSubmitted: (value) =>
                     _changeFocus(from: _nameFocus, to: _emailFocus),
                 controller: _nameController,

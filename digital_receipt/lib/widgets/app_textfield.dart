@@ -15,7 +15,8 @@ class AppTextFieldForm extends StatelessWidget {
       this.onSaved,
       this.focusNode,
       this.textInputAction,
-      this.onFieldSubmitted});
+      this.onFieldSubmitted,
+      this.suffixIcon});
 
   final String hintText;
   final TextInputType keyboardType;
@@ -30,6 +31,7 @@ class AppTextFieldForm extends StatelessWidget {
   final FocusNode focusNode;
   final TextInputAction textInputAction;
   final Function onFieldSubmitted;
+  final Widget suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +61,7 @@ class AppTextFieldForm extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(),
         hintText: hintText,
+        suffixIcon: suffixIcon,
         hintStyle: TextStyle(
           color: hintColor == null ? Color(0xFF979797) : hintColor,
           fontSize: 14,

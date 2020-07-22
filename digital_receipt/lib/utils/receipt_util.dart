@@ -71,7 +71,7 @@ class ReceiptUtil {
 }
 
 setReceipt({snapshot, @required context}) {
-  print('color::: ${snapshot['color']}');
+  print('color::: ${snapshot['sellerName']}');
   if (snapshot['color'] != null) {
     Provider.of<Receipt>(context, listen: false).primaryColorHexCode =
         snapshot['color'];
@@ -102,6 +102,7 @@ setReceipt({snapshot, @required context}) {
     ..total = snapshot['total']
     ..receiptNo = snapshot['receipt_number']
     ..receiptId = snapshot['id']
+    ..sellerName = snapshot['sellerName'] ?? ''
     ..products = products
     ..currency = Receipt().currencyFromJson(snapshot['currency'])
     ..customer = Customer(

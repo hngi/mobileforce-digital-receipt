@@ -1,4 +1,4 @@
-import 'package:connectivity/connectivity.dart';
+
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/screens/forgot_password.dart';
 import 'package:digital_receipt/screens/home_page.dart';
