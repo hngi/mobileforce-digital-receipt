@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:convert';
 
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
@@ -185,15 +186,15 @@ class _SellerSignatureScreenState extends State<SellerSignatureScreen> {
 
   saveImage(BuildContext context) async {
     ui.Image renderedImage = await signatureCanvasKey.currentState.rendered;
+    print(renderedImage.toByteData().toString());
 
     setState(() {
       signatureImage = renderedImage;
     });
 
     showImage(context);
-    var pngBytes =
+    ByteData pngBytes =
         await signatureImage.toByteData(format: ui.ImageByteFormat.png);
-
     //_preferenceService
     // function to be performed on gotten image to be placed below
   }
@@ -202,6 +203,7 @@ class _SellerSignatureScreenState extends State<SellerSignatureScreen> {
     ByteData pngBytes =
         await signatureImage.toByteData(format: ui.ImageByteFormat.png);
     print(pngBytes);
+    String encode  = base64Encode(pngBytes.buffer.asUint8List());
     return showDialog<Null>(
         context: context,
         builder: (BuildContext context) {
@@ -216,7 +218,7 @@ class _SellerSignatureScreenState extends State<SellerSignatureScreen> {
                 letterSpacing: 0.03,
               ),
             ),
-            content: Image.memory(Uint8List.view(pngBytes.buffer)),
+            content: Image.memory(base64Decode(encode)),
           );
         });
   }
@@ -244,6 +246,7 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
 
   @override
   Widget build(BuildContext context) {
+    Size appSize = MediaQuery.of(context).size;
     return GestureDetector(
       onPanUpdate: (DragUpdateDetails details) {
         setState(() {
@@ -260,10 +263,10 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
       },
       child: Container(
         color: Colors.blueGrey[100],
-        height: 150,
+        height: 350,
         width: MediaQuery.of(context).size.width,
         child: CustomPaint(
-          painter: SignaturePainter(points: _points),
+          painter: SignaturePainter(points: _points, dimensions: appSize),
         ),
       ),
     );
@@ -278,8 +281,8 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
 
 class SignaturePainter extends CustomPainter {
   List<Offset> points = <Offset>[];
-
-  SignaturePainter({this.points});
+  Size dimensions;
+  SignaturePainter({this.points, this.dimensions});
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
@@ -289,7 +292,13 @@ class SignaturePainter extends CustomPainter {
 
     for (int i = 0; i < points.length - 1; i++) {
       if (points[i] != null && points[i + 1] != null) {
-        canvas.drawLine(points[i], points[i + 1], paint);
+        // Offset ofsett = Offset();
+        // print(size.height);
+
+        Offset dx =  points[i].translate(2, dimensions == null ? - 280 :  -dimensions.height/2.3);
+        Offset dy = points[i + 1].translate(2, dimensions == null ? - 280 :  -dimensions.height/2.3);
+
+        canvas.drawLine(dx, dy, paint);
       }
     }
   }
