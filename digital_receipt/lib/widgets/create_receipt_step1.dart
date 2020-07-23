@@ -11,7 +11,7 @@ import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/product_detail.dart';
-import 'package:digital_receipt/widgets/submit_button.dart';
+import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -92,28 +92,14 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             SizedBox(
               height: 14,
             ),
-            Text(
-              'Product item information',
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.3,
-                fontSize: 22,
-                color: Colors.black,
-              ),
-            ),
+            Text('Product item information',
+                style: Theme.of(context).textTheme.headline5),
             SizedBox(
               height: 5,
             ),
             Text(
               'Provide the details of the product sold',
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.w300,
-                letterSpacing: 0.3,
-                fontSize: 12,
-                color: Colors.black,
-              ),
+              style: Theme.of(context).textTheme.subtitle2,
             ),
             SizedBox(
               height: 24,
@@ -177,20 +163,15 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   );
                 },
                 shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Color(0xFF25CCB3), width: 1.5),
+                    side: BorderSide(
+                        color: Theme.of(context).accentColor, width: 1.5),
                     borderRadius: BorderRadius.circular(5)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
                       'Add product item',
-                      style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.normal,
-                        letterSpacing: 0.3,
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
+                      style: Theme.of(context).textTheme.headline6,
                     ),
                     SizedBox(width: 10),
                     Icon(
@@ -208,87 +189,55 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                 ? Text(
                     'Product item/s',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.3,
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
+                    style: Theme.of(context).textTheme.headline6,
                   )
                 : SizedBox.shrink(),
             SizedBox(
               height: 10,
             ),
             ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: products.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final Product thisProduct = products[index];
-                  return Dismissible(
-                    onDismissed: (direction) {
-                      setState(() {
-                        products.removeAt(index);
-                      });
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                          content:
-                              Text("${thisProduct.productDesc} dismissed")));
-                    },
-                    key: Key(thisProduct.id),
-                    child: ProductItem(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          backgroundColor: Colors.transparent,
-                          isScrollControlled: true,
-                          builder: (BuildContext context) => ProductDetail(
-                            product: thisProduct,
-                            onSubmit: (product) {
-                              setState(() {
-                                products[index] = product;
-                                Navigator.pop(context);
-                              });
-                            },
-                          ),
-                        );
-                      },
-                      title: thisProduct.productDesc,
-                      amount: Provider.of<Receipt>(context, listen: false)
-                              .getCurrency()
-                              .currencySymbol +
-                          '${Utils.formatNumber(thisProduct.amount) ?? Utils.formatNumber(thisProduct.unitPrice * thisProduct.quantity)}',
-                      // '${}',
-                      index: index,
-                    ),
-                  );
-                }),
-            /* Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  'Part payment',
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.normal,
-                    letterSpacing: 0.3,
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-                Switch(
-                  value: Provider.of<Receipt>(context, listen: false)
-                      .enablePartPayment(),
-                  onChanged: (val) {
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: products.length,
+              itemBuilder: (BuildContext context, int index) {
+                final Product thisProduct = products[index];
+                return Dismissible(
+                  onDismissed: (direction) {
                     setState(() {
-                      _partPayment = val;
-                      Provider.of<Receipt>(context, listen: false)
-                          .togglPartPayment();
+                      products.removeAt(index);
                     });
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text("${thisProduct.productDesc} dismissed")));
                   },
-                ),
-              ],
-            ), */
+                  key: Key(thisProduct.id),
+                  child: ProductItem(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: Colors.transparent,
+                        isScrollControlled: true,
+                        builder: (BuildContext context) => ProductDetail(
+                          product: thisProduct,
+                          onSubmit: (product) {
+                            setState(() {
+                              products[index] = product;
+                              Navigator.pop(context);
+                            });
+                          },
+                        ),
+                      );
+                    },
+                    title: thisProduct.productDesc,
+                    amount: Provider.of<Receipt>(context, listen: false)
+                            .getCurrency()
+                            .currencySymbol +
+                        '${Utils.formatNumber(thisProduct.amount) ?? Utils.formatNumber(thisProduct.unitPrice * thisProduct.quantity)}',
+                    // '${}',
+                    index: index,
+                  ),
+                );
+              },
+            ),
             _partPayment
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -413,7 +362,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             SizedBox(
               height: 55,
             ),
-            SubmitButton(
+            AppSolidButton(
               onPressed: () {
                 if (products.length == 0) {
                   Fluttertoast.showToast(
@@ -441,8 +390,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                 }
               },
               title: 'Next',
-              backgroundColor: Color(0xFF0B57A7),
-              textColor: Colors.white,
+              backgroundColor: Theme.of(context).buttonColor,
             ),
           ],
         ),

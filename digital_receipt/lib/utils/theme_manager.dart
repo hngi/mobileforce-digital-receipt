@@ -65,6 +65,7 @@ class ThemeManager {
             bodyText2: TextStyle(
                 fontFamily: 'Montserrat',
                 fontWeight: FontWeight.normal,
+                fontSize: 14,
                 letterSpacing: 0.3),
             subtitle2: TextStyle(
               fontFamily: 'Montserrat',
@@ -117,8 +118,8 @@ class ThemeManager {
       data: ThemeData(
           cardColor: DarkMode.appBarColor,
           brightness: Brightness.dark,
-          scaffoldBackgroundColor: Colors.green,
-          //scaffoldBackgroundColor: DarkMode.backgroundColor,
+          //scaffoldBackgroundColor: Colors.lightBlueAccent,
+          scaffoldBackgroundColor: DarkMode.backgroundColor,
           primaryColor: DarkMode.primaryColor,
           primaryColorDark: DarkMode.appBarColor,
           accentColor: Color(0xFF25CCB3),
@@ -146,6 +147,7 @@ class ThemeManager {
             bodyText2: TextStyle(
                 fontFamily: 'Montserrat',
                 fontWeight: FontWeight.normal,
+                fontSize: 14,
                 letterSpacing: 0.3),
             subtitle2: TextStyle(
               fontFamily: 'Montserrat',

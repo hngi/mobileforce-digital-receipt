@@ -10,12 +10,13 @@ import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/customer_dropdown.dart';
-import 'package:digital_receipt/widgets/submit_button.dart';
+import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../constant.dart';
+import 'app_drop_selector.dart';
 import 'currency_dropdown.dart';
 
 class CreateReceiptStep0 extends StatefulWidget {
@@ -545,7 +546,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               SizedBox(
                 height: 25,
               ),
-              GestureDetector(
+              AppDropSelector(
                 onTap: () async {
                   showDialog(
                     context: context,
@@ -561,31 +562,14 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     },
                   );
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Color(0xFFC8C8C8),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0)),
-                  padding: EdgeInsets.symmetric(horizontal: 13, vertical: 14),
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                          selectedCurrency != null
-                              ? selectedCurrency.currencyName
-                              : 'Select Currency',
-                          style: Theme.of(context).textTheme.headline6),
-                      Spacer(),
-                      Icon(Icons.arrow_drop_down),
-                    ],
-                  ),
-                ),
+                text: selectedCurrency != null
+                    ? selectedCurrency.currencyName
+                    : 'Select Currency',
               ),
               SizedBox(
                 height: 45,
               ),
-              SubmitButton(
+              AppSolidButton(
                 title: 'Next',
                 backgroundColor: Theme.of(context).buttonColor,
                 onPressed: () {
