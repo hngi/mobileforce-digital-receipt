@@ -8,10 +8,11 @@ class OnboardingPage extends StatefulWidget {
   _OnboardingPageState createState() => _OnboardingPageState();
 }
 
+int currentIndex = 0;
+
 class _OnboardingPageState extends State<OnboardingPage> {
   List<SliderModel> slides = new List<SliderModel>();
 
-  int currentIndex = 0;
   PageController pageController = new PageController(initialPage: 0);
   @override
   void initState() {
@@ -163,14 +164,49 @@ class SliderTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    bool phone = screenHeight < 900;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      //crossAxisAlignment: CrossAxisAlignment.center,
+      // crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        SizedBox(
-          
-          child: image,
-           height: MediaQuery.of(context).size.height - 400,
+        // currentIndex != 2
+        //     ? Align(
+        //         alignment: Alignment.topRight,
+        //         child: InkWell(
+        //           onTap: () {
+        //             Navigator.pushReplacement(
+        //               context,
+        //               MaterialPageRoute(
+        //                 builder: (BuildContext context) => LogInScreen(),
+        //               ),
+        //             );
+        //           },
+        //           child: Text(
+        //             'Skip',
+        //             style: TextStyle(
+        //                 color: Colors.grey,
+        //                 fontSize: 10,
+        //                 fontWeight: FontWeight.w600,
+        //                 letterSpacing: 0.3),
+        //           ),
+        //         ),
+        //       )
+        //     : Container(),
+        Center(
+          child: currentIndex == 1
+              ? SizedBox(
+                  child: image,
+                  height: phone ? 250 : 350,
+                  width: phone ? 200 : 300,
+                  // height: MediaQuery.of(context).size.height - 400,
+                )
+              : SizedBox(
+                  child: image,
+                  height: phone ? 350 : 450,
+                  width: phone ? 350 : 400,
+                  // height: MediaQuery.of(context).size.height - 400,
+                ),
         ),
         SizedBox(
           height: 20,
@@ -178,7 +214,7 @@ class SliderTile extends StatelessWidget {
         Text(
           title,
           style: TextStyle(
-            fontSize: 22,
+            fontSize: phone ? 20 : 22,
             fontWeight: FontWeight.w600,
             color: Color.fromRGBO(0, 0, 0, 0.87),
           ),
@@ -191,7 +227,7 @@ class SliderTile extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.w300,
-            fontSize: 16,
+            fontSize: phone ? 14 : 16,
             letterSpacing: 0.3,
             color: Color.fromRGBO(0, 0, 0, 0.87),
           ),

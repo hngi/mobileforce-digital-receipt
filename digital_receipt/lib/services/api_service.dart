@@ -918,10 +918,10 @@ class ApiService {
       final http.Response res = await http.get(url, headers: <String, String>{
         "token": token,
       }).catchError((err) => print(err));
-
+      print(res.statusCode);
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
-        //print(data);
+        print(data);
         await hiveDb.addDashboardInfo(data);
         var val = await hiveDb.getDashboardInfo();
         return val;
@@ -1125,6 +1125,29 @@ class ApiService {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
       var uri = '$_urlEndpoint/customer/$id';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      print(token);
+      var response = await http.delete(
+        uri,
+        headers: {"token": token},
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        return 'true';
+      }
+      return 'false';
+    } else {
+      return 'false';
+    }
+  }
+
+  Future<String> deleteDraft({
+    String id,
+  }) async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/receipt/$id';
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
       print(token);

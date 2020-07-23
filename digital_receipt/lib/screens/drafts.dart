@@ -100,24 +100,45 @@ class _DraftsState extends State<Drafts> {
                     Receipt receipt = Receipt.fromJson(draftData[index]);
                     DateTime date =
                         DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
-                    return GestureDetector(
-                      onTap: () {
-                        setReceipt(
-                            snapshot: draftData[index], context: context);
-                        // print(Provider.of<Receipt>(context, listen: false));
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    ReceiptScreenFromCustomer()));
+
+                    return Dismissible(
+                      onDismissed: (direction) async {
+                        String response = await _apiService.deleteDraft(
+                            id: receipt.receiptId);
+                        if (response == 'true') {
+                          setState(() {
+                            draftData.removeAt(index);
+                          });
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                              content:
+                                  Text("Draft deleted successfully")));
+                        } else {
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                  "Something went wrong, please try again.")));
+                        }
                       },
-                      child: receiptCard(
-                          receiptNo: receipt.receiptNo,
-                          total: receipt.totalAmount,
-                          date: "${date.day}/${date.month}/${date.year}",
-                          receiptTitle: receipt.customerName,
-                          subtitle: receipt.products[0].productDesc,
-                          currency: receipt.currency),
+                      key: Key(receipt.receiptId),
+                      child: GestureDetector(
+                        onTap: () {
+                          setReceipt(
+                              snapshot: draftData[index], context: context);
+                          // print(Provider.of<Receipt>(context, listen: false));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      ReceiptScreenFromCustomer()));
+                        },
+                        child: receiptCard(
+                            receiptNo: receipt.receiptNo,
+                            total: receipt.totalAmount,
+                            date: "${date.day}/${date.month}/${date.year}",
+                            receiptTitle: receipt.customerName,
+                            subtitle: receipt.products[0].productDesc,
+                            currency: receipt.currency),
+                      ),
+
                     );
                   },
                 );

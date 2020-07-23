@@ -1,5 +1,5 @@
 import 'package:digital_receipt/constant.dart';
-import 'package:digital_receipt/models/notification.dart';
+// import 'package:digital_receipt/models/notification.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

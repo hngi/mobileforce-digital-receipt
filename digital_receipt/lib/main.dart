@@ -7,8 +7,12 @@ import 'package:digital_receipt/screens/onboarding.dart';
 import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
+import 'package:digital_receipt/services/notification.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'dart:io';
+import 'screens/second_screen.dart';
 import 'utils/connected.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -22,6 +26,8 @@ import 'services/sql_database_client.dart';
 import 'services/shared_preference_service.dart';
 import 'services/sql_database_repository.dart';
 import 'package:path_provider/path_provider.dart';
+
+AppNotification _appNotification = AppNotification();
 
 //BACKGROUND MESSAGE HANDLER
 Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
@@ -55,23 +61,88 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
 void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
+    _appNotification.config();
     final appDocumentDir = await getApplicationDocumentsDirectory();
     Hive.init(appDocumentDir.path);
 
     // runApp(MyApp(),);
-    runApp(/* DevicePreview(
-      builder: (BuildContext context) => */ MyApp(),
-      /* enabled: kReleaseMode,
-    ) */);
+    runApp(
+      // DevicePreview(
+      // builder: (BuildContext context) =>
+      // */
+      MyApp(),
+      // enabled: kReleaseMode,
+      /* 
+    ) */
+      // )
+    );
   } catch (e) {
     print("error occurd in main: $e");
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({
     Key key,
   }) : super(key: key);
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  void _requestIOSPermissions() {
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+  }
+
+  void _configureDidReceiveLocalNotificationSubject() {
+    didReceiveLocalNotificationSubject.stream
+        .listen((ReceivedNotification receivedNotification) async {
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: receivedNotification.title != null
+              ? Text(receivedNotification.title)
+              : null,
+          content: receivedNotification.body != null
+              ? Text(receivedNotification.body)
+              : null,
+          actions: [
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              child: Text('Ok'),
+              onPressed: () async {
+                Navigator.of(context, rootNavigator: true).pop();
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        SecondScreen(receivedNotification.payload),
+                  ),
+                );
+              },
+            )
+          ],
+        ),
+      );
+    });
+  }
+
+  void _configureSelectNotificationSubject() {
+    selectNotificationSubject.stream.listen((String payload) async {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SecondScreen(payload)),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -360,6 +360,10 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                         onSubmit: (customer) {
                           setState(() {
                             selectedCustomer = customer;
+                            _nameController.text = customer.name;
+                            _emailController.text = customer.email;
+                            _addressController.text = customer.address;
+                            _pNumberController.text = customer.phoneNumber;
                           });
                         },
                       );
