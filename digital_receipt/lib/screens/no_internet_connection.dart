@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'package:digital_receipt/constant.dart';
-import 'package:digital_receipt/screens/home_page.dart';
 import 'package:flutter/material.dart';
 
 //nav variable to accesss the current state of the navigator

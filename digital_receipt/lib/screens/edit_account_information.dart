@@ -2,6 +2,7 @@ import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -223,8 +224,9 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
                     phone: res['data']['phone_number'],
                     address: res['data']['address'],
                     slogan: res['data']['slogan'],
-                    logo:
-                        'http://degeitreceipt.pythonanywhere.com${res['data']['logo']}',
+                    logo: kReleaseMode
+                        ? 'http://degeitreceipt.pythonanywhere.com${res['data']['logo']}'
+                        : "http://degeittest.pythonanywhere.com${res['data']['logo']}",
                     email: email,
                   );
                   setState(() {
