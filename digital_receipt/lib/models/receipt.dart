@@ -86,9 +86,9 @@ class Receipt extends ChangeNotifier {
       issuedDate: json["date"] == null ? null : json["date"],
       customerName:
           json["customer"]["name"] == null ? null : json["customer"]["name"],
-      category: json["customer"]["platform"] == null
+      category: json["platform"] == null
           ? null
-          : convertToEnum(string: json["customer"]["platform"]),
+          : convertToEnum(string: json["platform"]),
       /*  currency: json['currency'] == null
           ? null
           : Receipt().currencyFromJson(json['currency']), */
@@ -236,7 +236,7 @@ class Receipt extends ChangeNotifier {
           "name": customer.name,
           "email": customer.email,
           "address": customer.address,
-          "platform": category.toString(),
+          
           "phoneNumber": customer.phoneNumber,
           "saved": saveCustomer,
         },
@@ -245,6 +245,7 @@ class Receipt extends ChangeNotifier {
           "font": fonts,
           "color": primaryColorHexCode,
           "preset": preset,
+          "platform": category.toString(),
           "paid_stamp": paidStamp,
           "issued": issuedDate == null ? false : true,
           "deleted": false,
