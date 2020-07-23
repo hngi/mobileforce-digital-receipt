@@ -74,7 +74,7 @@ class _PasswordFormState extends State<PasswordForm> {
                 ),
                 TextFormField(
                   onSaved: (newValue) => _currentPassword = newValue,
-                 /*  validator: Validators.compose([
+                  validator: Validators.compose([
                     Validators.required('Input Password'),
                     Validators.minLength(
                         8, 'Minimum of 8 characters required for Password'),
@@ -86,7 +86,7 @@ class _PasswordFormState extends State<PasswordForm> {
                         'Password should contain at least a Digit'),
                     Validators.patternRegExp(
                         kOneSpecialCharRegex, 'Special Character eg.(\$\%#&@)')
-                  ]), */
+                  ]),
                   style: TextStyle(
                     color: Color(0xFF2B2B2B),
                     fontSize: 16,
