@@ -490,7 +490,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             ),
 
             SizedBox(height: 37),
-           /*  Text(
+            /*  Text(
               'Select a receipt',
               style: TextStyle(
                 fontFamily: 'Montserrat',
@@ -709,6 +709,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   Response result =
                       await Provider.of<Receipt>(context, listen: false)
                           .saveReceipt();
+                  print(result);
                   if (result.statusCode == 200) {
                     setState(() {
                       isLoading = false;

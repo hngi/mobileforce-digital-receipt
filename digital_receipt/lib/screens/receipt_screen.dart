@@ -5,6 +5,7 @@ import 'package:digital_receipt/models/account.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/providers/business.dart';
 import 'package:digital_receipt/screens/generate_pdf.dart';
+import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/email_service.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
@@ -483,10 +484,11 @@ Widget ReceiptScreenLayout(
                                     Provider.of<Receipt>(context, listen: false)
                                             .getCurrency()
                                             .currencySymbol +
-                                        Utils.formatNumber(double.tryParse(Provider.of<Receipt>(context,
-                                                listen: false)
-                                            .getTotal()
-                                            .toString())),
+                                        Utils.formatNumber(double.tryParse(
+                                            Provider.of<Receipt>(context,
+                                                    listen: false)
+                                                .getTotal()
+                                                .toString())),
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,
@@ -506,7 +508,10 @@ Widget ReceiptScreenLayout(
                         child: Column(
                           children: <Widget>[
                             Text(
-                              Provider.of<Receipt>(context).sellerName.split(" ")[0].toLowerCase(),
+                              Provider.of<Receipt>(context)
+                                  .sellerName
+                                  .split(" ")[0]
+                                  .toLowerCase(),
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 27,
@@ -621,7 +626,7 @@ Widget ReceiptScreenLayout(
             loadingStop();
             return;
           }
-          
+
           var res = await Provider.of<Receipt>(context, listen: false)
               .updatedReceipt(
                   Provider.of<Receipt>(context, listen: false).receiptId);
@@ -629,6 +634,11 @@ Widget ReceiptScreenLayout(
             //await compute(sendPDF, context);
             await sendPDF(context);
             loadingStop();
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => HomePage()),
+                (route) => false);
           }
         },
       ),

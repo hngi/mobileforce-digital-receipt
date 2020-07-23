@@ -76,21 +76,14 @@ class AppNotification {
   }
 
   Future<void> scheduleNotification(
-      {int interval, String title, String body}) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  
-    var scheduledNotificationDateTime =
-        DateTime.now().add(Duration(seconds: interval));
-
-    timeThen(scheduledNotificationDateTime);
-    //TimeOfDay.fromDateTime(scheduledNotificationDateTime);
+      {DateTime interval, String title, String body}) async {
+    var scheduledNotificationDateTime = interval;
 
     var vibrationPattern = Int64List(4);
-    vibrationPattern[0] = 0;
-    vibrationPattern[1] = 1000;
-    vibrationPattern[2] = 5000;
-    vibrationPattern[3] = 2000;
+   vibrationPattern[0] = 0;
+    vibrationPattern[1] = 200;
+    vibrationPattern[2] = 200;
+    vibrationPattern[3] = 200;
 
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'your other channel id',
@@ -119,19 +112,36 @@ class AppNotification {
     );
   }
 
-  Future showNotificationWithNoSound() async {
+  Future showNotification({String title, String body}) async {
+    var vibrationPattern = Int64List(4);
+    vibrationPattern[0] = 0;
+    vibrationPattern[1] = 200;
+    vibrationPattern[2] = 200;
+    vibrationPattern[3] = 200;
+
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'silent channel id',
         'silent channel name',
         'silent channel description',
-        playSound: true,
+        color: Colors.blue,
+      
+        sound: RawResourceAndroidNotificationSound('slow_spring_board'),
+        //largeIcon: DrawableResourceAndroidBitmap('sample_large_icon'),
+        vibrationPattern: vibrationPattern,
+        enableLights: true,
+        
+        
+        //color: const Color.fromARGB(255, 255, 0, 0),
+        ledColor: const Color.fromARGB(255, 255, 0, 0),
+        ledOnMs: 1000,
+        ledOffMs: 500,
         styleInformation: DefaultStyleInformation(true, true));
     var iOSPlatformChannelSpecifics =
-        IOSNotificationDetails(presentSound: false);
+        IOSNotificationDetails(sound: 'slow_spring_board.aiff');
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(0, '<b>silent</b> title',
-        '<b>silent</b> body', platformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+        0, title, body, platformChannelSpecifics);
   }
 
   Future<List<PendingNotificationRequest>>
