@@ -83,11 +83,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
           //backgroundColor: Color(0xFF226EBE),
           ),
       drawer: Theme(
-        data: Theme.of(context).copyWith(canvasColor: Color(0xFF0B57A7)),
+        data: Theme.of(context),
         child: MainDrawer(),
       ),
       body: SafeArea(

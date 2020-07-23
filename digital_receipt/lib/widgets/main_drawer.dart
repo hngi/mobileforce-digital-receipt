@@ -9,6 +9,7 @@ import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/screens/reminderPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 import '../screens/upgrade_screen.dart';
 import '../screens/customerList.dart';
@@ -26,7 +27,7 @@ class MainDrawer extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: Container(
-              color: Color(0xFF0B57A7),
+              color: Theme.of(context).primaryColorDark,
               padding: EdgeInsets.only(top: 70.0, left: 5.0),
               child: ListView(
                 children: <Widget>[
@@ -220,7 +221,7 @@ class MainDrawer extends StatelessWidget {
                       ),
                     ),
                   ),
-                   SizedBox(
+                  SizedBox(
                     height: 50.0,
                     width: double.maxFinite,
                     child: FlatButton(

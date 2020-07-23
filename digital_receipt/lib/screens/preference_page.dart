@@ -43,9 +43,7 @@ class _PreferencePageState extends State<PreferencePage> {
         : false;
     return Scaffold(
       //backgroundColor: Color(0xFFF2F8FF),
-      appBar: AppBar(
-          //backgroundColor: Color(0xFFF2F8FF),
-          ),
+      appBar: AppBar(),
       body: SafeArea(
         child: Stack(
           fit: StackFit.expand,

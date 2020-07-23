@@ -134,28 +134,14 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               SizedBox(
                 height: 14,
               ),
-              Text(
-                'Create a receipt',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.3,
-                  fontSize: 22,
-                  color: Colors.black,
-                ),
-              ),
+              Text('Create a receipt',
+                  style: Theme.of(context).textTheme.headline5),
               SizedBox(
                 height: 5,
               ),
               Text(
                 'Lets get started',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 14,
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(
                 height: 24,
@@ -198,28 +184,13 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               SizedBox(
                 height: 24,
               ),
-              Text(
-                'Category',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.3,
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-              ),
+              Text('Category', style: Theme.of(context).textTheme.headline6),
               SizedBox(
                 height: 5,
               ),
               Text(
                 'This helps you track your sales from different platforms',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.w300,
-                  letterSpacing: 0.3,
-                  fontSize: 12,
-                  color: Color(0xFF141414),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(
                 height: 15,
@@ -227,21 +198,15 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               DropdownButtonFormField(
                 hint: Text(
                   'Select category',
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.normal,
-                    letterSpacing: 0.3,
-                    fontSize: 16,
-                    color: Color(0xFF1B1B1B),
-                  ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      .copyWith(fontWeight: FontWeight.normal),
                 ),
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 16,
-                  color: Color(0xFF1B1B1B),
-                ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    .copyWith(fontWeight: FontWeight.normal),
                 items: [
                   DropdownMenuItem(
                     value: ReceiptCategory.WHATSAPP,
@@ -274,7 +239,6 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                   }
                   return null;
                 },
-                iconEnabledColor: Color.fromRGBO(0, 0, 0, 0.87),
                 onChanged: (value) {
                   print(value);
                   setState(() {
@@ -308,26 +272,14 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
               Text(
                 'Customer information',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.3,
-                  fontSize: 16,
-                  color: Color(0xFF000000),
-                ),
+                style: Theme.of(context).textTheme.headline6,
               ),
               SizedBox(
                 height: 5,
               ),
               Text(
                 'This information is display on the receipt. If the customer is saved, select customer',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 14,
-                  color: Color(0xFF141414),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(
                 height: 10,
@@ -408,13 +360,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                         selectedCustomer != null
                             ? selectedCustomer.name
                             : 'Select Customer',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.3,
-                          fontSize: 16,
-                          color: Colors.black,
-                        ),
+                        style: Theme.of(context).textTheme.headline6,
                       ),
                       Spacer(),
                       Icon(Icons.arrow_drop_down),
@@ -427,32 +373,21 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
               Text(
                 'Otherwise, enter customer information',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 14,
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(
                 height: 7,
               ),
               Text(
                 'Customer name',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 13,
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(height: 5),
               AppTextFieldForm(
                 focusNode: _nameFocus,
                 textInputAction: TextInputAction.next,
                 suffixIcon: IconButton(
+                  focusNode: _nameFocus,
                   icon: isPickingContact
                       ? ButtonLoadingIndicator(
                           color: kPrimaryColor,
@@ -461,7 +396,11 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                         )
                       : Icon(
                           Icons.contacts,
-                          color: Colors.black26,
+                          color: Theme.of(context)
+                              .inputDecorationTheme
+                              .enabledBorder
+                              .borderSide
+                              .color,
                         ),
                   onPressed: getContactFromPhone,
                 ),
@@ -488,13 +427,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               SizedBox(height: 22),
               Text(
                 'Email address',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 13,
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(height: 5),
               AppTextFieldForm(
@@ -527,13 +460,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
               Text(
                 'Address',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 13,
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(height: 5),
               AppTextFieldForm(
@@ -565,13 +492,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
               Text(
                 'Phone number',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 13,
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(height: 5),
               AppTextFieldForm(
@@ -604,16 +525,10 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
-                    'Save to customer list',
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.normal,
-                      letterSpacing: 0.3,
-                      fontSize: 16,
-                      color: Color.fromRGBO(0, 0, 0, 1),
-                    ),
-                  ),
+                  Text('Save to customer list',
+                      style: Theme.of(context).textTheme.headline6.copyWith(
+                            fontWeight: FontWeight.normal,
+                          )),
                   Switch(
                     focusNode: _switchFocus,
                     value: Provider.of<Receipt>(context, listen: false)
@@ -657,72 +572,22 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                   child: Row(
                     children: <Widget>[
                       Text(
-                        selectedCurrency != null
-                            ? selectedCurrency.currencyName
-                            : 'Select Currency',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.3,
-                          fontSize: 16,
-                          color: Colors.black,
-                        ),
-                      ),
+                          selectedCurrency != null
+                              ? selectedCurrency.currencyName
+                              : 'Select Currency',
+                          style: Theme.of(context).textTheme.headline6),
                       Spacer(),
                       Icon(Icons.arrow_drop_down),
                     ],
                   ),
                 ),
               ),
-              // DropdownButtonFormField(
-              // items: Currency.currencyList().map<DropdownMenuItem<Currency>>((curr) => DropdownMenuItem(value: curr, child: Row(children: <Widget>[
-              //   Text(curr.flag),
-              //   SizedBox(width:7),
-              //   Text(curr.currencyName),
-              //   SizedBox(width:7),
-              //   Text(curr.currencySymbol),
-              // ],),
-              // )).toList(),
-              // onChanged: (Currency currency) {
-              //   _changeCurrency(currency);
-              //                   },
-              //                   iconDisabledColor: Color.fromRGBO(0, 0, 0, 0.87),
-              //                   decoration: InputDecoration(
-              //                     contentPadding: EdgeInsets.all(15),
-              //                     enabledBorder: OutlineInputBorder(
-              //                       borderRadius: BorderRadius.circular(5),
-              //                       borderSide: BorderSide(
-              //                         color: Color(0xFFC8C8C8),
-              //                         width: 1.5,
-              //                       ),
-              //                     ),
-              //                     focusedBorder: OutlineInputBorder(),
-              //                     //hintText: hintText,
-              //                     hintStyle: TextStyle(
-              //                       color: Color(0xFF979797),
-              //                       fontSize: 14,
-              //                       fontWeight: FontWeight.w500,
-              //                       fontFamily: 'Montserrat',
-              //                     ),
-              //                   ),
-              //                   hint: Text(
-              //                     'Select currency',
-              //                     style: TextStyle(
-              //                       fontFamily: 'Montserrat',
-              //                       fontWeight: FontWeight.w500,
-              //                       letterSpacing: 0.3,
-              //                       fontSize: 14,
-              //                       color: Color(0xFF1B1B1B),
-              //                     ),
-              //                   ),
-              //                 ),
               SizedBox(
                 height: 45,
               ),
               SubmitButton(
                 title: 'Next',
-                textColor: Colors.white,
-                backgroundColor: Color(0xFF0B57A7),
+                backgroundColor: Theme.of(context).buttonColor,
                 onPressed: () {
                   FocusScope.of(context).unfocus();
 

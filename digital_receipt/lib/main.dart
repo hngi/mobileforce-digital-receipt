@@ -182,25 +182,7 @@ class _MyAppState extends State<MyApp> {
           themes: [ThemeManager.light(), ThemeManager.dark()],
           saveThemesOnChange: true,
           // Please do not change anything on this Callback
-          onInitCallback: (controller, previouslySavedThemeFuture) async {
-            String savedTheme = await previouslySavedThemeFuture;
-
-            if (savedTheme != null) {
-              // If previous theme saved, use saved theme
-              controller.setTheme(savedTheme);
-            } else {
-              // If previous theme not found, use platform default
-              Brightness platformBrightness =
-                  SchedulerBinding.instance.window.platformBrightness;
-              if (platformBrightness == Brightness.dark) {
-                controller.setTheme(ThemeManager.darkTheme);
-              } else {
-                controller.setTheme(ThemeManager.lightTheme);
-              }
-              // Forget the saved theme(which were saved just now by previous lines)
-              controller.forgetSavedTheme();
-            }
-          },
+          onInitCallback: ThemeManager.onInitCallback,
         ),
       ),
     );

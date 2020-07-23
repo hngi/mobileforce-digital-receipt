@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constant.dart';
+
 class SubmitButton extends StatelessWidget {
   const SubmitButton({
     this.onPressed,
@@ -20,25 +22,12 @@ class SubmitButton extends StatelessWidget {
       height: 45,
       child: FlatButton(
         onPressed: onPressed,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child:
-            /* _loadingSpinner
-                        ? CircularProgressIndicator(
-                            backgroundColor: Colors.black,
-                            value,
-                          )
-                        :  */
-            Text(
-          title,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: textColor,
-          ),
-        ),
         color: backgroundColor,
+        textColor: Theme.of(context).textTheme.button.color,
+        shape: kRoundedRectangleBorder,
+        child: Text(
+          title,
+        ),
       ),
     );
   }
