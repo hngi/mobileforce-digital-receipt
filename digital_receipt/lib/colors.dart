@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class DarkMode {
-  static final appBarColor = Colors.grey[850];
+  static final appBarColor = Colors.grey[800];
+
+  static final backgroundColor = Color(0xFF121212);
 
   static final primaryColor = Color(0xFF80D5FF);
 

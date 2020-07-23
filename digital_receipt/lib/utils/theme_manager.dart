@@ -59,7 +59,7 @@ class ThemeManager {
           focusColor: LightMode.focusColor,
           textTheme: TextTheme(
             bodyText1: TextStyle(
-              color: LightMode.appBarColor,
+              color: Colors.white,
               fontFamily: 'Montserrat',
             ),
             bodyText2: TextStyle(
@@ -87,7 +87,7 @@ class ThemeManager {
             button: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: LightMode.appBarColor,
+              color: Colors.white,
             ),
           ),
           inputDecorationTheme: InputDecorationTheme(
@@ -117,7 +117,8 @@ class ThemeManager {
       data: ThemeData(
           cardColor: DarkMode.appBarColor,
           brightness: Brightness.dark,
-          scaffoldBackgroundColor: Color(0xFF121212),
+          scaffoldBackgroundColor: Colors.green,
+          //scaffoldBackgroundColor: DarkMode.backgroundColor,
           primaryColor: DarkMode.primaryColor,
           primaryColorDark: DarkMode.appBarColor,
           accentColor: Color(0xFF25CCB3),
@@ -190,6 +191,7 @@ class ThemeManager {
               fontFamily: 'Montserrat',
             ),
           )),
+      //
     );
   }
 }
