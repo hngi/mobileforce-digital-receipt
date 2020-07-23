@@ -205,6 +205,7 @@ class _CustomerListState extends State<CustomerList> {
                                   itemCount: model.customerList.length,
                                   itemBuilder: (context, index) {
                                     return customer(
+                                      id: model.customerList[index].id,
                                       customerName:
                                           model.customerList[index].name,
                                       customerEmail:
@@ -265,110 +266,117 @@ class _CustomerListState extends State<CustomerList> {
   }
 
   Widget customer(
-      {String customerName,
+      {String id,
+      String customerName,
       customerEmail,
       int index,
       phoneNumber,
       int numberOfReceipts,
       String address}) {
-    return Column(
-      children: <Widget>[
-        SizedBox(
-          height: 99,
-          child: Center(
-            child: Slidable(
-              actionPane: SlidableDrawerActionPane(),
-              actionExtentRatio: 0.25,
-              secondaryActions: <Widget>[
-                Container(
-                  color: Color(0xFFB3E2F4),
-                  child: InkWell(
-                    onTap: () {
-                      print("tapped");
-                      var url = "$phoneNumber";
-                      print(url);
+    return GestureDetector(
+      onLongPress: () async {
+        var resp = await _apiService.deleteCustomer(id: id);
+        if (resp == 'false') {
+          Fluttertoast.showToast(msg: 'An error occured');
+        } else {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (_) => CustomerList()));
+          print('successful');
+        }
+      },
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: 99,
+            child: Center(
+              child: Slidable(
+                actionPane: SlidableDrawerActionPane(),
+                actionExtentRatio: 0.25,
+                secondaryActions: <Widget>[
+                  Container(
+                    color: Color(0xFFB3E2F4),
+                    child: InkWell(
+                      onTap: () {
+                        print("tapped");
+                        var url = "$phoneNumber";
+                        print(url);
 
-                      UrlLauncher.launch("tel://$url");
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.call,
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          "Call Customer",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
+                        UrlLauncher.launch("tel://$url");
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            Icons.call,
                           ),
-                        ),
-                      ],
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            "Call Customer",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  color: Color(0xffBFEDC7),
-                  child: InkWell(
-                    onTap: () {
-                      final EmailService emailService = EmailService();
-                      emailService.setMail(
-                        body: '',
-                        subject: '',
-                        recipients: [customerEmail],
-                        isHTML: true,
-                        bccRecipients: [],
-                        ccRecipients: [],
-                        attachments: [],
-                      );
-                      emailService.sendMail();
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Image.asset("assets/gmail.png", height: 24, width: 24),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          "Mail Customer",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
+                  Container(
+                    color: Color(0xffBFEDC7),
+                    child: InkWell(
+                      onTap: () {
+                        final EmailService emailService = EmailService();
+                        emailService.setMail(
+                          body: '',
+                          subject: '',
+                          recipients: [customerEmail],
+                          isHTML: true,
+                          bccRecipients: [],
+                          ccRecipients: [],
+                          attachments: [],
+                        );
+                        emailService.sendMail();
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Image.asset("assets/gmail.png",
+                              height: 24, width: 24),
+                          SizedBox(
+                            height: 15,
                           ),
-                        ),
-                      ],
+                          Text(
+                            "Mail Customer",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) => CustomerDetail(
-                              customer: Customer(
-                                name: customerName,
-                                email: customerEmail,
-                                phoneNumber: phoneNumber,
-                                address: address,
-                              ),
-                            )),
-                  );
-                },
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Color(0xff539C30),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
+                ],
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => CustomerDetail(
+                                customer: Customer(
+                                  name: customerName,
+                                  email: customerEmail,
+                                  phoneNumber: phoneNumber,
+                                  address: address,
+                                ),
+                              )),
+                    );
+                  },
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -376,69 +384,77 @@ class _CustomerListState extends State<CustomerList> {
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: Container(
-                      margin: EdgeInsets.only(left: 5.0),
+                      width: double.infinity,
                       decoration: BoxDecoration(
-                        color: Color(0xffE8F1FB),
+                        color: Color(0xff539C30),
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  "$customerName",
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(0, 0, 0, 0.6),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: 'Montserrat',
-                                    letterSpacing: 0.03,
+                      child: Container(
+                        margin: EdgeInsets.only(left: 5.0),
+                        decoration: BoxDecoration(
+                          color: Color(0xffE8F1FB),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    "$customerName",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(0, 0, 0, 0.6),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'Montserrat',
+                                      letterSpacing: 0.03,
+                                    ),
                                   ),
+                                  /* Text(
+                                    "$numberOfReceipts Receipts",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(0, 0, 0, 0.6),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w300,
+                                      fontFamily: 'Montserrat',
+                                      letterSpacing: 0.03,
+                                    ),
+                                  ), */
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
+                              child: Text(
+                                "$customerEmail",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(0, 0, 0, 0.87),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w300,
+                                  fontFamily: 'Montserrat',
+                                  letterSpacing: 0.03,
                                 ),
-                                /* Text(
-                                  "$numberOfReceipts Receipts",
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(0, 0, 0, 0.6),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w300,
-                                    fontFamily: 'Montserrat',
-                                    letterSpacing: 0.03,
-                                  ),
-                                ), */
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
-                            child: Text(
-                              "$customerEmail",
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.87),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w300,
-                                fontFamily: 'Montserrat',
-                                letterSpacing: 0.03,
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
-                            child: Text(
-                              "$phoneNumber",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w300,
-                                fontFamily: 'Montserrat',
-                                letterSpacing: 0.03,
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
+                              child: Text(
+                                "$phoneNumber",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w300,
+                                  fontFamily: 'Montserrat',
+                                  letterSpacing: 0.03,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -446,22 +462,22 @@ class _CustomerListState extends State<CustomerList> {
               ),
             ),
           ),
-        ),
-        index == 0
-            ? SizedBox(
-                height: 8,
-              )
-            : SizedBox.shrink(),
-        index == 0
-            ? Text(
-                'Swipe for more options, longpress to delete',
-                textAlign: TextAlign.center,
-              )
-            : SizedBox.shrink(),
-        SizedBox(
-          height: 19,
-        ),
-      ],
+          index == 0
+              ? SizedBox(
+                  height: 8,
+                )
+              : SizedBox.shrink(),
+          index == 0
+              ? Text(
+                  'Swipe for more options, longpress to delete',
+                  textAlign: TextAlign.center,
+                )
+              : SizedBox.shrink(),
+          SizedBox(
+            height: 19,
+          ),
+        ],
+      ),
     );
   }
 
