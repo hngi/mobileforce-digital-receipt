@@ -173,19 +173,23 @@ class ApiService {
         return client;
       };
 
-      String auth_token =
+      String token =
           await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
-      Response response = await _dio.get(
+      Response response = await _dio
+          .get(
         "/business/receipt/draft",
         options: Options(
           followRedirects: false,
           validateStatus: (status) {
             return status < 500;
           },
-          headers: {"token": auth_token},
+          headers: {"token": token},
         ),
-      );
-
+      )
+          .timeout(Duration(seconds: 8), onTimeout: () {
+        return null;
+      });
+     // print('bty: ${response.data}');
       if (response.statusCode == 200) {
         var res = response.data["data"] as List;
         //print('res:::::: $res');
@@ -239,22 +243,14 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        /*  print(response.data["data"]);
-        List<Receipt> issued_receipts = [];
-        await Future.forEach(response.data["data"], (data) {
-          Receipt receipt = Receipt.fromJson(data);
-          issued_receipts.add(receipt);
-        });
-        print(issued_receipts); */
-        /*   response.data["data"].forEach((data) {
-          
-        }); */
+        //print(response.data["data"][14]);
 
         if (response.data["data"].length >= 100) {
           List temp = response.data["data"].getRange(0, 99).toList();
           await hiveDb.addReceiptHistory(temp);
           return hiveDb.getReceiptHistory();
         } else if (response.data["data"].length < 100) {
+          //print('we::: ${response.data["data"][14]}');
           await hiveDb.addReceiptHistory(response.data["data"]);
           //await hiveDb.getReceiptHistory();
           return hiveDb.getReceiptHistory();

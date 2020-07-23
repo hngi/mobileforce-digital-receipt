@@ -77,7 +77,13 @@ class Receipt extends ChangeNotifier {
 
   factory Receipt.fromJson(Map<String, dynamic> json) {
     ReceiptCategory convertToEnum({@required string}) {
-      return ReceiptCategory.values.firstWhere((e) => e.toString() == string);
+     // print(string.runtimeType);
+      if (string.runtimeType != ReceiptCategory) {
+        return ReceiptCategory.values.firstWhere((e) => e.toString() == string,
+            orElse: () {
+          return ReceiptCategory.OTHERS;
+        });
+      }
     }
 
     return Receipt(
@@ -236,7 +242,6 @@ class Receipt extends ChangeNotifier {
           "name": customer.name,
           "email": customer.email,
           "address": customer.address,
-          
           "phoneNumber": customer.phoneNumber,
           "saved": saveCustomer,
         },
@@ -298,7 +303,7 @@ class Receipt extends ChangeNotifier {
   saveReceipt() async {
     var uri = "$_urlEndpoint/business/receipt/customize";
     var token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
-    print(toJson());
+    print(json.encode(toJson()));
 
     try {
       var response = await http.post(

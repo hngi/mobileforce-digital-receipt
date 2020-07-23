@@ -6,6 +6,7 @@ import 'package:digital_receipt/models/account.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/providers/business.dart';
 import 'package:digital_receipt/screens/generate_pdf.dart';
+import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/email_service.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
@@ -639,6 +640,11 @@ Widget ReceiptScreenLayout(
             //await compute(sendPDF, context);
             await sendPDF(context);
             loadingStop();
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => HomePage()),
+                (route) => false);
           }
         },
       ),

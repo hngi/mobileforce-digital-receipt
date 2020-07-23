@@ -16,10 +16,10 @@ class ReceiptUtil {
           .where((element) => element.category == _byCategory)
           .toList();
     } catch (error) {
-      Fluttertoast.showToast(
+      /*  Fluttertoast.showToast(
           msg: 'error, try again ',
           backgroundColor: Colors.red,
-          toastLength: Toast.LENGTH_LONG);
+          toastLength: Toast.LENGTH_LONG); */
     }
   }
 
@@ -28,10 +28,10 @@ class ReceiptUtil {
       receiptList.sort((a, b) => a.issuedDate.compareTo(b.issuedDate));
       return receiptList.toList();
     } catch (error) {
-      Fluttertoast.showToast(
+      /*  Fluttertoast.showToast(
           msg: 'error, try again ',
           backgroundColor: Colors.red,
-          toastLength: Toast.LENGTH_LONG);
+          toastLength: Toast.LENGTH_LONG); */
     }
   }
 
@@ -40,10 +40,11 @@ class ReceiptUtil {
       receiptList.sort((a, b) => a.receiptNo.compareTo(b.receiptNo));
       return receiptList.toList();
     } catch (error) {
-      Fluttertoast.showToast(
+      /*  Fluttertoast.showToast(
           msg: 'error, try again ',
           backgroundColor: Colors.red,
           toastLength: Toast.LENGTH_LONG);
+    } */
     }
   }
 
