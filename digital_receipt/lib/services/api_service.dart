@@ -10,6 +10,7 @@ import 'package:digital_receipt/utils/connected.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,7 +29,9 @@ final HiveDb hiveDb = HiveDb();
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
-  static String _urlEndpoint = "http://degeitreceipt.pythonanywhere.com/v1";
+  static String _urlEndpoint = kReleaseMode
+      ? "http://degeitreceipt.pythonanywhere.com/v1"
+      : "http://degeittest.pythonanywhere.com/v1";
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();
@@ -74,8 +77,17 @@ class ApiService {
         //print(password);
         //print(fcmToken);
         //print(deviceType);
+
+        print('''
+        
+            "password": '$password',
+            "email_address": '$email_address',
+            "deviceType": $deviceType,
+            "registration_id": $fcmToken,
+          
+''');
         Response response = await _dio.post(
-          "/user/login",
+          "/user/login/",
           data: {
             "password": '$password',
             "email_address": '$email_address',
@@ -90,14 +102,15 @@ class ApiService {
             // headers: {"Authorization": basicAuth},
           ),
         );
+        print(response.data);
 
-        if (response.data["status"] == 200) {
+        if (response.statusCode == 200) {
           print(response.data["status"]);
 
-          userId = response.data["data"]["_id"];
-          print(userId);
+          userId = response.data["user"]["id"].toString();
+          print('fef $userId');
           // userID = userId;
-          auth_token = response.data["data"]["auth_token"];
+          auth_token = response.data["token"];
 
           //Save details to Shared Preference
           _sharedPreferenceService.addStringToSF("USER_ID", userId);
@@ -173,19 +186,23 @@ class ApiService {
         return client;
       };
 
-      String auth_token =
+      String token =
           await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
-      Response response = await _dio.get(
+      Response response = await _dio
+          .get(
         "/business/receipt/draft",
         options: Options(
           followRedirects: false,
           validateStatus: (status) {
             return status < 500;
           },
-          headers: {"token": auth_token},
+          headers: {"token": token},
         ),
-      );
-
+      )
+          .timeout(Duration(seconds: 8), onTimeout: () {
+        return null;
+      });
+      // print('bty: ${response.data}');
       if (response.statusCode == 200) {
         var res = response.data["data"] as List;
         //print('res:::::: $res');
@@ -239,22 +256,14 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        /*  print(response.data["data"]);
-        List<Receipt> issued_receipts = [];
-        await Future.forEach(response.data["data"], (data) {
-          Receipt receipt = Receipt.fromJson(data);
-          issued_receipts.add(receipt);
-        });
-        print(issued_receipts); */
-        /*   response.data["data"].forEach((data) {
-          
-        }); */
+        //print(response.data["data"][14]);
 
         if (response.data["data"].length >= 100) {
           List temp = response.data["data"].getRange(0, 99).toList();
           await hiveDb.addReceiptHistory(temp);
           return hiveDb.getReceiptHistory();
         } else if (response.data["data"].length < 100) {
+          //print('we::: ${response.data["data"][14]}');
           await hiveDb.addReceiptHistory(response.data["data"]);
           //await hiveDb.getReceiptHistory();
           return hiveDb.getReceiptHistory();
@@ -274,15 +283,13 @@ class ApiService {
   Future<String> signinUser(String email, String password, String name) async {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
-      var uri = '$_urlEndpoint/user/register';
+      var uri = '$_urlEndpoint/user/register/';
       var response = await http.post(
         uri,
-        body: {
-          "email_address": "$email",
-          "password": "$password",
-          "name": "$name"
-        },
+        body: {"email": "$email", "password": "$password", "username": "$name"},
       );
+      print(uri);
+      print(response.statusCode);
       print(response.body);
       if (response.statusCode == 200) {
         return "true";
@@ -441,10 +448,11 @@ class ApiService {
       var response = await request.send();
       print('code: ${response.statusCode}');
       var res = await response.stream.bytesToString();
-      print(res);
+      // print(res);
       if (response.statusCode == 200) {
         var businessId = jsonDecode(res)['id'];
         //set the token to null
+        print('iddddd: $businessId');
         await _sharedPreferenceService.addStringToSF('Business_ID', businessId);
         await _sharedPreferenceService.addStringToSF('LOGO', logo);
         return true;
@@ -590,6 +598,8 @@ class ApiService {
 
     String userID = await _sharedPreferenceService.getStringValuesSF('USER_ID');
 
+    print('userID: $userID');
+
     var email = await _sharedPreferenceService.getStringValuesSF('EMAIL');
 
     var connectivityResult = await Connected().checkInternet();
@@ -607,16 +617,17 @@ class ApiService {
 
       res = res['data'] as List;
 
+
       if (response.statusCode == 200) {
         print(response.statusCode);
         res = res.firstWhere(
-          (e) => e['user'] == userID,
+          (e) => e['user'].toString() == userID,
           orElse: () {
             print('object');
           },
         );
+
         if (res != null) {
-          print('resid: {res}');
           await _sharedPreferenceService.addStringToSF(
               'Business_ID', res['id']);
           return AccountData(
@@ -625,7 +636,9 @@ class ApiService {
             phone: res['phone_number'],
             address: res['address'],
             slogan: res['slogan'],
-            logo: 'http://degeitreceipt.pythonanywhere.com${res['logo']}',
+            logo: kReleaseMode
+                ? 'http://degeitreceipt.pythonanywhere.com${res['logo']}'
+                : "http://degeittest.pythonanywhere.com${res['logo']}",
             email: email,
           );
         } else {

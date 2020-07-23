@@ -40,7 +40,7 @@ class HiveDb extends ChangeNotifier {
         Receipt temp = Receipt.fromJson(e);
         return temp;
       });
-      print(res);
+      //print(res);
       return List<Receipt>.from(res);
     }
     return null;

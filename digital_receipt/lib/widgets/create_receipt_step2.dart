@@ -151,7 +151,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Row(
-                  children: map<Widget>([1, 1, 2], (index, url) {
+                  children: map<Widget>([0, 1, 2, 3], (index, url) {
                     print(index);
                     return GestureDetector(
                       onTap: () {
@@ -174,7 +174,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                                       color: Color.fromRGBO(0, 0, 0, 0.16))
                                 ]),
                           ),
-                          index != 2 ? SizedBox(width: 10) : SizedBox.shrink()
+                          index != 3 ? SizedBox(width: 10) : SizedBox.shrink()
                         ],
                       ),
                     );
@@ -722,6 +722,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   Response result =
                       await Provider.of<Receipt>(context, listen: false)
                           .saveReceipt();
+                  print(result);
                   if (result.statusCode == 200) {
                     setState(() {
                       isLoading = false;
