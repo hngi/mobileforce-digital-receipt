@@ -83,43 +83,51 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
   @override
   Widget build(BuildContext context) {
     final ApiService _apiService = ApiService();
-    return Scaffold(
-      backgroundColor: Color(0xFFF2F8FF),
-      appBar: AppBar(
-        //  backgroundColor: Color(0xFF0b56a7),
-        automaticallyImplyLeading: true,
-        title: Text(
-          'Create Receipt',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            fontFamily: 'Montserrat',
-            letterSpacing: 0.03,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        backgroundColor: Color(0xFFF2F8FF),
+        appBar: AppBar(
+          //  backgroundColor: Color(0xFF0b56a7),
+          automaticallyImplyLeading: true,
+          title: Text(
+            'Create Receipt',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Montserrat',
+              letterSpacing: 0.03,
+            ),
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () =>Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => HomePage())),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: <Widget>[
-              ReceiptScreenLayout(
-                  context,
-                  _loading,
-                  () {
-                    setState(() {
-                      _loading = true;
-                    });
-                  },
-                  logo,
-                  () {
-                    setState(() {
-                      _loading = false;
-                    });
-                  },
-                  issuerSignature),
-            ],
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: <Widget>[
+                ReceiptScreenLayout(
+                    context,
+                    _loading,
+                    () {
+                      setState(() {
+                        _loading = true;
+                      });
+                    },
+                    logo,
+                    () {
+                      setState(() {
+                        _loading = false;
+                      });
+                    },
+                    issuerSignature),
+              ],
+            ),
           ),
         ),
       ),
@@ -526,7 +534,11 @@ Widget ReceiptScreenLayout(
                             //     height: 1.43,
                             //   ),
                             // ),
-                            Image.memory(base64Decode(issuerSignature), width: 100, height: 90,),
+                            Image.memory(
+                              base64Decode(issuerSignature),
+                              width: 100,
+                              height: 90,
+                            ),
                             SizedBox(
                               height: 2,
                             ),
