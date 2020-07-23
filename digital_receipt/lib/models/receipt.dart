@@ -73,11 +73,13 @@ class Receipt extends ChangeNotifier {
     this.currency,
     this.sellerName,
   });
-  static String _urlEndpoint = 'http://degeitreceipt.pythonanywhere.com/v1';
+  static String _urlEndpoint = kReleaseMode
+      ? "http://degeitreceipt.pythonanywhere.com/v1"
+      : "http://degeittest.pythonanywhere.com/v1";
 
   factory Receipt.fromJson(Map<String, dynamic> json) {
     ReceiptCategory convertToEnum({@required string}) {
-     // print(string.runtimeType);
+      // print(string.runtimeType);
       if (string.runtimeType != ReceiptCategory) {
         return ReceiptCategory.values.firstWhere((e) => e.toString() == string,
             orElse: () {
