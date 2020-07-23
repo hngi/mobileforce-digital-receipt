@@ -12,6 +12,7 @@ import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/date_time_input_textField.dart';
 import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
@@ -150,7 +151,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Row(
-                  children: map<Widget>([1, 1, 2], (index, url) {
+                  children: map<Widget>([0, 1, 2, 3], (index, url) {
                     print(index);
                     return GestureDetector(
                       onTap: () {
@@ -173,7 +174,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                                       color: Color.fromRGBO(0, 0, 0, 0.16))
                                 ]),
                           ),
-                          index != 2 ? SizedBox(width: 10) : SizedBox.shrink()
+                          index != 3 ? SizedBox(width: 10) : SizedBox.shrink()
                         ],
                       ),
                     );
@@ -410,6 +411,16 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
               ],
             ),
             SizedBox(height: 20),
+            // ColorPicker(
+            //   pickerColor: Colors.blue,
+            //   displayThumbColor: true,
+            //   // paletteType: PaletteType.rgb,
+            //   onColorChanged: (color) {
+            //     setState(() {
+            //       _hexCodeController.text = color.value.toRadixString(16);
+            //     });
+            //   },
+            // ),
             SizedBox(
               height: 33,
               child: SizedBox(
@@ -490,7 +501,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             ),
 
             SizedBox(height: 37),
-           /*  Text(
+            /*  Text(
               'Select a receipt',
               style: TextStyle(
                 fontFamily: 'Montserrat',
@@ -709,6 +720,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   Response result =
                       await Provider.of<Receipt>(context, listen: false)
                           .saveReceipt();
+                  print(result);
                   if (result.statusCode == 200) {
                     setState(() {
                       isLoading = false;

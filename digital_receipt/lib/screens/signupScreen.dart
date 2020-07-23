@@ -110,7 +110,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        "Name",
+                        "Username",
                         style: TextStyle(
                           color: Color(0xff606060),
                           fontSize: 13,

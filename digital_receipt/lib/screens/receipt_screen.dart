@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -5,6 +6,7 @@ import 'package:digital_receipt/models/account.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/providers/business.dart';
 import 'package:digital_receipt/screens/generate_pdf.dart';
+import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/email_service.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
@@ -54,11 +56,16 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
   }
 
   bool _loading = false;
+  String issuerSignature;
 
   init() async {
     var val = await SharedPreferenceService().getStringValuesSF('LOGO');
+    var _issuerSignature =
+        await SharedPreferenceService().getStringValuesSF("ISSUER_SIGNATURE");
+    print('signature $_issuerSignature');
     setState(() {
       logo = val;
+      issuerSignature = _issuerSignature;
     });
   }
 
@@ -110,7 +117,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                     setState(() {
                       _loading = false;
                     });
-                  }),
+                  },
+                  issuerSignature),
             ],
           ),
         ),
@@ -125,7 +133,8 @@ Widget ReceiptScreenLayout(
     bool isloading,
     Function loadingStart,
     String logo,
-    Function loadingStop]) {
+    Function loadingStop,
+    String issuerSignature]) {
   Future sendMail() async {
     final String dir = (await getApplicationDocumentsDirectory()).path;
     final String path = '$dir/receipt.pdf';
@@ -483,10 +492,11 @@ Widget ReceiptScreenLayout(
                                     Provider.of<Receipt>(context, listen: false)
                                             .getCurrency()
                                             .currencySymbol +
-                                        Utils.formatNumber(double.tryParse(Provider.of<Receipt>(context,
-                                                listen: false)
-                                            .getTotal()
-                                            .toString())),
+                                        Utils.formatNumber(double.tryParse(
+                                            Provider.of<Receipt>(context,
+                                                    listen: false)
+                                                .getTotal()
+                                                .toString())),
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,
@@ -505,17 +515,18 @@ Widget ReceiptScreenLayout(
                         padding: const EdgeInsets.fromLTRB(10, 0, 0, 15),
                         child: Column(
                           children: <Widget>[
-                            Text(
-                              Provider.of<Receipt>(context).sellerName.split(" ")[0].toLowerCase(),
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 27,
-                                letterSpacing: 0.03,
-                                fontFamily: 'Southampton',
-                                fontWeight: FontWeight.w300,
-                                height: 1.43,
-                              ),
-                            ),
+                            // Text(
+                            //   Provider.of<Receipt>(context).sellerName.split(" ")[0].toLowerCase(),
+                            //   style: TextStyle(
+                            //     color: Colors.black,
+                            //     fontSize: 27,
+                            //     letterSpacing: 0.03,
+                            //     fontFamily: 'Southampton',
+                            //     fontWeight: FontWeight.w300,
+                            //     height: 1.43,
+                            //   ),
+                            // ),
+                            Image.memory(base64Decode(issuerSignature), width: 100, height: 90,),
                             SizedBox(
                               height: 2,
                             ),
@@ -621,7 +632,7 @@ Widget ReceiptScreenLayout(
             loadingStop();
             return;
           }
-          
+
           var res = await Provider.of<Receipt>(context, listen: false)
               .updatedReceipt(
                   Provider.of<Receipt>(context, listen: false).receiptId);
@@ -629,6 +640,11 @@ Widget ReceiptScreenLayout(
             //await compute(sendPDF, context);
             await sendPDF(context);
             loadingStop();
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => HomePage()),
+                (route) => false);
           }
         },
       ),
