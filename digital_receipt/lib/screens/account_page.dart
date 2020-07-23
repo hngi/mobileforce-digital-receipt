@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/utils/connected.dart';
+import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/screens/change_password_screen.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';
@@ -31,6 +32,12 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  // static const String iapId = 'android.test.purchaseed';
+  // String _platformVersion = 'Unknown';
+  // List<IAPItem> _items = [];
+  // List<PurchasedItem> _purchases = [];
+  
+
   final String username = "Geek Tutor";
   String label;
   bool _loading = false;
@@ -101,8 +108,10 @@ class _AccountPageState extends State<AccountPage> {
   @override
   void initState() {
     callFetch();
+    // initPlatformState();
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
