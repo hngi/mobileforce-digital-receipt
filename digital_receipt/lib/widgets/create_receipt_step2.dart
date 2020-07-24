@@ -162,6 +162,7 @@ class _SellerSignatureScreenState extends State<SellerSignatureScreen> {
                   ),
                 )
               ],
+
             ))
       ],
     );
@@ -174,6 +175,92 @@ class _SellerSignatureScreenState extends State<SellerSignatureScreen> {
     setState(() {
       signatureImage = renderedImage;
     });
+            ),
+            SizedBox(height: 20),
+            // ColorPicker(
+            //   pickerColor: Colors.blue,
+            //   displayThumbColor: true,
+            //     showLabel: true,
+            // pickerAreaHeightPercent: 0.8,
+            //   // paletteType: PaletteType.rgb,
+            //   onColorChanged: (color) {
+            //     setState(() {
+            //       _hexCodeController.text = color.value.toRadixString(16);
+            //     });
+            //   },
+            // ),
+            SizedBox(
+              height: 33,
+              child: SizedBox(
+                width: double.infinity,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      ColorButton(
+                        color: Colors.red,
+                        onPressed: () {
+                          setState(() {
+                            _hexCodeController.text = 'F14C4C';
+                          });
+                        },
+                      ),
+                      ColorButton(
+                        color: Color(0xFF539C30),
+                        onPressed: () {
+                          setState(() {
+                            _hexCodeController.text = '539C30';
+                          });
+                        },
+                      ),
+                      ColorButton(
+                        color: Color(0xFF2C33D5),
+                        onPressed: () {
+                          setState(() {
+                            _hexCodeController.text = '2C33D5';
+                          });
+                        },
+                      ),
+                      ColorButton(
+                        color: Color(0xFFE7D324),
+                        onPressed: () {
+                          setState(() {
+                            _hexCodeController.text = 'E7D324';
+                          });
+                        },
+                      ),
+                      ColorButton(
+                        color: Color(0xFFC022B1),
+                        onPressed: () {
+                          setState(() {
+                            _hexCodeController.text = 'C022B1';
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: Text(
+                'Or type brand Hex code here',
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: 20),
+            AppTextFieldForm(
+              focusNode: _hexCodeFocus,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (value) => _hexCodeFocus.unfocus(),
+              controller: _hexCodeController,
+              hintText: 'Enter Brand color hex code',
+              hintColor: Color.fromRGBO(0, 0, 0, 0.38),
+              borderWidth: 1.5,
+            ),
+
 
     showImage(context);
     ByteData pngBytes =

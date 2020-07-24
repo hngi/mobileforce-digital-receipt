@@ -432,7 +432,8 @@ class _CreateInventoryState extends State<CreateInventory> {
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.pop(context, true);
+              // Navigator.of(context).pop(true);
             },
           ),
           title: Text(

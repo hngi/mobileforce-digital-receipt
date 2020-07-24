@@ -44,11 +44,14 @@ void main() async {
 
     // runApp(MyApp(),);
     runApp(
-      /* DevicePreview(
-      builder: (BuildContext context) => */
+      // DevicePreview(
+      // builder: (BuildContext context) =>
+      // */
       MyApp(),
-      /* enabled: kReleaseMode,
+      // enabled: kReleaseMode,
+      /* 
     ) */
+      // )
     );
   } catch (e) {
     print("error occurd in main: $e");
@@ -135,7 +138,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
+
       providers: [
         ChangeNotifierProvider(
           create: (context) => Business(),
@@ -172,6 +177,8 @@ class _MyAppState extends State<MyApp> {
         // Please do not change anything on this Callback
         onInitCallback: ThemeManager.onInitCallback,
       ),
+      
+    
     );
   }
 }

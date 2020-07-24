@@ -57,8 +57,8 @@ class _DashBoardState extends State<DashBoard> {
         var event = await checkLogin.isLoggedIn();
         //print(event);
         if (value != event) {
-          print(event);
-          print(value);
+          print('event');
+          print('value');
           await Future.microtask(() => value = event);
           
           if (value == false) {
