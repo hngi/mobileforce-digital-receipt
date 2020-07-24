@@ -51,6 +51,7 @@ class ApiService {
   );
 
   Future<String> loginUser(String email_address, String password) async {
+     await _sharedPreferenceService.addStringToSF("REGISTRATION_ID", null);
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -102,20 +103,23 @@ class ApiService {
             // headers: {"Authorization": basicAuth},
           ),
         );
-        print(response.data);
+        // print(fcmToken);
 
+        print(response.statusCode);
+        print(response.data);
         if (response.statusCode == 200) {
           print(response.data["status"]);
 
           userId = response.data["user"]["id"].toString();
-          print('fef $userId');
+          // print('fef $userId');
           // userID = userId;
           auth_token = response.data["token"];
 
           //Save details to Shared Preference
-          _sharedPreferenceService.addStringToSF("USER_ID", userId);
-          _sharedPreferenceService.addStringToSF("AUTH_TOKEN", auth_token);
-          _sharedPreferenceService.addStringToSF("EMAIL", email_address);
+          await _sharedPreferenceService.addStringToSF("USER_ID", userId);
+          await _sharedPreferenceService.addStringToSF("REGISTRATION_ID", fcmToken);
+          await _sharedPreferenceService.addStringToSF("AUTH_TOKEN", auth_token);
+          await _sharedPreferenceService.addStringToSF("EMAIL", email_address);
           //
           //print("token :");
           //print(auth_token);
@@ -316,6 +320,7 @@ class ApiService {
         _sharedPreferenceService.addStringToSF("AUTH_TOKEN", 'empty');
         _sharedPreferenceService.addStringToSF("USER_ID", null);
         _sharedPreferenceService.addStringToSF('BUSINESS_INFO', null);
+        _sharedPreferenceService.addStringToSF("REGISTRATION_ID", null);
         print('done');
 
         return true;
@@ -344,7 +349,7 @@ class ApiService {
       print(
         """
       name: $name,
-      number: $phoneNumber,
+      phone_number: $phoneNumber,
       address: $address,
       slogan: $slogan
       """,
@@ -359,7 +364,7 @@ class ApiService {
             // HttpHeaders.acceptHeader: 'application/json',
           },
           body: {
-            "phoneNumber": phoneNumber,
+            "phone_number": phoneNumber,
             "name": name,
             "address": address,
             "slogan": slogan,
@@ -399,7 +404,7 @@ class ApiService {
       var res = await response.stream.bytesToString();
       print(res);
       Fluttertoast.showToast(
-        msg: 'Message sent successfully',
+        msg: 'Business information has been updated',
         fontSize: 12,
         toastLength: Toast.LENGTH_LONG,
         backgroundColor: Colors.green,
@@ -616,7 +621,6 @@ class ApiService {
       dynamic res = jsonDecode(response.body);
 
       res = res['data'] as List;
-
 
       if (response.statusCode == 200) {
         print(response.statusCode);
@@ -959,13 +963,14 @@ class ApiService {
   ) async {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
-      var uri = '$_urlEndpoint/user/forgot_password';
+      var uri = '$_urlEndpoint/user/forgot_password/';
 
       var response = await http.put(
         uri,
         body: {"email_address": "$email", "password": "$newPassword"},
       );
       print(response.body);
+      print(response.statusCode);
       if (response.statusCode == 200) {
         return 'true';
       }

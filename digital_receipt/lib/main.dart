@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:device_preview/device_preview.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/inventory.dart';
@@ -8,15 +10,16 @@ import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/services/notification.dart';
+import 'package:digital_receipt/utils/check_login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'dart:io';
 import 'screens/second_screen.dart';
 import 'utils/connected.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'models/notification.dart';
@@ -58,14 +61,26 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
+
+
 class _MyAppState extends State<MyApp> {
   void initState() {
+   
     _requestIOSPermissions();
     _configureDidReceiveLocalNotificationSubject();
     _configureSelectNotificationSubject();
-
     super.initState();
   }
+
+  /*  @override
+  void didChangeDependencies() {
+    print('didChangeDependencies');
+    checkLogin.dispose();
+    isLogin();
+    super.didChangeDependencies();
+  } */
+
+ 
 
   void _requestIOSPermissions() {
     flutterLocalNotificationsPlugin
@@ -122,61 +137,59 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return OverlaySupport(
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (context) => Business(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => HiveDb(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => Receipt(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => Customer(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => Inventory(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => Connected(),
-          ),
-        ],
-        child: MaterialApp(
-          title: 'Degeit',
-          theme: ThemeData(
-            primaryColor: Color(0xFF0B57A7),
-            scaffoldBackgroundColor: Color(0xFFF2F8FF),
-            accentColor: Color(0xFF25CCB3),
-            appBarTheme: AppBarTheme(
-                textTheme: TextTheme(
-              headline6: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Montserrat',
-                letterSpacing: 0.03,
-              ),
-            )),
-            textTheme: TextTheme(
-              bodyText1: TextStyle(
-                fontFamily: 'Montserrat',
-              ),
-              headline6: TextStyle(
-                fontFamily: 'Montserrat',
-              ),
-              bodyText2: TextStyle(
-                fontFamily: 'Montserrat',
-              ),
-              button: TextStyle(
-                fontFamily: 'Montserrat',
-              ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => Business(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => HiveDb(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Receipt(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Customer(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Inventory(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Connected(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Degeit',
+        theme: ThemeData(
+          primaryColor: Color(0xFF0B57A7),
+          scaffoldBackgroundColor: Color(0xFFF2F8FF),
+          accentColor: Color(0xFF25CCB3),
+          appBarTheme: AppBarTheme(
+              textTheme: TextTheme(
+            headline6: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Montserrat',
+              letterSpacing: 0.03,
+            ),
+          )),
+          textTheme: TextTheme(
+            bodyText1: TextStyle(
+              fontFamily: 'Montserrat',
+            ),
+            headline6: TextStyle(
+              fontFamily: 'Montserrat',
+            ),
+            bodyText2: TextStyle(
+              fontFamily: 'Montserrat',
+            ),
+            button: TextStyle(
+              fontFamily: 'Montserrat',
             ),
           ),
-          debugShowCheckedModeBanner: false,
-          home: ScreenController(),
         ),
+        debugShowCheckedModeBanner: false,
+        home: ScreenController(),
       ),
     );
   }
@@ -227,6 +240,8 @@ class _ScreenControllerState extends State<ScreenController> {
     getCurrentAutoLogoutStatus();
 
     final FirebaseMessaging _fcm = FirebaseMessaging();
+
+//_fcm.setAutoInitEnabled(enabled)
 
     if (Platform.isIOS) {
       _fcm.requestNotificationPermissions(IosNotificationSettings());
