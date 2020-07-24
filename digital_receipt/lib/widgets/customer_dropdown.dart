@@ -68,12 +68,7 @@ class CustomerDropdown extends StatelessWidget {
                               Text(
                                 "You have not added any customer!",
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 16,
-                                  letterSpacing: 0.3,
-                                  color: Color.fromRGBO(0, 0, 0, 0.87),
-                                ),
+                                style: Theme.of(context).textTheme.headline6,
                               ),
                               SizedBox(
                                 height: 20,

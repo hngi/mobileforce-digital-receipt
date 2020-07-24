@@ -13,7 +13,6 @@ import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
-import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:digital_receipt/widgets/loading.dart';
 import 'package:digital_receipt/widgets/receipt_item.dart';
@@ -103,8 +102,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
           ),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
-            onPressed: () =>Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => HomePage())),
+            onPressed: () => Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => HomePage())),
           ),
         ),
         body: SingleChildScrollView(
@@ -139,7 +138,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
 // ignore: non_constant_identifier_names
 Widget ReceiptScreenLayout(
     [BuildContext context,
-    bool isLoading,
+    bool isloading,
     Function loadingStart,
     String logo,
     Function loadingStop,
@@ -181,9 +180,14 @@ Widget ReceiptScreenLayout(
     ),
     Align(
       alignment: Alignment.centerLeft,
-      child: Text('All Done, share!',
-          textAlign: TextAlign.left,
-          style: Theme.of(context).textTheme.headline5),
+      child: Text(
+        'All Done, share!',
+        textAlign: TextAlign.left,
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     ),
     SizedBox(
       height: 24,
@@ -193,211 +197,176 @@ Widget ReceiptScreenLayout(
 
     RepaintBoundary(
       key: _globalKey,
-      child: Theme(
-        data: ThemeData.light(),
-        child: Container(
-          // margin: EdgeInsets.fromLTRB(10,20,10,20),
-          padding: EdgeInsets.all(0),
-          alignment: Alignment.topCenter,
-          // width: 325,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(
-              color: Colors.grey[500],
-            ),
+      child: Container(
+        // margin: EdgeInsets.fromLTRB(10,20,10,20),
+        padding: EdgeInsets.all(0),
+        alignment: Alignment.topCenter,
+        // width: 325,
+        decoration: BoxDecoration(
+          //  color: Color(int.parse("0xFF"+Provider.of<Receipt>(context,listen: false).primaryColorHexCode)),
+          border: Border.all(
+            color: Colors.grey[500],
           ),
+        ),
 
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Container(
-                color: Color(int.parse("0xFF" +
-                    Provider.of<Receipt>(context, listen: false)
-                        .primaryColorHexCode)),
-                height: 13,
-                width: double.infinity,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    //flex: 3,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 15,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              color: Color(int.parse("0xFF" +
+                  Provider.of<Receipt>(context, listen: false)
+                      .primaryColorHexCode)),
+              height: 13,
+              width: double.infinity,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  //flex: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Container(
+
+                            //padding: const EdgeInsets.all(10),
+
+                            child: Text(
+                          businessInfo.name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
                           ),
-                          Container(
-
-                              //padding: const EdgeInsets.all(10),
-
-                              child: Text(
-                            businessInfo.name,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
+                        )),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          businessInfo.address,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
                               color: Colors.black,
-                            ),
-                          )),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            businessInfo.address,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 13,
-                                letterSpacing: 0.03,
-                                height: 1.43),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            'Tel No: ${businessInfo.phone}',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 13,
-                                fontWeight: FontWeight.normal,
-                                letterSpacing: 0.03,
-                                height: 1.43),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            'Email: ${businessInfo.email}',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 13,
-                                letterSpacing: 0.03,
-                                fontWeight: FontWeight.normal,
-                                height: 1.43),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                        ],
-                      ),
+                              fontWeight: FontWeight.normal,
+                              fontSize: 13,
+                              letterSpacing: 0.03,
+                              height: 1.43),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          'Tel No: ${businessInfo.phone}',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 13,
+                              fontWeight: FontWeight.normal,
+                              letterSpacing: 0.03,
+                              height: 1.43),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          'Email: ${businessInfo.email}',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 13,
+                              letterSpacing: 0.03,
+                              fontWeight: FontWeight.normal,
+                              height: 1.43),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                      ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: logo != null && logo != ''
-                        ? Image.file(
-                            File(logo),
-                            height: 50,
-                            width: 50,
-                          )
-                        : SizedBox.shrink(),
-                  )
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        DashedSeparator(
-                          color: Color(0xFFB6B6B6),
-                          height: 1,
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.only(bottom: 8),
-                                child: Text(
-                                  "Date: " +
-                                      DateFormat.yMMMMd().format(DateTime.parse(
-                                          Provider.of<Receipt>(context,
-                                                  listen: false)
-                                              .issuedDate)),
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 13,
-                                    letterSpacing: 0.03,
-                                    fontWeight: FontWeight.normal,
-                                    height: 1.43,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                'Receipt No : ' +
-                                    Provider.of<Receipt>(context)
-                                        .receiptNo
-                                        .toString(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: logo != null && logo != ''
+                      ? Image.file(
+                          File(logo),
+                          height: 50,
+                          width: 50,
+                        )
+                      : SizedBox.shrink(),
+                )
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      DashedSeparator(
+                        color: Color(0xFFB6B6B6),
+                        height: 1,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(bottom: 8),
+                              child: Text(
+                                "Date: " +
+                                    DateFormat.yMMMMd().format(DateTime.parse(
+                                        Provider.of<Receipt>(context,
+                                                listen: false)
+                                            .issuedDate)),
                                 style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 13,
-                                    letterSpacing: 0.03,
-                                    fontWeight: FontWeight.normal,
-                                    height: 1.43),
-                              ),
-                              Container(
-                                padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                                child: Text(
-                                  'Customer Information',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
+                                  color: Colors.black,
+                                  fontSize: 13,
+                                  letterSpacing: 0.03,
+                                  fontWeight: FontWeight.normal,
+                                  height: 1.43,
                                 ),
                               ),
-                              Container(
-                                padding: EdgeInsets.only(bottom: 8),
-                                child: Text(
-                                  'Name: ' +
-                                      Provider.of<Receipt>(context,
-                                              listen: false)
-                                          .customer
-                                          .name
-                                          .toString(),
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      letterSpacing: 0.03,
-                                      fontWeight: FontWeight.normal,
-                                      height: 1.43),
+                            ),
+                            Text(
+                              'Receipt No : ' +
+                                  Provider.of<Receipt>(context)
+                                      .receiptNo
+                                      .toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 13,
+                                  letterSpacing: 0.03,
+                                  fontWeight: FontWeight.normal,
+                                  height: 1.43),
+                            ),
+                            Container(
+                              padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                              child: Text(
+                                'Customer Information',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
                                 ),
                               ),
-                              Container(
-                                padding: EdgeInsets.only(bottom: 8),
-                                child: Text(
-                                  'Email: ' +
-                                      Provider.of<Receipt>(context,
-                                              listen: false)
-                                          .customer
-                                          .email
-                                          .toString(),
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      letterSpacing: 0.03,
-                                      fontWeight: FontWeight.normal,
-                                      height: 1.43),
-                                ),
-                              ),
-                              Text(
-                                'Phone No: ' +
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(bottom: 8),
+                              child: Text(
+                                'Name: ' +
                                     Provider.of<Receipt>(context, listen: false)
                                         .customer
-                                        .phoneNumber
+                                        .name
                                         .toString(),
                                 style: TextStyle(
                                     color: Colors.black,
@@ -406,23 +375,52 @@ Widget ReceiptScreenLayout(
                                     fontWeight: FontWeight.normal,
                                     height: 1.43),
                               ),
-                              Container(
-                                padding: EdgeInsets.only(top: 25),
-                                child: Text(
-                                  'Product details',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(bottom: 8),
+                              child: Text(
+                                'Email: ' +
+                                    Provider.of<Receipt>(context, listen: false)
+                                        .customer
+                                        .email
+                                        .toString(),
+                                style: TextStyle(
                                     color: Colors.black,
-                                  ),
+                                    fontSize: 14,
+                                    letterSpacing: 0.03,
+                                    fontWeight: FontWeight.normal,
+                                    height: 1.43),
+                              ),
+                            ),
+                            Text(
+                              'Phone No: ' +
+                                  Provider.of<Receipt>(context, listen: false)
+                                      .customer
+                                      .phoneNumber
+                                      .toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  letterSpacing: 0.03,
+                                  fontWeight: FontWeight.normal,
+                                  height: 1.43),
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(top: 25),
+                              child: Text(
+                                'Product details',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        Divider(),
-                        ReceiptItem(),
-                        SizedBox(
-                          //toatal payment and stamp
+                      ),
+                      Divider(),
+                      ReceiptItem(),
+                      SizedBox(
+                        //toatal payment and stamp
 
                         height: 8,
                       ),
@@ -612,32 +610,56 @@ Widget ReceiptScreenLayout(
     SizedBox(
       height: 15,
     ),
-    AppSolidButton(
-      title: 'Share',
-      isLoading: isLoading,
-      onPressed: () async {
-        loadingStart();
-        var connected = await Connected().checkInternet();
-        if (!connected) {
-          await showDialog(
-            context: context,
-            builder: (context) {
-              return NoInternet();
-            },
-          );
-          loadingStop();
-          return;
-        }
+    SizedBox(
+      width: double.infinity,
+      height: 45,
+      child: FlatButton(
+        //padding: EdgeInsets.all(5.0),
+        color: Color(0xFF0b56a7),
+        textTheme: ButtonTextTheme.primary,
+        //minWidth: 350,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: isloading == false
+            ? Text(
+                'Share',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w600,
+                ),
+              )
+            : ButtonLoadingIndicator(
+                color: Colors.white, height: 20, width: 20),
+        onPressed: () async {
+          loadingStart();
+          var connected = await Connected().checkInternet();
+          if (!connected) {
+            await showDialog(
+              context: context,
+              builder: (context) {
+                return NoInternet();
+              },
+            );
+            loadingStop();
+            return;
+          }
 
-        var res = await Provider.of<Receipt>(context, listen: false)
-            .updatedReceipt(
-                Provider.of<Receipt>(context, listen: false).receiptId);
-        if (res == 200) {
-          //await compute(sendPDF, context);
-          await sendPDF(context);
-          loadingStop();
-        }
-      },
+          var res = await Provider.of<Receipt>(context, listen: false)
+              .updatedReceipt(
+                  Provider.of<Receipt>(context, listen: false).receiptId);
+          if (res == 200) {
+            //await compute(sendPDF, context);
+            await sendPDF(context);
+            loadingStop();
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => HomePage()),
+                (route) => false);
+          }
+        },
+      ),
     ),
     SizedBox(
       height: 15,

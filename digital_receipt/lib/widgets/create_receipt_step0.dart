@@ -247,7 +247,6 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
 
                     Provider.of<Receipt>(context, listen: false)
                         .setCategory(selectedCategory);
-
                   });
                 },
                 value: selectedCategory,
@@ -333,7 +332,10 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                 ),
               ),
 */
-              GestureDetector(
+              AppDropSelector(
+                text: selectedCustomer != null
+                    ? selectedCustomer.name
+                    : 'Select Customer',
                 onTap: () async {
                   showDialog(
                     context: context,
@@ -349,27 +351,6 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     },
                   );
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Color(0xFFC8C8C8),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0)),
-                  padding: EdgeInsets.symmetric(horizontal: 13, vertical: 14),
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        selectedCustomer != null
-                            ? selectedCustomer.name
-                            : 'Select Customer',
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                      Spacer(),
-                      Icon(Icons.arrow_drop_down),
-                    ],
-                  ),
-                ),
               ),
               SizedBox(
                 height: 25,

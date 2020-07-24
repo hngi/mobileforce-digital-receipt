@@ -263,7 +263,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                     setState(() {
                       _partPayment = val;
                     });
-                    Provider.of<Receipt>(context, listen: false).partPayment = val;
+                    Provider.of<Receipt>(context, listen: false).partPayment =
+                        val;
                   },
                 ),
               ],
@@ -413,9 +414,12 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                               );
                             });
 
-                            Provider.of<Receipt>(context, listen: false).setReminderDate(dateToSend);
-                            print(Provider.of<Receipt>(context, listen: false).reminderDate);
-                            print(Provider.of<Receipt>(context, listen: false).partPayment);
+                            Provider.of<Receipt>(context, listen: false)
+                                .setReminderDate(dateToSend);
+                            print(Provider.of<Receipt>(context, listen: false)
+                                .reminderDate);
+                            print(Provider.of<Receipt>(context, listen: false)
+                                .partPayment);
                           }
                         },
                       ),
