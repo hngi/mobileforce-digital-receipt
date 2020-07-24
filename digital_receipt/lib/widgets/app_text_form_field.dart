@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 class AppTextFormField extends StatelessWidget {
   const AppTextFormField(
-      {this.initialValue,
+      {this.readOnly = false,
+      this.onChanged,
+      this.initialValue,
       this.label,
       this.hintText,
       this.keyboardType,
@@ -18,7 +20,8 @@ class AppTextFormField extends StatelessWidget {
       this.focusNode,
       this.textInputAction,
       this.onFieldSubmitted,
-      this.suffixIcon});
+      this.suffixIcon,
+      this.prefixIcon});
 
   final String hintText;
   final TextInputType keyboardType;
@@ -34,12 +37,17 @@ class AppTextFormField extends StatelessWidget {
   final TextInputAction textInputAction;
   final Function onFieldSubmitted;
   final Widget suffixIcon;
+  final Widget prefixIcon;
   final String label;
   final String initialValue;
+  final Function onChanged;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
     TextFormField textFormField = TextFormField(
+      readOnly: readOnly,
+      onChanged: onChanged,
       initialValue: initialValue,
       controller: controller != null ? controller : null,
       focusNode: focusNode,
@@ -54,6 +62,7 @@ class AppTextFormField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         suffixIcon: suffixIcon,
+        prefixIcon: prefixIcon,
       ),
       keyboardType: keyboardType != null ? keyboardType : null,
       obscureText: obscureText != null ? obscureText : false,
