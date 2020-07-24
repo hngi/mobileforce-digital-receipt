@@ -486,19 +486,25 @@ class _InventoryScreenState extends State<InventoryScreen> {
                         setState(() {
                           loading = false;
                         });
-                        Navigator.push(
+                        Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => InventoryScreen()));
+                                builder: (_) => InventoryScreen()),
+                            (route) => false);
+                        // OR
+                        // Navigator.pop(context, true);
                         Fluttertoast.showToast(msg: 'an error occured');
                       } else {
                         setState(() {
                           loading = false;
                         });
-                        Navigator.push(
+                        Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => InventoryScreen()));
+                                builder: (_) => InventoryScreen()),
+                            (route) => false);
+                        // OR
+                        // Navigator.pop(context, true);
                         Fluttertoast.showToast(msg: 'item deleted');
                         print('successful');
                       }
