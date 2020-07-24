@@ -64,11 +64,8 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-
-
 class _MyAppState extends State<MyApp> {
   void initState() {
-   
     _requestIOSPermissions();
     _configureDidReceiveLocalNotificationSubject();
     _configureSelectNotificationSubject();
@@ -82,8 +79,6 @@ class _MyAppState extends State<MyApp> {
     isLogin();
     super.didChangeDependencies();
   } */
-
- 
 
   void _requestIOSPermissions() {
     flutterLocalNotificationsPlugin
@@ -140,46 +135,42 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return OverlaySupport(
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (context) => Business(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => HiveDb(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => Receipt(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => Customer(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => Inventory(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => Connected(),
-          ),
-        ],
-        child: ThemeProvider(
-          child: ThemeConsumer(
-            child: Builder(
-              builder: (themeContext) => MaterialApp(
-                title: 'Degeit',
-                theme: ThemeProvider.themeOf(themeContext).data,
-                debugShowCheckedModeBanner: false,
-                home: ScreenController(),
-              ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => Business(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => HiveDb(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Receipt(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Customer(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Inventory(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Connected(),
+        ),
+      ],
+      child: ThemeProvider(
+        child: ThemeConsumer(
+          child: Builder(
+            builder: (themeContext) => MaterialApp(
+              title: 'Degeit',
+              theme: ThemeProvider.themeOf(themeContext).data,
+              debugShowCheckedModeBanner: false,
+              home: ScreenController(),
             ),
           ),
-          themes: [ThemeManager.light(), ThemeManager.dark()],
-          saveThemesOnChange: true,
-          // Please do not change anything on this Callback
-          onInitCallback: ThemeManager.onInitCallback,
         ),
-        debugShowCheckedModeBanner: false,
-        home: ScreenController(),
+        themes: [ThemeManager.light(), ThemeManager.dark()],
+        saveThemesOnChange: true,
+        // Please do not change anything on this Callback
+        onInitCallback: ThemeManager.onInitCallback,
       ),
     );
   }
