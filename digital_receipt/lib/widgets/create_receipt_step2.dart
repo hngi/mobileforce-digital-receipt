@@ -364,6 +364,8 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             // ColorPicker(
             //   pickerColor: Colors.blue,
             //   displayThumbColor: true,
+            //     showLabel: true,
+            // pickerAreaHeightPercent: 0.8,
             //   // paletteType: PaletteType.rgb,
             //   onColorChanged: (color) {
             //     setState(() {
