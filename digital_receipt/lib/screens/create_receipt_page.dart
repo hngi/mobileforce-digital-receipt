@@ -3,10 +3,10 @@ import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
-import 'package:digital_receipt/widgets/create_receipt_step2.dart';
+import 'package:digital_receipt/widgets/create_receipt_step3.dart';
 import 'package:digital_receipt/widgets/create_receipt_step0.dart';
 import 'package:digital_receipt/widgets/create_receipt_step1.dart';
-import 'package:digital_receipt/widgets/create_receipt_step3.dart';
+import 'package:digital_receipt/widgets/create_receipt_step2.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -80,7 +80,7 @@ class _CreateReceiptPageState extends State<CreateReceiptPage> {
                     carouselController: _carouselController,
                     carouselIndex: currentIndex,
                   ),
-                  CreateReceiptStep2(
+                  CreateReceiptStep3(
                     carouselController: _carouselController,
                     carouselIndex: currentIndex,
                   ),

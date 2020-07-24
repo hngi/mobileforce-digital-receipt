@@ -34,9 +34,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
     super.didChangeDependencies();
   }
 
-  getInventory() async {
+  getInventory({var snapShot}) async {
     await _apiService.getAllInventories().then((value) {
       print('value of resp : $value');
+      value = snapShot ?? value;
       setState(() {
         inventoryData = value;
         inventory = inventoryData..shuffle();
@@ -56,7 +57,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(inventory);
+    // print(inventory);
     if (inventory == null) {
       return Scaffold(
         body: Center(
@@ -84,8 +85,16 @@ class _InventoryScreenState extends State<InventoryScreen> {
         floatingActionButton: SafeArea(
           child: FloatingActionButton(
             onPressed: () async {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CreateInventory()));
+              var data = await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => CreateInventory(),
+                ),
+              );
+              if (data) {
+                getInventory();
+              }
+              print("Data from pop $data");
+              //
             },
             child: Icon(
               Icons.add,
@@ -94,103 +103,151 @@ class _InventoryScreenState extends State<InventoryScreen> {
             backgroundColor: kPrimaryColor,
           ),
         ),
-        body: Padding(
-          padding: EdgeInsets.only(top: 20.0, left: 16, right: 16),
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 10.0),
-              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                Padding(
-                  padding: EdgeInsets.only(right: 10.0),
-                  child: Text("Sort By"),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.6,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(
-                      color: Color(0xff25CCB3),
-                    ),
+        body: FutureBuilder(
+            future: _apiService.getAllInventories(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 1.5,
                   ),
-                  child: SizedBox(
-                    height: 40,
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton(
-                        value: dropdownValue,
-                        underline: Divider(),
-                        items: (["ALL"] + inventoryCategories)
-                            .map<DropdownMenuItem<String>>(
-                          (String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 8.0),
-                                child: Text(
-                                  value,
-                                  textAlign: TextAlign.start,
-                                ),
+                );
+              } else if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData) {
+                // print("snapshot.data ${snapshot.data}");
+                // getInventory(snapShot: snapshot.data);
+                return Padding(
+                  padding: EdgeInsets.only(top: 20.0, left: 16, right: 16),
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(height: 10.0),
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        Padding(
+                          padding: EdgeInsets.only(right: 10.0),
+                          child: Text("Sort By"),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.6,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                              color: Color(0xff25CCB3),
+                            ),
+                          ),
+                          child: SizedBox(
+                            height: 40,
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton(
+                                value: dropdownValue,
+                                underline: Divider(),
+                                items: (["ALL"] + inventoryCategories)
+                                    .map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          value,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ).toList(),
+                                onChanged: (String value) {
+                                  if (value != "ALL") {
+                                    setState(() {
+                                      dropdownValue = value;
+                                    });
+                                    inventory = sortInventoryByCategory(
+                                        inventoryData,
+                                        category: value);
+                                  } else {
+                                    setState(() {
+                                      dropdownValue = value;
+                                    });
+                                    inventory = inventoryData..shuffle();
+                                  }
+                                },
                               ),
-                            );
-                          },
-                        ).toList(),
-                        onChanged: (String value) {
-                          if (value != "ALL") {
-                            setState(() {
-                              dropdownValue = value;
-                            });
-                            inventory = sortInventoryByCategory(inventoryData,
-                                category: value);
-                          } else {
-                            setState(() {
-                              dropdownValue = value;
-                            });
-                            inventory = inventoryData..shuffle();
-                          }
-                        },
+                            ),
+                          ),
+                        ),
+                      ]),
+                      SizedBox(height: 20.0),
+                      Expanded(
+                        child: Column(
+                          children: <Widget>[
+                            SizedBox(height: 20.0),
+                            Flexible(
+                              child: ListView.builder(
+                                itemCount: inventory.length ?? 0,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                      onLongPress: () async {
+                                        await _confirmInventoryDelete(
+                                            inventory[index].id,
+                                            inventory[index].title);
+                                      },
+                                      child: _buildInventory(
+                                          inventory[index], index));
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-              ]),
-              SizedBox(height: 20.0),
-              Expanded(
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(height: 20.0),
-                    Flexible(
-                      child: ListView.builder(
-                        itemCount: inventory.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                              onLongPress: () async {
-                                 await _confirmInventoryDelete(
-                                     inventory[index].id,
-                                    inventory[index].title);  },
-                                    child: _buildInventory(inventory[index], index)
-                              );
-                        },
+                );
+              } else {
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        child: kBrokenHeart,
+                        height: 170,
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Center(
+                        child: Text(
+                          "There is no inventory created!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 16,
+                            letterSpacing: 0.3,
+                            color: Color.fromRGBO(0, 0, 0, 0.87),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                    ],
+                  ),
+                );
+              }
+            }),
       );
     }
   }
 
   Widget _buildInventory(Inventory inventory, int index) {
     return GestureDetector(
-         onTap: () => Navigator.push(
+        onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => UpdateInventory(
                   inventory: inventory,
                 ),
               ),
-            ), 
+            ),
         child: Padding(
           padding: const EdgeInsets.only(bottom: 15),
           child: Column(
@@ -363,13 +420,13 @@ class _InventoryScreenState extends State<InventoryScreen> {
               SizedBox(
                 height: 5,
               ),
-               index == 0
+              index == 0
                   ? Text(
                       //'Tap to update, Longpress to delete inventory',
                       'Longpress to delete inventory',
                       textAlign: TextAlign.center,
                     )
-                  : SizedBox.shrink(), 
+                  : SizedBox.shrink(),
             ],
           ),
         ));
@@ -429,20 +486,26 @@ class _InventoryScreenState extends State<InventoryScreen> {
                         setState(() {
                           loading = false;
                         });
-                        Navigator.push(
+                        Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => InventoryScreen()));
+                                builder: (_) => InventoryScreen()),
+                            (route) => false);
+                        // OR
+                        // Navigator.pop(context, true);
                         Fluttertoast.showToast(msg: 'an error occured');
                       } else {
                         setState(() {
                           loading = false;
                         });
-                        Navigator.push(
+                        Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => InventoryScreen()));
-                                Fluttertoast.showToast(msg: 'item deleted');
+                                builder: (_) => InventoryScreen()),
+                            (route) => false);
+                        // OR
+                        // Navigator.pop(context, true);
+                        Fluttertoast.showToast(msg: 'item deleted');
                         print('successful');
                       }
                     },

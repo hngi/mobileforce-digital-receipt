@@ -34,8 +34,8 @@ class ThemeManager {
   }
 
   static AppTheme light() => AppTheme.light().copyWith(
-      id: lightTheme,
-      data: ThemeData(
+        id: lightTheme,
+        data: ThemeData(
           brightness: Brightness.light,
           scaffoldBackgroundColor: LightMode.backgroundColor,
           primaryColor: LightMode.primaryColor,
@@ -110,89 +110,94 @@ class ThemeManager {
               fontWeight: FontWeight.w500,
               fontFamily: 'Montserrat',
             ),
-          )));
+            errorStyle: TextStyle(height: 0.5),
+          ),
+        ),
+      );
 
   static AppTheme dark() {
     return AppTheme.dark().copyWith(
       id: darkTheme,
       data: ThemeData(
-          cardColor: DarkMode.appBarColor,
+        cardColor: DarkMode.appBarColor,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Colors.amberAccent,
+        //scaffoldBackgroundColor: DarkMode.backgroundColor,
+        primaryColor: DarkMode.primaryColor,
+        primaryColorDark: DarkMode.appBarColor,
+        accentColor: Color(0xFF25CCB3),
+        dialogBackgroundColor: Colors.grey[850],
+        appBarTheme: AppBarTheme(
           brightness: Brightness.dark,
-          //scaffoldBackgroundColor: Colors.lightBlueAccent,
-          scaffoldBackgroundColor: DarkMode.backgroundColor,
-          primaryColor: DarkMode.primaryColor,
-          primaryColorDark: DarkMode.appBarColor,
-          accentColor: Color(0xFF25CCB3),
-          dialogBackgroundColor: Colors.grey[850],
-          appBarTheme: AppBarTheme(
-            brightness: Brightness.dark,
-            color: DarkMode.appBarColor,
-            iconTheme: IconThemeData(color: Colors.white),
-            textTheme: TextTheme(
-              headline6: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Montserrat',
-                letterSpacing: 0.03,
-              ),
-            ),
-          ),
-          buttonColor: DarkMode.buttonColor,
-          focusColor: DarkMode.focusColor,
+          color: DarkMode.appBarColor,
+          iconTheme: IconThemeData(color: Colors.white),
           textTheme: TextTheme(
-            bodyText1: TextStyle(
-              color: DarkMode.appBarColor,
-              fontFamily: 'Montserrat',
-            ),
-            bodyText2: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.normal,
-                fontSize: 14,
-                letterSpacing: 0.3),
-            subtitle2: TextStyle(
-              fontFamily: 'Montserrat',
-              fontWeight: FontWeight.normal,
-              letterSpacing: 0.3,
-              color: Color(0x99FFFFFF),
-            ),
-            headline5: TextStyle(
-              fontFamily: 'Montserrat',
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.3,
-              fontSize: 22,
-            ),
             headline6: TextStyle(
-              fontFamily: 'Montserrat',
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.3,
-              fontSize: 16,
-            ),
-            button: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: DarkMode.appBarColor,
+              fontFamily: 'Montserrat',
+              letterSpacing: 0.03,
             ),
           ),
-          inputDecorationTheme: InputDecorationTheme(
-            contentPadding: EdgeInsets.all(15),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: BorderSide(
-                color: DarkMode.textFieldRingColor,
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide:
-                  BorderSide(color: DarkMode.textFieldFocusedColor, width: 1.5),
-            ),
-            hintStyle: TextStyle(
-              color: DarkMode.textFieldEnabledColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+        ),
+        buttonColor: DarkMode.buttonColor,
+        focusColor: DarkMode.focusColor,
+        textTheme: TextTheme(
+          bodyText1: TextStyle(
+            color: DarkMode.appBarColor,
+            fontFamily: 'Montserrat',
+          ),
+          bodyText2: TextStyle(
               fontFamily: 'Montserrat',
+              fontWeight: FontWeight.normal,
+              fontSize: 14,
+              letterSpacing: 0.3),
+          subtitle2: TextStyle(
+            fontFamily: 'Montserrat',
+            fontWeight: FontWeight.normal,
+            letterSpacing: 0.3,
+            color: Color(0x99FFFFFF),
+          ),
+          headline5: TextStyle(
+            fontFamily: 'Montserrat',
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.3,
+            fontSize: 22,
+          ),
+          headline6: TextStyle(
+            fontFamily: 'Montserrat',
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.3,
+            fontSize: 16,
+          ),
+          button: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: DarkMode.appBarColor,
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          contentPadding: EdgeInsets.all(15),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide(
+              color: DarkMode.textFieldRingColor,
             ),
-          )),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide:
+                BorderSide(color: DarkMode.textFieldFocusedColor, width: 1.5),
+          ),
+          hintStyle: TextStyle(
+            color: DarkMode.textFieldEnabledColor,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            fontFamily: 'Montserrat',
+          ),
+          errorStyle: TextStyle(height: 0.5),
+        ),
+      ),
       //
     );
   }

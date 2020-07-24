@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-class AppTextFieldForm extends StatelessWidget {
-  const AppTextFieldForm(
-      {this.hintText,
+class AppTextFormField extends StatelessWidget {
+  const AppTextFormField(
+      {this.initialValue,
+      this.label,
+      this.hintText,
       this.keyboardType,
       this.obscureText,
       this.controller,
@@ -32,10 +34,13 @@ class AppTextFieldForm extends StatelessWidget {
   final TextInputAction textInputAction;
   final Function onFieldSubmitted;
   final Widget suffixIcon;
+  final String label;
+  final String initialValue;
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    TextFormField textFormField = TextFormField(
+      initialValue: initialValue,
       controller: controller != null ? controller : null,
       focusNode: focusNode,
       textInputAction: textInputAction,
@@ -53,5 +58,18 @@ class AppTextFieldForm extends StatelessWidget {
       keyboardType: keyboardType != null ? keyboardType : null,
       obscureText: obscureText != null ? obscureText : false,
     );
+
+    return label == null
+        ? textFormField
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(label),
+              SizedBox(
+                height: 5.0,
+              ),
+              textFormField
+            ],
+          );
   }
 }
