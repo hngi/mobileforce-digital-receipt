@@ -286,52 +286,6 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               SizedBox(
                 height: 10,
               ),
-/*
-              DropdownButtonFormField<Customer>(
-                value: selectedCustomer,
-                onChanged: (Customer value) {
-                  setState(() {
-                    selectedCustomer = value;
-                  });
-                },
-                validator: (value) {
-                  if (_nameController.text == null ||
-                      _nameController.text.isEmpty) {
-                    if (value == null) {
-                      return "Select a customer or enter a new one";
-                    }
-                  }
-                  return null;
-                },
-                items: customers.map((Customer customer) {
-                  return DropdownMenuItem<Customer>(
-                    value: customer.email != null ? customer : null,
-                    child: Text(
-                      customer.name,
-                    ),
-                  );
-                }).toList(),
-                iconEnabledColor: Color.fromRGBO(0, 0, 0, 0.87),
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(15),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                    borderSide: BorderSide(
-                      color: Color(0xFFC8C8C8),
-                      width: 1.5,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(),
-                  //hintText: hintText,
-                  hintStyle: TextStyle(
-                    color: Color(0xFF979797),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'Montserrat',
-                  ),
-                ),
-              ),
-*/
               AppDropSelector(
                 text: selectedCustomer != null
                     ? selectedCustomer.name
@@ -553,7 +507,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                 height: 45,
               ),
               AppSolidButton(
-                title: 'Next',
+                text: 'Next',
                 backgroundColor: Theme.of(context).buttonColor,
                 onPressed: () {
                   FocusScope.of(context).unfocus();

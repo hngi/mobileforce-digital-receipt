@@ -226,7 +226,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                 focusNode: _dateTextFocus,
                 controller: _dateTextController,
                 onTap: () async {
-                  final DateTime picked = await showDatePicker(
+                  final DateTime datePicked = await showDatePicker(
                     context: context,
                     initialDate: date,
                     firstDate: date.add(Duration(days: -20)),
@@ -234,9 +234,9 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
                   );
 
                   _dateTextFocus.unfocus();
-                  if (picked != null && picked != date) {
+                  if (datePicked != null && datePicked != date) {
                     setState(() {
-                      date = picked;
+                      date = datePicked;
                       print(DateTime.now());
                     });
                   }
@@ -622,7 +622,7 @@ class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
             AppSolidButton(
               height: 50,
               isLoading: isLoading,
-              title: 'Generate Receipt',
+              text: 'Generate Receipt',
               onPressed: () async {
                 // check the internet
                 var connected = await Connected().checkInternet();

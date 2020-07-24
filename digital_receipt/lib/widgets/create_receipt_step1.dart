@@ -10,6 +10,7 @@ import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
+import 'package:digital_receipt/widgets/date_time_input_textField.dart';
 import 'package:digital_receipt/widgets/product_detail.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/material.dart';
@@ -56,8 +57,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
   DateTime date = DateTime.now();
   TimeOfDay time = TimeOfDay.now();
 
-  final _time = TextEditingController();
-  final _date = TextEditingController();
+  final _timeController = TextEditingController();
+  final _dateController = TextEditingController();
 
   getInventories() async {
     try {
@@ -86,8 +87,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
   @override
   Widget build(BuildContext context) {
     if (date != null && time != null) {
-      _date.text = DateFormat('dd-MM-yyyy').format(date);
-      _time.text = time.format(context);
+      _dateController.text = DateFormat('dd-MM-yyyy').format(date);
+      _timeController.text = time.format(context);
     }
     return SingleChildScrollView(
       child: Padding(
@@ -249,13 +250,9 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
               children: <Widget>[
                 Text(
                   'Part payment',
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.normal,
-                    letterSpacing: 0.3,
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
+                  style: Theme.of(context).textTheme.headline6.copyWith(
+                        fontWeight: FontWeight.normal,
+                      ),
                 ),
                 Switch(
                   value: _partPayment,
@@ -280,13 +277,6 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                         child: Text(
                           'Set reminder for payment completion',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Montserrat',
-                            fontWeight: FontWeight.normal,
-                            letterSpacing: 0.3,
-                            fontSize: 14,
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       SizedBox(
@@ -294,25 +284,10 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                       ),
                       Text(
                         'Date',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 13,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
                       ),
                       SizedBox(height: 5),
-                      TextFormField(
-                        readOnly: true,
-                        controller: _date,
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 15,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
+                      DateTimeInputTextField(
+                        controller: _dateController,
                         onTap: () async {
                           final DateTime datePicked = await showDatePicker(
                               context: context,
@@ -334,68 +309,16 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                             print(DateTime.now()); */
                           }
                         },
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(
-                              color: Color(0xFFC8C8C8),
-                              width: 1.5,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(),
-                          //hintText: hintText,
-                          hintStyle: TextStyle(
-                            color: Color(0xFF979797),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Montserrat',
-                          ),
-                        ),
                       ),
                       SizedBox(
                         height: 22,
                       ),
                       Text(
                         'Time',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 15,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
                       ),
                       SizedBox(height: 5),
-                      TextFormField(
-                        readOnly: true,
-                        controller: _time,
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 15,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(
-                              color: Color(0xFFC8C8C8),
-                              width: 1.5,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(),
-
-                          //hintText: hintText,
-                          hintStyle: TextStyle(
-                            color: Color(0xFF979797),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Montserrat',
-                          ),
-                        ),
+                      DateTimeInputTextField(
+                        controller: _timeController,
                         onTap: () async {
                           final TimeOfDay timePicked = await showTimePicker(
                               context: context, initialTime: time);
@@ -456,7 +379,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   widget.carouselController.animateToPage(2);
                 }
               },
-              title: 'Next',
+              text: 'Next',
               backgroundColor: Theme.of(context).buttonColor,
             ),
           ],

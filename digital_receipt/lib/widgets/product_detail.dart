@@ -337,7 +337,7 @@ class _ProductDetailState extends State<ProductDetail> {
                           : SizedBox(),
                       SizedBox(height: 20),
                       AppSolidButton(
-                        title: 'Add',
+                        text: 'Add',
                         backgroundColor: Color(0xFF0B57A7),
                         onPressed: () {
                           submitForm();

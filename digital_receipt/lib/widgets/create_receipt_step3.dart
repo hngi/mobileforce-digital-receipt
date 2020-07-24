@@ -45,29 +45,13 @@ class _SellerSignatureScreenState extends State<SellerSignatureScreen> {
             SizedBox(
               height: 14,
             ),
-            Text(
-              'Append your signature',
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.3,
-                fontSize: 22,
-                color: Colors.black,
-              ),
-            ),
+            Text('Append your signature',
+                style: Theme.of(context).textTheme.headline5),
             SizedBox(
               height: 5,
             ),
-            Text(
-              'Provide your signature on the grey area below',
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.w300,
-                letterSpacing: 0.3,
-                fontSize: 12,
-                color: Colors.black,
-              ),
-            ),
+            Text('Provide your signature on the grey area below',
+                style: Theme.of(context).textTheme.subtitle2),
             SizedBox(
               height: 24,
             ),
@@ -90,8 +74,8 @@ class _SellerSignatureScreenState extends State<SellerSignatureScreen> {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
                                   color: widget.carouselIndex.index == index
-                                      ? Color(0xFF25CCB3)
-                                      : Color.fromRGBO(0, 0, 0, 0.12),
+                                      ? Theme.of(context).accentColor
+                                      : Theme.of(context).disabledColor,
                                   boxShadow: [
                                     BoxShadow(
                                         offset: Offset(0, 3),
@@ -221,7 +205,12 @@ class _SellerSignatureScreenState extends State<SellerSignatureScreen> {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Image.memory(base64Decode(encode)),
+                Container(
+                  color: Colors.white60,
+                  child: Image.memory(
+                    base64Decode(encode),
+                  ),
+                ),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: FlatButton(

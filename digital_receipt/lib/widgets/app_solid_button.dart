@@ -6,7 +6,7 @@ import 'button_loading_indicator.dart';
 class AppSolidButton extends StatelessWidget {
   const AppSolidButton({
     this.onPressed,
-    this.title,
+    this.text,
     this.textColor,
     this.backgroundColor,
     this.height,
@@ -14,7 +14,7 @@ class AppSolidButton extends StatelessWidget {
   });
 
   final Function onPressed;
-  final String title;
+  final String text;
   final Color textColor;
   final Color backgroundColor;
 
@@ -39,7 +39,7 @@ class AppSolidButton extends StatelessWidget {
                 height: 20,
               )
             : Text(
-                title,
+                text,
               ),
       ),
     );

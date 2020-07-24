@@ -192,7 +192,7 @@ class _EditReminderScreenState extends State<EditReminderScreen> {
                 onPressed: () async {
                   // TODO Update Reminder
                 },
-                title: 'Update',
+                text: 'Update',
                 backgroundColor: Color(0xFF0B57A7),
                 textColor: Colors.white,
               ),
