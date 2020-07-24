@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/utils/connected.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/screens/change_password_screen.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';

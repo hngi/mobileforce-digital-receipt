@@ -32,6 +32,7 @@ class ApiService {
   static String _urlEndpoint = kReleaseMode
       ? "http://degeitreceipt.pythonanywhere.com/v1"
       : "http://degeittest.pythonanywhere.com/v1";
+  // http://degeittest.pythonanywhere.com/v1
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();
@@ -617,7 +618,6 @@ class ApiService {
 
       res = res['data'] as List;
 
-
       if (response.statusCode == 200) {
         print(response.statusCode);
         res = res.firstWhere(
@@ -1173,6 +1173,30 @@ class ApiService {
         return 'true';
       }
       return 'false';
+    } else {
+      return 'false';
+    }
+  }
+
+  getPromotion() async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/promotions';
+      var response = await http.get(
+        uri,
+      );
+      String versionNumber =
+          await _sharedPreferenceService.getStringValuesSF("VERSION");
+      String isPromotion = "false";
+      var res = json.decode(response.body);
+      print("promotion response ");
+      print(res['data']["id"]);
+      if (response.statusCode == 200 &&
+          res['data']['versionNumber'] != versionNumber &&
+          isPromotion == 'false') {
+        return res['data'];
+      }
+      return null;
     } else {
       return 'false';
     }

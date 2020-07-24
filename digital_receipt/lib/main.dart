@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:device_preview/device_preview.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/inventory.dart';
@@ -218,8 +220,16 @@ class _ScreenControllerState extends State<ScreenController> {
     }
   }
 
+  setVerson(){
+    var _version = '2';
+    _sharedPreferenceService.addStringToSF("VERSION", _version);
+  }
+
+
+
   @override
   void initState() {
+    setVerson();
     super.initState();
     // initConnect();
 
