@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constant.dart';
+
 class ContactCard extends StatelessWidget {
   const ContactCard(
       {this.receiptNo,
@@ -24,12 +26,9 @@ class ContactCard extends StatelessWidget {
               color: Color(0xFF539C30),
               borderRadius: BorderRadius.circular(5),
             ),
-            child: Container(
+            child: Card(
               margin: EdgeInsets.only(left: 5.0),
-              decoration: BoxDecoration(
-                color: Color(0xFFE2EAF3),
-                borderRadius: BorderRadius.circular(5),
-              ),
+              shape: kRoundedRectangleBorder,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -38,13 +37,7 @@ class ContactCard extends StatelessWidget {
                     padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
                     child: Text(
                       "$receiptTitle",
-                      style: TextStyle(
-                        color: Color.fromRGBO(0, 0, 0, 0.87),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Montserrat',
-                        letterSpacing: 0.03,
-                      ),
+                      style: Theme.of(context).textTheme.headline6,
                     ),
                   ),
                   Padding(
@@ -53,14 +46,7 @@ class ContactCard extends StatelessWidget {
                       "$subtitle",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w100,
-                        height: 1.43,
-                        fontFamily: 'Montserrat',
-                        letterSpacing: 0.3,
-                      ),
+                      style: Theme.of(context).textTheme.subtitle2,
                     ),
                   ),
                 ],

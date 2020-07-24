@@ -4,6 +4,7 @@ import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
@@ -35,20 +36,23 @@ class _SetupState extends State<Setup> {
     PermissionStatus status = await Permission.storage.status;
     //print(status);
     /*  if (status == PermissionStatus.granted) { */
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    print(File(pickedFile.path).lengthSync());
-    //  print('picked: $pickedFile');
-    if (pickedFile != null) {
-      // print(pickedFile.path);
-      setState(() {
-        _image = pickedFile.path;
-      });
-      print('image: $_image');
-    } else {
-      print('not able to pick file');
+    try {
+      final pickedFile = await picker.getImage(source: ImageSource.gallery);
+      // print(File(pickedFile.path).lengthSync());
+      //  print('picked: $pickedFile');
+      if (pickedFile != null) {
+        // print(pickedFile.path);
+        setState(() {
+          _image = pickedFile.path;
+        });
+        print('image: $_image');
+      } else {
+        print('not able to pick file');
+      }
+    } on PlatformException {
+      return;
+      //}
     }
-
-    //}
   }
 
   final _setupKey = GlobalKey<FormState>();

@@ -9,9 +9,12 @@ class About extends StatefulWidget {
 }
 
 class _AboutState extends State<About> {
-  PackageInfo packageInfo =  PackageInfo();
+  PackageInfo packageInfo;
 
   setPackage() async {
+    setState(() {
+      packageInfo=  PackageInfo();
+    });
     var val = await PackageInfo.fromPlatform();
     setState(() {
       packageInfo = val;
@@ -62,7 +65,7 @@ class _AboutState extends State<About> {
               ),
             ),
             subtitle: Text(
-              packageInfo?.buildNumber,
+              packageInfo?.buildNumber ?? '',
               style: TextStyle(
                 fontFamily: 'Montserrat',
               ),
