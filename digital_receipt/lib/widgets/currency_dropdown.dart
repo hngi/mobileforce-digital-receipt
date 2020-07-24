@@ -33,7 +33,7 @@ class CurrencyDropdown extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
-                  color: Color(0xFFF2F8FF),
+                  color: Theme.of(context).dialogBackgroundColor,
                 ),
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width - 32,
@@ -46,29 +46,11 @@ class CurrencyDropdown extends StatelessWidget {
                       },
                       decoration: InputDecoration(
                         hintText: "Search currency",
-                        hintStyle: TextStyle(
-                            color: Color.fromRGBO(0, 0, 0, 0.38),
-                            fontFamily: 'Montserrat'),
                         prefixIcon: IconButton(
                           icon: Icon(Icons.search),
-                          color: Color.fromRGBO(0, 0, 0, 0.38),
                           onPressed: () {},
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(
-                            color: Color.fromRGBO(0, 0, 0, 0.12),
-                            width: 1,
-                          ),
-                        ),
                         contentPadding: EdgeInsets.all(15),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(
-                            color: Color(0xFFC8C8C8),
-                            width: 1.5,
-                          ),
-                        ),
                       ),
                     ),
                     SizedBox(height: 20),
@@ -99,7 +81,8 @@ class CurrencyDropdown extends StatelessWidget {
       ),
     );
   }
-      searchCurrencyList(String val) {
+
+  searchCurrencyList(String val) {
     //print(_customerList[0].name.contains(val));
     currency
         .where((e) => e.name.toLowerCase().contains(val.toLowerCase()))

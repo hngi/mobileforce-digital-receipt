@@ -23,8 +23,11 @@ class HomePage extends StatelessWidget {
 
 
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        appBar: AppBar(
+
 
           //backgroundColor: Color(0xFF226EBE),
           ),
@@ -59,7 +62,6 @@ class HomePage extends StatelessWidget {
             Icons.add,
             color: Colors.black,
           ),
-          backgroundColor: Color(0xFF25CCB3),
         ),
       ),
     );

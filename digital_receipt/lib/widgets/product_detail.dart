@@ -6,11 +6,12 @@ import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
-import 'package:digital_receipt/widgets/submit_button.dart';
+import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
+import 'app_drop_selector.dart';
 import 'contact_card.dart';
 
 class ProductDetail extends StatefulWidget {
@@ -125,7 +126,7 @@ class _ProductDetailState extends State<ProductDetail> {
       backgroundColor: Colors.transparent,
       body: Container(
         decoration: BoxDecoration(
-            color: Color(0xFFFFFFFFF),
+            color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10), topRight: Radius.circular(10))),
         child: Column(
@@ -156,10 +157,8 @@ class _ProductDetailState extends State<ProductDetail> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       SizedBox(height: 9),
-
-                     product == null
-
-                          ? GestureDetector(
+                      product == null
+                          ? AppDropSelector(
                               onTap: () async {
                                 showDialog(
                                   context: context,
@@ -175,34 +174,9 @@ class _ProductDetailState extends State<ProductDetail> {
                                   },
                                 );
                               },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Color.fromRGBO(0, 0, 0, 0.12),
-                                      width: 1.5,
-                                    ),
-                                    borderRadius: BorderRadius.circular(5.0)),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 13, vertical: 14),
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(
-                                      selectedInventory != null
-                                          ? selectedInventory.title
-                                          : 'Select from Inventory',
-                                      style: TextStyle(
-                                        fontFamily: 'Montserrat',
-                                        fontWeight: FontWeight.w500,
-                                        letterSpacing: 0.3,
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Icon(Icons.arrow_drop_down),
-                                  ],
-                                ),
-                              ),
+                              text: selectedInventory != null
+                                  ? selectedInventory.title
+                                  : 'Select from Inventory',
                             )
                           : SizedBox.shrink(),
                       SizedBox(
@@ -211,26 +185,12 @@ class _ProductDetailState extends State<ProductDetail> {
                       product == null
                           ? Text(
                               'Or, enter Product information',
-                              style: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.normal,
-                                letterSpacing: 0.3,
-                                fontSize: 14,
-                                color: Color.fromRGBO(0, 0, 0, 0.6),
-                              ),
                             )
                           : SizedBox.shrink(),
                       SizedBox(height: 7),
                       SizedBox(height: 9),
                       Text(
                         'Description',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 13,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
                       ),
                       SizedBox(height: 5),
                       AppTextFieldForm(
@@ -249,24 +209,25 @@ class _ProductDetailState extends State<ProductDetail> {
                       SizedBox(height: 22),
                       Text(
                         'Quantity',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 13,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
                       ),
                       SizedBox(height: 5),
-                      Row( 
+                      Row(
                         children: <Widget>[
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
                               border: Border.all(
                                 color: _quantityDropdownFocus.hasFocus
-                                    ? Colors.black
-                                    : Color.fromRGBO(0, 0, 0, 0.12),
+                                    ? Theme.of(context)
+                                        .inputDecorationTheme
+                                        .focusedBorder
+                                        .borderSide
+                                        .color
+                                    : Theme.of(context)
+                                        .inputDecorationTheme
+                                        .enabledBorder
+                                        .borderSide
+                                        .color,
                               ),
                             ),
                             child: DropdownButton<Unit>(
@@ -277,15 +238,16 @@ class _ProductDetailState extends State<ProductDetail> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   'Unit',
-                                  style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    fontWeight: FontWeight.normal,
-                                    letterSpacing: 0.3,
-                                    fontSize: 16,
-                                    color: Color(0xFF1B1B1B),
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6
+                                      .copyWith(fontWeight: FontWeight.normal),
                                 ),
                               ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline6
+                                  .copyWith(fontWeight: FontWeight.normal),
                               underline: Divider(),
                               items: units.map(
                                 (Unit unit) {
@@ -326,13 +288,6 @@ class _ProductDetailState extends State<ProductDetail> {
                       SizedBox(height: 22),
                       Text(
                         'Unit price',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 13,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
                       ),
                       SizedBox(height: 5),
                       AppTextFieldForm(
@@ -346,13 +301,6 @@ class _ProductDetailState extends State<ProductDetail> {
                       SizedBox(height: 22),
                       Text(
                         'Tax',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 13,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
                       ),
                       SizedBox(height: 5),
                       AppTextFieldForm(
@@ -366,13 +314,6 @@ class _ProductDetailState extends State<ProductDetail> {
                       SizedBox(height: 22),
                       Text(
                         'Discount',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 13,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
                       ),
                       SizedBox(height: 5),
                       AppTextFieldForm(
@@ -391,18 +332,11 @@ class _ProductDetailState extends State<ProductDetail> {
                                 product == null
                                     ? 'Product added'
                                     : 'Product edited',
-                                style: TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontWeight: FontWeight.normal,
-                                  letterSpacing: 0.3,
-                                  fontSize: 13,
-                                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                                ),
                               ),
                             )
                           : SizedBox(),
                       SizedBox(height: 20),
-                      SubmitButton(
+                      AppSolidButton(
                         title: 'Add',
                         backgroundColor: Color(0xFF0B57A7),
                         onPressed: () {
@@ -509,9 +443,8 @@ class InventoryDialog extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: Color(0xFFF2F8FF),
-                ),
+                    borderRadius: BorderRadius.circular(5),
+                    color: Theme.of(context).dialogBackgroundColor),
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width - 32,
                 child: Column(
@@ -524,29 +457,11 @@ class InventoryDialog extends StatelessWidget {
                       },
                       decoration: InputDecoration(
                         hintText: "Search inventory",
-                        hintStyle: TextStyle(
-                            color: Color.fromRGBO(0, 0, 0, 0.38),
-                            fontFamily: 'Montserrat'),
                         prefixIcon: IconButton(
                           icon: Icon(Icons.search),
-                          color: Color.fromRGBO(0, 0, 0, 0.38),
                           onPressed: () {},
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(
-                            color: Color.fromRGBO(0, 0, 0, 0.12),
-                            width: 1,
-                          ),
-                        ),
                         contentPadding: EdgeInsets.all(15),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(
-                            color: Color(0xFFC8C8C8),
-                            width: 1.5,
-                          ),
-                        ),
                       ),
                     ),
                     SizedBox(height: 20),

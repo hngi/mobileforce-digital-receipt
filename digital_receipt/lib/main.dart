@@ -11,10 +11,13 @@ import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/services/notification.dart';
 import 'package:digital_receipt/utils/check_login.dart';
+import 'package:digital_receipt/utils/theme_manager.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'dart:io';
 import 'screens/second_screen.dart';
 import 'utils/connected.dart';
@@ -137,56 +140,43 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => Business(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => HiveDb(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => Receipt(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => Customer(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => Inventory(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => Connected(),
-        ),
-      ],
-      child: MaterialApp(
-        title: 'Degeit',
-        theme: ThemeData(
-          primaryColor: Color(0xFF0B57A7),
-          scaffoldBackgroundColor: Color(0xFFF2F8FF),
-          accentColor: Color(0xFF25CCB3),
-          appBarTheme: AppBarTheme(
-              textTheme: TextTheme(
-            headline6: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Montserrat',
-              letterSpacing: 0.03,
-            ),
-          )),
-          textTheme: TextTheme(
-            bodyText1: TextStyle(
-              fontFamily: 'Montserrat',
-            ),
-            headline6: TextStyle(
-              fontFamily: 'Montserrat',
-            ),
-            bodyText2: TextStyle(
-              fontFamily: 'Montserrat',
-            ),
-            button: TextStyle(
-              fontFamily: 'Montserrat',
+    return OverlaySupport(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => Business(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => HiveDb(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Receipt(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Customer(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Inventory(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Connected(),
+          ),
+        ],
+        child: ThemeProvider(
+          child: ThemeConsumer(
+            child: Builder(
+              builder: (themeContext) => MaterialApp(
+                title: 'Degeit',
+                theme: ThemeProvider.themeOf(themeContext).data,
+                debugShowCheckedModeBanner: false,
+                home: ScreenController(),
+              ),
             ),
           ),
+          themes: [ThemeManager.light(), ThemeManager.dark()],
+          saveThemesOnChange: true,
+          // Please do not change anything on this Callback
+          onInitCallback: ThemeManager.onInitCallback,
         ),
         debugShowCheckedModeBanner: false,
         home: ScreenController(),

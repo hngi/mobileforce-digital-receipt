@@ -1,7 +1,7 @@
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
-import 'package:digital_receipt/widgets/submit_button.dart';
+import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
@@ -188,7 +188,7 @@ class _EditReminderScreenState extends State<EditReminderScreen> {
               SizedBox(
                 height: 55,
               ),
-              SubmitButton(
+              AppSolidButton(
                 onPressed: () async {
                   // TODO Update Reminder
                 },

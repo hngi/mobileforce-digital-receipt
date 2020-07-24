@@ -258,6 +258,10 @@ class _DashBoardState extends State<DashBoard> {
 
   GridView buildGridView(recNo, int deptIssued, double amnt) {
     RandomColor _color = RandomColor();
+    Color _getRandomColor() {
+      return _color.randomColor(colorBrightness: ColorBrightness.dark);
+    }
+
     return GridView.count(
       crossAxisSpacing: 16.0,
       mainAxisSpacing: 16.0,
@@ -267,17 +271,17 @@ class _DashBoardState extends State<DashBoard> {
         _singleCard(
           leading: 'No of receipts',
           subtitle: '$recNo',
-          color: _color.randomColor(colorBrightness: ColorBrightness.dark),
+          color: _getRandomColor(),
         ),
         _singleCard(
           leading: 'Debts',
           subtitle: '$deptIssued',
-          color: _color.randomColor(colorBrightness: ColorBrightness.dark),
+          color: _getRandomColor(),
         ),
         _singleCard(
           leading: 'Total Sales',
           subtitle: '₦${Utils.formatNumber(amnt)}',
-          color: _color.randomColor(colorBrightness: ColorBrightness.dark),
+          color: _getRandomColor(),
         ),
         FlatButton(
           onPressed: () async {
@@ -298,40 +302,42 @@ class _DashBoardState extends State<DashBoard> {
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(7.0),
-        color: Color(0xFF0B57A7),
+        color: Theme.of(context).primaryColor,
       ),
       child: Row(
         children: <Widget>[
           Expanded(
             flex: 3,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  businessInfo.name,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-                Text(
-                  businessInfo.address,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.white),
-                ),
-                Text(
-                  businessInfo.email,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.white),
-                ),
-                Text(
-                  businessInfo.phone,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
+            child: DefaultTextStyle(
+              style: Theme.of(context).textTheme.bodyText1,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    businessInfo.name,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    businessInfo.address,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    businessInfo.email,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    businessInfo.phone,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
           ),
           /* Expanded(
@@ -375,12 +381,9 @@ class _DashBoardState extends State<DashBoard> {
         color: color,
         borderRadius: BorderRadius.circular(7.0),
       ),
-      child: Container(
-        margin: EdgeInsets.only(left: 3.0),
-        decoration: BoxDecoration(
-          color: Color(0xFFE3EAF1),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
+      child: Card(
+        margin: EdgeInsets.only(left: 5.0),
+        shape: kRoundedRectangleBorder,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
