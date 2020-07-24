@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:device_preview/device_preview.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/inventory.dart';
@@ -8,10 +10,12 @@ import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/services/notification.dart';
+import 'package:digital_receipt/utils/check_login.dart';
 import 'package:digital_receipt/utils/theme_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:theme_provider/theme_provider.dart';
 import 'dart:io';
@@ -19,7 +23,6 @@ import 'screens/second_screen.dart';
 import 'utils/connected.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'models/notification.dart';
@@ -61,14 +64,26 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
+
+
 class _MyAppState extends State<MyApp> {
   void initState() {
+   
     _requestIOSPermissions();
     _configureDidReceiveLocalNotificationSubject();
     _configureSelectNotificationSubject();
-
     super.initState();
   }
+
+  /*  @override
+  void didChangeDependencies() {
+    print('didChangeDependencies');
+    checkLogin.dispose();
+    isLogin();
+    super.didChangeDependencies();
+  } */
+
+ 
 
   void _requestIOSPermissions() {
     flutterLocalNotificationsPlugin
@@ -163,6 +178,8 @@ class _MyAppState extends State<MyApp> {
           // Please do not change anything on this Callback
           onInitCallback: ThemeManager.onInitCallback,
         ),
+        debugShowCheckedModeBanner: false,
+        home: ScreenController(),
       ),
     );
   }
@@ -213,6 +230,8 @@ class _ScreenControllerState extends State<ScreenController> {
     getCurrentAutoLogoutStatus();
 
     final FirebaseMessaging _fcm = FirebaseMessaging();
+
+//_fcm.setAutoInitEnabled(enabled)
 
     if (Platform.isIOS) {
       _fcm.requestNotificationPermissions(IosNotificationSettings());
