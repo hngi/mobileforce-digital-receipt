@@ -60,7 +60,7 @@ class _DashBoardState extends State<DashBoard> {
           print('event');
           print('value');
           await Future.microtask(() => value = event);
-          
+
           if (value == false) {
             await _sharedPreferenceService.addStringToSF("AUTH_TOKEN", 'empty');
             await _sharedPreferenceService.addStringToSF(
@@ -70,18 +70,17 @@ class _DashBoardState extends State<DashBoard> {
             await FirebaseMessaging().deleteInstanceID();
 
             if (mounted) {
-              await Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => LogInScreen()),
-                  (route) => false).then((value) => Fluttertoast.showToast(
-                msg: 'You need to log in to continue',
-                toastLength: Toast.LENGTH_LONG,
-                backgroundColor: Colors.grey[700],
-                textColor: Colors.white,
-              ));
-
-              
+              await Navigator
+                  .pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => LogInScreen()),
+                      (route) => false).then((value) => Fluttertoast.showToast(
+                    msg: 'You need to log in to continue',
+                    toastLength: Toast.LENGTH_LONG,
+                    backgroundColor: Colors.grey[700],
+                    textColor: Colors.white,
+                  ));
             }
           }
         }
