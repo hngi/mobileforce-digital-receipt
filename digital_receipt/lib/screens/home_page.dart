@@ -63,12 +63,12 @@ class HomePage extends StatelessWidget {
             ),
           ),
 // <<<<<<< dev
-//         ));
+         ));
 // =======
-        ),
+/*         ),
       ),
       )
-    );
+    ); */
 //>>>>>>> dev
   }
 }
