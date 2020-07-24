@@ -18,30 +18,26 @@ import 'create_receipt_page.dart';
 
 AppNotification appNotification = AppNotification();
 
-
 class HomePage extends StatelessWidget {
-
-
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        appBar: AppBar(
+        onWillPop: () async => false,
+        child: Scaffold(
+          appBar: AppBar(
 
-
-          //backgroundColor: Color(0xFF226EBE),
+              //backgroundColor: Color(0xFF226EBE),
+              ),
+          drawer: Theme(
+            data: Theme.of(context).copyWith(canvasColor: Color(0xFF0B57A7)),
+            child: MainDrawer(),
           ),
-      drawer: Theme(
-        data: Theme.of(context).copyWith(canvasColor: Color(0xFF0B57A7)),
-        child: MainDrawer(),
-      ),
-      body: SafeArea(
-        child: DashBoard(),
-      ),
-      floatingActionButton: SafeArea(
-        child: FloatingActionButton(
-          onPressed: () async {
-            /*  var connected = await Connected().checkInternet();
+          body: SafeArea(
+            child: DashBoard(),
+          ),
+          floatingActionButton: SafeArea(
+            child: FloatingActionButton(
+              onPressed: () async {
+                /*  var connected = await Connected().checkInternet();
             if (!connected) {
               await showDialog(
                 context: context,
@@ -51,20 +47,28 @@ class HomePage extends StatelessWidget {
               );
               return;
             } */
-            print(await SharedPreferenceService()
-                .getStringValuesSF('AUTH_TOKEN'));
-            /*  await appNotification.showNotification(
+                print(await SharedPreferenceService()
+                    .getStringValuesSF('AUTH_TOKEN'));
+                /*  await appNotification.showNotification(
                 title: 'food', body: 'green',); */
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => CreateReceiptPage()));
-          },
-          child: Icon(
-            Icons.add,
-            color: Colors.black,
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CreateReceiptPage()));
+              },
+              child: Icon(
+                Icons.add,
+                color: Colors.black,
+              ),
+            ),
           ),
+// <<<<<<< dev
+//         ));
+// =======
         ),
       ),
       )
     );
+//>>>>>>> dev
   }
 }

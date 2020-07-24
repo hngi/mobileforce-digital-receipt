@@ -184,13 +184,13 @@ class _CreateNewProductState extends State<CreateNewProduct> {
                       SizedBox(height: 20),
                       widget.isUpdate
                           ? AppSolidButton(
-                              title: 'Update',
+                              text: 'Update',
                               backgroundColor: Color(0xFF0B57A7),
                               onPressed: () => _submitProduct(),
                               textColor: Colors.white,
                             )
                           : AppSolidButton(
-                              title: 'Add',
+                              text: 'Add',
                               backgroundColor: Color(0xFF0B57A7),
                               onPressed: () => _submitProduct(),
                               textColor: Colors.white,
