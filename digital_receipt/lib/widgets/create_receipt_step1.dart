@@ -9,9 +9,10 @@ import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
-import 'package:digital_receipt/widgets/app_textfield.dart';
+import 'package:digital_receipt/widgets/app_text_form_field.dart';
+import 'package:digital_receipt/widgets/date_time_input_textField.dart';
 import 'package:digital_receipt/widgets/product_detail.dart';
-import 'package:digital_receipt/widgets/submit_button.dart';
+import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -56,8 +57,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
   DateTime date = DateTime.now();
   TimeOfDay time = TimeOfDay.now();
 
-  final _time = TextEditingController();
-  final _date = TextEditingController();
+  final _timeController = TextEditingController();
+  final _dateController = TextEditingController();
 
   getInventories() async {
     try {
@@ -86,8 +87,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
   @override
   Widget build(BuildContext context) {
     if (date != null && time != null) {
-      _date.text = DateFormat('dd-MM-yyyy').format(date);
-      _time.text = time.format(context);
+      _dateController.text = DateFormat('dd-MM-yyyy').format(date);
+      _timeController.text = time.format(context);
     }
     return SingleChildScrollView(
       child: Padding(
@@ -98,28 +99,14 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             SizedBox(
               height: 14,
             ),
-            Text(
-              'Product item information',
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.3,
-                fontSize: 22,
-                color: Colors.black,
-              ),
-            ),
+            Text('Product item information',
+                style: Theme.of(context).textTheme.headline5),
             SizedBox(
               height: 5,
             ),
             Text(
               'Provide the details of the product sold',
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.w300,
-                letterSpacing: 0.3,
-                fontSize: 12,
-                color: Colors.black,
-              ),
+              style: Theme.of(context).textTheme.subtitle2,
             ),
             SizedBox(
               height: 24,
@@ -183,20 +170,15 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   );
                 },
                 shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Color(0xFF25CCB3), width: 1.5),
+                    side: BorderSide(
+                        color: Theme.of(context).accentColor, width: 1.5),
                     borderRadius: BorderRadius.circular(5)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
                       'Add product item',
-                      style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.normal,
-                        letterSpacing: 0.3,
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
+                      style: Theme.of(context).textTheme.headline6,
                     ),
                     SizedBox(width: 10),
                     Icon(
@@ -214,13 +196,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                 ? Text(
                     'Product item/s',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.3,
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
+                    style: Theme.of(context).textTheme.headline6,
                   )
                 : SizedBox.shrink(),
             SizedBox(
@@ -274,13 +250,9 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
               children: <Widget>[
                 Text(
                   'Part payment',
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.normal,
-                    letterSpacing: 0.3,
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
+                  style: Theme.of(context).textTheme.headline6.copyWith(
+                        fontWeight: FontWeight.normal,
+                      ),
                 ),
                 Switch(
                   value: _partPayment,
@@ -288,7 +260,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                     setState(() {
                       _partPayment = val;
                     });
-                    Provider.of<Receipt>(context, listen: false).partPayment = val;
+                    Provider.of<Receipt>(context, listen: false).partPayment =
+                        val;
                   },
                 ),
               ],
@@ -304,13 +277,6 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                         child: Text(
                           'Set reminder for payment completion',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Montserrat',
-                            fontWeight: FontWeight.normal,
-                            letterSpacing: 0.3,
-                            fontSize: 14,
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       SizedBox(
@@ -318,25 +284,10 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                       ),
                       Text(
                         'Date',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 13,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
                       ),
                       SizedBox(height: 5),
-                      TextFormField(
-                        readOnly: true,
-                        controller: _date,
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 15,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
+                      DateTimeInputTextField(
+                        controller: _dateController,
                         onTap: () async {
                           final DateTime datePicked = await showDatePicker(
                               context: context,
@@ -358,68 +309,16 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                             print(DateTime.now()); */
                           }
                         },
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(
-                              color: Color(0xFFC8C8C8),
-                              width: 1.5,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(),
-                          //hintText: hintText,
-                          hintStyle: TextStyle(
-                            color: Color(0xFF979797),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Montserrat',
-                          ),
-                        ),
                       ),
                       SizedBox(
                         height: 22,
                       ),
                       Text(
                         'Time',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 15,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
                       ),
                       SizedBox(height: 5),
-                      TextFormField(
-                        readOnly: true,
-                        controller: _time,
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 15,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(
-                              color: Color(0xFFC8C8C8),
-                              width: 1.5,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(),
-
-                          //hintText: hintText,
-                          hintStyle: TextStyle(
-                            color: Color(0xFF979797),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Montserrat',
-                          ),
-                        ),
+                      DateTimeInputTextField(
+                        controller: _timeController,
                         onTap: () async {
                           final TimeOfDay timePicked = await showTimePicker(
                               context: context, initialTime: time);
@@ -438,9 +337,12 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                               );
                             });
 
-                            Provider.of<Receipt>(context, listen: false).setReminderDate(dateToSend);
-                            print(Provider.of<Receipt>(context, listen: false).reminderDate);
-                            print(Provider.of<Receipt>(context, listen: false).partPayment);
+                            Provider.of<Receipt>(context, listen: false)
+                                .setReminderDate(dateToSend);
+                            print(Provider.of<Receipt>(context, listen: false)
+                                .reminderDate);
+                            print(Provider.of<Receipt>(context, listen: false)
+                                .partPayment);
                           }
                         },
                       ),
@@ -450,7 +352,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             SizedBox(
               height: 55,
             ),
-            SubmitButton(
+            AppSolidButton(
               onPressed: () {
                 if (products.length == 0) {
                   Fluttertoast.showToast(
@@ -477,9 +379,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   widget.carouselController.animateToPage(2);
                 }
               },
-              title: 'Next',
-              backgroundColor: Color(0xFF0B57A7),
-              textColor: Colors.white,
+              text: 'Next',
+              backgroundColor: Theme.of(context).buttonColor,
             ),
           ],
         ),

@@ -75,6 +75,9 @@ class ReceiptItem extends StatelessWidget {
                               .productDesc,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                     ),
@@ -82,11 +85,16 @@ class ReceiptItem extends StatelessWidget {
                       width: 15,
                     ),
                     Container(
-                      child: Text(Provider.of<Receipt>(context, listen: false)
-                              .getCurrency()
-                              .currencySymbol +
-                          '${Utils.formatNumber(Provider.of<Receipt>(context, listen: false).products[index].unitPrice)}'
-                              .toString()),
+                      child: Text(
+                        Provider.of<Receipt>(context, listen: false)
+                                .getCurrency()
+                                .currencySymbol +
+                            '${Utils.formatNumber(Provider.of<Receipt>(context, listen: false).products[index].unitPrice)}'
+                                .toString(),
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -150,13 +158,18 @@ class ReceiptItem extends StatelessWidget {
                       child: Text(
                         'Qty',
                         style: TextStyle(
-                            fontSize: 10, fontWeight: FontWeight.normal),
+                          fontSize: 10,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                     Text(
                       'Total',
                       style: TextStyle(
-                          fontSize: 10, fontWeight: FontWeight.normal),
+                          fontSize: 10,
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal),
                     )
                   ],
                 ),

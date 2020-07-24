@@ -2,7 +2,7 @@ import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
-import 'package:digital_receipt/widgets/app_textfield.dart';
+import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -267,7 +267,7 @@ class _CreateInventoryState extends State<CreateInventory> {
                     ),
                   ),
                 ),
-                underline: Divider(),
+                underline: SizedBox.shrink(),
                 items: units.map(
                   (Unit unit) {
                     return DropdownMenuItem<Unit>(
@@ -292,7 +292,7 @@ class _CreateInventoryState extends State<CreateInventory> {
             ),
             SizedBox(width: 8),
             Expanded(
-              child: AppTextFieldForm(
+              child: AppTextFormField(
                 focusNode: _quantityFocus,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (value) =>
@@ -432,7 +432,8 @@ class _CreateInventoryState extends State<CreateInventory> {
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.pop(context, true);
+              // Navigator.of(context).pop(true);
             },
           ),
           title: Text(
@@ -552,9 +553,9 @@ class _CreateInventoryState extends State<CreateInventory> {
                                 textColor: Colors.white,
                                 fontSize: 16.0,
                               );
-                                setState(() {
-                              loading = false;
-                            });
+                              setState(() {
+                                loading = false;
+                              });
 
                               return;
                             }
@@ -591,6 +592,7 @@ class _CreateInventoryState extends State<CreateInventory> {
                                 backgroundColor: Colors.grey[700],
                                 textColor: Colors.white,
                               );
+                              
                             } else {
                               setState(() {
                                 loading = false;

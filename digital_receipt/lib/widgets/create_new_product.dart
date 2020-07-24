@@ -1,6 +1,6 @@
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/widgets/custom_formfield.dart';
-import 'package:digital_receipt/widgets/submit_button.dart';
+import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/material.dart';
 
 class CreateNewProduct extends StatefulWidget {
@@ -28,7 +28,8 @@ class _CreateNewProductState extends State<CreateNewProduct> {
 
   _submitProduct() {
     final product = _productDesc.text;
-    final double quantity = _quantity.text == '' ? 0 : int.parse(_quantity.text);
+    final double quantity =
+        _quantity.text == '' ? 0 : int.parse(_quantity.text);
     final double unit =
         _unitPrice.text == '' ? 0 : double.parse(_unitPrice.text);
     final double totalAmount = unit * quantity;
@@ -182,14 +183,14 @@ class _CreateNewProductState extends State<CreateNewProduct> {
                       // ),
                       SizedBox(height: 20),
                       widget.isUpdate
-                          ? SubmitButton(
-                              title: 'Update',
+                          ? AppSolidButton(
+                              text: 'Update',
                               backgroundColor: Color(0xFF0B57A7),
                               onPressed: () => _submitProduct(),
                               textColor: Colors.white,
                             )
-                          : SubmitButton(
-                              title: 'Add',
+                          : AppSolidButton(
+                              text: 'Add',
                               backgroundColor: Color(0xFF0B57A7),
                               onPressed: () => _submitProduct(),
                               textColor: Colors.white,
