@@ -267,7 +267,7 @@ class _CreateInventoryState extends State<CreateInventory> {
                     ),
                   ),
                 ),
-                underline: Divider(),
+                underline: SizedBox.shrink(),
                 items: units.map(
                   (Unit unit) {
                     return DropdownMenuItem<Unit>(
@@ -592,6 +592,7 @@ class _CreateInventoryState extends State<CreateInventory> {
                                 backgroundColor: Colors.grey[700],
                                 textColor: Colors.white,
                               );
+                              
                             } else {
                               setState(() {
                                 loading = false;

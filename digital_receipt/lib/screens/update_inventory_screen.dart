@@ -270,7 +270,7 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                     ),
                   ),
                 ),
-                underline: Divider(),
+                underline: SizedBox.shrink(),
                 items: units.map(
                   (Unit unit) {
                     return DropdownMenuItem<Unit>(
