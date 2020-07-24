@@ -10,6 +10,7 @@ import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../constant.dart';
 import '../models/receipt.dart';
 import '../services/api_service.dart';
@@ -102,21 +103,50 @@ class _DraftsState extends State<Drafts> {
                         DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
 
                     return Dismissible(
-                      onDismissed: (direction) async {
-                        String response = await _apiService.deleteDraft(
-                            id: receipt.receiptId);
-                        if (response == 'true') {
-                          setState(() {
-                            draftData.removeAt(index);
-                          });
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                              content:
-                                  Text("Draft deleted successfully")));
-                        } else {
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                  "Something went wrong, please try again.")));
-                        }
+                      confirmDismiss: (DismissDirection direction) async {
+                        return await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text("Confirm"),
+                              content: const Text(
+                                  "Are you sure you wish to delete this item?"),
+                              actions: <Widget>[
+                                FlatButton(
+                                    onPressed: () async {
+                                      Navigator.of(context).pop(true);
+                                      String response = await _apiService
+                                          .deleteDraft(id: receipt.receiptId);
+                                      if (response == 'true') {
+                                        setState(() {
+                                          draftData.removeAt(index);
+                                        });
+                                        Fluttertoast.showToast(
+                                          msg: 'Draft deleted successfully',
+                                          fontSize: 12,
+                                          toastLength: Toast.LENGTH_LONG,
+                                          backgroundColor: Colors.red,
+                                        );
+                                      } else {
+                                        Fluttertoast.showToast(
+                                          msg:
+                                              'Sorry an error occured try again',
+                                          fontSize: 12,
+                                          toastLength: Toast.LENGTH_LONG,
+                                          backgroundColor: Colors.red,
+                                        );
+                                      }
+                                    },
+                                    child: const Text("DELETE")),
+                                FlatButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(false),
+                                  child: const Text("CANCEL"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
                       key: Key(receipt.receiptId),
                       child: GestureDetector(
@@ -138,7 +168,6 @@ class _DraftsState extends State<Drafts> {
                             subtitle: receipt.products[0].productDesc,
                             currency: receipt.currency),
                       ),
-
                     );
                   },
                 );

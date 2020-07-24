@@ -36,6 +36,12 @@ class CreateReceiptStep1 extends StatefulWidget {
 
 class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
   bool _partPayment = false;
+  DateTime dateToSend;
+  Map<String, dynamic> temp = {
+    '0': DateTime.now().year,
+    '1': DateTime.now().month,
+    '2': DateTime.now().day,
+  };
 
   List<Product> products = Product.dummy();
 
@@ -108,7 +114,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Row(
-                  children: map<Widget>([1, 1, 2], (index, url) {
+                  children: map<Widget>([0, 1, 2, 3], (index, url) {
                     print(index);
                     return GestureDetector(
                       onTap: () {
@@ -131,7 +137,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                                       color: Color.fromRGBO(0, 0, 0, 0.16))
                                 ]),
                           ),
-                          index != 2 ? SizedBox(width: 10) : SizedBox.shrink()
+                          index != 3 ? SizedBox(width: 10) : SizedBox.shrink()
                         ],
                       ),
                     );
@@ -196,47 +202,71 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
               height: 10,
             ),
             ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: products.length,
-              itemBuilder: (BuildContext context, int index) {
-                final Product thisProduct = products[index];
-                return Dismissible(
-                  onDismissed: (direction) {
-                    setState(() {
-                      products.removeAt(index);
-                    });
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text("${thisProduct.productDesc} dismissed")));
-                  },
-                  key: Key(thisProduct.id),
-                  child: ProductItem(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        backgroundColor: Colors.transparent,
-                        isScrollControlled: true,
-                        builder: (BuildContext context) => ProductDetail(
-                          product: thisProduct,
-                          onSubmit: (product) {
-                            setState(() {
-                              products[index] = product;
-                              Navigator.pop(context);
-                            });
-                          },
-                        ),
-                      );
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: products.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final Product thisProduct = products[index];
+                  return Dismissible(
+                    onDismissed: (direction) {
+                      setState(() {
+                        products.removeAt(index);
+                      });
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                          content:
+                              Text("${thisProduct.productDesc} dismissed")));
                     },
-                    title: thisProduct.productDesc,
-                    amount: Provider.of<Receipt>(context, listen: false)
-                            .getCurrency()
-                            .currencySymbol +
-                        '${Utils.formatNumber(thisProduct.amount) ?? Utils.formatNumber(thisProduct.unitPrice * thisProduct.quantity)}',
-                    // '${}',
-                    index: index,
+                    key: Key(thisProduct.id),
+                    child: ProductItem(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: true,
+                          builder: (BuildContext context) => ProductDetail(
+                            product: thisProduct,
+                            onSubmit: (product) {
+                              setState(() {
+                                products[index] = product;
+                                Navigator.pop(context);
+                              });
+                            },
+                          ),
+                        );
+                      },
+                      title: thisProduct.productDesc,
+                      amount: Provider.of<Receipt>(context, listen: false)
+                              .getCurrency()
+                              .currencySymbol +
+                          '${Utils.formatNumber(thisProduct.amount) ?? Utils.formatNumber(thisProduct.unitPrice * thisProduct.quantity)}',
+                      // '${}',
+                      index: index,
+                    ),
+                  );
+                }),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'Part payment',
+                  style: TextStyle(
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.normal,
+                    letterSpacing: 0.3,
+                    fontSize: 16,
+                    color: Colors.black,
                   ),
-                );
-              },
+                ),
+                Switch(
+                  value: _partPayment,
+                  onChanged: (val) {
+                    setState(() {
+                      _partPayment = val;
+                    });
+                    Provider.of<Receipt>(context, listen: false).partPayment = val;
+                  },
+                ),
+              ],
             ),
             _partPayment
                 ? Column(
@@ -275,6 +305,13 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                       TextFormField(
                         readOnly: true,
                         controller: _date,
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.normal,
+                          letterSpacing: 0.3,
+                          fontSize: 15,
+                          color: Color.fromRGBO(0, 0, 0, 0.6),
+                        ),
                         onTap: () async {
                           final DateTime datePicked = await showDatePicker(
                               context: context,
@@ -285,9 +322,15 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                           if (datePicked != null && datePicked != date) {
                             setState(() {
                               date = datePicked;
-
-                              print(date);
+                              temp = {
+                                '0': date.year,
+                                '1': date.month,
+                                '2': date.day
+                              };
                             });
+                            /*  print(
+                                '${date.year}-${date.month}-${date.day} % $date');
+                            print(DateTime.now()); */
                           }
                         },
                         decoration: InputDecoration(
@@ -326,6 +369,13 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                       TextFormField(
                         readOnly: true,
                         controller: _time,
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.normal,
+                          letterSpacing: 0.3,
+                          fontSize: 15,
+                          color: Color.fromRGBO(0, 0, 0, 0.6),
+                        ),
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(15),
                           enabledBorder: OutlineInputBorder(
@@ -336,6 +386,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(),
+
                           //hintText: hintText,
                           hintStyle: TextStyle(
                             color: Color(0xFF979797),
@@ -351,8 +402,20 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                             setState(() {
                               time = timePicked;
                               time.format(context);
-                              print(time);
+                              temp['3'] = time.hour;
+                              temp['4'] = time.minute;
+                              dateToSend = DateTime(
+                                temp['0'],
+                                temp['1'],
+                                temp['2'],
+                                temp['3'],
+                                temp['4'],
+                              );
                             });
+
+                            Provider.of<Receipt>(context, listen: false).setReminderDate(dateToSend);
+                            print(Provider.of<Receipt>(context, listen: false).reminderDate);
+                            print(Provider.of<Receipt>(context, listen: false).partPayment);
                           }
                         },
                       ),
@@ -383,7 +446,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   Provider.of<Receipt>(context, listen: false)
                       .setReminderTime(time);
                   Provider.of<Receipt>(context, listen: false)
-                      .setReminderDate(date);
+                      .setReminderDate(dateToSend ?? date);
                   Provider.of<Receipt>(context, listen: false)
                       .setProducts(products);
                   widget.carouselController.animateToPage(2);

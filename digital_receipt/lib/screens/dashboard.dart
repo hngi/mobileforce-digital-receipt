@@ -40,11 +40,12 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   callFetch() async {
+    var business = Provider.of<Business>(context, listen: false);
     var res = await _apiService.fetchAndSetUser();
     if (res != null) {
       // print('res:::: ${res.phone}');
-      Provider.of<Business>(context, listen: false).setAccountData = res;
-      var val = Provider.of<Business>(context, listen: false).toJson();
+      business.setAccountData = res;
+      var val = business.toJson();
       _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
       //print('val:: $val');
     }
@@ -88,7 +89,6 @@ class _DashBoardState extends State<DashBoard> {
       if (data['partPayment']) {
         deptIssued += 1;
       }
-      //print(data['total']);
     }
     return {'total': amnt, 'recNo': snapLength, 'dept': deptIssued};
   }
@@ -201,8 +201,8 @@ class _DashBoardState extends State<DashBoard> {
         ),
         FlatButton(
           onPressed: () async {
-            var t = DateTime.now().timeZoneName;
-            print(t);
+            //var t = DateTime.now().timeZoneName;
+            print(await SharedPreferenceService().getStringValuesSF('AUTH_TOKEN'));
           },
           child: Text('Test'),
         ),

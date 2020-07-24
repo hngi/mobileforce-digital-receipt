@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -5,6 +6,7 @@ import 'package:digital_receipt/models/account.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/providers/business.dart';
 import 'package:digital_receipt/screens/generate_pdf.dart';
+import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/email_service.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
@@ -55,11 +57,16 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
   }
 
   bool _loading = false;
+  String issuerSignature;
 
   init() async {
     var val = await SharedPreferenceService().getStringValuesSF('LOGO');
+    var _issuerSignature =
+        await SharedPreferenceService().getStringValuesSF("ISSUER_SIGNATURE");
+    print('signature $_issuerSignature');
     setState(() {
       logo = val;
+      issuerSignature = _issuerSignature;
     });
   }
 
@@ -77,41 +84,51 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
   @override
   Widget build(BuildContext context) {
     final ApiService _apiService = ApiService();
-    return Scaffold(
-      appBar: AppBar(
-        //  backgroundColor: Color(0xFF0b56a7),
-        automaticallyImplyLeading: true,
-        title: Text(
-          'Create Receipt',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            fontFamily: 'Montserrat',
-            letterSpacing: 0.03,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        backgroundColor: Color(0xFFF2F8FF),
+        appBar: AppBar(
+          //  backgroundColor: Color(0xFF0b56a7),
+          automaticallyImplyLeading: true,
+          title: Text(
+            'Create Receipt',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Montserrat',
+              letterSpacing: 0.03,
+            ),
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () =>Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => HomePage())),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: <Widget>[
-              ReceiptScreenLayout(
-                  context,
-                  _loading,
-                  () {
-                    setState(() {
-                      _loading = true;
-                    });
-                  },
-                  logo,
-                  () {
-                    setState(() {
-                      _loading = false;
-                    });
-                  }),
-            ],
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: <Widget>[
+                ReceiptScreenLayout(
+                    context,
+                    _loading,
+                    () {
+                      setState(() {
+                        _loading = true;
+                      });
+                    },
+                    logo,
+                    () {
+                      setState(() {
+                        _loading = false;
+                      });
+                    },
+                    issuerSignature),
+              ],
+            ),
           ),
         ),
       ),
@@ -125,7 +142,8 @@ Widget ReceiptScreenLayout(
     bool isLoading,
     Function loadingStart,
     String logo,
-    Function loadingStop]) {
+    Function loadingStop,
+    String issuerSignature]) {
   Future sendMail() async {
     final String dir = (await getApplicationDocumentsDirectory()).path;
     final String path = '$dir/receipt.pdf';
@@ -406,153 +424,153 @@ Widget ReceiptScreenLayout(
                         SizedBox(
                           //toatal payment and stamp
 
-                          height: 8,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              SizedBox(
-                                width: 1,
-                              ),
-                              Row(
-                                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                      padding: const EdgeInsets.only(top: 15.0),
-                                      child: RichText(
-                                        text: TextSpan(
-                                            text: 'Total',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14,
-                                              letterSpacing: 0.03,
-                                              fontWeight: FontWeight.normal,
-                                              height: 1.43,
-                                            ),
-                                            children: [
-                                              Provider.of<Receipt>(context,
-                                                              listen: false)
-                                                          .paidStamp !=
-                                                      false
-                                                  ? TextSpan(
-                                                      text: '',
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 14,
-                                                        letterSpacing: 0.03,
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                        height: 1.43,
-                                                      ),
-                                                    )
-                                                  : TextSpan(
-                                                      text: ': ',
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 14,
-                                                        letterSpacing: 0.03,
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                        height: 1.43,
-                                                      ),
-                                                    ),
-                                            ]),
-                                      )),
-                                  Provider.of<Receipt>(context, listen: false)
-                                              .paidStamp !=
-                                          false
-                                      ? Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          child: SizedBox(
-                                            height: 65,
-                                            width: 65,
-                                            child: kPaidStamp(
-                                                Provider.of<Receipt>(context,
-                                                        listen: false)
-                                                    .primaryColorHexCode
-                                                    .toLowerCase()),
-                                          ),
-                                        )
-                                      : Container(),
-                                  Padding(
+                        height: 8,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            SizedBox(
+                              width: 1,
+                            ),
+                            Row(
+                              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
                                     padding: const EdgeInsets.only(top: 15.0),
-                                    child: Text(
-                                      Provider.of<Receipt>(context,
-                                                  listen: false)
-                                              .getCurrency()
-                                              .currencySymbol +
-                                          Utils.formatNumber(double.tryParse(
+                                    child: RichText(
+                                      text: TextSpan(
+                                          text: 'Total',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            letterSpacing: 0.03,
+                                            fontWeight: FontWeight.normal,
+                                            height: 1.43,
+                                          ),
+                                          children: [
+                                            Provider.of<Receipt>(context,
+                                                            listen: false)
+                                                        .paidStamp !=
+                                                    false
+                                                ? TextSpan(
+                                                    text: '',
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 14,
+                                                      letterSpacing: 0.03,
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                      height: 1.43,
+                                                    ),
+                                                  )
+                                                : TextSpan(
+                                                    text: ': ',
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 14,
+                                                      letterSpacing: 0.03,
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                      height: 1.43,
+                                                    ),
+                                                  ),
+                                          ]),
+                                    )),
+                                Provider.of<Receipt>(context, listen: false)
+                                            .paidStamp !=
+                                        false
+                                    ? Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: SizedBox(
+                                          height: 65,
+                                          width: 65,
+                                          child: kPaidStamp(
                                               Provider.of<Receipt>(context,
                                                       listen: false)
-                                                  .getTotal()
-                                                  .toString())),
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                        letterSpacing: 0.03,
-                                        fontWeight: FontWeight.w600,
-                                        height: 1.43,
-                                      ),
+                                                  .primaryColorHexCode
+                                                  .toLowerCase()),
+                                        ),
+                                      )
+                                    : Container(),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 15.0),
+                                  child: Text(
+                                    Provider.of<Receipt>(context, listen: false)
+                                            .getCurrency()
+                                            .currencySymbol +
+                                        Utils.formatNumber(double.tryParse(
+                                            Provider.of<Receipt>(context,
+                                                    listen: false)
+                                                .getTotal()
+                                                .toString())),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      letterSpacing: 0.03,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.43,
                                     ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 0, 0, 15),
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                Provider.of<Receipt>(context)
-                                    .sellerName
-                                    .split(" ")[0]
-                                    .toLowerCase(),
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 27,
-                                  letterSpacing: 0.03,
-                                  fontFamily: 'Southampton',
-                                  fontWeight: FontWeight.w300,
-                                  height: 1.43,
-                                ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 0, 15),
+                        child: Column(
+                          children: <Widget>[
+                            // Text(
+                            //   Provider.of<Receipt>(context).sellerName.split(" ")[0].toLowerCase(),
+                            //   style: TextStyle(
+                            //     color: Colors.black,
+                            //     fontSize: 27,
+                            //     letterSpacing: 0.03,
+                            //     fontFamily: 'Southampton',
+                            //     fontWeight: FontWeight.w300,
+                            //     height: 1.43,
+                            //   ),
+                            // ),
+                            Image.memory(
+                              base64Decode(issuerSignature),
+                              width: 100,
+                              height: 90,
+                            ),
+                            SizedBox(
+                              height: 2,
+                            ),
+                            Container(
+                              height: 1,
+                              color: Color(0xFFE3E3E3),
+                              width: 107,
+                            ),
+                            SizedBox(
+                              height: 2,
+                            ),
+                            Text(
+                              'Signature',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 13,
+                                letterSpacing: 0.03,
+                                fontWeight: FontWeight.w300,
+                                height: 1.43,
                               ),
-                              SizedBox(
-                                height: 2,
-                              ),
-                              Container(
-                                height: 1,
-                                color: Color(0xFFE3E3E3),
-                                width: 107,
-                              ),
-                              SizedBox(
-                                height: 2,
-                              ),
-                              Text(
-                                'Signature',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 13,
-                                  letterSpacing: 0.03,
-                                  fontWeight: FontWeight.w300,
-                                  height: 1.43,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ],
-          ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ],
         ),
       ),
     ),

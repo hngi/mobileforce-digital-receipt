@@ -165,7 +165,7 @@ class MainDrawer extends StatelessWidget {
                     ),
                   ),
 
-                  /* SizedBox(
+                  SizedBox(
                     height: 50.0,
                     width: double.maxFinite,
                     child: FlatButton(
@@ -191,7 +191,7 @@ class MainDrawer extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ), */
+                  ), 
 
                   SizedBox(
                     height: 50.0,

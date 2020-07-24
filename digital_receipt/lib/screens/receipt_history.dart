@@ -1,16 +1,12 @@
-import 'dart:convert';
-
 import 'package:digital_receipt/screens/receipt_page_customer.dart';
 import 'package:digital_receipt/services/api_service.dart';
-import 'package:digital_receipt/screens/create_receipt_page.dart';
-import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../utils/receipt_util.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import '../constant.dart';
 
 /// This code displays only the UI
@@ -32,7 +28,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
   List<Receipt> recieptListData = [];
   ApiService _apiService = ApiService();
 
-  setSort() async {
+  /* setSort() async {
     try {
       var res = await _apiService.getIssued();
       setState(() {
@@ -46,11 +42,11 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
           backgroundColor: Colors.red,
           toastLength: Toast.LENGTH_LONG);
     }
-  }
+  } */
 
   @override
   void initState() {
-    setSort();
+   // setSort();
     super.initState();
   }
 
@@ -210,9 +206,15 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
             ]),
             Expanded(
               child: FutureBuilder(
+                initialData: <Receipt>[],
                 future: _apiService.getIssued(), // receipts from API
                 builder: (context, snapshot) {
                   recieptListData = snapshot.data;
+
+                  receiptList =
+                      ReceiptUtil.sortReceiptByReceiptNo(recieptListData);
+                  copyReceiptList = receiptList;
+                  //print(snapshot.data[5]);
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
                       child: CircularProgressIndicator(
