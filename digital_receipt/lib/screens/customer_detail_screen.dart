@@ -54,6 +54,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
               */
               child: TabBar(
                 indicatorColor: Theme.of(context).tabBarTheme.labelColor,
+                unselectedLabelColor: Theme.of(context).disabledColor,
                 tabs: [
                   Tab(
                     text: 'Full Details',
