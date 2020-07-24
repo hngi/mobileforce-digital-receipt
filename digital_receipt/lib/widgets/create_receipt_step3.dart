@@ -8,7 +8,7 @@ import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/screens/receipt_screen.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/utils/connected.dart';
-import 'package:digital_receipt/widgets/app_textfield.dart';
+import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:digital_receipt/widgets/date_time_input_textField.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/material.dart';
@@ -246,7 +246,7 @@ class _CreateReceiptStep3State extends State<CreateReceiptStep3> {
             ),
             Text('Seller\'s name'),
             SizedBox(height: 5),
-            AppTextFieldForm(
+            AppTextFormField(
               controller: _sellerNameController,
             ),
             /*  SizedBox(
@@ -433,7 +433,7 @@ class _CreateReceiptStep3State extends State<CreateReceiptStep3> {
               ),
             ),
             SizedBox(height: 20),
-            AppTextFieldForm(
+            AppTextFormField(
               focusNode: _hexCodeFocus,
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (value) => _hexCodeFocus.unfocus(),

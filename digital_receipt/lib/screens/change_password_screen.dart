@@ -2,6 +2,8 @@ import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
+import 'package:digital_receipt/widgets/app_solid_button.dart';
+import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -21,15 +23,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       appBar: AppBar(
         title: Text(
           'Change Password',
-          style: TextStyle(
-            fontFamily: 'Montserrat',
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.3,
-            fontSize: 16,
-            //color: Colors.white,
-          ),
         ),
-        // backgroundColor: Color(0xFF0B57A7),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -65,181 +59,103 @@ class _PasswordFormState extends State<PasswordForm> {
         children: [
           Container(
             padding: EdgeInsets.only(top: 22.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text('Current Password'),
-                SizedBox(
-                  height: 5.0,
-                ),
-                TextFormField(
-                  onSaved: (newValue) => _currentPassword = newValue,
-                  validator: Validators.compose([
-                    Validators.required('Input Password'),
-                    Validators.minLength(
-                        8, 'Minimum of 8 characters required for Password'),
-                    Validators.patternRegExp(kOneUpperCaseRegex,
-                        'Password should contain at least an Uppercase letter'),
-                    Validators.patternRegExp(kOneLowerCaseRegex,
-                        'Password should contain at least a Lowercase letter'),
-                    Validators.patternRegExp(kOneDigitRegex,
-                        'Password should contain at least a Digit'),
-                    Validators.patternRegExp(
-                        kOneSpecialCharRegex, 'Special Character eg.(\$\%#&@)')
-                  ]),
-                  style: TextStyle(
-                    color: Color(0xFF2B2B2B),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Montserrat',
-                  ),
-                  obscureText: _currentPasswordVisibity,
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _currentPasswordVisibity =
-                                !_currentPasswordVisibity;
-                          });
-                        },
-                        icon: _currentPasswordVisibity
-                            ? Icon(Icons.visibility_off)
-                            : Icon(Icons.remove_red_eye),
-                        color: Color(0xFFC8C8C8)),
-                    contentPadding: EdgeInsets.all(17),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      borderSide: BorderSide(
-                        color: Color(0xFFC8C8C8),
-                        width: 1,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(),
-                    errorStyle: TextStyle(height: 0.5),
-                  ),
-                ),
-              ],
+            child: AppTextFormField(
+              label: 'Current Password',
+              onSaved: (newValue) => _currentPassword = newValue,
+              validator: Validators.compose([
+                Validators.required('Input Password'),
+                Validators.minLength(
+                    8, 'Minimum of 8 characters required for Password'),
+                Validators.patternRegExp(kOneUpperCaseRegex,
+                    'Password should contain at least an Uppercase letter'),
+                Validators.patternRegExp(kOneLowerCaseRegex,
+                    'Password should contain at least a Lowercase letter'),
+                Validators.patternRegExp(
+                    kOneDigitRegex, 'Password should contain at least a Digit'),
+                Validators.patternRegExp(
+                    kOneSpecialCharRegex, 'Special Character eg.(\$\%#&@)')
+              ]),
+              obscureText: _currentPasswordVisibity,
+              suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentPasswordVisibity = !_currentPasswordVisibity;
+                    });
+                  },
+                  icon: _currentPasswordVisibity
+                      ? Icon(Icons.visibility_off)
+                      : Icon(Icons.remove_red_eye),
+                  color: Theme.of(context).disabledColor),
             ),
           ),
           Container(
             padding: EdgeInsets.only(top: 22.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text('New Password'),
-                SizedBox(
-                  height: 5.0,
-                ),
-                TextFormField(
-                  onSaved: (newValue) => _newPassword = newValue,
-                  validator: Validators.compose([
-                    Validators.required('Input Password'),
-                    Validators.minLength(
-                        8, 'Minimum of 8 characters required for Password'),
-                    Validators.patternRegExp(kOneUpperCaseRegex,
-                        'Password should contain at least an Uppercase letter'),
-                    Validators.patternRegExp(kOneLowerCaseRegex,
-                        'Password should contain at least a Lowercase letter'),
-                    Validators.patternRegExp(kOneDigitRegex,
-                        'Password should contain at least a Digit'),
-                    Validators.patternRegExp(
-                        kOneSpecialCharRegex, 'Special Character eg.(\$\%#&@)')
-                  ]),
-                  style: TextStyle(
-                    color: Color(0xFF2B2B2B),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Montserrat',
-                  ),
-                  obscureText: _newPasswordVisibity,
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _newPasswordVisibity = !_newPasswordVisibity;
-                          });
-                        },
-                        icon: _newPasswordVisibity
-                            ? Icon(Icons.visibility_off)
-                            : Icon(Icons.remove_red_eye),
-                        color: Color(0xFFC8C8C8)),
-                    contentPadding: EdgeInsets.all(17),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      borderSide: BorderSide(
-                        color: Color(0xFFC8C8C8),
-                        width: 1,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(),
-                    errorStyle: TextStyle(height: 0.5),
-                  ),
-                ),
-              ],
+            child: AppTextFormField(
+              label: 'New Password',
+              onSaved: (newValue) => _newPassword = newValue,
+              validator: Validators.compose([
+                Validators.required('Input Password'),
+                Validators.minLength(
+                    8, 'Minimum of 8 characters required for Password'),
+                Validators.patternRegExp(kOneUpperCaseRegex,
+                    'Password should contain at least an Uppercase letter'),
+                Validators.patternRegExp(kOneLowerCaseRegex,
+                    'Password should contain at least a Lowercase letter'),
+                Validators.patternRegExp(
+                    kOneDigitRegex, 'Password should contain at least a Digit'),
+                Validators.patternRegExp(
+                    kOneSpecialCharRegex, 'Special Character eg.(\$\%#&@)')
+              ]),
+              obscureText: _newPasswordVisibity,
+              suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _newPasswordVisibity = !_newPasswordVisibity;
+                    });
+                  },
+                  icon: _newPasswordVisibity
+                      ? Icon(Icons.visibility_off)
+                      : Icon(Icons.remove_red_eye),
+                  color: Theme.of(context).disabledColor),
             ),
           ),
           Container(
             padding: EdgeInsets.only(top: 22.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text('Confirm New Password'),
-                SizedBox(
-                  height: 5.0,
-                ),
-                TextFormField(
-                  onSaved: (newValue) => _confirmNewPassword = newValue,
-                  validator: Validators.compose([
-                    Validators.required('Input Password'),
-                    Validators.minLength(
-                        8, 'Minimum of 8 characters required for Password'),
-                    Validators.patternRegExp(kOneUpperCaseRegex,
-                        'Password should contain at least an Uppercase letter'),
-                    Validators.patternRegExp(kOneLowerCaseRegex,
-                        'Password should contain at least a Lowercase letter'),
-                    Validators.patternRegExp(kOneDigitRegex,
-                        'Password should contain at least a Digit'),
-                    Validators.patternRegExp(
-                        kOneSpecialCharRegex, 'Special Character eg.(\$\%#&@)')
-                  ]),
-                  style: TextStyle(
-                    color: Color(0xFF2B2B2B),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Montserrat',
-                  ),
-                  obscureText: _confirmNewPasswordVisibity,
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _confirmNewPasswordVisibity =
-                                !_confirmNewPasswordVisibity;
-                          });
-                        },
-                        icon: _confirmNewPasswordVisibity
-                            ? Icon(Icons.visibility_off)
-                            : Icon(Icons.remove_red_eye),
-                        color: Color(0xFFC8C8C8)),
-                    contentPadding: EdgeInsets.all(17),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      borderSide: BorderSide(
-                        color: Color(0xFFC8C8C8),
-                        width: 1,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(),
-                    errorStyle: TextStyle(height: 0.5),
-                  ),
-                ),
-              ],
+            child: AppTextFormField(
+              label: 'Confirm New Password',
+              onSaved: (newValue) => _confirmNewPassword = newValue,
+              validator: Validators.compose([
+                Validators.required('Input Password'),
+                Validators.minLength(
+                    8, 'Minimum of 8 characters required for Password'),
+                Validators.patternRegExp(kOneUpperCaseRegex,
+                    'Password should contain at least an Uppercase letter'),
+                Validators.patternRegExp(kOneLowerCaseRegex,
+                    'Password should contain at least a Lowercase letter'),
+                Validators.patternRegExp(
+                    kOneDigitRegex, 'Password should contain at least a Digit'),
+                Validators.patternRegExp(
+                    kOneSpecialCharRegex, 'Special Character eg.(\$\%#&@)')
+              ]),
+              obscureText: _confirmNewPasswordVisibity,
+              suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _confirmNewPasswordVisibity =
+                          !_confirmNewPasswordVisibity;
+                    });
+                  },
+                  icon: _confirmNewPasswordVisibity
+                      ? Icon(Icons.visibility_off)
+                      : Icon(Icons.remove_red_eye),
+                  color: Theme.of(context).disabledColor),
             ),
           ),
           SizedBox(height: 100),
-          MaterialButton(
+          AppSolidButton(
             height: 45,
-            minWidth: double.infinity,
+            text: 'Update',
+            isLoading: isLoading,
             onPressed: () async {
               if (_formKey.currentState.validate()) {
                 _formKey.currentState.save();
@@ -291,23 +207,6 @@ class _PasswordFormState extends State<PasswordForm> {
                 }
               }
             },
-            color: Theme.of(context).primaryColor,
-            child: isLoading
-                ? ButtonLoadingIndicator(
-                    color: Colors.white,
-                    width: 20,
-                    height: 20,
-                  )
-                : Text(
-                    'Update',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.30),
-                  ),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5.0))),
           )
         ],
       ),

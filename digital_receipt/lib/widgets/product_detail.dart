@@ -5,7 +5,7 @@ import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
-import 'package:digital_receipt/widgets/app_textfield.dart';
+import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -193,7 +193,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         'Description',
                       ),
                       SizedBox(height: 5),
-                      AppTextFieldForm(
+                      AppTextFormField(
                           focusNode: _productDescFocus,
                           textInputAction: TextInputAction.next,
                           onFieldSubmitted: (value) => _changeFocus(
@@ -274,7 +274,7 @@ class _ProductDetailState extends State<ProductDetail> {
                           ),
                           SizedBox(width: 8),
                           Expanded(
-                            child: AppTextFieldForm(
+                            child: AppTextFormField(
                               focusNode: _quantityFocus,
                               textInputAction: TextInputAction.next,
                               onFieldSubmitted: (value) => _changeFocus(
@@ -290,7 +290,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         'Unit price',
                       ),
                       SizedBox(height: 5),
-                      AppTextFieldForm(
+                      AppTextFormField(
                         focusNode: _unitPriceFocus,
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (value) =>
@@ -303,7 +303,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         'Tax',
                       ),
                       SizedBox(height: 5),
-                      AppTextFieldForm(
+                      AppTextFormField(
                         focusNode: _taxFocus,
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (value) =>
@@ -316,7 +316,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         'Discount',
                       ),
                       SizedBox(height: 5),
-                      AppTextFieldForm(
+                      AppTextFormField(
                         focusNode: _discountFocus,
                         textInputAction: TextInputAction.done,
                         onFieldSubmitted: (value) {

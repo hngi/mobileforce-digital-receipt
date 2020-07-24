@@ -8,7 +8,7 @@ import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/services/api_service.dart';
-import 'package:digital_receipt/widgets/app_textfield.dart';
+import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:digital_receipt/widgets/customer_dropdown.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -321,7 +321,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                 style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(height: 5),
-              AppTextFieldForm(
+              AppTextFormField(
                 focusNode: _nameFocus,
                 textInputAction: TextInputAction.next,
                 suffixIcon: IconButton(
@@ -368,7 +368,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                 style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(height: 5),
-              AppTextFieldForm(
+              AppTextFormField(
                 focusNode: _emailFocus,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (value) =>
@@ -401,7 +401,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                 style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(height: 5),
-              AppTextFieldForm(
+              AppTextFormField(
                 focusNode: _addressFocus,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (value) =>
@@ -433,7 +433,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                 style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(height: 5),
-              AppTextFieldForm(
+              AppTextFormField(
                 focusNode: _pNumberFocus,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (value) => _pNumberFocus.unfocus(),
