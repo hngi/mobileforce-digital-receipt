@@ -102,8 +102,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
           ),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
-            onPressed: () =>Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => HomePage())),
+            onPressed: () => Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => HomePage())),
           ),
         ),
         body: SingleChildScrollView(

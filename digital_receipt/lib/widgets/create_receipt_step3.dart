@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
-import 'package:digital_receipt/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 

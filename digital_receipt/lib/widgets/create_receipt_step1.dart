@@ -11,7 +11,7 @@ import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:digital_receipt/widgets/app_textfield.dart';
 import 'package:digital_receipt/widgets/product_detail.dart';
-import 'package:digital_receipt/widgets/submit_button.dart';
+import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -98,28 +98,14 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             SizedBox(
               height: 14,
             ),
-            Text(
-              'Product item information',
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.3,
-                fontSize: 22,
-                color: Colors.black,
-              ),
-            ),
+            Text('Product item information',
+                style: Theme.of(context).textTheme.headline5),
             SizedBox(
               height: 5,
             ),
             Text(
               'Provide the details of the product sold',
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.w300,
-                letterSpacing: 0.3,
-                fontSize: 12,
-                color: Colors.black,
-              ),
+              style: Theme.of(context).textTheme.subtitle2,
             ),
             SizedBox(
               height: 24,
@@ -183,20 +169,15 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   );
                 },
                 shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Color(0xFF25CCB3), width: 1.5),
+                    side: BorderSide(
+                        color: Theme.of(context).accentColor, width: 1.5),
                     borderRadius: BorderRadius.circular(5)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
                       'Add product item',
-                      style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.normal,
-                        letterSpacing: 0.3,
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
+                      style: Theme.of(context).textTheme.headline6,
                     ),
                     SizedBox(width: 10),
                     Icon(
@@ -214,13 +195,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                 ? Text(
                     'Product item/s',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.3,
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
+                    style: Theme.of(context).textTheme.headline6,
                   )
                 : SizedBox.shrink(),
             SizedBox(
@@ -288,7 +263,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                     setState(() {
                       _partPayment = val;
                     });
-                    Provider.of<Receipt>(context, listen: false).partPayment = val;
+                    Provider.of<Receipt>(context, listen: false).partPayment =
+                        val;
                   },
                 ),
               ],
@@ -438,9 +414,12 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                               );
                             });
 
-                            Provider.of<Receipt>(context, listen: false).setReminderDate(dateToSend);
-                            print(Provider.of<Receipt>(context, listen: false).reminderDate);
-                            print(Provider.of<Receipt>(context, listen: false).partPayment);
+                            Provider.of<Receipt>(context, listen: false)
+                                .setReminderDate(dateToSend);
+                            print(Provider.of<Receipt>(context, listen: false)
+                                .reminderDate);
+                            print(Provider.of<Receipt>(context, listen: false)
+                                .partPayment);
                           }
                         },
                       ),
@@ -450,7 +429,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
             SizedBox(
               height: 55,
             ),
-            SubmitButton(
+            AppSolidButton(
               onPressed: () {
                 if (products.length == 0) {
                   Fluttertoast.showToast(
@@ -478,8 +457,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                 }
               },
               title: 'Next',
-              backgroundColor: Color(0xFF0B57A7),
-              textColor: Colors.white,
+              backgroundColor: Theme.of(context).buttonColor,
             ),
           ],
         ),
