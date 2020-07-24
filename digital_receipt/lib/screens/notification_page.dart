@@ -2,6 +2,7 @@ import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/notification.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NotificationPage extends StatefulWidget {
   @override
@@ -11,7 +12,7 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   // int _notificationLength = 12;
   ApiService _apiService = ApiService();
-  List<NotificationModel> allNotification = [];
+  List allNotification = [];
   @override
   void initState() {
     super.initState();
@@ -40,7 +41,7 @@ class _NotificationPageState extends State<NotificationPage> {
         ),
       ),
       body: SafeArea(
-        child: FutureBuilder<List<NotificationModel>>(
+        child: FutureBuilder(
             future: _apiService.getAllNotifications(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -51,51 +52,59 @@ class _NotificationPageState extends State<NotificationPage> {
                 );
               } else if (snapshot.connectionState == ConnectionState.done) {
                 print("Notification Page${snapshot.data}");
-                allNotification = snapshot.data;
+                // allNotification = snapshot.data;
                 if (snapshot.hasData && snapshot.data.length != 0) {
                   return ListView.builder(
                     itemCount:
                         allNotification == null ? 0 : allNotification.length,
                     itemBuilder: (BuildContext context, int index) {
                       return SingleNotification(
-                        notificationLength: allNotification.length,
-                        body: '${allNotification[index].message}',
-                        date: '${allNotification[index].date}',
+                        notificationLength: allNotification == null
+                            ? 0
+                            : allNotification.length,
+                        body: '${allNotification[index]['message']}',
+                        date:
+                            "${DateFormat('yyyy-mm-dd').format(DateTime.parse(allNotification[index]['date_to_deliver']))}",
                         index: index,
                       );
                     },
                   );
                 } else {
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        kBrokenHeart,
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Center(
-                          child: Text(
-                            "There are no notifications created!",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              fontSize: 16,
-                              letterSpacing: 0.3,
-                              color: Color.fromRGBO(0, 0, 0, 0.87),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                      ],
-                    ),
-                  );
+                  return noNotificationAlert();
                 }
               }
+              return noNotificationAlert();
             }),
+      ),
+    );
+  }
+
+  Container noNotificationAlert() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          kBrokenHeart,
+          SizedBox(
+            height: 20,
+          ),
+          Center(
+            child: Text(
+              "There are no notifications created!",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.w300,
+                fontSize: 16,
+                letterSpacing: 0.3,
+                color: Color.fromRGBO(0, 0, 0, 0.87),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+        ],
       ),
     );
   }
