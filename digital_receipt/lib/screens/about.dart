@@ -13,7 +13,7 @@ class _AboutState extends State<About> {
 
   setPackage() async {
     setState(() {
-      packageInfo=  PackageInfo();
+      packageInfo = PackageInfo();
     });
     var val = await PackageInfo.fromPlatform();
     setState(() {
@@ -86,7 +86,15 @@ class _AboutState extends State<About> {
             ),
             onTap: () => showLicensePage(
                 context: context,
-                applicationIcon: SizedBox(height: 30, child: kLogo1)),
+                applicationIcon: Center(
+                  child: Container(
+                      height: 50,
+                      width: 150,
+                      color: Colors.white,
+                      margin: EdgeInsets.all(10),
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: kLogo1),
+                )),
           ),
           ListTile(
               title: Text(
@@ -106,7 +114,7 @@ class _AboutState extends State<About> {
                 ),
               ),
               onTap: () {
-               // _launchURL('https://flutter.dev');
+                // _launchURL('https://flutter.dev');
               }
 
               //subtitle: Text(packageInfo?.buildNumber),
