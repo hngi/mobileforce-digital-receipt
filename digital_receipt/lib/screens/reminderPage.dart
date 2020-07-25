@@ -1,4 +1,8 @@
 import 'package:digital_receipt/widgets/app_card.dart';
+import 'package:digital_receipt/constant.dart';
+import 'package:digital_receipt/models/reminder.dart';
+import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 
 import 'edit_reminder_screen.dart';
@@ -10,6 +14,8 @@ class ReminderPage extends StatefulWidget {
 }
 
 class _ReminderPageState extends State<ReminderPage> {
+  ApiService _apiService = ApiService();
+
   @override
   void initState() {
     super.initState();
@@ -25,13 +31,13 @@ class _ReminderPageState extends State<ReminderPage> {
         ),
       ),
       body: FutureBuilder(
-        future: null, // receipts from API
+        future: _apiService.getReminders(), // receipts from API
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
             );
-          } else {
+          } else if (snapshot.hasData && snapshot.data.length > 0) {
             return Column(
               children: <Widget>[
                 //SizedBox(height: 20.0),
@@ -43,16 +49,19 @@ class _ReminderPageState extends State<ReminderPage> {
                       bottom: 16.0,
                       top: 30,
                     ),
-                    itemCount: 25,
+                    itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
                       // HardCoded Receipt details
+                      Reminder reminder =
+                          Reminder.fromJson(snapshot.data[index]);
                       return GestureDetector(
                         child: reminderCard(
-                          total: "80,000",
-                          date: "12-06-2020",
-                          reminderTitle: "Carole Froschauer",
-                          subtitle: "Crptocurrency, intro to after effects ",
-                          dueDate: "In 1 month time",
+                          total: "----", //at the moment the api does not return a balance
+                          date:
+                              "${Utils.preferredDateFormat(reminder.createdAt)}",
+                          reminderTitle: "-------", //at the moment the api does not return customer details
+                          receiptNumber: "${reminder.receiptNumber}",
+                          dueDate: "${Utils.preferredDateFormat(reminder.partPaymentDateTime, includeTime: true)}",
                         ),
                         onTap: () {
                           print('object');
@@ -67,14 +76,41 @@ class _ReminderPageState extends State<ReminderPage> {
                 ),
               ],
             );
+          } else {
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  kBrokenHeart,
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Center(
+                    child: Text(
+                      "You don't have any reminder!",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 16,
+                        letterSpacing: 0.3,
+                        color: Color.fromRGBO(0, 0, 0, 0.87),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                ],
+              ),
+            );
           }
-          // }
         },
       ),
     );
   }
 
-  Widget reminderCard({String total, date, reminderTitle, subtitle, dueDate}) {
+  Widget reminderCard({String total, date, reminderTitle, receiptNumber, dueDate}) {
     return Column(
       children: <Widget>[
         AppCard(
@@ -103,10 +139,19 @@ class _ReminderPageState extends State<ReminderPage> {
                           SizedBox(
                             height: 5,
                           ),
-                          Text("$subtitle",
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.subtitle2),
+                          Text(
+                            "Receipt Number: $receiptNumber",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w300,
+                              height: 1.43,
+                              fontFamily: 'Montserrat',
+                              letterSpacing: 0.03,
+                            ),
+                          ),
                         ],
                       ),
                     ),
