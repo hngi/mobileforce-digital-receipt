@@ -6,6 +6,7 @@ import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
+import 'package:digital_receipt/widgets/app_card.dart';
 import 'package:intl/intl.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:flutter/material.dart';
@@ -126,6 +127,7 @@ class _AnalyticsState extends State<Analytics> {
 
   Widget _buildTopContent({@required String totalSales}) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         AnalyticsCard(totalSales),
@@ -134,12 +136,7 @@ class _AnalyticsState extends State<Analytics> {
         ),
         Text(
           'Sales via categories',
-          style: TextStyle(
-            color: Color(0xFF0C0C0C),
-            fontSize: 16,
-            fontWeight: FontWeight.w300,
-            fontFamily: 'Montserrat',
-          ),
+          style: Theme.of(context).textTheme.headline6,
         ),
         SizedBox(
           height: 20,
@@ -148,45 +145,34 @@ class _AnalyticsState extends State<Analytics> {
     );
   }
 
-  Container buildCard(String title, String subTitle, Color sideColor) {
-    return Container(
-      decoration: BoxDecoration(
-        color: sideColor,
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      child: Container(
-        margin: EdgeInsets.only(left: 5.0),
-        decoration: BoxDecoration(
-          color: Color(0xFFE3EAF1),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: 50),
-            Text(
-              '$title',
+  Widget buildCard(String title, String subTitle, Color sideColor) {
+    return AppCard(
+      liningColor: sideColor,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            '$title',
+            style: TextStyle(
+              fontSize: 18.0,
+            ),
+          ),
+          SizedBox(
+            height: 8.0,
+          ),
+          FittedBox(
+            fit: BoxFit.fitWidth,
+            child: Text(
+              '₦$subTitle',
+              textScaleFactor: 0.8,
               style: TextStyle(
-                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                fontSize: 28.0,
               ),
             ),
-            SizedBox(
-              height: 8.0,
-            ),
-            FittedBox(
-              fit: BoxFit.fitWidth,
-              child: Text(
-                '₦$subTitle',
-                textScaleFactor: 0.8,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 28.0,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -223,22 +209,7 @@ class _AnalyticsState extends State<Analytics> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            AnalyticsCard(data.totalSales),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              'Sales via categories',
-              style: TextStyle(
-                color: Color(0xFF0C0C0C),
-                fontSize: 16,
-                fontWeight: FontWeight.w300,
-                fontFamily: 'Montserrat',
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
+            _buildTopContent(totalSales: data.totalSales),
             GridView.count(
                 crossAxisSpacing: 16.0,
                 mainAxisSpacing: 16.0,

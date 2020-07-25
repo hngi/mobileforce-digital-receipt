@@ -190,8 +190,9 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                             break;
                           default:
                             setState(() {
-                               recieptListData =
-                                ReceiptUtil.sortReceiptByReceiptNo(receiptList);
+                              recieptListData =
+                                  ReceiptUtil.sortReceiptByReceiptNo(
+                                      receiptList);
                             });
 
                             break;
