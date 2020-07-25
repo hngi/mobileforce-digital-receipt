@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_controller.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
-import 'package:fluttercontactpicker/fluttercontactpicker.dart';
+
 import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
@@ -10,6 +11,7 @@ import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:digital_receipt/widgets/customer_dropdown.dart';
+import 'package:digital_receipt/widgets/contact_dropdown.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -101,11 +103,11 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
   @override
   Widget build(BuildContext context) {
     bool isPickingContact = false;
-    Function getContactFromPhone = () async {
+    /* Function getContactFromPhone = () async {
       setState(() {
         isPickingContact = true;
-      });
-      if (await FlutterContactPicker.hasPermission()) {
+      }); */
+    /*  if (await FlutterContactPicker.hasPermission()) {
         final PhoneContact contact =
             await FlutterContactPicker.pickPhoneContact();
         setState(() {
@@ -113,16 +115,12 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
           _pNumberController.text = contact.phoneNumber.number;
         });
       } else {
-        final granted = await FlutterContactPicker.requestPermission();
-        showDialog(
-            context: context,
-            child: AlertDialog(
-                title: const Text('Granted: '), content: Text('$granted')));
-      }
-      setState(() {
+        final granted = await FlutterContactPicker.requestPermission(); */
+
+    /* setState(() {
         isPickingContact = false;
       });
-    };
+    }; */
     // SendReceiptService srs = Provider.of<SendReceiptService>(context);
     return SingleChildScrollView(
       child: Padding(
@@ -328,22 +326,39 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                 focusNode: _nameFocus,
                 textInputAction: TextInputAction.next,
                 suffixIcon: IconButton(
-                  focusNode: _nameFocus,
-                  icon: isPickingContact
-                      ? ButtonLoadingIndicator(
-                          color: kPrimaryColor,
-                          height: 20,
-                          width: 20,
-                        )
-                      : Icon(
-                          Icons.contacts,
-                          color: Theme.of(context)
-                              .inputDecorationTheme
-                              .enabledBorder
-                              .borderSide
-                              .color,
-                        ),
-                  onPressed: getContactFromPhone,
+                  // focusNode: _nameFocus,
+                  icon: Icon(
+                    Icons.contacts,
+                    color: Theme.of(context)
+                        .inputDecorationTheme
+                        .enabledBorder
+                        .borderSide
+                        .color,
+                  ),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => ContactDropdown(
+                              onSubmit: (Contact contact) {
+                                // selectedCustomer = contact;
+                                _nameController.text = contact.displayName;
+                                _emailController.text =
+                                    contact.emails.toList().isNotEmpty
+                                        ? contact.emails?.toList()[0].value
+                                        : '';
+                                _addressController.text =
+                                    contact.postalAddresses.toList().isNotEmpty
+                                        ? contact.postalAddresses
+                                            ?.toList()[0]
+                                            .street
+                                        : '';
+                                _pNumberController.text =
+                                    contact.phones.toList().isNotEmpty
+                                        ? contact.phones?.toList()[0].value
+                                        : '';
+                              },
+                            ));
+                  },
                 ),
                 onFieldSubmitted: (value) =>
                     _changeFocus(from: _nameFocus, to: _emailFocus),
@@ -353,8 +368,8 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     if (value.isEmpty) {
                       return "Enter customer name";
                     }
-                    if (value.length < 6) {
-                      return 'customer name must be more than 8 characters';
+                    if (value.length < 4) {
+                      return 'customer name must be more than 4 characters';
                     }
                   }
                   return null;

@@ -42,6 +42,7 @@ class _DashBoardState extends State<DashBoard> {
   dynamic recNo;
   int deptIssued;
   double amnt;
+
   var promoWidth = 0.0;
   var promoHeight = 0.0;
   var promotionData;
@@ -261,6 +262,7 @@ class _DashBoardState extends State<DashBoard> {
                     onRefresh: () async {
                       await refreshPage();
                     },
+
                     child: Column(
                       children: <Widget>[
                         buildGridView(recNo, deptIssued, amnt),
@@ -298,6 +300,7 @@ class _DashBoardState extends State<DashBoard> {
                         ),
                       ],
                     ),
+
 
                   ),
                 );

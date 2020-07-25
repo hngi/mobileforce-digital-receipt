@@ -100,6 +100,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
             backgroundColor: Theme.of(context).primaryColor,
           ),
 
+
+
         ),
         body: Padding(
           padding: EdgeInsets.only(top: 20.0, left: 16, right: 16),
@@ -236,7 +238,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
             ],
           ),
         ));
+
   }
+
 
   Widget _buildInventory(Inventory inventory, int index) {
     Widget _buildColumnText(
