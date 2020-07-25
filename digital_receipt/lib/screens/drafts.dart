@@ -15,9 +15,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../constant.dart';
 import '../models/receipt.dart';
 import '../services/api_service.dart';
+import '../services/shared_preference_service.dart';
 import 'receipt_page_customer.dart';
 
-final numberFormat = new NumberFormat("\u20A6#,##0.#", "en_US");
+final numberFormat = new NumberFormat();
 final dateFormat = DateFormat('dd-MM-yyyy');
 
 class Drafts extends StatefulWidget {
@@ -28,8 +29,15 @@ class Drafts extends StatefulWidget {
 class _DraftsState extends State<Drafts> {
   ApiService _apiService = ApiService();
   var draftData;
+  String currency = '';
+
+  setCurrency() async {
+    currency = await SharedPreferenceService().getStringValuesSF('Currency');
+  }
+
   @override
   void initState() {
+    setCurrency();
     super.initState();
   }
 
@@ -247,7 +255,7 @@ class _DraftsState extends State<Drafts> {
                   Container(
                     width: 250,
                     child: Text(
-                      receipt.descriptions,
+                      receipt.products.first.productDesc,
                       maxLines: 2,
                     ),
                   ),
@@ -257,7 +265,7 @@ class _DraftsState extends State<Drafts> {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: Text(
-                      'Total:\t\t ${numberFormat.format(double.parse(receipt.totalAmount))}',
+                      'Total:\t\t $currency${numberFormat.format(double.parse(receipt.totalAmount))}',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),

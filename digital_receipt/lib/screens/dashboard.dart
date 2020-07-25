@@ -46,13 +46,19 @@ class _DashBoardState extends State<DashBoard> {
   var promoWidth = 0.0;
   var promoHeight = 0.0;
   var promotionData;
+  String currency = '';
 
   @override
   void initState() {
     dashboardFuture = _apiService.getIssuedReceipt2();
+    setCurrency();
     isLogin(context);
     callFetch();
     super.initState();
+  }
+
+  setCurrency() async {
+    currency = await SharedPreferenceService().getStringValuesSF('Currency');
   }
 
   isLogin(BuildContext context) {
@@ -266,7 +272,8 @@ class _DashBoardState extends State<DashBoard> {
                         children: <Widget>[
                           buildGridView(recNo, deptIssued, amnt),
                           Padding(
-                            padding: const EdgeInsets.only(top: 20.0, bottom: 15),
+                            padding:
+                                const EdgeInsets.only(top: 20.0, bottom: 15),
                             child: FutureBuilder(
                               future: _apiService.getPromotion(),
                               builder: (BuildContext context,
@@ -335,7 +342,7 @@ class _DashBoardState extends State<DashBoard> {
         ),
         _singleCard(
           leading: 'Total Sales',
-          subtitle: '₦${Utils.formatNumber(amnt)}',
+          subtitle: '$currency${Utils.formatNumber(amnt)}',
           color: _getRandomColor(),
         ),
         FlatButton(

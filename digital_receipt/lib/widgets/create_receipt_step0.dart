@@ -58,12 +58,12 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
 
   ReceiptCategory selectedCategory;
   Customer selectedCustomer;
-  Currency selectedCurrency = Currency.currencyList().elementAt(0);
+  //Currency selectedCurrency = Currency.currencyList().elementAt(0);
 
   // Needed to decide weather to create a new customer or not
   List<Customer> customers = [];
 
-  List<Currency> currency = Currency.currencyList();
+  //List<Currency> currency = Currency.currencyList();
 
   String _customerName, _customerEmail, _customerAddress, _customerPNumber;
 
@@ -501,7 +501,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               SizedBox(
                 height: 25,
               ),
-              AppDropSelector(
+              /* AppDropSelector(
                 onTap: () async {
                   showDialog(
                     context: context,
@@ -523,7 +523,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
               SizedBox(
                 height: 45,
-              ),
+              ), */
               AppSolidButton(
                 text: 'Next',
                 backgroundColor: Theme.of(context).buttonColor,
@@ -535,8 +535,8 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
 
                     Provider.of<Receipt>(context, listen: false)
                         .setCategory(selectedCategory);
-                    Provider.of<Receipt>(context, listen: false)
-                        .setCurrency(selectedCurrency);
+                   /*  Provider.of<Receipt>(context, listen: false)
+                        .setCurrency(selectedCurrency); */
 
                     if (selectedCustomer == null) {
                       Provider.of<Receipt>(context, listen: false).setCustomer(

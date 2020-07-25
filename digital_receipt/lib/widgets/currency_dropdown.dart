@@ -4,16 +4,22 @@ import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/widgets/contact_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_country_picker/flutter_country_picker.dart';
 import '../widgets/create_receipt_step0.dart';
 
-class CurrencyDropdown extends StatelessWidget {
+class CurrencyDropdown extends StatefulWidget {
   const CurrencyDropdown({
     this.currency,
     this.onSubmit,
   });
-  final List currency;
+  final List<Country> currency;
   final Function onSubmit;
-  // List<Currency> currency = Currency.currencyList();
+
+  @override
+  _CurrencyDropdownState createState() => _CurrencyDropdownState();
+}
+
+class _CurrencyDropdownState extends State<CurrencyDropdown> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -57,16 +63,24 @@ class CurrencyDropdown extends StatelessWidget {
                     Expanded(
                       child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: currency.length,
+                        itemCount: widget.currency.length,
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
-                              onSubmit(currency[index]);
+                              widget.onSubmit(widget.currency[index]);
                               Navigator.pop(context);
                             },
                             child: ListTile(
-                              leading: Text(currency[index].flag),
-                              title: Text(currency[index].currencyName),
+                              leading: Image.asset(
+                                widget.currency[index].asset,
+                                package: "flutter_country_picker",
+                                height: 35,
+                                width: 46,
+                              ),
+                              title: Text(
+                                widget.currency[index].currency,
+                                style: TextStyle(fontFamily: 'Montserrat'),
+                              ),
                             ),
                           );
                         },
@@ -84,10 +98,9 @@ class CurrencyDropdown extends StatelessWidget {
 
   searchCurrencyList(String val) {
     //print(_customerList[0].name.contains(val));
-    currency
+    widget.currency
         .where((e) => e.name.toLowerCase().contains(val.toLowerCase()))
         .toList();
-    print('ok: $currency');
-    // print('kkk: $tempCustomerLi');
+   // print('ok: ${widget.currency}');
   }
 }

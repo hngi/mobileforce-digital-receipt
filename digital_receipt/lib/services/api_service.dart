@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/notification.dart';
@@ -872,6 +873,25 @@ class ApiService {
       }
     } else {
       return hiveDb.getCustomer() ?? Future.error('No network Connection');
+    }
+  }
+
+  Future getCurrency() async {
+    dynamic res = await http.get('https://restcountries.eu/rest/v2/all');
+
+    if (res.statusCode == 200) {
+      res = json.decode(res.body);
+      List val = res
+          .map(
+            (e) => Currency(
+              currencyName: e['currencies'][0]['name'].toString(),
+              currencySymbol: e['currencies'][0]['symbol'].toString(),
+              flag: e['flag'].toString(),
+            ),
+          )
+          .toList();
+      print(val.length);
+      return List<Currency>.from(val);
     }
   }
 

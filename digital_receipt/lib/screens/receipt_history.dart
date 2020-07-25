@@ -8,11 +8,13 @@ import 'package:digital_receipt/models/receipt.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../utils/receipt_util.dart';
 import 'package:intl/intl.dart';
+import '../services/shared_preference_service.dart';
 import 'package:provider/provider.dart';
 import '../constant.dart';
 
-final numberFormat = new NumberFormat("\u20A6#,##0.#", "en_US");
+final numberFormat = new NumberFormat();
 final dateFormat = DateFormat('dd-MM-yyyy');
+String currency = '';
 
 /// This code displays only the UI
 class ReceiptHistory extends StatefulWidget {
@@ -61,8 +63,13 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
     });
   }
 
+  setCurrency() async {
+    currency = await SharedPreferenceService().getStringValuesSF('Currency');
+  }
+
   @override
   void initState() {
+    setCurrency();
     receiptFuture = _apiService.getIssued();
     setReceiptHistory();
     super.initState();
@@ -331,7 +338,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                   Container(
                     width: 250,
                     child: Text(
-                      receipt.descriptions,
+                      receipt.products.first.productDesc,
                       maxLines: 2,
                     ),
                   ),
@@ -341,7 +348,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: Text(
-                      'Total:\t\t ${numberFormat.format(double.parse(receipt.totalAmount))}',
+                      'Total:\t\t$currency${numberFormat.format(double.parse(receipt.totalAmount))}',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),

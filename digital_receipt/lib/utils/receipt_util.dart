@@ -105,7 +105,7 @@ setReceipt({snapshot, @required context}) {
     ..receiptId = snapshot['id']
     ..sellerName = snapshot['sellerName'] ?? ''
     ..products = products
-    ..currency = Receipt().currencyFromJson(snapshot['currency'])
+    ..currency = snapshot['currency']
     ..customer = Customer(
       name: snapshot['customer']['name'],
       email: snapshot['customer']['email'],
