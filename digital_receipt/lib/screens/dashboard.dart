@@ -236,55 +236,7 @@ class _DashBoardState extends State<DashBoard> {
                     ),
                   ),
                 ));
-              } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 1.5,
-                    ),
-                  ),
-                );
-              } else {
-                var userData = snapshot.data;
-                recNo = recInfo(userData)['recNo'];
-                deptIssued = recInfo(userData)['dept'];
-                amnt = recInfo(userData)['total'];
-                return Expanded(
-                  child: RefreshIndicator(
-
-                    onRefresh: () async {
-                      await refreshPage();
-                    },
-                    child: Center(
-                      child: ListView(
-                        shrinkWrap: true,
-                        // mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Center(
-                              child: SizedBox(
-                            height: 200,
-                            child: kEmpty,
-                          )),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            'Nothing to see here. Click the plus icon to create a receipt',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color.fromRGBO(0, 0, 0, 0.6),
-                              fontSize: 16,
-                              letterSpacing: 0.03,
-                              fontWeight: FontWeight.normal,
-                              fontFamily: 'Montserrat',
-                              height: 1.43,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ));
-                } else if (snapshot.connectionState ==
+              } else if (snapshot.connectionState ==
                     ConnectionState.waiting) {
                   return Expanded(
                     child: Center(
@@ -345,7 +297,6 @@ class _DashBoardState extends State<DashBoard> {
             ),
           ],
         ),
-      ),
     );
   }
 
