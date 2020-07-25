@@ -58,7 +58,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     /*  appBar:  AppBar(
+      /*  appBar:  AppBar(
         backgroundColor: Color(0xffF2F8FF),
         elevation: 0,
         iconTheme: IconThemeData(color: Color(0xFF0B57A7)),
@@ -209,7 +209,10 @@ class _SignupScreenState extends State<SignupScreen> {
                         textInputAction: TextInputAction.done,
                         onFieldSubmitted: (value) {
                           _passwordFocus.unfocus();
-                          signupUser();
+                          if (!_loadingIndicator.isLoading &&
+                              _formKey.currentState.validate()) {
+                            signupUser();
+                          }
                         },
                         obscureText: !passwordVisible ? true : false,
                         decoration: InputDecoration(
@@ -348,7 +351,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ],
                   ),
                 ),
-  /*               Platform.isIOS
+                /*               Platform.isIOS
                     ? Column(
                         children: <Widget>[
                           AppButton(

@@ -553,7 +553,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     }
 
                     print(Provider.of<Receipt>(context, listen: false));
-                    widget.carouselController.animateToPage(1);
+                    widget.carouselController.nextPage();
                   }
                 },
               )
