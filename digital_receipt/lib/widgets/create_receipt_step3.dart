@@ -651,7 +651,7 @@ class _CreateReceiptStep3State extends State<CreateReceiptStep3> {
                     await Provider.of<Receipt>(context, listen: false)
                         .saveReceipt();
                 print(result);
-                if (result.statusCode == 200) {
+                if (result != null && result.statusCode == 200) {
                   setState(() {
                     isLoading = false;
                   });

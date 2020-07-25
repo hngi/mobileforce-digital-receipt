@@ -130,8 +130,8 @@ class ThemeManager {
       data: ThemeData(
         cardColor: DarkMode.appBarColor,
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: Colors.purple,
-        //scaffoldBackgroundColor: DarkMode.backgroundColor,
+        //scaffoldBackgroundColor: Colors.purple,
+        scaffoldBackgroundColor: DarkMode.backgroundColor,
         primaryColor: DarkMode.primaryColor,
         primaryColorDark: DarkMode.appBarColor,
         accentColor: Color(0xFF25CCB3),

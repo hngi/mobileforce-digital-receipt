@@ -276,8 +276,8 @@ class _SetupState extends State<Setup> {
                           toastLength: Toast.LENGTH_LONG,
                           gravity: ToastGravity.BOTTOM,
                           timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.white,
-                          textColor: Colors.white,
+                          backgroundColor: Colors.green,
+                          textColor: Colors.black,
                           fontSize: 16.0,
                         );
                       } else {
