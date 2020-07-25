@@ -41,6 +41,8 @@ class _ProductDetailState extends State<ProductDetail> {
   bool productAdded = false;
   Product product;
 
+  var cartegoryName;
+
   Unit unitValue;
 
   List<Unit> units = [
@@ -63,6 +65,7 @@ class _ProductDetailState extends State<ProductDetail> {
     ApiService().getAllInventories();
     product = widget.product;
     if (product != null) {
+      // print('veee ${product.categoryName}');
       productDescController.text = product.productDesc;
       quantityController.text = product.quantity.round().toString();
       unitPriceController.text = product.unitPrice.round().toString();
@@ -98,6 +101,10 @@ class _ProductDetailState extends State<ProductDetail> {
   }
 
   fillWithInventory() {
+    print('enven:: ${selectedInventory.category}');
+    setState(() {
+      cartegoryName = selectedInventory?.category ?? '';
+    });
     productDescController.text = selectedInventory.title;
     quantityController.text = '1';
     unitPriceController.text = selectedInventory.unitPrice.round().toString();
@@ -248,7 +255,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                   .textTheme
                                   .headline6
                                   .copyWith(fontWeight: FontWeight.normal),
-                              underline: Divider(),
+                              underline: SizedBox.shrink(),
                               items: units.map(
                                 (Unit unit) {
                                   return DropdownMenuItem<Unit>(
@@ -264,7 +271,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                 },
                               ).toList(),
                               onChanged: (Unit value) {
-                                print(value);
+                                // print(value);
                                 setState(() => unitValue = value);
                                 _changeFocus(
                                     from: _quantityDropdownFocus,
@@ -377,6 +384,7 @@ class _ProductDetailState extends State<ProductDetail> {
           productDesc: productDescController.text.toUpperCase(),
           quantity: double.parse(quantityController.text),
           unitPrice: double.parse(unitPriceController.text),
+          categoryName: cartegoryName ?? '',
           unit: unitValue.getShortName(int.parse(quantityController.text)),
           amount: (double.parse(quantityController.text) *
                   double.parse(unitPriceController.text)) +
@@ -391,13 +399,13 @@ class _ProductDetailState extends State<ProductDetail> {
       );
       setState(() {
         productAdded = true;
-        unitValue = null;
+        /* unitValue = null;
         selectedInventory = null;
         productDescController..text = "";
         quantityController..text = "";
         unitPriceController..text = "";
         taxController..text = "";
-        discountController..text = "";
+        discountController..text = ""; */
       });
       Future.delayed(Duration(seconds: 1), () {
         setState(() {
@@ -451,7 +459,7 @@ class InventoryDialog extends StatelessWidget {
                   children: <Widget>[
                     TextFormField(
                       onChanged: (val) {
-                        print(val);
+                        //print(val);
                         Provider.of<Inventory>(context, listen: false)
                             .searchInventoryList(val);
                       },

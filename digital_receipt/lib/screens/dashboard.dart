@@ -29,6 +29,7 @@ StreamSubscription<dynamic> subscription;
 
 Stream isLoggedStream;
 CheckLogin checkLogin = CheckLogin();
+Future<Map<String, dynamic>> dashboardFuture;
 
 class DashBoard extends StatefulWidget {
   DashBoard({Key key}) : super(key: key);
@@ -48,6 +49,7 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   void initState() {
+    dashboardFuture = _apiService.getIssuedReceipt2();
     isLogin(context);
     callFetch();
     super.initState();
@@ -151,13 +153,16 @@ class _DashBoardState extends State<DashBoard> {
       //return;
     } else {
       await callFetch();
-      var snapshot = await _apiService.getIssuedReceipt2();
-      var userData = snapshot;
-      // setState(() {
-      recNo = recInfo(userData)['recNo'];
-      deptIssued = recInfo(userData)['dept'];
-      amnt = recInfo(userData)['total'];
-      // });
+
+      dashboardFuture = _apiService.getIssuedReceipt2();
+      var snapshot = await dashboardFuture;
+      setState(() {
+        var userData = snapshot;
+
+        recNo = recInfo(userData)['recNo'];
+        deptIssued = recInfo(userData)['dept'];
+        amnt = recInfo(userData)['total'];
+      });
     }
   }
 
@@ -182,23 +187,71 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Container(
-        padding: EdgeInsets.only(top: 16.0, left: 16, right: 16),
-        child: Column(
-          children: <Widget>[
-            _buildInfo(),
-            SizedBox(
-              height: 24.0,
-            ),
-            FutureBuilder(
-              future: _apiService.getIssuedReceipt2(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<Map<String, dynamic>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.done &&
-                    !snapshot.hasData) {
-                  return Expanded(
-                      child: RefreshIndicator(
+
+    return Container(
+      padding: EdgeInsets.only(top: 16.0, left: 16, right: 16),
+      child: Column(
+        children: <Widget>[
+          _buildInfo(),
+          SizedBox(
+            height: 24.0,
+          ),
+          FutureBuilder(
+            future: dashboardFuture,
+            builder: (BuildContext context,
+                AsyncSnapshot<Map<String, dynamic>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  !snapshot.hasData) {
+                return Expanded(
+                    child: RefreshIndicator(
+                  onRefresh: () async {
+                    await refreshPage();
+                  },
+                  child: Center(
+                    child: ListView(
+                      shrinkWrap: true,
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Center(
+                            child: SizedBox(
+                          height: 200,
+                          child: kEmpty,
+                        )),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Nothing to see here. Click the plus icon to create a receipt',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color.fromRGBO(0, 0, 0, 0.6),
+                            fontSize: 16,
+                            letterSpacing: 0.03,
+                            fontWeight: FontWeight.normal,
+                            fontFamily: 'Montserrat',
+                            height: 1.43,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ));
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.5,
+                    ),
+                  ),
+                );
+              } else {
+                var userData = snapshot.data;
+                recNo = recInfo(userData)['recNo'];
+                deptIssued = recInfo(userData)['dept'];
+                amnt = recInfo(userData)['total'];
+                return Expanded(
+                  child: RefreshIndicator(
+
                     onRefresh: () async {
                       await refreshPage();
                     },

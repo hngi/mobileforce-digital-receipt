@@ -3,6 +3,7 @@ class Product {
   String productDesc;
   double quantity;
   double unitPrice;
+  String categoryName;
   double amount;
   double tax;
   double discount;
@@ -13,6 +14,7 @@ class Product {
       this.productDesc,
       this.quantity,
       this.amount,
+      this.categoryName,
       this.unitPrice,
       this.tax,
       this.discount,
@@ -28,23 +30,23 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      // End point returns id as an int!
-      id: json['id'].toString(),
-      productDesc: json['name'] as String,
-      quantity: json['quantity']?.toDouble(),
-      unitPrice: (json['unit_price']?.toDouble()),
-      amount: json['amount']?.toDouble(),
-     tax: json['tax_amount'],
-     discount:  double.parse(json['discount']),
-     unit: json['discount']
-    );
+        // End point returns id as an int!
+        id: json['id'].toString(),
+        productDesc: json['name'] as String,
+        quantity: json['quantity']?.toDouble(),
+        unitPrice: (json['unit_price']?.toDouble()),
+        amount: json['amount']?.toDouble(),
+        tax: json['tax_amount'],
+        categoryName: json['category_name'],
+        discount: double.parse(json['discount']),
+        unit: json['discount']);
   }
 
   Map<String, dynamic> toJson() => {
         "name": productDesc,
         "quantity": quantity,
         "unit_price": unitPrice,
-        "category_name": 'test',
+        "category_name": categoryName,
         "tax_amount": tax,
         "discount": discount,
         "unit": unit

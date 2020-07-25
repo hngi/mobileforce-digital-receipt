@@ -32,8 +32,8 @@ class Inventory extends ChangeNotifier {
   setAddress(address) => this.address = address;*/
 
   factory Inventory.fromJson(Map<String, dynamic> json) {
-    print("i am json");
-    print(json);
+   // print("i am json");
+    //print(json);
     return Inventory(
       id: json['id'],
         title: json['name'],
