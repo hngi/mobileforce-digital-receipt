@@ -61,6 +61,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -140,7 +141,12 @@ class _SignupScreenState extends State<SignupScreen> {
                         textInputAction: TextInputAction.done,
                         onFieldSubmitted: (value) {
                           _passwordFocus.unfocus();
-                          signUpUser();
+
+                          if (!_loadingIndicator.isLoading &&
+                              _formKey.currentState.validate()) {
+                            signupUser();
+                          }
+
                         },
                         obscureText: !passwordVisible ? true : false,
                         suffixIcon: IconButton(
@@ -253,6 +259,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ],
                   ),
                 ),
+
                 /*Platform.isIOS
                     ? Column(
                         children: <Widget>[
