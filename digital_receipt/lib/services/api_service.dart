@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/notification.dart';
@@ -52,7 +53,7 @@ class ApiService {
   );
 
   Future<String> loginUser(String email_address, String password) async {
-     await _sharedPreferenceService.addStringToSF("REGISTRATION_ID", null);
+    await _sharedPreferenceService.addStringToSF("REGISTRATION_ID", null);
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -118,8 +119,10 @@ class ApiService {
 
           //Save details to Shared Preference
           await _sharedPreferenceService.addStringToSF("USER_ID", userId);
-          await _sharedPreferenceService.addStringToSF("REGISTRATION_ID", fcmToken);
-          await _sharedPreferenceService.addStringToSF("AUTH_TOKEN", auth_token);
+          await _sharedPreferenceService.addStringToSF(
+              "REGISTRATION_ID", fcmToken);
+          await _sharedPreferenceService.addStringToSF(
+              "AUTH_TOKEN", auth_token);
           await _sharedPreferenceService.addStringToSF("EMAIL", email_address);
           //
           //print("token :");
@@ -868,6 +871,25 @@ class ApiService {
       }
     } else {
       return hiveDb.getCustomer() ?? Future.error('No network Connection');
+    }
+  }
+
+  Future getCurrency() async {
+    dynamic res = await http.get('https://restcountries.eu/rest/v2/all');
+
+    if (res.statusCode == 200) {
+      res = json.decode(res.body);
+      List val = res
+          .map(
+            (e) => Currency(
+              currencyName: e['currencies'][0]['name'].toString(),
+              currencySymbol: e['currencies'][0]['symbol'].toString(),
+              flag: e['flag'].toString(),
+            ),
+          )
+          .toList();
+      print(val.length);
+      return List<Currency>.from(val);
     }
   }
 

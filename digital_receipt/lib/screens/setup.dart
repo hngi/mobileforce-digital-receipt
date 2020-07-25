@@ -1,16 +1,20 @@
 import 'dart:io';
+import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
+import 'package:digital_receipt/widgets/app_drop_selector.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
+import 'package:digital_receipt/widgets/currency_dropdown.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_country_picker/flutter_country_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-
+import 'package:intl/intl.dart';
 import 'no_internet_connection.dart';
 
 class Setup extends StatefulWidget {
@@ -31,6 +35,7 @@ class _SetupState extends State<Setup> {
   final picker = ImagePicker();
   bool loading = false;
   var status;
+  String selectedCurrency;
 
   Future getImage() async {
     PermissionStatus status = await Permission.storage.status;
@@ -155,6 +160,57 @@ class _SetupState extends State<Setup> {
             slogan = value;
           },
         )
+      ],
+    );
+  }
+
+  Widget _buildCurrency(formLabel) {
+    return Column(
+      children: <Widget>[
+        Padding(padding: const EdgeInsets.all(8)),
+        Container(
+          alignment: Alignment.bottomLeft,
+          child: Text(
+            formLabel,
+            style: TextStyle(
+              fontFamily: 'Montserrat',
+              fontSize: 13.0,
+              color: Color.fromRGBO(0, 0, 0, 0.6),
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 5,
+        ),
+        AppDropSelector(
+            onTap: () async {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CurrencyDropdown(
+                    currency: Country.ALL,
+                    onSubmit: (Country country) {
+                      setState(() {
+                        selectedCurrency = country.currency;
+
+                        var format = NumberFormat.compactSimpleCurrency(
+                            locale: 'en_US', name: country.isoCode);
+
+                        var currency =
+                            format.simpleCurrencySymbol(country.currencyISO);
+
+                        print(format.simpleCurrencySymbol(country.currencyISO));
+
+                        _sharedPreferenceService.addStringToSF(
+                            'Currency', currency);
+                      });
+                    },
+                  );
+                },
+              );
+            },
+            text: selectedCurrency != null ? selectedCurrency : formLabel),
       ],
     );
   }
@@ -324,6 +380,8 @@ class _SetupState extends State<Setup> {
                       _buildPhoneNumber('Phone Number'),
                       SizedBox(height: 22),
                       _buildAddress('Address'),
+                      SizedBox(height: 22),
+                      _buildCurrency('Currency'),
                       SizedBox(height: 22),
                       _buildSlogan('Business Slogan')
                     ]),

@@ -57,10 +57,13 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
     receiptPdf = pdf;
   }
 
+  String currency = '';
+
   bool _loading = false;
   String issuerSignature;
 
   init() async {
+    currency = await SharedPreferenceService().getStringValuesSF('Currency');
     var val = await SharedPreferenceService().getStringValuesSF('LOGO');
     var _issuerSignature =
         await SharedPreferenceService().getStringValuesSF("ISSUER_SIGNATURE");
@@ -117,6 +120,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                 });
               },
               logo,
+              currency,
               () {
                 setState(() {
                   _loading = false;
@@ -135,6 +139,7 @@ Widget ReceiptScreenLayout(
     bool isloading,
     Function loadingStart,
     String logo,
+    String currency,
     Function loadingStop,
     String issuerSignature]) {
   Future sendMail() async {
@@ -416,7 +421,9 @@ Widget ReceiptScreenLayout(
                           ),
                         ),
                         Divider(),
-                        ReceiptItem(),
+                        ReceiptItem(
+                          currency: currency,
+                        ),
                         SizedBox(
                           //toatal payment and stamp
 
@@ -495,15 +502,11 @@ Widget ReceiptScreenLayout(
                                   Padding(
                                     padding: const EdgeInsets.only(top: 15.0),
                                     child: Text(
-                                      Provider.of<Receipt>(context,
+                                     '$currency' + Utils.formatNumber(double.tryParse(
+                                          Provider.of<Receipt>(context,
                                                   listen: false)
-                                              .getCurrency()
-                                              .currencySymbol +
-                                          Utils.formatNumber(double.tryParse(
-                                              Provider.of<Receipt>(context,
-                                                      listen: false)
-                                                  .getTotal()
-                                                  .toString())),
+                                              .getTotal()
+                                              .toString())),
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 14,

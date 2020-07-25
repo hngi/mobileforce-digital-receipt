@@ -11,11 +11,11 @@ class Currency {
       Currency(id:1,currencyName:'Nigerian Naira',currencySymbol:'₦',flag:'🇳🇬', ),
       Currency(id:2,currencyName:'United States Dollars',currencySymbol:'\$', flag:'🇺🇸', ),
       Currency(id:3,currencyName:'Ghananian Cedi',currencySymbol:'₵',flag:'🇬🇭', ),
-      Currency(id:4,currencyName:'indian rupee',currencySymbol:'₹',flag:'🇮🇴', ),
+      Currency(id:4,currencyName:'Indian rupee',currencySymbol:'₹',flag:'🇮🇳', ),
       Currency(id:5,currencyName:'Great Britain Pounds',currencySymbol:'£',flag:'󠁧󠁢󠁥󠁮🇬🇧', ),
       Currency(id:6,currencyName:'Euro',currencySymbol:'€',flag:'🇻🇦', ),
       Currency(id:7,currencyName:'French Franc',currencySymbol:'₣',flag:'🇫🇷', ),
-      Currency(id:8,currencyName:'japanese Yen',currencySymbol:'¥',flag:'🇯🇵', ),
+      Currency(id:8,currencyName:'Japanese Yen',currencySymbol:'¥',flag:'🇯🇵', ),
       Currency(id:9,currencyName:'Isreali shekel',currencySymbol:'₪',flag:'🇮🇱', ),
       Currency(id:10,currencyName:'Spanish peseta',currencySymbol:'₧',flag:'🇪🇸', ),
     ];
