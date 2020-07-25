@@ -170,14 +170,7 @@ class _CreateInventoryState extends State<CreateInventory> {
         // backgroundColor: Colors.teal[50],
         appBar: AppBar(
           //backgroundColor: Color(0xff226EBE),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            color: Colors.white,
-            onPressed: () {
-              Navigator.pop(context, true);
-              // Navigator.of(context).pop(true);
-            },
-          ),
+         
           title: Text(
             "Inventory",
             style: TextStyle(

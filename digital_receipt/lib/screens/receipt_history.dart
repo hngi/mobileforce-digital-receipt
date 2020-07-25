@@ -33,6 +33,8 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
   List<Receipt> recieptListData = [];
   ApiService _apiService = ApiService();
 
+  Future receiptFuture;
+
   /* setSort() async {
     try {
       var res = await _apiService.getIssued();
@@ -49,9 +51,20 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
     }
   } */
 
+  setReceiptHistory() async {
+    var res = await receiptFuture;
+    setState(() {
+      receiptList = res;
+
+      recieptListData = ReceiptUtil.sortReceiptByReceiptNo(receiptList);
+      copyReceiptList = receiptList;
+    });
+  }
+
   @override
   void initState() {
-    // setSort();
+    receiptFuture = _apiService.getIssued();
+    setReceiptHistory();
     super.initState();
   }
 
@@ -141,32 +154,46 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                         dropdownValue = value;
                         switch (value) {
                           case "Date issued":
-                            receiptList =
-                                ReceiptUtil.sortReceiptByDate(recieptListData);
+                            setState(() {
+                              recieptListData =
+                                  ReceiptUtil.sortReceiptByDate(receiptList);
+                            });
                             break;
                           case "WhatsApp":
-                            receiptList = ReceiptUtil.sortReceiptByCategory(
-                                recieptListData,
-                                byCategory: ReceiptCategory.WHATSAPP);
+                            setState(() {
+                              recieptListData =
+                                  ReceiptUtil.sortReceiptByCategory(receiptList,
+                                      byCategory: ReceiptCategory.WHATSAPP);
+                            });
                             break;
                           case "Facebook":
-                            receiptList = ReceiptUtil.sortReceiptByCategory(
-                                recieptListData,
-                                byCategory: ReceiptCategory.FACEBOOK);
+                            setState(() {
+                              recieptListData =
+                                  ReceiptUtil.sortReceiptByCategory(receiptList,
+                                      byCategory: ReceiptCategory.FACEBOOK);
+                            });
                             break;
                           case "Instagram":
-                            receiptList = ReceiptUtil.sortReceiptByCategory(
-                                recieptListData,
-                                byCategory: ReceiptCategory.INSTAGRAM);
+                            setState(() {
+                              recieptListData =
+                                  ReceiptUtil.sortReceiptByCategory(receiptList,
+                                      byCategory: ReceiptCategory.INSTAGRAM);
+                            });
                             break;
                           case "Twitter":
-                            receiptList = ReceiptUtil.sortReceiptByCategory(
-                                recieptListData,
-                                byCategory: ReceiptCategory.TWITTER);
+                            setState(() {
+                              recieptListData =
+                                  ReceiptUtil.sortReceiptByCategory(receiptList,
+                                      byCategory: ReceiptCategory.TWITTER);
+                              print(receiptList);
+                            });
                             break;
                           default:
-                            receiptList = ReceiptUtil.sortReceiptByReceiptNo(
-                                recieptListData);
+                            setState(() {
+                               recieptListData =
+                                ReceiptUtil.sortReceiptByReceiptNo(receiptList);
+                            });
+
                             break;
                         }
                       });
@@ -178,13 +205,8 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
             Expanded(
               child: FutureBuilder(
                 initialData: <Receipt>[],
-                future: _apiService.getIssued(), // receipts from API
+                future: receiptFuture, // receipts from API
                 builder: (context, snapshot) {
-                  recieptListData = snapshot.data;
-
-                  receiptList =
-                      ReceiptUtil.sortReceiptByReceiptNo(recieptListData);
-                  copyReceiptList = receiptList;
                   //print(snapshot.data[5]);
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
@@ -199,8 +221,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                         : Column(
                             children: <Widget>[
                               SizedBox(height: 20.0),
-                              receiptList.length != 0 &&
-                                      recieptListData.length != 0
+                              recieptListData.length != 0
                                   ? Flexible(
                                       child: ListView.builder(
                                         itemCount: recieptListData.length,

@@ -118,7 +118,7 @@ class HiveDb extends ChangeNotifier {
         Inventory temp = Inventory.fromJson(e);
         return temp;
       });
-      print(res);
+     // print(res);
       return List<Inventory>.from(res);
     }
     return null;
