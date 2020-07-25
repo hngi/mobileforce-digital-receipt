@@ -30,6 +30,12 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  // static const String iapId = 'android.test.purchaseed';
+  // String _platformVersion = 'Unknown';
+  // List<IAPItem> _items = [];
+  // List<PurchasedItem> _purchases = [];
+  
+
   final String username = "Geek Tutor";
   String label;
   bool _loading = false;
@@ -100,8 +106,10 @@ class _AccountPageState extends State<AccountPage> {
   @override
   void initState() {
     callFetch();
+    // initPlatformState();
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
