@@ -1,7 +1,7 @@
 // import 'package:digital_receipt/constant.dart';
 // import 'package:digital_receipt/models/customer.dart';
 // import 'package:digital_receipt/models/receipt.dart';
-// import 'package:digital_receipt/screens/customer_list_detail.dart';
+// import 'package:digital_receipt/screens/customer_detail_screen.dart';
 
 // import 'package:digital_receipt/services/api_service.dart';
 
@@ -9,7 +9,7 @@
 // import 'package:flutter_slidable/flutter_slidable.dart';
 // import 'package:search_widget/search_widget.dart';
 
-// import 'package:digital_receipt/screens/customer_list_detail.dart';
+// import 'package:digital_receipt/screens/customer_detail_screen.dart';
 
 // /// This code displays only the UI
 // class CustomerList extends StatefulWidget {
@@ -20,9 +20,7 @@
 // class _CustomerListState extends State<CustomerList> {
 //   String dropdownValue = "Last Upadated";
 
-
 //   ApiService _apiService = ApiService();
-
 
 //   @override
 //   void initState() {
@@ -373,7 +371,6 @@
 //   }
 // }
 
-
 // final customerr = [
 //   'abcd',
 //   'bcde',
@@ -410,11 +407,10 @@
 
 // class SearchList extends SearchDelegate<CustomerList>{
 
-  
 //   @override
 //   List<Widget> buildActions(BuildContext context) {
 //       return [
-//         IconButton(icon: Icon(Icons.clear), 
+//         IconButton(icon: Icon(Icons.clear),
 //         onPressed: (){
 //           query = '';
 //         }
@@ -422,7 +418,7 @@
 //       ];
 //       throw UnimplementedError();
 //     }
-  
+
 //     @override
 //     Widget buildLeading(BuildContext context) {
 //       return (
@@ -432,9 +428,9 @@
 //       );
 //       throw UnimplementedError();
 //     }
-  
+
 //     @override
-//     Widget buildResults(BuildContext context) { 
+//     Widget buildResults(BuildContext context) {
 //       return Center(
 //         child: Container(
 //           width: 400,
@@ -444,9 +440,9 @@
 //           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
 //         )
 //       );
-      
+
 //     }
-  
+
 //     @override
 //     Widget buildSuggestions(BuildContext context) {
 //       final suggestionlist = query.isEmpty
@@ -475,19 +471,3 @@
 //   }
 
 // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

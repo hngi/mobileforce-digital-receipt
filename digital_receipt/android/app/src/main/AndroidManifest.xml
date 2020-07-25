@@ -14,7 +14,9 @@
         android:name=".Application"
         android:label="Degeit"
         android:requestLegacyExternalStorage="true"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        >
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

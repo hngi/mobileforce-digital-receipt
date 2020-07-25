@@ -1,11 +1,13 @@
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/customer.dart';
-import 'package:digital_receipt/screens/customer_list_detail.dart';
+import 'package:digital_receipt/screens/customer_detail_screen.dart';
 
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/email_service.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/utils/connected.dart';
+import 'package:digital_receipt/widgets/app_card.dart';
+import 'package:digital_receipt/widgets/app_text_form_field.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -75,41 +77,22 @@ class _CustomerListState extends State<CustomerList> {
         ),
         //centerTitle: true,
       ),
-
       body: Padding(
         padding: EdgeInsets.only(top: 20.0, left: 16, right: 16),
         child: Column(
           children: <Widget>[
             SizedBox(height: 10.0),
-            TextFormField(
-              decoration: InputDecoration(
-                hintText: "Type a keyword",
-                hintStyle: TextStyle(
-                  color: Color.fromRGBO(0, 0, 0, 0.38),
+            AppTextFormField(
+              hintText: "Type a keyword",
+              prefixIcon: IconButton(
+                icon: Icon(
+                  Icons.search,
+                  color: Theme.of(context).disabledColor,
                 ),
-                prefixIcon: IconButton(
-                  icon: Icon(Icons.search),
-                  color: Color.fromRGBO(0, 0, 0, 0.38),
-                  onPressed: () {
-                    _customerListModel
-                        .searchCustomerList(_searchFieldController.text);
-                  },
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  borderSide: BorderSide(
-                    color: Color.fromRGBO(0, 0, 0, 0.12),
-                    width: 1,
-                  ),
-                ),
-                contentPadding: EdgeInsets.all(15),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  borderSide: BorderSide(
-                    color: Color(0xFFC8C8C8),
-                    width: 1.5,
-                  ),
-                ),
+                onPressed: () {
+                  _customerListModel
+                      .searchCustomerList(_searchFieldController.text);
+                },
               ),
               onChanged: (value) {
                 _customerListModel.searchCustomerList(value);
@@ -206,7 +189,7 @@ class _CustomerListState extends State<CustomerList> {
                                 child: ListView.builder(
                                   itemCount: model.customerList.length,
                                   itemBuilder: (context, index) {
-                                    return customer(
+                                    return _buildCustomer(
                                       id: model.customerList[index].id,
                                       customerName:
                                           model.customerList[index].name,
@@ -267,7 +250,7 @@ class _CustomerListState extends State<CustomerList> {
     );
   }
 
-  Widget customer(
+  Widget _buildCustomer(
       {String id,
       String customerName,
       customerEmail,
@@ -311,6 +294,7 @@ class _CustomerListState extends State<CustomerList> {
                         children: <Widget>[
                           Icon(
                             Icons.call,
+                            color: Colors.black,
                           ),
                           SizedBox(
                             height: 15,
@@ -320,6 +304,7 @@ class _CustomerListState extends State<CustomerList> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 12,
+                              color: Colors.black,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -357,6 +342,7 @@ class _CustomerListState extends State<CustomerList> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 12,
+                              color: Colors.black,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -369,7 +355,7 @@ class _CustomerListState extends State<CustomerList> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (context) => CustomerDetail(
+                          builder: (context) => CustomerDetailScreen(
                                 customer: Customer(
                                   name: customerName,
                                   email: customerEmail,
@@ -379,85 +365,42 @@ class _CustomerListState extends State<CustomerList> {
                               )),
                     );
                   },
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Color(0xff539C30),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Color(0xff539C30),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Container(
-                        margin: EdgeInsets.only(left: 5.0),
-                        decoration: BoxDecoration(
-                          color: Color(0xffE8F1FB),
-                          borderRadius: BorderRadius.circular(5),
+                  child: AppCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text("$customerName",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText2
+                                      .copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                              /* Text(
+                                "$numberOfReceipts Receipts",
+
+                              ), */
+                            ],
+                          ),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(10.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    "$customerName",
-                                    style: TextStyle(
-                                      color: Color.fromRGBO(0, 0, 0, 0.6),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: 'Montserrat',
-                                      letterSpacing: 0.03,
-                                    ),
-                                  ),
-                                  /* Text(
-                                    "$numberOfReceipts Receipts",
-                                    style: TextStyle(
-                                      color: Color.fromRGBO(0, 0, 0, 0.6),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w300,
-                                      fontFamily: 'Montserrat',
-                                      letterSpacing: 0.03,
-                                    ),
-                                  ), */
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
-                              child: Text(
-                                "$customerEmail",
-                                style: TextStyle(
-                                  color: Color.fromRGBO(0, 0, 0, 0.87),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w300,
-                                  fontFamily: 'Montserrat',
-                                  letterSpacing: 0.03,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
-                              child: Text(
-                                "$phoneNumber",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w300,
-                                  fontFamily: 'Montserrat',
-                                  letterSpacing: 0.03,
-                                ),
-                              ),
-                            ),
-                          ],
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
+                          child: Text(
+                            "$customerEmail",
+                          ),
                         ),
-                      ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(10.0, 5.0, 5.0, 5.0),
+                          child: Text(
+                            "$phoneNumber",
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
