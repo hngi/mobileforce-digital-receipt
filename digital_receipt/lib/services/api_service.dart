@@ -6,6 +6,7 @@ import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/notification.dart';
+import 'package:digital_receipt/models/reminder.dart';
 import 'package:digital_receipt/utils/connected.dart';
 
 import 'package:dio/adapter.dart';
@@ -88,7 +89,7 @@ class ApiService {
             "deviceType": $deviceType,
             "registration_id": $fcmToken,
           
-''');
+        ''');
         Response response = await _dio.post(
           "/user/login/",
           data: {
@@ -850,6 +851,7 @@ class ApiService {
         if (response.statusCode == 200) {
           // var res = response.data["data"] as List;
           var res = jsonDecode(response.body)['data'];
+          print(res);
           // checks if the length of history is larger than 100 and checks for internet
           if (res.length >= 100) {
             List temp = res.getRange(0, 99).toList();
@@ -1227,6 +1229,24 @@ class ApiService {
       return null;
     } else {
       return 'false';
+    }
+  }
+
+  Future<List<Reminder>> getReminders() async {
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    String url = '$_urlEndpoint/business/receipt/issued';
+
+    final http.Response res = await http.get(url, headers: <String, String>{
+      "token": token,
+    }).catchError((err) => print(err));
+    print(res.statusCode);
+    if (res.statusCode == 200) {
+      var responseData = json.decode(res.body);
+      print(responseData['data']);
+      return formatReminderResponse(responseData);
+    } else {
+      return null;
     }
   }
 }

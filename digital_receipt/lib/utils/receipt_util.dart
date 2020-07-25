@@ -126,4 +126,8 @@ class Utils {
 
     return numberFormat.format(amount);
   }
+
+  static String preferredDateFormat(DateTime dateTime, {bool includeTime = false}) {
+    return includeTime ? DateFormat.yMMMEd('en_US').add_jm().format(dateTime) : DateFormat.yMMMEd('en_US').format(dateTime);
+  }
 }
