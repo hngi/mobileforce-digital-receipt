@@ -1,3 +1,4 @@
+import 'package:digital_receipt/widgets/app_card.dart';
 import 'package:flutter/material.dart';
 
 import 'edit_reminder_screen.dart';
@@ -19,26 +20,9 @@ class _ReminderPageState extends State<ReminderPage> {
     return Scaffold(
       //backgroundColor: Color(0xffE5E5E5),
       appBar: AppBar(
-        // backgroundColor: Color(0xff226EBE),
-        /* leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ), */
         title: Text(
           "Reminders",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            fontFamily: 'Montserrat',
-            letterSpacing: 0.03,
-          ),
         ),
-        //centerTitle: true,
-        //actions: <Widget>[],
       ),
       body: FutureBuilder(
         future: null, // receipts from API
@@ -93,19 +77,9 @@ class _ReminderPageState extends State<ReminderPage> {
   Widget reminderCard({String total, date, reminderTitle, subtitle, dueDate}) {
     return Column(
       children: <Widget>[
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Color(0xff539C30),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Container(
+        AppCard(
+          child: Padding(
             padding: EdgeInsets.all(10),
-            margin: EdgeInsets.only(left: 5.0),
-            decoration: BoxDecoration(
-              color: Color(0xffE8F1FB),
-              borderRadius: BorderRadius.circular(5),
-            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -117,47 +91,29 @@ class _ReminderPageState extends State<ReminderPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(
-                            "$reminderTitle",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Color.fromRGBO(0, 0, 0, 0.87),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'Montserrat',
-                              letterSpacing: 0.03,
-                            ),
-                          ),
+                          Text("$reminderTitle",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  )),
                           SizedBox(
                             height: 5,
                           ),
-                          Text(
-                            "$subtitle",
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w300,
-                              height: 1.43,
-                              fontFamily: 'Montserrat',
-                              letterSpacing: 0.03,
-                            ),
-                          ),
+                          Text("$subtitle",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.subtitle2),
                         ],
                       ),
                     ),
-                    Text(
-                      "$date",
-                      style: TextStyle(
-                        color: Color.fromRGBO(0, 0, 0, 0.6),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w300,
-                        fontFamily: 'Montserrat',
-                        letterSpacing: 0.03,
-                      ),
-                    ),
+                    Text("$date",
+                        style: Theme.of(context).textTheme.subtitle2.copyWith(
+                              fontSize: 12,
+                            )),
                   ],
                 ),
                 SizedBox(
@@ -168,20 +124,13 @@ class _ReminderPageState extends State<ReminderPage> {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: 'Due Date: ',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w300,
-                          fontFamily: 'Montserrat',
-                          letterSpacing: 0.03,
-                        ),
-                      ),
+                          text: 'Due Date: ',
+                          style: Theme.of(context).textTheme.subtitle2),
                       TextSpan(
                         text: '$dueDate',
                         style: TextStyle(
                           color: Colors.red,
-                          fontSize: 13,
+                          fontSize: 14,
                           fontWeight: FontWeight.w500,
                           fontFamily: 'Montserrat',
                           letterSpacing: 0.03,
@@ -198,25 +147,13 @@ class _ReminderPageState extends State<ReminderPage> {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: 'Balance: ',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w300,
-                          fontFamily: 'Montserrat',
-                          letterSpacing: 0.03,
-                        ),
-                      ),
+                          text: 'Balance: ',
+                          style: Theme.of(context).textTheme.subtitle2),
                       TextSpan(
-                        text: 'N$total ',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'Montserrat',
-                          letterSpacing: 0.03,
-                        ),
-                      ),
+                          text: 'N$total ',
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                fontWeight: FontWeight.w500,
+                              )),
                     ],
                   ),
                 ),

@@ -96,9 +96,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
               Icons.add,
               color: Colors.white,
             ),
-            backgroundColor: kPrimaryColor,
+
+            backgroundColor: Theme.of(context).primaryColor,
           ),
-          //backgroundColor: Theme.of(context).primaryColor,
+
         ),
         body: Padding(
           padding: EdgeInsets.only(top: 20.0, left: 16, right: 16),
