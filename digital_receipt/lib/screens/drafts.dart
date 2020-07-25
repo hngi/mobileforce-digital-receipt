@@ -7,6 +7,7 @@ import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
+import 'package:digital_receipt/widgets/app_card.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +17,9 @@ import '../models/receipt.dart';
 import '../services/api_service.dart';
 import 'receipt_page_customer.dart';
 
-/// This code displays only the UI
+final numberFormat = new NumberFormat("\u20A6#,##0.#", "en_US");
+final dateFormat = DateFormat('dd-MM-yyyy');
+
 class Drafts extends StatefulWidget {
   @override
   _DraftsState createState() => _DraftsState();
@@ -103,72 +106,53 @@ class _DraftsState extends State<Drafts> {
                         DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
                     //print(receipt.receiptId);
                     return Dismissible(
-                      confirmDismiss: (DismissDirection direction) async {
-                        return await showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text("Confirm"),
-                              content: const Text(
-                                  "Are you sure you wish to delete this item?"),
-                              actions: <Widget>[
-                                FlatButton(
-                                    onPressed: () async {
-                                      Navigator.of(context).pop(true);
-                                      String response = await _apiService
-                                          .deleteDraft(id: receipt.receiptId);
-                                      if (response == 'true') {
-                                        setState(() {
-                                          draftData.removeAt(index);
-                                        });
-                                        Fluttertoast.showToast(
-                                          msg: 'Draft deleted successfully',
-                                          fontSize: 12,
-                                          toastLength: Toast.LENGTH_LONG,
-                                          backgroundColor: Colors.red,
-                                        );
-                                      } else {
-                                        Fluttertoast.showToast(
-                                          msg:
-                                              'Sorry an error occured try again',
-                                          fontSize: 12,
-                                          toastLength: Toast.LENGTH_LONG,
-                                          backgroundColor: Colors.red,
-                                        );
-                                      }
-                                    },
-                                    child: const Text("DELETE")),
-                                FlatButton(
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(false),
-                                  child: const Text("CANCEL"),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      key: Key(receipt.receiptId),
-                      child: GestureDetector(
-                        onTap: () {
-                          setReceipt(
-                              snapshot: draftData[index], context: context);
-                          // print(Provider.of<Receipt>(context, listen: false));
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      ReceiptScreenFromCustomer()));
+                        confirmDismiss: (DismissDirection direction) async {
+                          return await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("Confirm"),
+                                content: const Text(
+                                    "Are you sure you wish to delete this item?"),
+                                actions: <Widget>[
+                                  FlatButton(
+                                      onPressed: () async {
+                                        Navigator.of(context).pop(true);
+                                        String response = await _apiService
+                                            .deleteDraft(id: receipt.receiptId);
+                                        if (response == 'true') {
+                                          setState(() {
+                                            draftData.removeAt(index);
+                                          });
+                                          Fluttertoast.showToast(
+                                            msg: 'Draft deleted successfully',
+                                            fontSize: 12,
+                                            toastLength: Toast.LENGTH_LONG,
+                                            backgroundColor: Colors.red,
+                                          );
+                                        } else {
+                                          Fluttertoast.showToast(
+                                            msg:
+                                                'Sorry an error occured try again',
+                                            fontSize: 12,
+                                            toastLength: Toast.LENGTH_LONG,
+                                            backgroundColor: Colors.red,
+                                          );
+                                        }
+                                      },
+                                      child: const Text("DELETE")),
+                                  FlatButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text("CANCEL"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
-                        child: receiptCard(
-                            receiptNo: receipt.receiptNo,
-                            total: receipt.totalAmount,
-                            date: "${date.day}/${date.month}/${date.year}",
-                            receiptTitle: receipt.customerName,
-                            subtitle: receipt.products[0].productDesc,
-                            currency: receipt.currency),
-                      ),
-                    );
+                        key: Key(receipt.receiptId),
+                        child: _buildReceiptCard(receipt, index));
                   },
                 );
               } else {
@@ -211,6 +195,80 @@ class _DraftsState extends State<Drafts> {
 
               // }
             }),
+      ),
+    );
+  }
+
+  Widget _buildReceiptCard(Receipt receipt, index) {
+    return GestureDetector(
+      onTap: () {
+        setReceipt(snapshot: draftData[index], context: context);
+        // print(Provider.of<Receipt>(context, listen: false));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    ReceiptScreenFromCustomer()));
+      },
+      child: Column(
+        children: <Widget>[
+          AppCard(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Receipt No: ${receipt.receiptNo}',
+                        style: Theme.of(context).textTheme.subtitle2,
+                      ),
+                      Text(
+                        dateFormat.format(DateTime.parse(receipt.issuedDate)),
+                        style: Theme.of(context).textTheme.subtitle2,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  Text(
+                    receipt.customerName,
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                  ),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Container(
+                    width: 250,
+                    child: Text(
+                      receipt.descriptions,
+                      maxLines: 2,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 4.0,
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      'Total:\t\t ${numberFormat.format(double.parse(receipt.totalAmount))}',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+        ],
       ),
     );
   }

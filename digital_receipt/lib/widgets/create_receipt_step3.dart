@@ -442,7 +442,6 @@ class _CreateReceiptStep3State extends State<CreateReceiptStep3> {
               hintColor: Color.fromRGBO(0, 0, 0, 0.38),
               borderWidth: 1.5,
             ),
-
             SizedBox(height: 37),
             /*  Text(
               'Select a receipt',
