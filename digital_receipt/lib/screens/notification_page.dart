@@ -31,13 +31,6 @@ class _NotificationPageState extends State<NotificationPage> {
       appBar: AppBar(
         title: Text(
           'Notification',
-          style: TextStyle(
-            fontFamily: 'Montserrat',
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.3,
-            fontSize: 16,
-            //color: Colors.white,
-          ),
         ),
       ),
       body: SafeArea(
@@ -90,16 +83,9 @@ class _NotificationPageState extends State<NotificationPage> {
             height: 20,
           ),
           Center(
-            child: Text(
-              "There are no notifications created!",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.w300,
-                fontSize: 16,
-                letterSpacing: 0.3,
-                color: Color.fromRGBO(0, 0, 0, 0.87),
-              ),
-            ),
+            child: Text("There are no notifications created!",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline6),
           ),
           SizedBox(
             height: 30,
@@ -137,28 +123,13 @@ class SingleNotification extends StatelessWidget {
             body,
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 16,
-              height: 1.43,
-              fontWeight: FontWeight.normal,
-              letterSpacing: 0.03,
-              color: Colors.black,
-            ),
           ),
           SizedBox(
             height: 5,
           ),
           Align(
             alignment: Alignment.centerRight,
-            child: Text(
-              date,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w200,
-                letterSpacing: 0.03,
-                color: Colors.black,
-              ),
-            ),
+            child: Text(date, style: Theme.of(context).textTheme.subtitle2),
           ),
           index != _notificationLength - 1
               ? Column(
@@ -169,7 +140,7 @@ class SingleNotification extends StatelessWidget {
                     Container(
                       height: 1,
                       width: double.infinity,
-                      color: Color(0xFFC8C8C8),
+                      color: Theme.of(context).disabledColor,
                     ),
                     SizedBox(
                       height: 20,

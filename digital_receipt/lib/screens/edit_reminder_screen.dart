@@ -2,6 +2,7 @@ import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
+import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
@@ -35,13 +36,6 @@ class _EditReminderScreenState extends State<EditReminderScreen> {
       appBar: AppBar(
         title: Text(
           "Edit reminder",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            fontFamily: 'Montserrat',
-            letterSpacing: 0.03,
-          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -56,13 +50,7 @@ class _EditReminderScreenState extends State<EditReminderScreen> {
               Text(
                 'Product item/s',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
+                style: Theme.of(context).textTheme.headline6,
               ),
               SizedBox(
                 height: 10,
@@ -76,115 +64,78 @@ class _EditReminderScreenState extends State<EditReminderScreen> {
                 ),
                 itemCount: items.length,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    'Part payment',
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.normal,
-                      letterSpacing: 0.3,
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Switch(
-                    value: _partPayment,
-                    activeColor: Color(0xFF76DBC9),
-                    activeTrackColor: Color(0xFFD7DCE2),
-                    onChanged: (val) {
-                      setState(() {
-                        _partPayment = !_partPayment;
-                      });
-                    },
-                  ),
-                ],
+              SwitchListTile(
+                contentPadding: EdgeInsets.all(0),
+                title: Text('Part payment',
+                    style: Theme.of(context).textTheme.headline6),
+                value: _partPayment,
+                activeColor: Theme.of(context).accentColor,
+                onChanged: (val) {
+                  setState(() {
+                    _partPayment = !_partPayment;
+                  });
+                },
               ),
-              if (_partPayment)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        'If Payment has been completed, Toggle switch off',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 14,
-                          color: Color(0x99000000),
+              _partPayment
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 15,
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 22,
-                    ),
-                    Text(
-                      'Date',
-                      style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.normal,
-                        letterSpacing: 0.3,
-                        fontSize: 13,
-                        color: Color.fromRGBO(0, 0, 0, 0.6),
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    _buildTextFieldWidget(
-                        controller: _dateTextController,
-                        onTap: () async {
-                          final DateTime picked = await showDatePicker(
-                            context: context,
-                            initialDate: date,
-                            firstDate: date.add(Duration(days: -5)),
-                            lastDate: date.add(Duration(days: 365)),
-                          );
+                        Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            'If Payment has been completed, Toggle switch off',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 27,
+                        ),
+                        AppTextFormField(
+                          label: 'Date',
+                          readOnly: true,
+                          controller: _dateTextController,
+                          onTap: () async {
+                            final DateTime picked = await showDatePicker(
+                              context: context,
+                              initialDate: date,
+                              firstDate: date.add(Duration(days: -5)),
+                              lastDate: date.add(Duration(days: 365)),
+                            );
 
-                          if (picked != null && picked != date) {
-                            setState(() {
-                              date = picked;
-                            });
-                          }
-                        }),
-                    SizedBox(
-                      height: 22,
-                    ),
-                    Text(
-                      'Time',
-                      style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.normal,
-                        letterSpacing: 0.3,
-                        fontSize: 15,
-                        color: Color.fromRGBO(0, 0, 0, 0.6),
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    _buildTextFieldWidget(
-                        controller: _timeTextController,
-                        onTap: () async {
-                          final TimeOfDay picked = await showTimePicker(
-                            context: context,
-                            initialTime: time,
-                          );
+                            if (picked != null && picked != date) {
+                              setState(() {
+                                date = picked;
+                              });
+                            }
+                          },
+                        ),
+                        SizedBox(
+                          height: 22,
+                        ),
+                        AppTextFormField(
+                          label: 'Time',
+                          readOnly: true,
+                          controller: _timeTextController,
+                          onTap: () async {
+                            final TimeOfDay picked = await showTimePicker(
+                              context: context,
+                              initialTime: time,
+                            );
 
-                          if (picked != null && picked != time) {
-                            setState(() {
-                              time = picked;
-                            });
-                          }
-                        }),
-                  ],
-                )
-              else
-                SizedBox.shrink(),
+                            if (picked != null && picked != time) {
+                              setState(() {
+                                time = picked;
+                              });
+                            }
+                          },
+                        ),
+                      ],
+                    )
+                  : SizedBox.shrink(),
               SizedBox(
                 height: 55,
               ),

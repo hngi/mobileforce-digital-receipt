@@ -43,6 +43,10 @@ class _DashBoardState extends State<DashBoard> {
   int deptIssued;
   double amnt;
 
+  var promoWidth = 0.0;
+  var promoHeight = 0.0;
+  var promotionData;
+
   @override
   void initState() {
     dashboardFuture = _apiService.getIssuedReceipt2();
@@ -231,6 +235,15 @@ class _DashBoardState extends State<DashBoard> {
                     ),
                   ),
                 ));
+
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.5,
+                    ),
+                  ),
+                );
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return Expanded(
                   child: Center(
@@ -249,7 +262,46 @@ class _DashBoardState extends State<DashBoard> {
                     onRefresh: () async {
                       await refreshPage();
                     },
-                    child: buildGridView(recNo, deptIssued, amnt),
+
+                    child: Column(
+                      children: <Widget>[
+                        buildGridView(recNo, deptIssued, amnt),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20.0),
+                          child: FutureBuilder(
+                            future: _apiService.getPromotion(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<dynamic> snapshot) {
+                              print(snapshot.data);
+                              if (snapshot.hasData) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Fluttertoast.showToast(msg: "app updated");
+                                  },
+                                  child: Container(
+                                    height: 100,
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: EdgeInsets.all(10.0),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(7.0),
+                                        image: DecorationImage(
+                                            image: NetworkImage(
+                                                snapshot.data['imageUrl']),
+                                            fit: BoxFit.fill)),
+                                  ),
+                                );
+                              } else {
+                                return Container();
+                              }
+                            },
+
+                          ),
+                        ),
+                      ],
+                    ),
+
+
                   ),
                 );
               }
@@ -257,6 +309,7 @@ class _DashBoardState extends State<DashBoard> {
           ),
         ],
       ),
+
     );
   }
 

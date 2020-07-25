@@ -43,10 +43,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
       inventory = val;
       inventoryData = val;
     });
-
-  
   }
-
 
   @override
   void didChangeDependencies() {
@@ -64,7 +61,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
         backgroundColor: Color(0xFFF2F8FF),
         appBar: AppBar(
           backgroundColor: Color(0xFF0B57A7),
@@ -95,18 +91,18 @@ class _InventoryScreenState extends State<InventoryScreen> {
               });
               setCategory();
               print("Data from pop $data");
-              
             },
             child: Icon(
               Icons.add,
               color: Colors.white,
             ),
-            backgroundColor: kPrimaryColor,
 
+            backgroundColor: Theme.of(context).primaryColor,
           ),
-         // backgroundColor: Theme.of(context).primaryColor,
-        ),
 
+
+
+        ),
         body: Padding(
           padding: EdgeInsets.only(top: 20.0, left: 16, right: 16),
           child: Column(
@@ -243,7 +239,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
           ),
         ));
 
-   }
+  }
+
 
   Widget _buildInventory(Inventory inventory, int index) {
     Widget _buildColumnText(

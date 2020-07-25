@@ -12,38 +12,42 @@ class AnalyticsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 150,
+      height: 118,
       padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
-      decoration: BoxDecoration(
+      /*decoration: BoxDecoration(
         image: DecorationImage(
             fit: BoxFit.cover,
             image: AssetImage('assets/images/Merchant_Identity.png')),
         borderRadius: BorderRadius.circular(7.0),
         color: Color(0xFF0B57A7),
+      ),*/
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(7.0),
+        color: Theme.of(context).primaryColor,
       ),
       child: Row(
         children: <Widget>[
           Expanded(
             flex: 3,
-            child: Container(
+            child: DefaultTextStyle(
+              style: Theme.of(context).textTheme.bodyText1,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
                     'Total Sales',
-                    style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 20,
-                        color: Colors.white),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1
+                        .copyWith(fontSize: 16),
                   ),
                   Text(
                     totalSales,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25,
-                    ),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1
+                        .copyWith(fontWeight: FontWeight.bold, fontSize: 30),
                   ),
                 ],
               ),
