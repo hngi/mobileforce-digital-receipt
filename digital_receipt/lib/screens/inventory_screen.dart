@@ -104,7 +104,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
             backgroundColor: kPrimaryColor,
 
           ),
-          backgroundColor: Theme.of(context).primaryColor,
+         // backgroundColor: Theme.of(context).primaryColor,
         ),
 
         body: Padding(
@@ -242,7 +242,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
             ],
           ),
         ));
-=======
+
    }
 
   Widget _buildInventory(Inventory inventory, int index) {

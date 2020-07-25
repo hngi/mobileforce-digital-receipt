@@ -42,10 +42,6 @@ class _DashBoardState extends State<DashBoard> {
   dynamic recNo;
   int deptIssued;
   double amnt;
-  var promoWidth = 0.0;
-  var promoHeight = 0.0;
-  var promotionData;
-
 
   @override
   void initState() {
@@ -187,7 +183,6 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       padding: EdgeInsets.only(top: 16.0, left: 16, right: 16),
       child: Column(
@@ -251,100 +246,16 @@ class _DashBoardState extends State<DashBoard> {
                 amnt = recInfo(userData)['total'];
                 return Expanded(
                   child: RefreshIndicator(
-
                     onRefresh: () async {
                       await refreshPage();
                     },
-                    child: Center(
-                      child: ListView(
-                        shrinkWrap: true,
-                        // mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Center(
-                              child: SizedBox(
-                            height: 200,
-                            child: kEmpty,
-                          )),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            'Nothing to see here. Click the plus icon to create a receipt',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color.fromRGBO(0, 0, 0, 0.6),
-                              fontSize: 16,
-                              letterSpacing: 0.03,
-                              fontWeight: FontWeight.normal,
-                              fontFamily: 'Montserrat',
-                              height: 1.43,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ));
-                } else if (snapshot.connectionState ==
-                    ConnectionState.waiting) {
-                  return Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 1.5,
-                      ),
-                    ),
-                  );
-                } else {
-                  var userData = snapshot.data;
-                  recNo = recInfo(userData)['recNo'];
-                  deptIssued = recInfo(userData)['dept'];
-                  amnt = recInfo(userData)['total'];
-                  return Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        await refreshPage();
-                      },
-                      child: Column(
-                        children: <Widget>[
-                          buildGridView(recNo, deptIssued, amnt),
-                          Padding(
-                            padding: const EdgeInsets.only(top:20.0),
-                            child: FutureBuilder(
-                              future: _apiService.getPromotion(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<dynamic> snapshot) {
-                                print(snapshot.data);
-                                if (snapshot.hasData) {
-                                  return GestureDetector(
-                                    onTap: (){
-                                      Fluttertoast.showToast(msg: "app updated");
-                                    },
-                                    child: Container(
-                                      height: 100,
-                                      width: MediaQuery.of(context).size.width,
-                                      padding: EdgeInsets.all(10.0),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(7.0),
-                                          image: DecorationImage(
-                                              image: NetworkImage(
-                                                  snapshot.data['imageUrl']),fit: BoxFit.fill)),
-                                    ),
-                                  );
-                                } else {
-                                  return Container();
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-              },
-            ),
-          ],
-        ),
+                    child: buildGridView(recNo, deptIssued, amnt),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
       ),
     );
   }
