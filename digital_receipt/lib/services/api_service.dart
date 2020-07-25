@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/notification.dart';
+import 'package:digital_receipt/models/reminder.dart';
 import 'package:digital_receipt/utils/connected.dart';
 
 import 'package:dio/adapter.dart';
@@ -1211,19 +1212,19 @@ class ApiService {
     }
   }
 
-  Future<List<dynamic>> getReminders() async {
+  Future<List<Reminder>> getReminders() async {
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
-    String url = '$_urlEndpoint/business/receipt/partpayment';
+    String url = '$_urlEndpoint/business/receipt/issued';
 
     final http.Response res = await http.get(url, headers: <String, String>{
       "token": token,
     }).catchError((err) => print(err));
     print(res.statusCode);
     if (res.statusCode == 200) {
-      var data = json.decode(res.body);
-      print(data['data']);
-      return data['data'];
+      var responseData = json.decode(res.body);
+      print(responseData['data']);
+      return formatReminderResponse(responseData);
     } else {
       return null;
     }

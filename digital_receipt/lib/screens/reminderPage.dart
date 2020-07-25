@@ -52,16 +52,18 @@ class _ReminderPageState extends State<ReminderPage> {
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
                       // HardCoded Receipt details
-                      Reminder reminder =
-                          Reminder.fromJson(snapshot.data[index]);
+                      Reminder reminder = snapshot.data[index];
                       return GestureDetector(
                         child: reminderCard(
-                          total: "----", //at the moment the api does not return a balance
+                          total:
+                              "${reminder.total.toString()}", //at the moment the api does not return a balance
                           date:
                               "${Utils.preferredDateFormat(reminder.createdAt)}",
-                          reminderTitle: "-------", //at the moment the api does not return customer details
+                          reminderTitle:
+                              "${reminder.customerName}", //at the moment the api does not return customer details
                           receiptNumber: "${reminder.receiptNumber}",
-                          dueDate: "${Utils.preferredDateFormat(reminder.partPaymentDateTime, includeTime: true)}",
+                          dueDate:
+                              "${Utils.preferredDateFormat(reminder.partPaymentDateTime, includeTime: true)}",
                         ),
                         onTap: () {
                           print('object');
@@ -110,7 +112,8 @@ class _ReminderPageState extends State<ReminderPage> {
     );
   }
 
-  Widget reminderCard({String total, date, reminderTitle, receiptNumber, dueDate}) {
+  Widget reminderCard(
+      {String total, date, reminderTitle, receiptNumber, dueDate}) {
     return Column(
       children: <Widget>[
         AppCard(
