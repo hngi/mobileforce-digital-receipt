@@ -370,7 +370,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   }
                   print("sum: $sum");
 
-                  Provider.of<Receipt>(context, listen: false).setTotal(sum);
+                  Provider.of<Receipt>(context, listen: false)
+                      .setTotal(sum);
                   Provider.of<Receipt>(context, listen: false)
                       .setReminderTime(time);
                   Provider.of<Receipt>(context, listen: false)

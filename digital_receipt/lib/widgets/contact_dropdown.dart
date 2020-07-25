@@ -12,7 +12,7 @@ class ContactDropdown extends StatefulWidget {
     this.contacts,
     this.onSubmit,
   });
-  final List contacts;
+  final List contacts;  
   final Function onSubmit;
 
   @override
