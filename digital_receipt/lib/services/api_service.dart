@@ -1207,4 +1207,31 @@ class ApiService {
       return 'false';
     }
   }
+
+
+  updatePartPaymentReminder({
+    String id,
+    String date,
+    String time,
+  }) async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/receipt/partpayment/$id';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      print(token);
+      var response = await http.put(
+        uri,
+        headers: {"token": token},
+      
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        return 'true';
+      }
+      return 'false';
+    } else {
+      return 'false';
+    }
+  }
 }

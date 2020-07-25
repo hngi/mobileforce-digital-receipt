@@ -1,5 +1,6 @@
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
+import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:digital_receipt/widgets/app_text_form_field.dart';
@@ -28,6 +29,7 @@ class _EditReminderScreenState extends State<EditReminderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ApiService _apiService = ApiService();
     if (date != null && time != null) {
       _dateTextController.text = DateFormat('dd-MM-yyyy').format(date);
       _timeTextController.text = time.format(context);
@@ -141,7 +143,10 @@ class _EditReminderScreenState extends State<EditReminderScreen> {
               ),
               AppSolidButton(
                 onPressed: () async {
-                  // TODO Update Reminder
+                  var res = await _apiService.updatePartPaymentReminder(
+                      id: '2',
+                      date: _dateTextController.text,
+                      time: _timeTextController.text);
                 },
                 text: 'Update',
                 backgroundColor: Color(0xFF0B57A7),

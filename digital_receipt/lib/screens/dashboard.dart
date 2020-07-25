@@ -265,12 +265,14 @@ class _DashBoardState extends State<DashBoard> {
                       child: Column(
                         children: <Widget>[
                           buildGridView(recNo, deptIssued, amnt),
+                          
                           Padding(
                             padding: const EdgeInsets.only(top: 20.0, bottom: 15),
                             child: FutureBuilder(
                               future: _apiService.getPromotion(),
                               builder: (BuildContext context,
                                   AsyncSnapshot<dynamic> snapshot) {
+                                print("snapshot data for dashboard");
                                 print(snapshot.data);
                                 if (snapshot.hasData) {
                                   return GestureDetector(
