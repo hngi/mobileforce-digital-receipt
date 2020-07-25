@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:digital_receipt/utils/connected.dart';
+import 'package:digital_receipt/widgets/app_solid_button.dart';
+import 'package:digital_receipt/widgets/app_text_form_field.dart';
 
+import '../colors.dart';
 import '../utils/receipt_util.dart';
 import 'package:digital_receipt/screens/otp_auth.dart';
 import 'package:digital_receipt/screens/setup.dart';
@@ -58,12 +61,6 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     /*  appBar:  AppBar(
-        backgroundColor: Color(0xffF2F8FF),
-        elevation: 0,
-        iconTheme: IconThemeData(color: Color(0xFF0B57A7)),
-      ), */
-      backgroundColor: Color(0xffF2F8FF),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -74,33 +71,22 @@ class _SignupScreenState extends State<SignupScreen> {
                 SizedBox(
                   height: 40,
                 ),
-                Container(
-                  height: 50,
-                  child: kLogo1,
-                ),
-                SizedBox(height: 40.0),
-                Text(
-                  "Sign Up",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Montserrat',
-                    letterSpacing: 0.03,
+                Center(
+                  child: Container(
+                    height: 50.0 + 20,
+                    width: 134.0 + 20,
+                    padding: EdgeInsets.all(10),
+                    color: LightMode.backgroundColor,
+                    child: kLogo1,
                   ),
                 ),
+                SizedBox(height: 40.0),
+                Text("Sign Up", style: Theme.of(context).textTheme.headline5),
                 SizedBox(
                   height: 5,
                 ),
-                Text(
-                  "Create an account",
-                  style: TextStyle(
-                    color: Color(0xff606060),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w300,
-                    fontFamily: 'Montserrat',
-                  ),
-                ),
+                Text("Create an account",
+                    style: Theme.of(context).textTheme.subtitle2),
                 SizedBox(
                   height: 22,
                 ),
@@ -109,35 +95,13 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(
-                        "Username",
-                        style: TextStyle(
-                          color: Color(0xff606060),
-                          fontSize: 13,
-                          fontWeight: FontWeight.normal,
-                          fontFamily: 'Montserrat',
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      TextFormField(
+                      AppTextFormField(
+                        label: 'Username',
                         focusNode: _nameFocus,
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (value) =>
                             _changeFocus(from: _nameFocus, to: _emailFocus),
                         keyboardType: TextInputType.text,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(
-                              color: Color(0xFFC8C8C8),
-                              width: 1,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(),
-                        ),
                         validator: Validators.compose([
                           Validators.required('Input Name'),
                           Validators.patternRegExp(RegExp(r"^[A-Z a-z]+$"),
@@ -152,35 +116,13 @@ class _SignupScreenState extends State<SignupScreen> {
                         },
                       ),
                       SizedBox(height: 22),
-                      Text(
-                        "Email Address",
-                        style: TextStyle(
-                          color: Color(0xff606060),
-                          fontSize: 13,
-                          fontWeight: FontWeight.normal,
-                          fontFamily: 'Montserrat',
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      TextFormField(
+                      AppTextFormField(
+                        label: 'Email Address',
                         focusNode: _emailFocus,
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (value) =>
                             _changeFocus(from: _emailFocus, to: _passwordFocus),
                         keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(
-                              color: Color(0xFFC8C8C8),
-                              width: 1,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(),
-                        ),
                         validator: Validators.compose([
                           Validators.required('Input Email Address'),
                           Validators.email('Invalid Email Address'),
@@ -192,46 +134,23 @@ class _SignupScreenState extends State<SignupScreen> {
                         },
                       ),
                       SizedBox(height: 22),
-                      Text(
-                        "Password",
-                        style: TextStyle(
-                          color: Color(0xFF2B2B2B),
-                          fontSize: 13,
-                          fontWeight: FontWeight.normal,
-                          fontFamily: 'Montserrat',
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      TextFormField(
+                      AppTextFormField(
+                        label: 'Password',
                         focusNode: _passwordFocus,
                         textInputAction: TextInputAction.done,
                         onFieldSubmitted: (value) {
                           _passwordFocus.unfocus();
-                          signupUser();
+                          signUpUser();
                         },
                         obscureText: !passwordVisible ? true : false,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          suffixIcon: IconButton(
-                            icon: passwordVisible
-                                ? Icon(Icons.remove_red_eye)
-                                : Icon(Icons.visibility_off),
-                            color: Colors.grey,
-                            onPressed: () {
-                              setState(
-                                  () => passwordVisible = !passwordVisible);
-                            },
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(
-                              color: Color(0xFFC8C8C8),
-                              width: 1,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: passwordVisible
+                              ? Icon(Icons.remove_red_eye)
+                              : Icon(Icons.visibility_off),
+                          color: Theme.of(context).disabledColor,
+                          onPressed: () {
+                            setState(() => passwordVisible = !passwordVisible);
+                          },
                         ),
                         validator: Validators.compose([
                           Validators.required('Input Password'),
@@ -263,13 +182,6 @@ class _SignupScreenState extends State<SignupScreen> {
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       text: 'By signing in you agree to our \n',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14,
-                          letterSpacing: 0.02,
-                          fontWeight: FontWeight.w300,
-                          fontFamily: 'Montserrat',
-                          height: 1.51),
                       children: [
                         TextSpan(
                           text: 'terms of service',
@@ -283,13 +195,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         TextSpan(
                           text: ' and ',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            letterSpacing: 0.02,
-                            fontWeight: FontWeight.w300,
-                            fontFamily: 'Montserrat',
-                          ),
                         ),
                         TextSpan(
                           text: 'privacy policy',
@@ -308,16 +213,16 @@ class _SignupScreenState extends State<SignupScreen> {
                 SizedBox(
                   height: 20,
                 ),
-                AppButton(
-                  name: "Sign Up",
-                  textColor: Colors.white,
-                  buttonColor: Color(0xFF0B57A7),
+                AppSolidButton(
+                  text: "Sign Up",
                   height: 45,
-                  buttonType: CustomButton.PLAIN,
+                  isLoading: _loadingIndicator.button == AppButton.PLAIN
+                      ? _loadingIndicator.isLoading
+                      : false,
                   onPressed: () {
                     if (!_loadingIndicator.isLoading &&
                         _formKey.currentState.validate()) {
-                      signupUser();
+                      signUpUser();
                     }
                   },
                 ),
@@ -336,7 +241,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
                           'OR',
-                          style: TextStyle(color: Colors.grey),
+                          style: Theme.of(context).textTheme.subtitle2,
                         ),
                       ),
                       Expanded(
@@ -348,15 +253,20 @@ class _SignupScreenState extends State<SignupScreen> {
                     ],
                   ),
                 ),
-  /*               Platform.isIOS
+                /*Platform.isIOS
                     ? Column(
                         children: <Widget>[
-                          AppButton(
-                            name: "Sign in with Apple",
+                          AppSolidButton(
+                            text: "Sign in with Apple",
                             textColor: Color(0xffE5E5E5),
-                            iconPath: "assets/logos/apple-logo.png",
-                            buttonType: CustomButton.APPLE,
-                            buttonColor: Color(0xff121212),
+                            prefixIcon: Image.asset(
+                                "assets/logos/apple-logo.png",
+                                height: 25),
+                            backgroundColor: Color(0xff121212),
+                            isLoading:
+                                _loadingIndicator.button == CustomButton.APPLE
+                                    ? _loadingIndicator.isLoading
+                                    : false,
                             onPressed: () {},
                           ),
                           SizedBox(
@@ -365,18 +275,20 @@ class _SignupScreenState extends State<SignupScreen> {
                         ],
                       )
                     : SizedBox.shrink(),
-                AppButton(
-                    name: "Sign in with Google",
+                AppSolidButton(
+                    text: "Sign in with Google",
                     textColor: Color(0xff121212),
-                    iconPath: "assets/logos/google-logo.png",
-                    buttonColor: Color(0xffF2F8FF),
-                    border: true,
-                    buttonType: CustomButton.GOOGLE,
+                    prefixIcon:
+                        Image.asset("assets/logos/google-logo.png", height: 25),
+                    backgroundColor: Color(0xffF2F8FF),
+                    isLoading: _loadingIndicator.button == CustomButton.GOOGLE
+                        ? _loadingIndicator.isLoading
+                        : false,
                     onPressed: () {
                       if (!_loadingIndicator.isLoading) {
                         googleSignup();
                       }
-                    }), */
+                    }),*/
                 // SizedBox(
                 //   height: 20,
                 // ),
@@ -393,75 +305,14 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget AppButton({
-    String name,
-    Color textColor = const Color(0xffE5E5E5),
-    String iconPath = "",
-    Color buttonColor = const Color(0xff226EBE),
-    bool border = false,
-    Function onPressed,
-    double height = 50,
-    CustomButton buttonType,
-  }) {
-    Widget buildButtonContent() {
-      if (_loadingIndicator.isLoading &&
-          _loadingIndicator.button == buttonType) {
-        return ButtonLoadingIndicator(
-          color: textColor,
-          width: 20,
-          height: 20,
-        );
-      } else {
-        return Padding(
-          padding: EdgeInsets.all(12.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              iconPath == ""
-                  ? Container()
-                  : Padding(
-                      padding: EdgeInsets.only(right: 8.0),
-                      child: Image.asset("$iconPath", height: 25),
-                    ),
-              Text(
-                "$name",
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-    }
-
-    // bool loadingSpinner = false;
-    return Container(
-      width: double.infinity,
-      height: height,
-      child: FlatButton(
-          color: buttonColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-            side: border
-                ? BorderSide(color: Colors.black, width: 1)
-                : BorderSide(color: buttonColor, width: 0),
-          ),
-          onPressed: onPressed,
-          child: buildButtonContent()),
-    );
-  }
-
-  signupUser() async {
+  signUpUser() async {
     FocusScope.of(context).unfocus();
 
     _formKey.currentState.save();
     setState(() {
       isLoading = true;
       _loadingIndicator =
-          LoadingIndicator(isLoading: true, button: CustomButton.PLAIN);
+          LoadingIndicator(isLoading: true, button: AppButton.PLAIN);
     });
     var internet = await Connected().checkInternet();
     if (!internet) {
@@ -517,14 +368,14 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
-  googleSignup() async {
+  googleSignUp() async {
     FocusScope.of(context).unfocus();
 
     try {
       setState(() {
         isLoading = true;
         _loadingIndicator =
-            LoadingIndicator(isLoading: true, button: CustomButton.GOOGLE);
+            LoadingIndicator(isLoading: true, button: AppButton.GOOGLE);
       });
       final googleUser = await _googleSignIn.signIn();
       print("Passed");
@@ -602,11 +453,9 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 }
 
-enum CustomButton { PLAIN, APPLE, GOOGLE }
-
 class LoadingIndicator {
   final bool isLoading;
-  final CustomButton button;
+  final AppButton button;
 
   LoadingIndicator({this.isLoading = false, this.button});
 }
