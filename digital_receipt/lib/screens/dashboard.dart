@@ -45,7 +45,6 @@ class _DashBoardState extends State<DashBoard> {
   var promoHeight = 0.0;
   var promotionData;
 
-
   @override
   void initState() {
     isLogin(context);
@@ -216,17 +215,9 @@ class _DashBoardState extends State<DashBoard> {
                             height: 20,
                           ),
                           Text(
-                            'Nothing to see here. Click the plus icon to create a receipt',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color.fromRGBO(0, 0, 0, 0.6),
-                              fontSize: 16,
-                              letterSpacing: 0.03,
-                              fontWeight: FontWeight.normal,
-                              fontFamily: 'Montserrat',
-                              height: 1.43,
-                            ),
-                          )
+                              'Nothing to see here. Click the plus icon to create a receipt',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.headline6)
                         ],
                       ),
                     ),
@@ -254,7 +245,7 @@ class _DashBoardState extends State<DashBoard> {
                         children: <Widget>[
                           buildGridView(recNo, deptIssued, amnt),
                           Padding(
-                            padding: const EdgeInsets.only(top:20.0),
+                            padding: const EdgeInsets.only(top: 20.0),
                             child: FutureBuilder(
                               future: _apiService.getPromotion(),
                               builder: (BuildContext context,
@@ -262,8 +253,9 @@ class _DashBoardState extends State<DashBoard> {
                                 print(snapshot.data);
                                 if (snapshot.hasData) {
                                   return GestureDetector(
-                                    onTap: (){
-                                      Fluttertoast.showToast(msg: "app updated");
+                                    onTap: () {
+                                      Fluttertoast.showToast(
+                                          msg: "app updated");
                                     },
                                     child: Container(
                                       height: 100,
@@ -274,7 +266,8 @@ class _DashBoardState extends State<DashBoard> {
                                               BorderRadius.circular(7.0),
                                           image: DecorationImage(
                                               image: NetworkImage(
-                                                  snapshot.data['imageUrl']),fit: BoxFit.fill)),
+                                                  snapshot.data['imageUrl']),
+                                              fit: BoxFit.fill)),
                                     ),
                                   );
                                 } else {

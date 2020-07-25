@@ -86,13 +86,6 @@ class _AnalyticsState extends State<Analytics> {
       appBar: AppBar(
         title: Text(
           'Analytics',
-          style: TextStyle(
-            fontFamily: 'Montserrat',
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.3,
-            fontSize: 16,
-            //color: Colors.white,
-          ),
         ),
       ),
       body: FutureBuilder<AnalyticsData>(
@@ -220,7 +213,7 @@ class _AnalyticsState extends State<Analytics> {
     List<Widget> items = [];
     RandomColor _color = RandomColor();
     data.gridItems.forEach((key, value) {
-    //print(value);
+      //print(value);
       items.add(buildCard(key, Utils.formatNumber(value),
           _color.randomColor(colorBrightness: ColorBrightness.light)));
     });
