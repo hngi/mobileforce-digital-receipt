@@ -235,7 +235,6 @@ class _DashBoardState extends State<DashBoard> {
                     ),
                   ),
                 ));
-
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return Expanded(
                   child: Center(
@@ -262,46 +261,45 @@ class _DashBoardState extends State<DashBoard> {
                     onRefresh: () async {
                       await refreshPage();
                     },
-
-                    child: Column(
-                      children: <Widget>[
-                        buildGridView(recNo, deptIssued, amnt),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
-                          child: FutureBuilder(
-                            future: _apiService.getPromotion(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<dynamic> snapshot) {
-                              print(snapshot.data);
-                              if (snapshot.hasData) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Fluttertoast.showToast(msg: "app updated");
-                                  },
-                                  child: Container(
-                                    height: 100,
-                                    width: MediaQuery.of(context).size.width,
-                                    padding: EdgeInsets.all(10.0),
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(7.0),
-                                        image: DecorationImage(
-                                            image: NetworkImage(
-                                                snapshot.data['imageUrl']),
-                                            fit: BoxFit.fill)),
-                                  ),
-                                );
-                              } else {
-                                return Container();
-                              }
-                            },
-
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: <Widget>[
+                          buildGridView(recNo, deptIssued, amnt),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20.0, bottom: 15),
+                            child: FutureBuilder(
+                              future: _apiService.getPromotion(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<dynamic> snapshot) {
+                                print(snapshot.data);
+                                if (snapshot.hasData) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Fluttertoast.showToast(
+                                          msg: "app updated");
+                                    },
+                                    child: Container(
+                                      height: 100,
+                                      width: MediaQuery.of(context).size.width,
+                                      padding: EdgeInsets.all(10.0),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5.0),
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                  snapshot.data['imageUrl']),
+                                              fit: BoxFit.cover)),
+                                    ),
+                                  );
+                                } else {
+                                  return SizedBox.shrink();
+                                }
+                              },
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-
-
                   ),
                 );
               }
@@ -309,7 +307,6 @@ class _DashBoardState extends State<DashBoard> {
           ),
         ],
       ),
-
     );
   }
 
@@ -323,6 +320,7 @@ class _DashBoardState extends State<DashBoard> {
       crossAxisSpacing: 16.0,
       mainAxisSpacing: 16.0,
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       crossAxisCount: 2,
       children: <Widget>[
         _singleCard(
