@@ -43,7 +43,7 @@ class AnalyticsCard extends StatelessWidget {
                         .copyWith(fontSize: 16),
                   ),
                   Text(
-                    totalSales,
+                    '$totalSales',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText1

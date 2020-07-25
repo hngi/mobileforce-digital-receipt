@@ -7,6 +7,7 @@ import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:digital_receipt/widgets/app_card.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
+import '../services/shared_preference_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class InventoryScreen extends StatefulWidget {
@@ -23,6 +24,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
   List<String> inventoryCategories = [];
   String dropdownValue = "ALL";
   ApiService _apiService = ApiService();
+  String currency;
 
   @override
   void initState() {
@@ -32,6 +34,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
   }
 
   setCategory() async {
+    currency = await SharedPreferenceService().getStringValuesSF('Currency');
     List<Inventory> val = await inventFuture;
     List<String> temp = [];
     await Future.forEach(val, (Inventory e) {
@@ -61,9 +64,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFFF2F8FF),
         appBar: AppBar(
-          backgroundColor: Color(0xFF0B57A7),
           title: Text(
             'Inventory',
             style: TextStyle(
@@ -94,14 +95,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
             },
             child: Icon(
               Icons.add,
-              color: Colors.white,
             ),
-
             backgroundColor: Theme.of(context).primaryColor,
           ),
-
-
-
         ),
         body: Padding(
           padding: EdgeInsets.only(top: 20.0, left: 16, right: 16),
@@ -238,13 +234,14 @@ class _InventoryScreenState extends State<InventoryScreen> {
             ],
           ),
         ));
-
   }
-
 
   Widget _buildInventory(Inventory inventory, int index) {
     Widget _buildColumnText(
-        {final String label, final String value, final int flex}) {
+        {final String label,
+        final String currency,
+        final String value,
+        final int flex}) {
       return Expanded(
         flex: flex,
         child: Column(
@@ -259,7 +256,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
               height: 6,
             ),
             Text(
-              value,
+              label == 'UNIT PRICE' ? '$currency$value' : '$value',
             ),
           ],
         ),
@@ -295,6 +292,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                         children: <Widget>[
                           _buildColumnText(
                             label: "UNIT PRICE",
+                            currency: currency,
                             value: inventory.unitPrice.toString(),
                             flex: 3,
                           ),

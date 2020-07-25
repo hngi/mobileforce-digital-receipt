@@ -105,7 +105,7 @@ setReceipt({snapshot, @required context}) {
     ..receiptId = snapshot['id']
     ..sellerName = snapshot['sellerName'] ?? ''
     ..products = products
-    ..currency = Receipt().currencyFromJson(snapshot['currency'])
+    ..currency = snapshot['currency']
     ..customer = Customer(
       name: snapshot['customer']['name'],
       email: snapshot['customer']['email'],
@@ -125,5 +125,9 @@ class Utils {
       numberFormat = new NumberFormat();
 
     return numberFormat.format(amount);
+  }
+
+  static String preferredDateFormat(DateTime dateTime, {bool includeTime = false}) {
+    return includeTime ? DateFormat.yMMMEd('en_US').add_jm().format(dateTime) : DateFormat.yMMMEd('en_US').format(dateTime);
   }
 }

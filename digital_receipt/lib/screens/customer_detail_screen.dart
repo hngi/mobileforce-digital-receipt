@@ -12,7 +12,7 @@ import 'package:intl/intl.dart';
 import '../constant.dart';
 
 final ApiService _apiService = ApiService();
-final numberFormat = new NumberFormat("\u20A6#,##0.#", "en_US");
+final numberFormat = new NumberFormat();
 final dateFormat = DateFormat('dd-MM-yyyy');
 
 class CustomerDetailScreen extends StatefulWidget {
