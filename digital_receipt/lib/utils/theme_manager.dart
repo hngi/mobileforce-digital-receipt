@@ -112,6 +112,15 @@ class ThemeManager {
             ),
             errorStyle: TextStyle(height: 0.5),
           ),
+          tabBarTheme: TabBarTheme(
+            labelColor: LightMode.primaryColor,
+            labelStyle: TextStyle(
+              fontFamily: 'Montserrat',
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.3,
+              fontSize: 16,
+            ),
+          ),
         ),
       );
 
@@ -121,8 +130,8 @@ class ThemeManager {
       data: ThemeData(
         cardColor: DarkMode.appBarColor,
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: Colors.amberAccent,
-        //scaffoldBackgroundColor: DarkMode.backgroundColor,
+        //scaffoldBackgroundColor: Colors.purple,
+        scaffoldBackgroundColor: DarkMode.backgroundColor,
         primaryColor: DarkMode.primaryColor,
         primaryColorDark: DarkMode.appBarColor,
         accentColor: Color(0xFF25CCB3),
@@ -176,13 +185,21 @@ class ThemeManager {
             color: DarkMode.appBarColor,
           ),
         ),
+        tabBarTheme: TabBarTheme(
+          labelColor: Colors.white,
+          labelStyle: TextStyle(
+            fontFamily: 'Montserrat',
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.3,
+            fontSize: 16,
+          ),
+        ),
         inputDecorationTheme: InputDecorationTheme(
           contentPadding: EdgeInsets.all(15),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),
-            borderSide: BorderSide(
-              color: DarkMode.textFieldRingColor,
-            ),
+            borderSide:
+                BorderSide(color: DarkMode.textFieldRingColor, width: 1.2),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),
