@@ -234,6 +234,7 @@ class _DashBoardState extends State<DashBoard> {
                     ),
                   ),
                 ));
+
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return Expanded(
                   child: Center(
@@ -292,10 +293,12 @@ class _DashBoardState extends State<DashBoard> {
                                 return Container();
                               }
                             },
+
                           ),
                         ),
                       ],
                     ),
+
                   ),
                 );
               }
@@ -303,6 +306,7 @@ class _DashBoardState extends State<DashBoard> {
           ),
         ],
       ),
+
     );
   }
 
