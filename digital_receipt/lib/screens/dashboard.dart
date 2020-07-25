@@ -29,6 +29,7 @@ StreamSubscription<dynamic> subscription;
 
 Stream isLoggedStream;
 CheckLogin checkLogin = CheckLogin();
+Future<Map<String, dynamic>> dashboardFuture;
 
 class DashBoard extends StatefulWidget {
   DashBoard({Key key}) : super(key: key);
@@ -44,6 +45,7 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   void initState() {
+    dashboardFuture = _apiService.getIssuedReceipt2();
     isLogin(context);
     callFetch();
     super.initState();
@@ -147,13 +149,16 @@ class _DashBoardState extends State<DashBoard> {
       //return;
     } else {
       await callFetch();
-      var snapshot = await _apiService.getIssuedReceipt2();
-      var userData = snapshot;
-      // setState(() {
-      recNo = recInfo(userData)['recNo'];
-      deptIssued = recInfo(userData)['dept'];
-      amnt = recInfo(userData)['total'];
-      // });
+
+      dashboardFuture = _apiService.getIssuedReceipt2();
+      var snapshot = await dashboardFuture;
+      setState(() {
+        var userData = snapshot;
+
+        recNo = recInfo(userData)['recNo'];
+        deptIssued = recInfo(userData)['dept'];
+        amnt = recInfo(userData)['total'];
+      });
     }
   }
 
@@ -187,7 +192,7 @@ class _DashBoardState extends State<DashBoard> {
             height: 24.0,
           ),
           FutureBuilder(
-            future: _apiService.getIssuedReceipt2(),
+            future: dashboardFuture,
             builder: (BuildContext context,
                 AsyncSnapshot<Map<String, dynamic>> snapshot) {
               if (snapshot.connectionState == ConnectionState.done &&

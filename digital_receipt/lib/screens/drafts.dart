@@ -101,7 +101,7 @@ class _DraftsState extends State<Drafts> {
                     Receipt receipt = Receipt.fromJson(draftData[index]);
                     DateTime date =
                         DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
-
+                    //print(receipt.receiptId);
                     return Dismissible(
                       confirmDismiss: (DismissDirection direction) async {
                         return await showDialog(

@@ -29,6 +29,7 @@ class _CustomerListState extends State<CustomerList> {
   TextEditingController _searchFieldController = TextEditingController();
   ApiService _apiService = ApiService();
   var customerList;
+  Future customerFuture;
 
   refreshCustomerList() async {
     customerList = await _apiService.getAllCustomers();
@@ -38,6 +39,7 @@ class _CustomerListState extends State<CustomerList> {
   @override
   void initState() {
     super.initState();
+    customerFuture = _apiService.getAllCustomers();
     Future.delayed(Duration.zero, () {
       setCustomer();
     });
@@ -176,7 +178,7 @@ class _CustomerListState extends State<CustomerList> {
                   }
                 },
                 child: FutureBuilder(
-                  future: _apiService.getAllCustomers(), // receipts from API
+                  future: customerFuture, // receipts from API
                   builder: (context, snapshot) {
                     // If the API returns nothing it means the user has to upgrade to premium
                     // for now it doesn't validate if the user has upgraded to premium
