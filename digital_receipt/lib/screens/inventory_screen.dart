@@ -61,9 +61,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFFF2F8FF),
         appBar: AppBar(
-          backgroundColor: Color(0xFF0B57A7),
           title: Text(
             'Inventory',
             style: TextStyle(
@@ -94,14 +92,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
             },
             child: Icon(
               Icons.add,
-              color: Colors.white,
             ),
-
             backgroundColor: Theme.of(context).primaryColor,
           ),
-
-
-
         ),
         body: Padding(
           padding: EdgeInsets.only(top: 20.0, left: 16, right: 16),
@@ -238,9 +231,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
             ],
           ),
         ));
-
   }
-
 
   Widget _buildInventory(Inventory inventory, int index) {
     Widget _buildColumnText(
