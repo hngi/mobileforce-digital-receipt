@@ -33,6 +33,8 @@ class _CustomerListState extends State<CustomerList> {
   var customerList;
   Future customerFuture;
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   refreshCustomerList() async {
     customerList = await _apiService.getAllCustomers();
     //print(res);
@@ -61,6 +63,7 @@ class _CustomerListState extends State<CustomerList> {
   Widget build(BuildContext context) {
     var _customerListModel = Provider.of<Customer>(context, listen: false);
     return Scaffold(
+      key: _scaffoldKey,
       // backgroundColor: Color(0xffE5E5E5),
       appBar: AppBar(
         //backgroundColor: Color(0xff226EBE),
@@ -260,14 +263,45 @@ class _CustomerListState extends State<CustomerList> {
       String address}) {
     return GestureDetector(
       onLongPress: () async {
-        var resp = await _apiService.deleteCustomer(id: id);
-        if (resp == 'false') {
-          Fluttertoast.showToast(msg: 'An error occured');
-        } else {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => CustomerList()));
-          print('successful');
-        }
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            titleTextStyle: TextStyle(fontSize: 18, color: Colors.black),
+            titlePadding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 16.0),
+            contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+            title: Text('Delete this item'),
+            actions: [
+              RaisedButton(
+                color: Color(0xFFE0EEFF),
+                textColor: Colors.black,
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              RaisedButton(
+                color: Color(0xFFD93725),
+                textColor: Colors.white,
+                onPressed: () async {
+                  var resp = await _apiService.deleteCustomer(id: id);
+                  if (resp == 'false') {
+                    Fluttertoast.showToast(msg: 'An error occured');
+                  } else {
+                    Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (_) => CustomerList()))
+                        .then((value) => Navigator.of(context).pop());
+                    print('successful');
+                  }
+                },
+                child: Text(
+                  'Delete',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        );
       },
       child: Column(
         children: <Widget>[
