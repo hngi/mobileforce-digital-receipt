@@ -43,7 +43,7 @@ class AppSolidButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialButton(
       height: height ?? 45,
-      elevation: 0,
+      elevation: elevation,
       minWidth: double.infinity,
       onPressed: onPressed,
       color: backgroundColor ?? Theme.of(context).buttonColor,
@@ -56,10 +56,7 @@ class AppSolidButton extends StatelessWidget {
               height: 20,
             )
           : prefixIcon == null
-              ? Text(
-                  text,
-                  style: TextStyle(fontFamily: 'Montserrat'),
-                )
+              ? Text(text)
               : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
