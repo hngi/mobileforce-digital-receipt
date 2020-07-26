@@ -10,7 +10,6 @@ import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
-import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:digital_receipt/widgets/receipt_item.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
@@ -575,9 +574,6 @@ Widget ReceiptScreenLayout(
       text: 'Share',
       isLoading: isLoading,
       onPressed: () async {
-        //take this action
-        //print(Provider.of<Receipt>(context, listen: false));
-        //await shareFile();
         loadingStart();
         var connected = await Connected().checkInternet();
         if (!connected) {
@@ -598,10 +594,13 @@ Widget ReceiptScreenLayout(
           if (res == 200) {
             await sendPDF(context);
             loadingStop();
+            Navigator.pop(context);
           }
+          loadingStop();
         } else if (from == 'receipt_history') {
           await sendPDF(context);
           loadingStop();
+          Navigator.pop(context);
         }
       },
     ),

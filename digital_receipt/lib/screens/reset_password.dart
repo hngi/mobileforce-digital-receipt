@@ -44,10 +44,7 @@ class _ResetPasswordState extends State<ResetPassword> {
               //color: Colors.white,
             ),
           ),
-          leading: new IconButton(
-            icon: new Icon(Icons.arrow_back),
-            onPressed: () {},
-          ),
+          
         ),
         body: ListView(
           children: <Widget>[

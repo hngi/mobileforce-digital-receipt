@@ -164,7 +164,6 @@ class MainDrawer extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   SizedBox(
                     height: 50.0,
                     width: double.maxFinite,
@@ -191,8 +190,7 @@ class MainDrawer extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ), 
-
+                  ),
                   SizedBox(
                     height: 50.0,
                     width: double.maxFinite,

@@ -30,14 +30,24 @@ class _DraftsState extends State<Drafts> {
   ApiService _apiService = ApiService();
   var draftData;
   String currency = '';
+  Future draftFuture;
 
   setCurrency() async {
     currency = await SharedPreferenceService().getStringValuesSF('Currency');
   }
 
+  setDraft() async {
+    draftFuture = _apiService.getDraft();
+    var res = await draftFuture;
+    setState(() {
+      draftData = res;
+    });
+  }
+
   @override
   void initState() {
     setCurrency();
+    setDraft();
     super.initState();
   }
 
@@ -60,7 +70,8 @@ class _DraftsState extends State<Drafts> {
       body: RefreshIndicator(
         onRefresh: () async {
           refreshDraft() async {
-            var val = await _apiService.getDraft();
+            draftFuture =  _apiService.getDraft();
+            var val = await draftFuture;
             setState(() {
               draftData = val;
             });
@@ -84,9 +95,9 @@ class _DraftsState extends State<Drafts> {
           // });
         },
         child: FutureBuilder(
-            future: _apiService.getDraft(), // receipts from API
+            future: draftFuture, // receipts from API
             builder: (context, snapshot) {
-              draftData = snapshot.data;
+              //draftData = snapshot.data;
               print('Sna[hot:: ${snapshot.data}');
               print('Sna[hot:: ${snapshot.connectionState}');
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -110,9 +121,6 @@ class _DraftsState extends State<Drafts> {
                   itemCount: draftData.length,
                   itemBuilder: (context, index) {
                     Receipt receipt = Receipt.fromJson(draftData[index]);
-                    DateTime date =
-                        DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
-                    //print(receipt.receiptId);
                     return Dismissible(
                         confirmDismiss: (DismissDirection direction) async {
                           return await showDialog(
@@ -160,7 +168,7 @@ class _DraftsState extends State<Drafts> {
                           );
                         },
                         key: Key(receipt.receiptId),
-                        child: _buildReceiptCard(receipt, index));
+                        child: _buildReceiptCard(receipt, index, setDraft));
                   },
                 );
               } else {
@@ -180,12 +188,7 @@ class _DraftsState extends State<Drafts> {
                         child: Text(
                           "There are no draft receipts created!",
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                            fontSize: 16,
-                            letterSpacing: 0.3,
-                            color: Color.fromRGBO(0, 0, 0, 0.87),
-                          ),
+                          style: Theme.of(context).textTheme.headline6,
                         ),
                       ),
                       SizedBox(
@@ -207,16 +210,16 @@ class _DraftsState extends State<Drafts> {
     );
   }
 
-  Widget _buildReceiptCard(Receipt receipt, index) {
+  Widget _buildReceiptCard(Receipt receipt, index, dynamic onDone) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         setReceipt(snapshot: draftData[index], context: context);
-        // print(Provider.of<Receipt>(context, listen: false));
-        Navigator.push(
+        await Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) =>
                     ReceiptScreenFromCustomer()));
+        await onDone();
       },
       child: Column(
         children: <Widget>[
