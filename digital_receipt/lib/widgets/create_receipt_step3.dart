@@ -225,6 +225,7 @@ class _CreateReceiptStep3State extends State<CreateReceiptStep3> {
             DateTimeInputTextField(
                 focusNode: _dateTextFocus,
                 controller: _dateTextController,
+                
                 onTap: () async {
                   final DateTime datePicked = await showDatePicker(
                     context: context,
@@ -309,12 +310,12 @@ class _CreateReceiptStep3State extends State<CreateReceiptStep3> {
               ),
             ),
             SizedBox(height: 20),
-            Center(
+            /* Center(
               child: Text(
                 'Or type brand Hex code here',
                 textAlign: TextAlign.center,
               ),
-            ),
+            ), */
             SizedBox(height: 20),
             AppTextFormField(
               focusNode: _hexCodeFocus,
@@ -324,6 +325,7 @@ class _CreateReceiptStep3State extends State<CreateReceiptStep3> {
               hintText: 'Enter Brand color hex code',
               hintColor: Color.fromRGBO(0, 0, 0, 0.38),
               borderWidth: 1.5,
+              readOnly: true,
             ),
             SizedBox(height: 37),
             /*  Text(

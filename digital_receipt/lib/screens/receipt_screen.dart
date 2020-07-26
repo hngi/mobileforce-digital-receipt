@@ -102,11 +102,11 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
             letterSpacing: 0.03,
           ),
         ),
-        leading: IconButton(
+        /* leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => HomePage())),
-        ),
+        ), */
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -203,6 +203,7 @@ Widget ReceiptScreenLayout(
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(
+              width: 1.5,
               color: Colors.grey[500],
             ),
           ),
@@ -502,11 +503,12 @@ Widget ReceiptScreenLayout(
                                   Padding(
                                     padding: const EdgeInsets.only(top: 15.0),
                                     child: Text(
-                                     '$currency' + Utils.formatNumber(double.tryParse(
-                                          Provider.of<Receipt>(context,
-                                                  listen: false)
-                                              .getTotal()
-                                              .toString())),
+                                      '$currency' +
+                                          Utils.formatNumber(double.tryParse(
+                                              Provider.of<Receipt>(context,
+                                                      listen: false)
+                                                  .getTotal()
+                                                  .toString())),
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 14,
@@ -521,50 +523,53 @@ Widget ReceiptScreenLayout(
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 0, 0, 15),
-                          child: Column(
-                            children: <Widget>[
-                              // Text(
-                              //   Provider.of<Receipt>(context).sellerName.split(" ")[0].toLowerCase(),
-                              //   style: TextStyle(
-                              //     color: Colors.black,
-                              //     fontSize: 27,
-                              //     letterSpacing: 0.03,
-                              //     fontFamily: 'Southampton',
-                              //     fontWeight: FontWeight.w300,
-                              //     height: 1.43,
-                              //   ),
-                              // ),
-                              Image.memory(
-                                base64Decode(issuerSignature),
-                                width: 100,
-                                height: 90,
-                              ),
-                              SizedBox(
-                                height: 2,
-                              ),
-                              Container(
-                                height: 1,
-                                color: Color(0xFFE3E3E3),
-                                width: 107,
-                              ),
-                              SizedBox(
-                                height: 2,
-                              ),
-                              Text(
-                                'Signature',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 13,
-                                  letterSpacing: 0.03,
-                                  fontWeight: FontWeight.w300,
-                                  height: 1.43,
+                        issuerSignature != null
+                            ? Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 0, 0, 15),
+                                child: Column(
+                                  children: <Widget>[
+                                    // Text(
+                                    //   Provider.of<Receipt>(context).sellerName.split(" ")[0].toLowerCase(),
+                                    //   style: TextStyle(
+                                    //     color: Colors.black,
+                                    //     fontSize: 27,
+                                    //     letterSpacing: 0.03,
+                                    //     fontFamily: 'Southampton',
+                                    //     fontWeight: FontWeight.w300,
+                                    //     height: 1.43,
+                                    //   ),
+                                    // ),
+                                    Image.memory(
+                                      base64Decode(issuerSignature),
+                                      width: 100,
+                                      height: 90,
+                                    ),
+                                    SizedBox(
+                                      height: 2,
+                                    ),
+                                    Container(
+                                      height: 1,
+                                      color: Color(0xFFE3E3E3),
+                                      width: 107,
+                                    ),
+                                    SizedBox(
+                                      height: 2,
+                                    ),
+                                    Text(
+                                      'Signature',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 13,
+                                        letterSpacing: 0.03,
+                                        fontWeight: FontWeight.w300,
+                                        height: 1.43,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        )
+                              )
+                            : SizedBox.fromSize()
                       ],
                     ),
                   )
@@ -634,7 +639,6 @@ Widget ReceiptScreenLayout(
             .updatedReceipt(
                 Provider.of<Receipt>(context, listen: false).receiptId);
         if (res == 200) {
-          //await compute(sendPDF, context);
           await sendPDF(context);
           loadingStop();
           Navigator.pushAndRemoveUntil(
@@ -672,17 +676,10 @@ sendPDF(BuildContext context) async {
   final file = File("${output.path}/receipt.pdf");
 
   var f = await file.writeAsBytes(pdf.save());
-  print(f);
-
-  var res = await ApiService().sendPDF(
-      Provider.of<Receipt>(context, listen: false).customer.email.toString(),
-      file.path,
-      'Receipt from Degeit');
-
-  return res;
+  await shareFile(f.readAsBytesSync());
 }
 
-Future<void> shareFile() async {
+Future<void> shareFile(Uint8List receiptPdf) async {
   try {
     await Share.file('Receipt', 'receipt.pdf', receiptPdf, 'application/pdf',
         text: 'My optional text.');
