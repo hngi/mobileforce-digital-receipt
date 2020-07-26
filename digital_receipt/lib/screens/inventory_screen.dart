@@ -210,7 +210,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
                                     child: Text(
                                       "There is no inventory created!",
                                       textAlign: TextAlign.center,
-                                      style:   Theme.of(context).textTheme.headline6,
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
                                     ),
                                   ),
                                   SizedBox(
@@ -361,7 +362,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
                       style: TextStyle(
                           fontSize: 13,
                           fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold),
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
                     ),
                   ),
                 ),
