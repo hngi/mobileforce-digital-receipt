@@ -45,7 +45,6 @@ class AppSolidButton extends StatelessWidget {
       height: height ?? 45,
       elevation: elevation,
       minWidth: double.infinity,
-      elevation: 0,
       onPressed: onPressed,
       color: backgroundColor ?? Theme.of(context).buttonColor,
       textColor: textColor ?? Theme.of(context).textTheme.button.color,

@@ -61,7 +61,6 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -144,9 +143,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
                           if (!_loadingIndicator.isLoading &&
                               _formKey.currentState.validate()) {
-                            signupUser();
+                            signUpUser();
                           }
-
                         },
                         obscureText: !passwordVisible ? true : false,
                         suffixIcon: IconButton(

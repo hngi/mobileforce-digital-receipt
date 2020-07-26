@@ -43,8 +43,7 @@ dependencies:
   currency_pickers: ^1.0.6
   contacts_service: ^0.4.6
 
-
-  flutter_svg: ^0.18.0
+  flutter_svg: ^0.17.4
 
   flutter_country_picker: ^0.1.6
 
