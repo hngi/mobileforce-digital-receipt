@@ -141,11 +141,12 @@ class _SignupScreenState extends State<SignupScreen> {
                         textInputAction: TextInputAction.done,
                         onFieldSubmitted: (value) {
                           _passwordFocus.unfocus();
+                        
 
-                          if (!_loadingIndicator.isLoading &&
+                          /* if (!_loadingIndicator.isLoading &&
                               _formKey.currentState.validate()) {
-                            signupUser();
-                          }
+                           // signupUser();
+                          } */
 
                         },
                         obscureText: !passwordVisible ? true : false,
@@ -232,7 +233,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     }
                   },
                 ),
-                Container(
+                /* Container(
                   padding: EdgeInsets.symmetric(vertical: 14.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -259,7 +260,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ],
                   ),
                 ),
-
+ */
                 /*Platform.isIOS
                     ? Column(
                         children: <Widget>[

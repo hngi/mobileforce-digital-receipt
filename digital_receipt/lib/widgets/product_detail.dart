@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/product.dart';
@@ -11,7 +10,6 @@ import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-
 import 'app_drop_selector.dart';
 import 'contact_card.dart';
 

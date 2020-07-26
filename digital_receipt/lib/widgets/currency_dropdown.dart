@@ -1,11 +1,6 @@
-import 'package:digital_receipt/constant.dart';
-import 'package:digital_receipt/models/currency.dart';
-import 'package:digital_receipt/models/customer.dart';
-import 'package:digital_receipt/widgets/contact_card.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import '../constant.dart';
 import 'package:flutter_country_picker/flutter_country_picker.dart';
-import '../widgets/create_receipt_step0.dart';
 
 class CurrencyDropdown extends StatefulWidget {
   const CurrencyDropdown({
@@ -20,6 +15,13 @@ class CurrencyDropdown extends StatefulWidget {
 }
 
 class _CurrencyDropdownState extends State<CurrencyDropdown> {
+  List<Country> searchList = [];
+  @override
+  void initState() {
+    searchList = widget.currency;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -50,6 +52,9 @@ class _CurrencyDropdownState extends State<CurrencyDropdown> {
                         //print('jhj');
                         searchCurrencyList(val);
                       },
+                      style: TextStyle(
+                        fontFamily: 'Montserrat'
+                      ),
                       decoration: InputDecoration(
                         hintText: "Search currency",
                         prefixIcon: IconButton(
@@ -61,30 +66,42 @@ class _CurrencyDropdownState extends State<CurrencyDropdown> {
                     ),
                     SizedBox(height: 20),
                     Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: widget.currency.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              widget.onSubmit(widget.currency[index]);
-                              Navigator.pop(context);
-                            },
-                            child: ListTile(
-                              leading: Image.asset(
-                                widget.currency[index].asset,
-                                package: "flutter_country_picker",
-                                height: 35,
-                                width: 46,
-                              ),
-                              title: Text(
-                                widget.currency[index].currency,
-                                style: TextStyle(fontFamily: 'Montserrat'),
+                      child: searchList.isNotEmpty
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: searchList.length,
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                  onTap: () {
+                                    widget.onSubmit(searchList[index]);
+                                    Navigator.pop(context);
+                                  },
+                                  child: ListTile(
+                                    leading: Image.asset(
+                                      searchList[index].asset,
+                                      package: "flutter_country_picker",
+                                      height: 35,
+                                      width: 46,
+                                    ),
+                                    title: Text(
+                                      searchList[index].currency +
+                                          ' (${searchList[index].currencyISO})',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style:
+                                          TextStyle(fontFamily: 'Montserrat'),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : Center(
+                              child: Text(
+                                "Currency not found",
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.headline6,
                               ),
                             ),
-                          );
-                        },
-                      ),
                     ),
                   ],
                 ),
@@ -97,10 +114,13 @@ class _CurrencyDropdownState extends State<CurrencyDropdown> {
   }
 
   searchCurrencyList(String val) {
-    //print(_customerList[0].name.contains(val));
-    widget.currency
-        .where((e) => e.name.toLowerCase().contains(val.toLowerCase()))
-        .toList();
-   // print('ok: ${widget.currency}');
+    setState(() {
+      searchList = widget.currency
+          .where((e) =>
+              e.name.toLowerCase().contains(val.toLowerCase()) ||
+              e.currencyISO.toLowerCase().contains(val.toLowerCase()) ||
+              e.currency.toLowerCase().contains(val.toLowerCase()))
+          .toList();
+    });
   }
 }

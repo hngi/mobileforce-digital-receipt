@@ -1,11 +1,15 @@
+import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/widgets/app_card.dart';
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/reminder.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'edit_reminder_screen.dart';
+
+String currency = '';
 
 /// This code displays only the UI
 class ReminderPage extends StatefulWidget {
@@ -18,7 +22,12 @@ class _ReminderPageState extends State<ReminderPage> {
 
   @override
   void initState() {
+    setCurrency();
     super.initState();
+  }
+
+  setCurrency() async {
+    currency = await SharedPreferenceService().getStringValuesSF('Currency');
   }
 
   @override
@@ -35,7 +44,9 @@ class _ReminderPageState extends State<ReminderPage> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                strokeWidth: 1.5,
+              ),
             );
           } else if (snapshot.hasData && snapshot.data.length > 0) {
             return Column(
@@ -58,12 +69,14 @@ class _ReminderPageState extends State<ReminderPage> {
                           total:
                               "${reminder.total.toString()}", //at the moment the api does not return a balance
                           date:
-                              "${Utils.preferredDateFormat(reminder.createdAt)}",
+                              "${DateFormat.yMMMd().format(reminder.createdAt)}",
+                          /* date:
+                              "${Utils.preferredDateFormat(reminder.createdAt)}", */
                           reminderTitle:
                               "${reminder.customerName}", //at the moment the api does not return customer details
                           receiptNumber: "${reminder.receiptNumber}",
                           dueDate:
-                              "${Utils.preferredDateFormat(reminder.partPaymentDateTime, includeTime: true)}",
+                              "${DateFormat.yMMMd().format(reminder.partPaymentDateTime)}",
                         ),
                         onTap: () {
                           print('object');
@@ -142,19 +155,18 @@ class _ReminderPageState extends State<ReminderPage> {
                           SizedBox(
                             height: 5,
                           ),
-                          Text(
-                            "Receipt Number: $receiptNumber",
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w300,
-                              height: 1.43,
-                              fontFamily: 'Montserrat',
-                              letterSpacing: 0.03,
-                            ),
-                          ),
+                          Text("Receipt Number: $receiptNumber",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle2
+                                  .copyWith(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w300,
+                                    height: 1.43,
+                                    letterSpacing: 0.03,
+                                  )),
                         ],
                       ),
                     ),
@@ -198,7 +210,7 @@ class _ReminderPageState extends State<ReminderPage> {
                           text: 'Balance: ',
                           style: Theme.of(context).textTheme.subtitle2),
                       TextSpan(
-                          text: 'N$total ',
+                          text: '$currency$total ',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
                                 fontWeight: FontWeight.w500,
                               )),
