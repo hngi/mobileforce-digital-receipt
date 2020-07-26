@@ -37,24 +37,56 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return Scaffold(
       // backgroundColor: Colors.white,
       body: SafeArea(
-        child: PageView.builder(
-            controller: pageController,
-            itemCount: slides.length,
-            onPageChanged: (val) {
-              setState(() {
-                currentIndex = val;
-              });
-            },
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: SliderTile(
-                  image: slides[index].getImageAssetPath(),
-                  title: slides[index].getTitle(),
-                  desc: slides[index].getDesc(),
-                ),
-              );
-            }),
+        child: Column(
+          children: <Widget>[
+            currentIndex != 2
+                ? Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => LogInScreen(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Skip',
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.3),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(),
+            Expanded(
+              child: PageView.builder(
+                  controller: pageController,
+                  itemCount: slides.length,
+                  onPageChanged: (val) {
+                    setState(() {
+                      currentIndex = val;
+                    });
+                  },
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: SliderTile(
+                        image: slides[index].getImageAssetPath(),
+                        title: slides[index].getTitle(),
+                        desc: slides[index].getDesc(),
+                      ),
+                    );
+                  }),
+            ),
+          ],
+        ),
       ),
       bottomSheet: currentIndex != slides.length - 1
           ? Container(
@@ -170,51 +202,24 @@ class SliderTile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       // crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        // currentIndex != 2
-        //     ? Align(
-        //         alignment: Alignment.topRight,
-        //         child: InkWell(
-        //           onTap: () {
-        //             Navigator.pushReplacement(
-        //               context,
-        //               MaterialPageRoute(
-        //                 builder: (BuildContext context) => LogInScreen(),
-        //               ),
-        //             );
-        //           },
-        //           child: Text(
-        //             'Skip',
-        //             style: TextStyle(
-        //                 color: Colors.grey,
-        //                 fontSize: 10,
-        //                 fontWeight: FontWeight.w600,
-        //                 letterSpacing: 0.3),
-        //           ),
-        //         ),
-        //       )
-        //     : Container(),
-        Center(
-          child: currentIndex == 1
-              ? SizedBox(
-                  child: image,
-                  height: phone ? 250 : 350,
-                  width: phone ? 200 : 300,
-                  // height: MediaQuery.of(context).size.height - 400,
-                )
-              : SizedBox(
-                  child: image,
-                  height: phone ? 350 : 450,
-                  width: phone ? 350 : 400,
-                  // height: MediaQuery.of(context).size.height - 400,
-                ),
-        ),
+        currentIndex != 0
+            ? SizedBox(
+                child: image,
+                width: phone ? 150 : 250,
+                height: MediaQuery.of(context).size.height - 400,
+              )
+            : SizedBox(
+                child: image,
+                width: phone ? 200 : 300,
+                height: MediaQuery.of(context).size.height - 380,
+              ),
         SizedBox(
-          height: 20,
+          height: 10,
         ),
         Text(
           title,
           style: TextStyle(
-            fontSize: phone ? 20 : 22,
+            fontSize: 16,
             fontWeight: FontWeight.w600,
             color: Color.fromRGBO(0, 0, 0, 0.87),
           ),
@@ -227,7 +232,7 @@ class SliderTile extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.w300,
-            fontSize: phone ? 14 : 16,
+            fontSize: 10,
             letterSpacing: 0.3,
             color: Color.fromRGBO(0, 0, 0, 0.87),
           ),
