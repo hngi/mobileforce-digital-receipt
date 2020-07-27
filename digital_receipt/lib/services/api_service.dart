@@ -1215,6 +1215,7 @@ class ApiService {
   Future<List<Reminder>> getReminders() async {
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+        print("token: $token");
     String url = '$_urlEndpoint/business/receipt/issued';
 
     final http.Response res = await http.get(url, headers: <String, String>{
@@ -1223,6 +1224,7 @@ class ApiService {
     print(res.statusCode);
     if (res.statusCode == 200) {
       var responseData = json.decode(res.body);
+      print("Reminder data");
       print(responseData['data']);
       return formatReminderResponse(responseData);
     } else {

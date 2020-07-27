@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:digital_receipt/screens/home_page.dart';
+import 'package:digital_receipt/screens/signature_screen.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
@@ -423,7 +424,7 @@ class _SetupState extends State<Setup> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => HomePage(),
+                              builder: (context) => SignatureScreen(),
                             ),
                           );
                           Fluttertoast.showToast(

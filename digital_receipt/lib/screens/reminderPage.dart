@@ -66,11 +66,28 @@ class _ReminderPageState extends State<ReminderPage> {
                               "${Utils.preferredDateFormat(reminder.partPaymentDateTime, includeTime: true)}",
                         ),
                         onTap: () {
+                          print(reminder.partPaymentDateTime);
+                          var year = reminder.partPaymentDateTime.year;
+                          var month = reminder.partPaymentDateTime.month;
+                          var day = reminder.partPaymentDateTime.day;
+                          // print(reminder.partPaymentDateTime.year);
+                          // print(reminder.partPaymentDateTime.month);
+                          // print(reminder.partPaymentDateTime.day);
+                          var yo = reminder.partPaymentDateTime.timeZoneOffset
+                              .toString()
+                              .split(':');
+                          print(yo[0] + ":" + yo[1]);
+                          var hour = yo[0];
+                           var minute = yo[1];
+                          var newDate = "$day-$month-$year";
+                          // print(newTime);
+                          // print(newDate);
+
                           print('object');
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => EditReminderScreen()));
+                                  builder: (context) => EditReminderScreen(day:'$day',month:'$month',year:'$year',hour:'$hour',minute:'$minute')));
                         },
                       );
                     },
