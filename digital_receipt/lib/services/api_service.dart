@@ -1210,13 +1210,14 @@ class ApiService {
       }
       return null;
     } else {
-      return 'false';
+      return null;
     }
   }
 
   Future<List<Reminder>> getReminders() async {
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+        print("token: $token");
     String url = '$_urlEndpoint/business/receipt/issued';
 
     final http.Response res = await http.get(url, headers: <String, String>{
@@ -1225,10 +1226,38 @@ class ApiService {
     print(res.statusCode);
     if (res.statusCode == 200) {
       var responseData = json.decode(res.body);
+      print("Reminder data");
       print(responseData['data']);
       return formatReminderResponse(responseData);
     } else {
       return null;
     }
   }
+
+  
+  updatePartPaymentReminder({
+    String id,
+    String date,
+    String time,
+  }) async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/receipt/partpayment/$id';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      print(token);
+      var response = await http.put(
+        uri,
+        headers: {"token": token},
+      
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        return 'true';
+      }
+      return 'false';
+    } else {
+      return 'false';
+    }
+}
 }
