@@ -186,8 +186,6 @@ class _EditReminderScreenState extends State<EditReminderScreen> {
                   print(time);
                 },
                 text: 'Update',
-                backgroundColor: Color(0xFF0B57A7),
-                textColor: Colors.white,
               ),
             ],
           ),

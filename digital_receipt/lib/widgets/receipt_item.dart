@@ -7,7 +7,9 @@ import 'package:provider/provider.dart';
 class ReceiptItem extends StatelessWidget {
   const ReceiptItem({
     Key key,
+    this.currency,
   }) : super(key: key);
+  final String currency;
 
   @override
   Widget build(BuildContext context) {
@@ -86,11 +88,8 @@ class ReceiptItem extends StatelessWidget {
                     ),
                     Container(
                       child: Text(
-                        Provider.of<Receipt>(context, listen: false)
-                                .getCurrency()
-                                .currencySymbol +
-                            '${Utils.formatNumber(Provider.of<Receipt>(context, listen: false).products[index].unitPrice)}'
-                                .toString(),
+                        '${Provider.of<Receipt>(context, listen: false).currency ?? currency}${Utils.formatNumber(Provider.of<Receipt>(context, listen: false).products[index].unitPrice)}'
+                            .toString(),
                         style: TextStyle(
                           color: Colors.black,
                         ),
@@ -198,9 +197,7 @@ class ReceiptItem extends StatelessWidget {
                     )),
                     Container(
                       child: Text(
-                        Provider.of<Receipt>(context, listen: false)
-                                .getCurrency()
-                                .currencySymbol +
+                        '${Provider.of<Receipt>(context, listen: false).currency ?? currency}' +
                             Utils.formatNumber(
                                 Provider.of<Receipt>(context, listen: false)
                                     .products[index]

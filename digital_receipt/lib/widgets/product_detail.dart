@@ -1,18 +1,19 @@
 import 'dart:math';
-
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-
 import 'app_drop_selector.dart';
 import 'contact_card.dart';
+
+String currency = '';
 
 class ProductDetail extends StatefulWidget {
   final Function(Product) onSubmit;
@@ -60,9 +61,15 @@ class _ProductDetailState extends State<ProductDetail> {
   List<Inventory> inventories;
   Inventory selectedInventory;
 
+  setCurrency() async {
+    currency = await SharedPreferenceService().getStringValuesSF('Currency');
+  }
+
   @override
   void initState() {
+    setCurrency();
     ApiService().getAllInventories();
+
     product = widget.product;
     if (product != null) {
       // print('veee ${product.categoryName}');
@@ -345,11 +352,9 @@ class _ProductDetailState extends State<ProductDetail> {
                       SizedBox(height: 20),
                       AppSolidButton(
                         text: 'Add',
-                        backgroundColor: Color(0xFF0B57A7),
                         onPressed: () {
                           submitForm();
                         },
-                        textColor: Colors.white,
                       ),
                     ],
                   ),
@@ -511,7 +516,7 @@ class InventoryDialog extends StatelessWidget {
                                   child: ContactCard(
                                     receiptTitle: inventories[index].title,
                                     subtitle:
-                                        'UNIT PRICE: N ${Utils.formatNumber(inventories[index].unitPrice.round().toDouble() ?? 0)}',
+                                        'UNIT PRICE:  $currency${Utils.formatNumber(inventories[index].unitPrice.round().toDouble() ?? 0)}',
                                   ),
                                 );
                               },

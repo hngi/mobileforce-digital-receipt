@@ -63,6 +63,13 @@ class AppTextFormField extends StatelessWidget {
         hintText: hintText,
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: BorderSide(
+           // color: Color(0xFFC8C8C8),
+            width: 1,
+          ),
+        ),
       ),
       keyboardType: keyboardType != null ? keyboardType : null,
       obscureText: obscureText != null ? obscureText : false,

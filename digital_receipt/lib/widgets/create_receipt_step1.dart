@@ -5,6 +5,7 @@ import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/screens/create_receipt_page.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
+import '../services/shared_preference_service.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
@@ -44,6 +45,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
     '2': DateTime.now().day,
   };
 
+  String currency = '';
   List<Product> products = Product.dummy();
 
   List<T> map<T>(List list, Function handler) {
@@ -61,6 +63,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
   final _dateController = TextEditingController();
 
   getInventories() async {
+    currency = await SharedPreferenceService().getStringValuesSF('Currency');
     try {
       Provider.of<Inventory>(context, listen: false).setInventoryList =
           await ApiService().getAllInventories();
@@ -236,9 +239,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                         );
                       },
                       title: thisProduct.productDesc,
-                      amount: Provider.of<Receipt>(context, listen: false)
-                              .getCurrency()
-                              .currencySymbol +
+                      amount:currency +
                           '${Utils.formatNumber(thisProduct.amount) ?? Utils.formatNumber(thisProduct.unitPrice * thisProduct.quantity)}',
                       // '${}',
                       index: index,
@@ -369,7 +370,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   }
                   print("sum: $sum");
 
-                  Provider.of<Receipt>(context, listen: false).setTotal(sum);
+                  Provider.of<Receipt>(context, listen: false)
+                      .setTotal(sum);
                   Provider.of<Receipt>(context, listen: false)
                       .setReminderTime(time);
                   Provider.of<Receipt>(context, listen: false)

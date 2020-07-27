@@ -1,8 +1,3 @@
-import 'dart:convert';
-
-import 'package:digital_receipt/models/product.dart';
-import 'package:digital_receipt/models/receipt.dart';
-import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
@@ -10,6 +5,7 @@ import 'package:digital_receipt/widgets/app_card.dart';
 import 'package:intl/intl.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:flutter/material.dart';
+import '../services/shared_preference_service.dart';
 import 'package:random_color/random_color.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
 
@@ -24,9 +20,10 @@ class Analytics extends StatefulWidget {
   _AnalyticsState createState() => _AnalyticsState();
 }
 
-class _AnalyticsState extends State<Analytics> {
-  final numberFormat = new NumberFormat("₦#,##0.#", "en_US");
+String currency = '';
 
+class _AnalyticsState extends State<Analytics> {
+  final numberFormat = new NumberFormat();
   // Future<AnalyticsData> generateContent() async {
   //   List<Receipt> issuedReceipts = await _apiService.getIssuedReceipts();
   //   if (issuedReceipts != null && issuedReceipts.length > 0) {
@@ -81,6 +78,17 @@ class _AnalyticsState extends State<Analytics> {
     }
   }
 
+  setCurrency() async {
+    currency = await SharedPreferenceService().getStringValuesSF('Currency');
+  }
+
+  @override
+  void initState() {
+    setCurrency();
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,7 +138,7 @@ class _AnalyticsState extends State<Analytics> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        AnalyticsCard(totalSales),
+        AnalyticsCard('$currency$totalSales'),
         SizedBox(
           height: 20,
         ),
@@ -145,7 +153,8 @@ class _AnalyticsState extends State<Analytics> {
     );
   }
 
-  Widget buildCard(String title, String subTitle, Color sideColor) {
+  Widget buildCard(
+      String title, String currency, String subTitle, Color sideColor) {
     return AppCard(
       liningColor: sideColor,
       child: Column(
@@ -164,7 +173,7 @@ class _AnalyticsState extends State<Analytics> {
           FittedBox(
             fit: BoxFit.fitWidth,
             child: Text(
-              '₦$subTitle',
+              '$currency$subTitle',
               textScaleFactor: 0.8,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -182,7 +191,7 @@ class _AnalyticsState extends State<Analytics> {
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
       child: Column(
         children: <Widget>[
-          _buildTopContent(totalSales: '₦ ------'),
+          _buildTopContent(totalSales: '------'),
           Expanded(
             child: Center(
               child: CircularProgressIndicator(
@@ -200,7 +209,7 @@ class _AnalyticsState extends State<Analytics> {
     RandomColor _color = RandomColor();
     data.gridItems.forEach((key, value) {
       //print(value);
-      items.add(buildCard(key, Utils.formatNumber(value),
+      items.add(buildCard(key, currency, Utils.formatNumber(value),
           _color.randomColor(colorBrightness: ColorBrightness.light)));
     });
     return SingleChildScrollView(

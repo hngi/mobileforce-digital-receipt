@@ -115,7 +115,7 @@ class _CreateInventoryState extends State<CreateInventory> {
                     .textTheme
                     .headline6
                     .copyWith(fontWeight: FontWeight.normal),
-                underline: Divider(),
+                underline: SizedBox.shrink(),
                 items: units.map(
                   (Unit unit) {
                     return DropdownMenuItem<Unit>(

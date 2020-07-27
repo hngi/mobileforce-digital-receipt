@@ -22,7 +22,10 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   void setNotification() async {
-    allNotification = await _apiService.getAllNotifications();
+    var val =  await _apiService.getAllNotifications();
+    setState(() {
+      allNotification = val;
+    });
   }
 
   @override

@@ -17,6 +17,9 @@ class DateTimeInputTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       focusNode: focusNode,
+      style: TextStyle(
+        fontFamily: 'Montserrat'
+      ),
       readOnly: true,
       onTap: onTap,
     );
