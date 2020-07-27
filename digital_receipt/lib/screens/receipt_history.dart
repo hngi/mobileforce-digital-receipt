@@ -135,6 +135,9 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                   child: DropdownButton(
                     value: dropdownValue,
                     underline: Divider(),
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          fontFamily: 'Montserrat',
+                        ),
                     items: <String>[
                       "Receipt No",
                       "Date issued",

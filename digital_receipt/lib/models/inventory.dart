@@ -32,40 +32,38 @@ class Inventory extends ChangeNotifier {
   setAddress(address) => this.address = address;*/
 
   factory Inventory.fromJson(Map<String, dynamic> json) {
-   // print("i am json");
-    //print(json);
     return Inventory(
       id: json['id'],
-        title: json['name'],
-        quantity: json['quantity']?.round(),
-        unit: json['unit'],
-        unitPrice: (json['price']?.toDouble()),
-        tax: parseDouble(json['tax_amount']),
-        discount: parseDouble(json['discount']),
-        category: json['category']['name'],
-        
-        );
+      title: json['name'],
+      quantity: json['quantity']?.round(),
+      unit: json['unit'],
+      unitPrice: (json['price']?.toDouble()),
+      tax: parseDouble(json['tax_amount']),
+      discount: parseDouble(json['discount']),
+      category: json['category']['name'],
+    );
   }
 
- static  double parseDouble(dynamic value) {
-  try {
-    if (value is String) {
-      return double.parse(value);
-    } else if (value is double) {
-      return value;
-    } else {
-      return 0.0;
+  static double parseDouble(dynamic value) {
+    try {
+      if (value is String) {
+        return double.parse(value);
+      } else if (value is double) {
+        return value;
+      } else {
+        return 0.0;
+      }
+    } catch (e) {
+      print(e);
+      // return null if double.parse fails
+      return null;
     }
-  } catch (e) {
-    print(e);
-    // return null if double.parse fails
-    return null;
   }
-}
 
   set setInventoryList(List<Inventory> list) {
     _inventoryList = list;
     tempInventoryList = list;
+    print('list: $list');
     notifyListeners();
   }
 

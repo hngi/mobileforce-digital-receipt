@@ -363,7 +363,7 @@ class _DashBoardState extends State<DashBoard> {
       height: 130,
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7.0),
+        borderRadius: BorderRadius.circular(5.0),
         color: Theme.of(context).primaryColor,
       ),
       child: Row(
@@ -441,7 +441,7 @@ class _DashBoardState extends State<DashBoard> {
     return Container(
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(7.0),
+        borderRadius: BorderRadius.circular(5.0),
       ),
       child: Card(
         margin: EdgeInsets.only(left: 5.0),

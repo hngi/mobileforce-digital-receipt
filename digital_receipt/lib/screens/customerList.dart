@@ -121,6 +121,9 @@ class _CustomerListState extends State<CustomerList> {
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton(
                       value: dropdownValue,
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          fontFamily: 'Montserrat',
+                        ),
                       underline: Divider(),
                       items: <String>[
                         "Last Upadated",
@@ -228,11 +231,10 @@ class _CustomerListState extends State<CustomerList> {
                               child: Text(
                                 "You don't have any customer!",
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: Theme.of(context).textTheme.subtitle2.copyWith(
                                   fontWeight: FontWeight.w300,
                                   fontSize: 16,
                                   letterSpacing: 0.3,
-                                  color: Color.fromRGBO(0, 0, 0, 0.87),
                                 ),
                               ),
                             ),

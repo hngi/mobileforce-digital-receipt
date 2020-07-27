@@ -491,11 +491,10 @@ class InventoryDialog extends StatelessWidget {
                               Text(
                                 "You have not added any inventory item!",
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: Theme.of(context).textTheme.subtitle2.copyWith(
                                   fontWeight: FontWeight.normal,
                                   fontSize: 16,
                                   letterSpacing: 0.3,
-                                  color: Color.fromRGBO(0, 0, 0, 0.87),
                                 ),
                               ),
                               SizedBox(
