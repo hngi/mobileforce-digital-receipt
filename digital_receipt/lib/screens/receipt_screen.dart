@@ -32,7 +32,7 @@ import 'package:pdf/widgets.dart' as pw;
 import '../constant.dart';
 import 'no_internet_connection.dart';
 
-final pdf = pw.Document();
+
 
 class ReceiptScreen extends StatefulWidget {
   final Receipt receipt;
@@ -203,7 +203,7 @@ Widget ReceiptScreenLayout(
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(
-              width: 1.5,
+              width: 0.5,
               color: Colors.grey[500],
             ),
           ),
@@ -641,10 +641,10 @@ Widget ReceiptScreenLayout(
         if (res == 200) {
           await sendPDF(context);
           loadingStop();
-          Navigator.pushAndRemoveUntil(
+         /*  Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (BuildContext context) => HomePage()),
-              (route) => false);
+              (route) => false); */
         }
       },
     ),
@@ -655,6 +655,8 @@ Widget ReceiptScreenLayout(
 }
 
 sendPDF(BuildContext context) async {
+  final pdf = pw.Document();
+
   print('inside');
   RenderRepaintBoundary boundary = _globalKey.currentContext.findRenderObject();
   ui.Image image = await boundary.toImage(pixelRatio: 3.0);
@@ -666,11 +668,14 @@ sendPDF(BuildContext context) async {
     bytes: pngBytes,
   );
 
-  pdf.addPage(pw.Page(build: (pw.Context context) {
-    return pw.Center(
-      child: pw.Image(images),
-    ); // Center
-  }));
+  pdf.addPage(pw.Page(
+    build: (pw.Context context) {
+      return pw.Center(
+        child: pw.Image(images),
+      ); // Center
+    },
+    pageFormat: PdfPageFormat.a4,
+  ));
 
   final output = await getTemporaryDirectory();
   final file = File("${output.path}/receipt.pdf");

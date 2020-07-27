@@ -56,7 +56,12 @@ class AppSolidButton extends StatelessWidget {
               height: 20,
             )
           : prefixIcon == null
-              ? Text(text)
+              ? Text(
+                  text,
+                  style: TextStyle(
+                    fontFamily: 'Montserrat'
+                  ),
+                )
               : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[

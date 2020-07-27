@@ -186,6 +186,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       text: 'By signing in you agree to our \n',
+                      style: Theme.of(context).textTheme.subtitle2,
                       children: [
                         TextSpan(
                           text: 'terms of service',
@@ -230,7 +231,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     }
                   },
                 ),
-                Container(
+                /* Container(
                   padding: EdgeInsets.symmetric(vertical: 14.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -256,7 +257,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ],
                   ),
-                ),
+                ), */
 
                 /*Platform.isIOS
                     ? Column(

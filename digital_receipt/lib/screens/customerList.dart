@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
+import '../widgets/delete_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
@@ -265,7 +266,20 @@ class _CustomerListState extends State<CustomerList> {
       onLongPress: () async {
         showDialog(
           context: context,
-          builder: (_) => AlertDialog(
+          builder: (_) => DeleteDialog(
+            title: 'Are sure you want to delete this item?',
+            onDelete: () async {
+              var resp = await _apiService.deleteCustomer(id: id);
+              if (resp == 'false') {
+                Fluttertoast.showToast(msg: 'An error occured');
+              } else {
+                Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (_) => CustomerList()))
+                    .then((value) => Navigator.of(context).pop());
+                print('successful');
+              }
+            },
+          ) /* AlertDialog(
             titleTextStyle: TextStyle(fontSize: 18, color: Colors.black),
             titlePadding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 16.0),
             contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -300,7 +314,8 @@ class _CustomerListState extends State<CustomerList> {
                 ),
               ),
             ],
-          ),
+          ) */
+          ,
         );
       },
       child: Column(

@@ -256,6 +256,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                       width: 1.5,
                     ),
                   ),
+                  border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(),
                   //hintText: hintText,
                   hintStyle: TextStyle(

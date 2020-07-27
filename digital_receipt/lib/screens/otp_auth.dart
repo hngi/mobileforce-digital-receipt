@@ -104,7 +104,10 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                   text: TextSpan(
                       text:
                           "An email was sent to you Enter the verification code contained in the email here",
-                      style: TextStyle(fontSize: 17)),
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2
+                          .copyWith(fontSize: 17)),
                   textAlign: TextAlign.left,
                 ),
               ),
