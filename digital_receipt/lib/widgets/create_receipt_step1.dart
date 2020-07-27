@@ -120,7 +120,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Row(
-                  children: map<Widget>([0, 1, 2, 3], (index, url) {
+                  children: map<Widget>([0, 1, 2], (index, url) {
                     print(index);
                     return GestureDetector(
                       onTap: () {

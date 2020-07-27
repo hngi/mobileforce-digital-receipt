@@ -198,6 +198,39 @@ class _DashBoardState extends State<DashBoard> {
       child: Column(
         children: <Widget>[
           _buildInfo(),
+                Padding(
+                            padding: const EdgeInsets.only(top: 20.0, bottom: 15),
+                            child: FutureBuilder(
+                              future: _apiService.getPromotion(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<dynamic> snapshot) {
+                                print("snapshot data for dashboard");
+                                print(snapshot.data);
+                                if (snapshot.hasData) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Fluttertoast.showToast(
+                                          msg: "app updated");
+                                    },
+                                    child: Container(
+                                      height: 100,
+                                      width: MediaQuery.of(context).size.width,
+                                      padding: EdgeInsets.all(10.0),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5.0),
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                  snapshot.data['imageUrl']),
+                                              fit: BoxFit.cover)),
+                                    ),
+                                  );
+                                } else {
+                                  return SizedBox.shrink();
+                                }
+                              },
+                            ),
+                          ),
           SizedBox(
             height: 24.0,
           ),
@@ -271,39 +304,6 @@ class _DashBoardState extends State<DashBoard> {
                       child: Column(
                         children: <Widget>[
                           buildGridView(recNo, deptIssued, amnt),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(top: 20.0, bottom: 15),
-                            child: FutureBuilder(
-                              future: _apiService.getPromotion(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<dynamic> snapshot) {
-                                print(snapshot.data);
-                                if (snapshot.hasData) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Fluttertoast.showToast(
-                                          msg: "app updated");
-                                    },
-                                    child: Container(
-                                      height: 100,
-                                      width: MediaQuery.of(context).size.width,
-                                      padding: EdgeInsets.all(10.0),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5.0),
-                                          image: DecorationImage(
-                                              image: NetworkImage(
-                                                  snapshot.data['imageUrl']),
-                                              fit: BoxFit.cover)),
-                                    ),
-                                  );
-                                } else {
-                                  return SizedBox.shrink();
-                                }
-                              },
-                            ),
-                          ),
                         ],
                       ),
                     ),
