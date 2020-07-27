@@ -33,7 +33,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         body: SafeArea(
       child: isLoading == true
           ? Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator( strokeWidth: 1.5,),
             )
           : SingleChildScrollView(
               child: Padding(

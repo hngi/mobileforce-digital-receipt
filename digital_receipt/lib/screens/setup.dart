@@ -100,17 +100,11 @@ class _SetupState extends State<Setup> {
   Widget _buildCurrency(formLabel) {
     return Column(
       children: <Widget>[
-        Padding(padding: const EdgeInsets.all(8)),
         Container(
           alignment: Alignment.bottomLeft,
           child: Text(
             formLabel,
-            style: TextStyle(
-              fontFamily: 'Montserrat',
-              fontSize: 13.0,
-              color: Color.fromRGBO(0, 0, 0, 0.6),
-              fontWeight: FontWeight.normal,
-            ),
+            
           ),
         ),
         SizedBox(

@@ -195,19 +195,21 @@ class _LogInScreenState extends State<LogInScreen> {
                       },
                       child: RichText(
                         textAlign: TextAlign.center,
-                        text:
-                            TextSpan(text: "Don't have an account?", children: [
-                          TextSpan(
-                            text: '  Sign up',
-                            style: TextStyle(
-                              color: Color(0xFF25CCB3),
-                              fontSize: 14,
-                              letterSpacing: 0.02,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Montserrat',
-                            ),
-                          ),
-                        ]),
+                        text: TextSpan(
+                            text: "Don't have an account?",
+                            style: Theme.of(context).textTheme.subtitle2,
+                            children: [
+                              TextSpan(
+                                text: '  Sign up',
+                                style: TextStyle(
+                                  color: Color(0xFF25CCB3),
+                                  fontSize: 14,
+                                  letterSpacing: 0.02,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Montserrat',
+                                ),
+                              ),
+                            ]),
                       ),
                     ),
                   ),
