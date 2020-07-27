@@ -1228,7 +1228,7 @@ class ApiService {
       }
       return null;
     } else {
-      return 'false';
+      return null;
     }
   }
 
