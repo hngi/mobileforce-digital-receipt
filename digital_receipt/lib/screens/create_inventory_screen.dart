@@ -335,6 +335,7 @@ class _CreateInventoryState extends State<CreateInventory> {
 
                             return;
                           }
+                          
                           setState(() {
                             isLoading = true;
                           });

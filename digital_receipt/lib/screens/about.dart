@@ -114,7 +114,7 @@ class _AboutState extends State<About> {
                 ),
               ),
               onTap: () {
-                // _launchURL('https://flutter.dev');
+                 _launchURL('https://degeit.flycricket.io/terms.html');
               }
 
               //subtitle: Text(packageInfo?.buildNumber),
