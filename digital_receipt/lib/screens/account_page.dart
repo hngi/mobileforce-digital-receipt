@@ -1,11 +1,8 @@
 import 'dart:convert';
-import 'dart:ffi';
-import 'package:digital_receipt/screens/no_internet_connection.dart';
-import 'package:digital_receipt/utils/connected.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';import 'package:digital_receipt/utils/connected.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/screens/change_password_screen.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';
-import 'package:digital_receipt/screens/upgrade_screen.dart';
 import "package:flutter/material.dart";
 import 'dart:async';
 import '../providers/business.dart';
@@ -305,6 +302,10 @@ class _AccountPageState extends State<AccountPage> {
                   ],
                 ),
               ),
+              SizedBox(
+                height: 47,
+              ),
+              
               SizedBox(
                 height: 47,
               ),

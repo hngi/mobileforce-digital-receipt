@@ -221,14 +221,17 @@ class ApiService {
           List temp = res.getRange(0, 99).toList();
           await hiveDb.addDraft(temp);
 
-          return hiveDb.getDraft();
+          // return hiveDb.getDraft();
+          return res;
         } else if (res.length < 100 && connectivityResult) {
           await hiveDb.addDraft(res);
 
-          return hiveDb.getDraft();
+          // return hiveDb.getDraft();
+          return res;
         } else {
           print('res: 9');
-          return hiveDb.getDraft();
+          // return hiveDb.getDraft();
+          return res;
         }
       } else {
         return null;
@@ -266,18 +269,21 @@ class ApiService {
 
       if (response.statusCode == 200) {
         //print(response.data["data"][14]);
-
-        if (response.data["data"].length >= 100) {
+        var res = response.data["data"];
+        if (res.length >= 100) {
           List temp = response.data["data"].getRange(0, 99).toList();
           await hiveDb.addReceiptHistory(temp);
-          return hiveDb.getReceiptHistory();
+          // return hiveDb.getReceiptHistory();
+          return res;
         } else if (response.data["data"].length < 100) {
           //print('we::: ${response.data["data"][14]}');
           await hiveDb.addReceiptHistory(response.data["data"]);
           //await hiveDb.getReceiptHistory();
-          return hiveDb.getReceiptHistory();
+          return res;
+          // return hiveDb.getReceiptHistory();
         } else {
-          return hiveDb.getReceiptHistory();
+          // return hiveDb.getReceiptHistory();
+          return res;
         }
 
         //return issued_receipts;
@@ -807,18 +813,21 @@ class ApiService {
           // return _allNotifications;
           // checks if the length of history is larger than 100 and checks for internet
           // print("notifications from api ${data['data']}");
-
-          if (data["data"].length >= 100) {
+          var res = data["data"];
+          if (res.length >= 100) {
             List temp = data["data"].getRange(0, 99).toList();
             await hiveDb.addNotification(temp);
 
-            return hiveDb.getNotification();
+            // return hiveDb.getNotification();
+            return res;
           } else if (data["data"].length < 100) {
             await hiveDb.addNotification(data["data"]);
 
-            return hiveDb.getNotification();
+            // return hiveDb.getNotification();
+            return res;
           } else {
-            return hiveDb.getNotification();
+            // return hiveDb.getNotification();
+            return res;
           }
         } else {
           print("All notifications status code ${response.statusCode}");
@@ -826,8 +835,7 @@ class ApiService {
         }
       }
     } else {
-      return hiveDb.getCustomer() ?? Future.error('No network Connection');
-      ;
+      return hiveDb.getNotification() ?? Future.error('No network Connection');
     }
   }
 
@@ -857,14 +865,17 @@ class ApiService {
             List temp = res.getRange(0, 99).toList();
             await hiveDb.addCustomer(temp);
 
-            return hiveDb.getCustomer();
+            // return hiveDb.getCustomer();
+            return res;
           } else if (res.length < 100) {
             await hiveDb.addCustomer(res);
 
-            return hiveDb.getCustomer();
+            // return hiveDb.getCustomer();
+            return res;
           } else {
             print('res: 9');
-            return hiveDb.getCustomer();
+            // return hiveDb.getCustomer();
+            return res;
           }
         } else {
           var res = jsonDecode(response.body)['data'];
@@ -920,27 +931,18 @@ class ApiService {
             List temp = data.getRange(0, 99).toList();
             await hiveDb.addInventory(temp);
 
-            return hiveDb.getInventory();
+            // return hiveDb.getInventory();
+            return data;
           } else if (data.length < 100) {
             await hiveDb.addInventory(data);
 
-            return hiveDb.getInventory();
+            // return hiveDb.getInventory();
+            return data;
           } else {
             print('res: 9');
-            return hiveDb.getInventory();
+            // return hiveDb.getInventory();
+            return data;
           }
-          print('data: $data');
-          try {
-            //log(response.body);
-            data.forEach((inventory) {
-              _inventories.add(Inventory.fromJson(inventory));
-            });
-            log(_inventories.toString());
-          } catch (e) {
-            print(e);
-          }
-          print(_inventories);
-          return _inventories;
         } else {
           var res = jsonDecode(response.body)['data'];
           return res;
@@ -965,8 +967,9 @@ class ApiService {
         var data = json.decode(res.body);
         print(data);
         await hiveDb.addDashboardInfo(data);
-        var val = await hiveDb.getDashboardInfo();
-        return val;
+        // var val = await hiveDb.getDashboardInfo();
+        // return val;
+        return data;
       } else {
         return null;
       }
@@ -1228,13 +1231,14 @@ class ApiService {
       }
       return null;
     } else {
-      return 'false';
+      return null;
     }
   }
 
   Future<List<Reminder>> getReminders() async {
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+        print("token: $token");
     String url = '$_urlEndpoint/business/receipt/issued';
 
     final http.Response res = await http.get(url, headers: <String, String>{
@@ -1243,10 +1247,38 @@ class ApiService {
     print(res.statusCode);
     if (res.statusCode == 200) {
       var responseData = json.decode(res.body);
+      print("Reminder data");
       print(responseData['data']);
       return formatReminderResponse(responseData);
     } else {
       return null;
     }
   }
+
+  
+  updatePartPaymentReminder({
+    String id,
+    String date,
+    String time,
+  }) async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/receipt/partpayment/$id';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      print(token);
+      var response = await http.put(
+        uri,
+        headers: {"token": token},
+      
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        return 'true';
+      }
+      return 'false';
+    } else {
+      return 'false';
+    }
+}
 }

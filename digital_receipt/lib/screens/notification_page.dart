@@ -12,7 +12,7 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   // int _notificationLength = 12;
   ApiService _apiService = ApiService();
-  List allNotification = [];
+  dynamic allNotification = [];
   @override
   void initState() {
     super.initState();
@@ -22,7 +22,7 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   void setNotification() async {
-    var val =  await _apiService.getAllNotifications();
+    var val = await _apiService.getAllNotifications();
     setState(() {
       allNotification = val;
     });
@@ -40,6 +40,7 @@ class _NotificationPageState extends State<NotificationPage> {
         child: FutureBuilder(
             future: _apiService.getAllNotifications(),
             builder: (context, snapshot) {
+              // print('snamp: $snapshot');
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
                   child: CircularProgressIndicator(
@@ -47,20 +48,20 @@ class _NotificationPageState extends State<NotificationPage> {
                   ),
                 );
               } else if (snapshot.connectionState == ConnectionState.done) {
-                print("Notification Page${snapshot.data}");
+                // print("Notification Page${snapshot.data}");
                 // allNotification = snapshot.data;
                 if (snapshot.hasData && snapshot.data.length != 0) {
                   return ListView.builder(
-                    itemCount:
-                        allNotification == null ? 0 : allNotification.length,
+                    itemCount: snapshot.data.length,
                     itemBuilder: (BuildContext context, int index) {
                       return SingleNotification(
-                        notificationLength: allNotification == null
+                        notificationLength: snapshot.data.length == null
                             ? 0
-                            : allNotification.length,
-                        body: '${allNotification[index]['message']}',
-                        date:
-                            "${DateFormat('yyyy-mm-dd').format(DateTime.parse(allNotification[index]['date_to_deliver']))}",
+                            : snapshot.data.length,
+                        body: '${snapshot.data[index]['message']}',
+                        date: allNotification[index]['date_to_deliver'] != null
+                            ? "${DateFormat('yyyy-mm-dd').format(DateTime.parse(snapshot.data[index]['date_to_deliver']))}"
+                            : '',
                         index: index,
                       );
                     },

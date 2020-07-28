@@ -1,16 +1,28 @@
-import 'dart:typed_data';
 import 'dart:convert';
+import 'dart:math';
+import 'dart:io';
 
 import 'package:carousel_slider/carousel_controller.dart';
+import 'package:digital_receipt/models/receipt.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
+import 'package:digital_receipt/screens/receipt_screen.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
-import 'package:digital_receipt/services/shared_preference_service.dart';
+import 'package:digital_receipt/utils/connected.dart';
+import 'package:digital_receipt/widgets/app_text_form_field.dart';
+import 'package:digital_receipt/widgets/date_time_input_textField.dart';
+import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+import 'button_loading_indicator.dart';
+import 'package:digital_receipt/services/api_service.dart';
 
-import 'package:flutter/rendering.dart';
-
-class SellerSignatureScreen extends StatefulWidget {
-  SellerSignatureScreen({
+class CreateReceiptStep2 extends StatefulWidget {
+  CreateReceiptStep2({
     this.carouselController,
     this.carouselIndex,
   });
@@ -18,302 +30,588 @@ class SellerSignatureScreen extends StatefulWidget {
   final CarouselIndex carouselIndex;
 
   @override
-  _SellerSignatureScreenState createState() => _SellerSignatureScreenState();
+  _CreateReceiptStep2State createState() => _CreateReceiptStep2State();
 }
 
-class _SellerSignatureScreenState extends State<SellerSignatureScreen> {
-  SharedPreferenceService _preferenceService = SharedPreferenceService();
+class _CreateReceiptStep2State extends State<CreateReceiptStep2> {
+  ApiService _apiService = ApiService();
+  List<T> map<T>(List list, Function handler) {
+    List<T> result = [];
+    for (var i = 0; i < list.length; i++) {
+      result.add(handler(i, list[i]));
+    }
+    return result;
+  }
 
-  ui.Image signatureImage;
-  GlobalKey<_SignatureCanvasState> signatureCanvasKey = GlobalKey();
+  TextEditingController _dateTextController = TextEditingController();
+  TextEditingController _receiptNumberController = TextEditingController();
+  TextEditingController _hexCodeController = TextEditingController()
+    ..text = "F14C4C";
+  TextEditingController _sellerNameController = TextEditingController();
+
+  final FocusNode _receiptNumberFocus = FocusNode();
+  final FocusNode _dateTextFocus = FocusNode();
+  final FocusNode _hexCodeFocus = FocusNode();
+
+  bool autoReceiptNo = true;
+  String fontVal = "100";
+  DateTime date = DateTime.now();
+  final picker = ImagePicker();
+
+  List<String> receiptTemplate = [
+    'assets/images/Group 168 (1).png',
+    'assets/images/Group 169 (1).png',
+    'assets/images/Group 172 (1).png',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    setSellerName();
+  }
+
+  void setSellerName() async {
+    var user = await _apiService.getUserInfo();
+    _sellerNameController.text = user["name"] ?? '';
+  }
+
+  @override
+  void dispose() {
+    _receiptNumberFocus.dispose();
+    _dateTextFocus.dispose();
+    _hexCodeFocus.dispose();
+    super.dispose();
+  }
+
+  Future getImageSignature() async {
+    PermissionStatus status = await Permission.storage.status;
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    print("file size is :");
+    print(File(pickedFile.path).lengthSync());
+    if (pickedFile != null) {
+      setState(() {
+        Provider.of<Receipt>(context, listen: false)
+            .setSignature(pickedFile.path);
+      });
+    } else {
+      print("no file");
+    }
+  }
+
+  setPreReceipt(String result) {
+    var temp = json.decode(result)['receiptData'];
+    Provider.of<Receipt>(context, listen: false).setIssueDate(temp['date']);
+    Provider.of<Receipt>(context, listen: false)
+        .setNumber(temp['receipt_number']);
+    Provider.of<Receipt>(context, listen: false).receiptId = temp['id'];
+  }
+
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
-    List<T> map<T>(List list, Function handler) {
-      List<T> result = [];
-      for (var i = 0; i < list.length; i++) {
-        result.add(handler(i, list[i]));
-      }
-      return result;
-    }
-
-    return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      body: Container(
-        padding: EdgeInsets.all(16.0),
-        child: Wrap(
+    _dateTextController.text = DateFormat('dd-MM-yyyy').format(date);
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SizedBox(
               height: 14,
             ),
-            Text('Append your signature',
-                style: Theme.of(context).textTheme.headline5),
-            SizedBox(
-              height: 5,
+            Text(
+              'Customization',
+              style: Theme.of(context).textTheme.headline5,
             ),
-            Text('Provide your signature on the grey area below',
-                style: Theme.of(context).textTheme.subtitle2),
+            SizedBox(
+              height: 3,
+            ),
+            Text(
+              'Tweak the look and feel to your receipt',
+              style: Theme.of(context).textTheme.subtitle2,
+            ),
             SizedBox(
               height: 24,
             ),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Row(
-                    children: map<Widget>([0, 1, 2, 3], (index, url) {
-                      print(index);
-                      return GestureDetector(
-                        onTap: () {
-                          widget.carouselController.animateToPage(index);
-                        },
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              height: 2,
-                              width: 10,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: widget.carouselIndex.index == index
-                                      ? Theme.of(context).accentColor
-                                      : Theme.of(context).disabledColor,
-                                  boxShadow: [
-                                    BoxShadow(
-                                        offset: Offset(0, 3),
-                                        blurRadius: 6,
-                                        color: Color.fromRGBO(0, 0, 0, 0.16))
-                                  ]),
-                            ),
-                            index != 3 ? SizedBox(width: 10) : SizedBox.shrink()
-                          ],
-                        ),
-                      );
-                    }),
-                  ),
-                ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Row(
+                  children: map<Widget>([0, 1, 2, 3], (index, url) {
+                    print(index);
+                    return GestureDetector(
+                      onTap: () {
+                        widget.carouselController.animateToPage(index);
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            height: 2,
+                            width: 10,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: widget.carouselIndex.index == index
+                                    ? Color(0xFF25CCB3)
+                                    : Color.fromRGBO(0, 0, 0, 0.12),
+                                boxShadow: [
+                                  BoxShadow(
+                                      offset: Offset(0, 3),
+                                      blurRadius: 6,
+                                      color: Color.fromRGBO(0, 0, 0, 0.16))
+                                ]),
+                          ),
+                          index != 3 ? SizedBox(width: 10) : SizedBox.shrink()
+                        ],
+                      ),
+                    );
+                  }),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 24,
+            ),
+            /* Text(
+              'Add receipt No (Optional)',
+              style: TextStyle(
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.normal,
+                letterSpacing: 0.3,
+                fontSize: 13,
+                color: Color.fromRGBO(0, 0, 0, 0.6),
               ),
             ),
-            SizedBox(
-              height: 24,
+            SizedBox(height: 5),
+            AppTextFieldForm(
+              focusNode: _receiptNumberFocus,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (value) =>
+                  _changeFocus(from: _receiptNumberFocus, to: _dateTextFocus),
+              controller: _receiptNumberController,
             ),
-            SignatureCanvas(key: signatureCanvasKey),
             SizedBox(
-              height: 24,
+              height: 12,
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'Auto generate receipt No',
+                  style: TextStyle(
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.normal,
+                    letterSpacing: 0.3,
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                ),
+                Checkbox(
+                  value: Provider.of<Receipt>(context).shouldGenReceiptNo(),
+                  onChanged: (val) {
+                    setState(() {
+                      Provider.of<Receipt>(context, listen: false)
+                          .toggleAutoGenReceiptNo();
+                    });
+                  },
+                )
+              ],
+            ),
+            SizedBox(
+              height: 32,
+            ), */
+            Text('Date'),
+            SizedBox(height: 5),
+            DateTimeInputTextField(
+                focusNode: _dateTextFocus,
+                controller: _dateTextController,
+                onTap: () async {
+                  final DateTime datePicked = await showDatePicker(
+                    context: context,
+                    initialDate: date,
+                    firstDate: date.add(Duration(days: -20)),
+                    lastDate: date.add(Duration(days: 365)),
+                  );
+
+                  _dateTextFocus.unfocus();
+                  if (datePicked != null && datePicked != date) {
+                    setState(() {
+                      date = datePicked;
+                      print(DateTime.now());
+                    });
+                  }
+                }),
+            /* SizedBox(
+              height: 20,
+            ),
+            Text('Seller\'s name'),
+            SizedBox(height: 5),
+            AppTextFormField(
+              controller: _sellerNameController,
+            ),
+            */
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: <Widget>[
+                Text(
+                  'Choose a color (optional)',
+                ),
+                SizedBox(width: 12),
+                Text(_hexCodeController.text.toUpperCase()),
+              ],
+            ),
+            SizedBox(height: 20),
+            SizedBox(
+              height: 33,
+              child: SizedBox(
+                width: double.infinity,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      ColorButton(
+                        color: Colors.red,
+                        onPressed: () {
+                          setState(() {
+                            _hexCodeController.text = 'F14C4C';
+                          });
+                        },
+                      ),
+                      ColorButton(
+                        color: Color(0xFF539C30),
+                        onPressed: () {
+                          setState(() {
+                            _hexCodeController.text = '539C30';
+                          });
+                        },
+                      ),
+                      ColorButton(
+                        color: Color(0xFF2C33D5),
+                        onPressed: () {
+                          setState(() {
+                            _hexCodeController.text = '2C33D5';
+                          });
+                        },
+                      ),
+                      ColorButton(
+                        color: Color(0xFFE7D324),
+                        onPressed: () {
+                          setState(() {
+                            _hexCodeController.text = 'E7D324';
+                          });
+                        },
+                      ),
+                      ColorButton(
+                        color: Color(0xFFC022B1),
+                        onPressed: () {
+                          setState(() {
+                            _hexCodeController.text = 'C022B1';
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            /* Center(
+              child: Text(
+                'Or type brand Hex code here',
+                textAlign: TextAlign.center,
+              ),
+            ), */
+            SizedBox(height: 20),
+            AppTextFormField(
+              focusNode: _hexCodeFocus,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (value) => _hexCodeFocus.unfocus(),
+              controller: _hexCodeController,
+              hintText: 'Enter Brand color hex code',
+              hintColor: Theme.of(context).textTheme.subtitle2.color,
+              borderWidth: 1.5,
+              readOnly: true,
+            ),
+            SizedBox(height: 37),
+            /*  Text(
+              'Select a receipt',
+              style: TextStyle(
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.3,
+                fontSize: 16,
+                color: Color.fromRGBO(0, 0, 0, 0.87),
+              ),
+            ),
+            SizedBox(height: 10),
+            SizedBox(
+              height: 200,
+              width: double.infinity,
+              child: ListView.builder(
+                itemCount: receiptTemplate.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 15),
+                    child: GestureDetector(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Scaffold(
+                                backgroundColor: Colors.white,
+                                appBar: AppBar(
+                                  title: Text(
+                                    'Preview',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'Montserrat',
+                                      letterSpacing: 0.03,
+                                    ),
+                                  ),
+                                ),
+                                body: SizedBox.expand(
+                                  child: Stack(
+                                    children: <Widget>[
+                                      SingleChildScrollView(
+                                        child: SizedBox(
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: ListView.builder(
+                                            itemCount: receiptTemplate.length,
+                                            scrollDirection: Axis.horizontal,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Image.asset(
+                                                  
+                                                  receiptTemplate[index],
+                                                  fit: BoxFit.cover,
+                                                  height: double.infinity,
+                                                  width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: SubmitButton(
+                                              title: 'Select',
+                                              backgroundColor:
+                                                  Color(0xFF0B57A7),
+                                              textColor: Colors.white,
+                                              onPressed: () {},
+                                            )),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            });
+                      },
+                      child: SizedBox(
+                        height: 200,
+                        width: 150,
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                              height: 200,
+                              width: 150,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  image: DecorationImage(
+                                      image: AssetImage(receiptTemplate[index]),
+                                      fit: BoxFit.cover),
+                                  color: Colors.white),
+                            ),
+                            Container(
+                              height: 200,
+                              width: 150,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                image: DecorationImage(
+                                  image: AssetImage(''),
+                                ),
+                                color: Color.fromRGBO(0, 0, 0, 0.3),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.center,
+                              child: Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ), */
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'Add paid stamp',
+                  style: Theme.of(context).textTheme.headline6.copyWith(
+                        fontWeight: FontWeight.normal,
+                      ),
+                ),
+                Checkbox(
+                  value: Provider.of<Receipt>(context, listen: false)
+                      .enablePaidStamp(),
+                  onChanged: (val) {
+                    setState(() {
+                      Provider.of<Receipt>(context, listen: false)
+                          .togglePaidStamp();
+                    });
+                  },
+                )
+              ],
+            ),
+            SizedBox(height: 35),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'Save as preset',
+                  style: Theme.of(context).textTheme.headline6.copyWith(
+                        fontWeight: FontWeight.normal,
+                      ),
+                ),
+                Switch(
+                  value: Provider.of<Receipt>(context, listen: false)
+                      .enablePreset(),
+                  onChanged: (val) {
+                    setState(() {
+                      Provider.of<Receipt>(context, listen: false)
+                          .togglePreset();
+                    });
+                  },
+                ),
+              ],
+            ),
+            SizedBox(height: 40),
+            AppSolidButton(
+              height: 50,
+              isLoading: isLoading,
+              text: 'Generate Receipt',
+              onPressed: () async {
+                // check the internet
+                var connected = await Connected().checkInternet();
+                if (!connected) {
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return NoInternet();
+                    },
+                  );
+                  setState(() {
+                    isLoading = false;
+                  });
+                  return;
+                }
+                setState(() {
+                  isLoading = true;
+                });
+                Provider.of<Receipt>(context, listen: false).setIssueDate(null);
+                Provider.of<Receipt>(context, listen: false)
+                    .setColor(hexCode: _hexCodeController.text);
+                Provider.of<Receipt>(context, listen: false).setFont(24);
+                Provider.of<Receipt>(context, listen: false)
+                    .setSellerName(_sellerNameController.text);
+
+                Response result =
+                    await Provider.of<Receipt>(context, listen: false)
+                        .saveReceipt();
+                print(result);
+                if (result != null && result.statusCode == 200) {
+                  setState(() {
+                    isLoading = false;
+                  });
+                  setPreReceipt(result.body);
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ReceiptScreen(),
+                    ),
+                  );
+                  Fluttertoast.showToast(
+                      msg: "Receipt saved to draft",
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.green,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                } else {
+                  setState(() {
+                    isLoading = false;
+                  });
+                  Fluttertoast.showToast(
+                      msg: "$result",
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                }
+              },
+            ),
+            // SizedBox(height: 25),
           ],
         ),
       ),
-      persistentFooterButtons: <Widget>[
-        SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  flex: 5,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15.0),
-                    child: Text(
-                      "Add your signature",
-                      style: TextStyle(
-                        color: Color(0xff226EBE),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Montserrat',
-                        letterSpacing: 0.03,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: FlatButton(
-                    child: Text(
-                      "Clear",
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Montserrat',
-                        letterSpacing: 0.03,
-                      ),
-                    ),
-                    onPressed: () {
-                      signatureCanvasKey.currentState.clearPoints();
-                    },
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: FlatButton(
-                    child: Text(
-                      "Done",
-                      style: TextStyle(
-                        color: Colors.green,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Montserrat',
-                        letterSpacing: 0.03,
-                      ),
-                    ),
-                    onPressed: () {
-                      saveImage(context);
-                      //widget.carouselController.animateToPage(2);
-                    },
-                  ),
-                )
-              ],
-            ))
-      ],
     );
   }
 
-  saveImage(BuildContext context) async {
-    ui.Image renderedImage = await signatureCanvasKey.currentState.rendered;
-    print(renderedImage.toByteData().toString());
-
-    setState(() {
-      signatureImage = renderedImage;
-    });
-
-    showImage(context);
-    ByteData pngBytes =
-        await signatureImage.toByteData(format: ui.ImageByteFormat.png);
-    // function to be performed on gotten image to be placed below
-    String encode = base64Encode(pngBytes.buffer.asUint8List());
-    _preferenceService.addStringToSF("ISSUER_SIGNATURE", encode);
-  }
-
-  Future<Null> showImage(BuildContext context) async {
-    ByteData pngBytes =
-        await signatureImage.toByteData(format: ui.ImageByteFormat.png);
-    print(pngBytes);
-    String encode = base64Encode(pngBytes.buffer.asUint8List());
-    return showDialog<Null>(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(
-              "Success!",
-              style: TextStyle(
-                color: Colors.green,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Montserrat',
-                letterSpacing: 0.03,
-              ),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  color: Colors.white60,
-                  child: Image.memory(
-                    base64Decode(encode),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      widget.carouselController.animateToPage(3);
-                    },
-                    child: Text(
-                      'DONE',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
+  void _changeFocus({FocusNode from, FocusNode to}) {
+    from.unfocus();
+    FocusScope.of(context).requestFocus(to);
   }
 }
 
-class SignatureCanvas extends StatefulWidget {
-  SignatureCanvas({Key key}) : super(key: key);
-  @override
-  _SignatureCanvasState createState() => _SignatureCanvasState();
-}
+class ColorButton extends StatelessWidget {
+  const ColorButton({
+    Key key,
+    this.onPressed,
+    this.color,
+  }) : super(key: key);
 
-class _SignatureCanvasState extends State<SignatureCanvas> {
-  List<Offset> _points = <Offset>[];
-
-  Future<ui.Image> get rendered {
-    ui.PictureRecorder recorder = ui.PictureRecorder();
-    Canvas canvas = Canvas(recorder);
-    SignaturePainter painter = SignaturePainter(points: _points);
-    var size = context.size;
-    painter.paint(canvas, size);
-    return recorder
-        .endRecording()
-        .toImage(size.width.floor(), size.height.floor());
-  }
+  final Function onPressed;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    Size appSize = MediaQuery.of(context).size;
-    return GestureDetector(
-      onPanUpdate: (DragUpdateDetails details) {
-        setState(() {
-          RenderBox _object = context.findRenderObject();
-          Offset _locationPoints =
-              _object.localToGlobal(details.globalPosition);
-          _points = new List.from(_points)..add(_locationPoints);
-        });
-      },
-      onPanEnd: (DragEndDetails details) {
-        setState(() {
-          _points.add(null);
-        });
-      },
-      child: Container(
-        color: Colors.blueGrey[100],
-        height: 350,
-        width: MediaQuery.of(context).size.width,
-        child: CustomPaint(
-          painter: SignaturePainter(points: _points, dimensions: appSize),
-        ),
+    return SizedBox(
+      height: 33,
+      width: 33,
+      child: FlatButton(
+        color: color,
+        onPressed: onPressed,
+        child: SizedBox.shrink(),
       ),
     );
-  }
-
-  void clearPoints() {
-    setState(() {
-      _points.clear();
-    });
-  }
-}
-
-class SignaturePainter extends CustomPainter {
-  List<Offset> points = <Offset>[];
-  Size dimensions;
-  SignaturePainter({this.points, this.dimensions});
-  @override
-  void paint(Canvas canvas, Size size) {
-    var paint = Paint()
-      ..color = Colors.black
-      ..strokeCap = StrokeCap.square
-      ..strokeWidth = 5.0;
-
-    for (int i = 0; i < points.length - 1; i++) {
-      if (points[i] != null && points[i + 1] != null) {
-        // Offset ofsett = Offset();
-        // print(size.height);
-
-        Offset dx = points[i]
-            .translate(2, dimensions == null ? -280 : -dimensions.height / 2.3);
-        Offset dy = points[i + 1]
-            .translate(2, dimensions == null ? -280 : -dimensions.height / 2.3);
-
-        canvas.drawLine(dx, dy, paint);
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(SignaturePainter oldDelegate) {
-    return oldDelegate.points != points;
   }
 }

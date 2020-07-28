@@ -88,7 +88,7 @@ class ReceiptItem extends StatelessWidget {
                     ),
                     Container(
                       child: Text(
-                        '${Provider.of<Receipt>(context, listen: false).currency}${Utils.formatNumber(Provider.of<Receipt>(context, listen: false).products[index].unitPrice)}'
+                        '${Provider.of<Receipt>(context, listen: false).currency ?? currency}${Utils.formatNumber(Provider.of<Receipt>(context, listen: false).products[index].unitPrice)}'
                             .toString(),
                         style: TextStyle(
                           color: Colors.black,
@@ -197,7 +197,7 @@ class ReceiptItem extends StatelessWidget {
                     )),
                     Container(
                       child: Text(
-                        '${Provider.of<Receipt>(context, listen: false).currency}' +
+                        '${Provider.of<Receipt>(context, listen: false).currency ?? currency}' +
                             Utils.formatNumber(
                                 Provider.of<Receipt>(context, listen: false)
                                     .products[index]

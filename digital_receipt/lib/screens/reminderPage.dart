@@ -79,11 +79,28 @@ class _ReminderPageState extends State<ReminderPage> {
                               "${DateFormat.yMMMd().format(reminder.partPaymentDateTime)}",
                         ),
                         onTap: () {
+                          print(reminder.partPaymentDateTime);
+                          var year = reminder.partPaymentDateTime.year;
+                          var month = reminder.partPaymentDateTime.month;
+                          var day = reminder.partPaymentDateTime.day;
+                          // print(reminder.partPaymentDateTime.year);
+                          // print(reminder.partPaymentDateTime.month);
+                          // print(reminder.partPaymentDateTime.day);
+                          var yo = reminder.partPaymentDateTime.timeZoneOffset
+                              .toString()
+                              .split(':');
+                          print(yo[0] + ":" + yo[1]);
+                          var hour = yo[0];
+                           var minute = yo[1];
+                          var newDate = "$day-$month-$year";
+                          // print(newTime);
+                          // print(newDate);
+
                           print('object');
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => EditReminderScreen()));
+                                  builder: (context) => EditReminderScreen(day:'$day',month:'$month',year:'$year',hour:'$hour',minute:'$minute')));
                         },
                       );
                     },
@@ -105,12 +122,11 @@ class _ReminderPageState extends State<ReminderPage> {
                     child: Text(
                       "You don't have any reminder!",
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        fontSize: 16,
-                        letterSpacing: 0.3,
-                        color: Color.fromRGBO(0, 0, 0, 0.87),
-                      ),
+                      style: Theme.of(context).textTheme.subtitle2.copyWith(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 16,
+                            letterSpacing: 0.3,
+                          ),
                     ),
                   ),
                   SizedBox(

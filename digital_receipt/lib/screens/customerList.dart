@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
+import '../widgets/delete_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
@@ -108,42 +109,42 @@ class _CustomerListState extends State<CustomerList> {
                 child: Text("Sort By"),
               ),
               Container(
-                width: 150,
+       
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(
                     color: Color(0xff25CCB3),
                   ),
                 ),
-                child: SizedBox(
-                  height: 40,
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton(
-                      value: dropdownValue,
-                      underline: Divider(),
-                      items: <String>[
-                        "Last Upadated",
-                        "A to Z",
-                        "Z to A",
-                      ].map<DropdownMenuItem<String>>(
-                        (String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 8.0),
-                              child: Text(
-                                value,
-                                textAlign: TextAlign.start,
-                              ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton(
+                    value: dropdownValue,
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          fontFamily: 'Montserrat',
+                        ),
+                    underline: Divider(),
+                    items: <String>[
+                      "Last Upadated",
+                      "A to Z",
+                      "Z to A",
+                    ].map<DropdownMenuItem<String>>(
+                      (String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              value,
+                              textAlign: TextAlign.start,
                             ),
-                          );
-                        },
-                      ).toList(),
-                      onChanged: (String value) {
-                        setState(() => dropdownValue = value);
-                        // No logic Implemented
+                          ),
+                        );
                       },
-                    ),
+                    ).toList(),
+                    onChanged: (String value) {
+                      setState(() => dropdownValue = value);
+                      // No logic Implemented
+                    },
                   ),
                 ),
               ),
@@ -227,12 +228,14 @@ class _CustomerListState extends State<CustomerList> {
                               child: Text(
                                 "You don't have any customer!",
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 16,
-                                  letterSpacing: 0.3,
-                                  color: Color.fromRGBO(0, 0, 0, 0.87),
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle2
+                                    .copyWith(
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 16,
+                                      letterSpacing: 0.3,
+                                    ),
                               ),
                             ),
                             SizedBox(
@@ -265,7 +268,20 @@ class _CustomerListState extends State<CustomerList> {
       onLongPress: () async {
         showDialog(
           context: context,
-          builder: (_) => AlertDialog(
+          builder: (_) => DeleteDialog(
+            title: 'Are sure you want to delete this item?',
+            onDelete: () async {
+              var resp = await _apiService.deleteCustomer(id: id);
+              if (resp == 'false') {
+                Fluttertoast.showToast(msg: 'An error occured');
+              } else {
+                Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (_) => CustomerList()))
+                    .then((value) => Navigator.of(context).pop());
+                print('successful');
+              }
+            },
+          ) /* AlertDialog(
             titleTextStyle: TextStyle(fontSize: 18, color: Colors.black),
             titlePadding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 16.0),
             contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -300,7 +316,8 @@ class _CustomerListState extends State<CustomerList> {
                 ),
               ),
             ],
-          ),
+          ) */
+          ,
         );
       },
       child: Column(

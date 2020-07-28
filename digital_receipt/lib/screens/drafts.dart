@@ -1,17 +1,12 @@
-import 'dart:convert';
-
 import 'package:digital_receipt/models/currency.dart';
-import 'package:digital_receipt/models/customer.dart';
-import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
-import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:digital_receipt/widgets/app_card.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
+import '../widgets/delete_dialog.dart';
 import '../constant.dart';
 import '../models/receipt.dart';
 import '../services/api_service.dart';
@@ -70,7 +65,7 @@ class _DraftsState extends State<Drafts> {
       body: RefreshIndicator(
         onRefresh: () async {
           refreshDraft() async {
-            draftFuture =  _apiService.getDraft();
+            draftFuture = _apiService.getDraft();
             var val = await draftFuture;
             setState(() {
               draftData = val;
@@ -126,43 +121,32 @@ class _DraftsState extends State<Drafts> {
                           return await showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text("Confirm"),
-                                content: const Text(
-                                    "Are you sure you wish to delete this item?"),
-                                actions: <Widget>[
-                                  FlatButton(
-                                      onPressed: () async {
-                                        Navigator.of(context).pop(true);
-                                        String response = await _apiService
-                                            .deleteDraft(id: receipt.receiptId);
-                                        if (response == 'true') {
-                                          setState(() {
-                                            draftData.removeAt(index);
-                                          });
-                                          Fluttertoast.showToast(
-                                            msg: 'Draft deleted successfully',
-                                            fontSize: 12,
-                                            toastLength: Toast.LENGTH_LONG,
-                                            backgroundColor: Colors.red,
-                                          );
-                                        } else {
-                                          Fluttertoast.showToast(
-                                            msg:
-                                                'Sorry an error occured try again',
-                                            fontSize: 12,
-                                            toastLength: Toast.LENGTH_LONG,
-                                            backgroundColor: Colors.red,
-                                          );
-                                        }
-                                      },
-                                      child: const Text("DELETE")),
-                                  FlatButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(false),
-                                    child: const Text("CANCEL"),
-                                  ),
-                                ],
+                              return DeleteDialog(
+                                title:
+                                    'Are you sure you wish to delete this item?',
+                                onDelete: () async {
+                                  Navigator.of(context).pop(true);
+                                  String response = await _apiService
+                                      .deleteDraft(id: receipt.receiptId);
+                                  if (response == 'true') {
+                                    setState(() {
+                                      draftData.removeAt(index);
+                                    });
+                                    Fluttertoast.showToast(
+                                      msg: 'Draft deleted successfully',
+                                      fontSize: 12,
+                                      toastLength: Toast.LENGTH_LONG,
+                                      backgroundColor: Colors.red,
+                                    );
+                                  } else {
+                                    Fluttertoast.showToast(
+                                      msg: 'Sorry an error occured try again',
+                                      fontSize: 12,
+                                      toastLength: Toast.LENGTH_LONG,
+                                      backgroundColor: Colors.red,
+                                    );
+                                  }
+                                },
                               );
                             },
                           );

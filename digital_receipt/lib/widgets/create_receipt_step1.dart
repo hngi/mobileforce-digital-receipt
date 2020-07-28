@@ -63,10 +63,12 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
   final _dateController = TextEditingController();
 
   getInventories() async {
+    print('here');
     currency = await SharedPreferenceService().getStringValuesSF('Currency');
     try {
-      Provider.of<Inventory>(context, listen: false).setInventoryList =
+       Provider.of<Inventory>(context, listen: false).setInventoryList =
           await ApiService().getAllInventories();
+     // print('res: $res');
     } catch (e) {
       print(e);
     }
@@ -118,7 +120,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Row(
-                  children: map<Widget>([0, 1, 2, 3], (index, url) {
+                  children: map<Widget>([0, 1, 2], (index, url) {
                     print(index);
                     return GestureDetector(
                       onTap: () {
@@ -239,7 +241,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                         );
                       },
                       title: thisProduct.productDesc,
-                      amount:currency +
+                      amount: currency +
                           '${Utils.formatNumber(thisProduct.amount) ?? Utils.formatNumber(thisProduct.unitPrice * thisProduct.quantity)}',
                       // '${}',
                       index: index,
@@ -370,8 +372,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   }
                   print("sum: $sum");
 
-                  Provider.of<Receipt>(context, listen: false)
-                      .setTotal(sum);
+                  Provider.of<Receipt>(context, listen: false).setTotal(sum);
                   Provider.of<Receipt>(context, listen: false)
                       .setReminderTime(time);
                   Provider.of<Receipt>(context, listen: false)

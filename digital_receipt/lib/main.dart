@@ -44,13 +44,13 @@ void main() async {
 
     // runApp(MyApp(),);
     runApp(
-      // DevicePreview(
-      // builder: (BuildContext context) =>
-      // */
+      DevicePreview(
+      builder: (BuildContext context) =>
+
       MyApp(),
-      // enabled: kReleaseMode,
-      /* 
-    ) */
+      enabled: kReleaseMode,
+      
+    )
       // )
     );
   } catch (e) {
@@ -138,9 +138,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     return MultiProvider(
-
       providers: [
         ChangeNotifierProvider(
           create: (context) => Business(),
@@ -177,8 +175,6 @@ class _MyAppState extends State<MyApp> {
         // Please do not change anything on this Callback
         onInitCallback: ThemeManager.onInitCallback,
       ),
-      
-    
     );
   }
 }
@@ -219,12 +215,10 @@ class _ScreenControllerState extends State<ScreenController> {
     }
   }
 
-  setVerson(){
+  setVerson() {
     var _version = '2';
     _sharedPreferenceService.addStringToSF("VERSION", _version);
   }
-
-
 
   @override
   void initState() {
@@ -296,10 +290,7 @@ class _ScreenControllerState extends State<ScreenController> {
           print('snapshots: ${snapshot.data}');
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Container(
-              color: Colors.white,
-              child: Center(child: CircularProgressIndicator()),
-            );
+            return Scaffold();
             // TODO Reverse if-condition to show OnBoarding
 
           } else if (snapshot.data[0] == 'empty' || _currentAutoLogoutStatus) {

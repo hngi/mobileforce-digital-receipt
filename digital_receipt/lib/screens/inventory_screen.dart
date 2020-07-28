@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import '../services/shared_preference_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../widgets/delete_dialog.dart';
 
 class InventoryScreen extends StatefulWidget {
   @override
@@ -33,19 +34,51 @@ class _InventoryScreenState extends State<InventoryScreen> {
     super.initState();
   }
 
+  Future deleteInventory(id) async {
+    setState(() {
+      loading = true;
+    });
+    var resp = await _apiService.deleteInventoryItem(id: id);
+    if (resp == 'false') {
+      setState(() {
+        loading = false;
+      });
+      Navigator.pop(context);
+      setState(() {
+        inventFuture = _apiService.getAllInventories();
+      });
+      setCategory();
+      Fluttertoast.showToast(msg: 'an error occured');
+    } else {
+      setState(() {
+        loading = false;
+      });
+      Navigator.pop(context);
+      setCategory();
+
+      Fluttertoast.showToast(msg: 'item deleted');
+      setState(() {
+        inventFuture = _apiService.getAllInventories();
+      });
+    }
+  }
+
   setCategory() async {
     currency = await SharedPreferenceService().getStringValuesSF('Currency');
     List<Inventory> val = await inventFuture;
     List<String> temp = [];
-    await Future.forEach(val, (Inventory e) {
-      temp.add(e.category);
-    });
+    if (val != null) {
+      await Future.forEach(val, (Inventory e) {
+        temp.add(e.category);
+      });
+    }
 
     setState(() {
       inventoryCategories = temp.toSet().toList();
       inventory = val;
       inventoryData = val;
     });
+    // print('inventory ${inventory.isEmpty}');
   }
 
   @override
@@ -117,44 +150,45 @@ class _InventoryScreenState extends State<InventoryScreen> {
                       color: Color(0xff25CCB3),
                     ),
                   ),
-                  child: SizedBox(
-                    height: 40,
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton(
-                        value: dropdownValue,
-                        underline: Divider(),
-                        items: (["ALL"] + inventoryCategories)
-                            .map<DropdownMenuItem<String>>(
-                          (String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 8.0),
-                                child: Text(
-                                  value,
-                                  textAlign: TextAlign.start,
-                                ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton(
+                      value: dropdownValue,
+                      underline: Divider(),
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontFamily: 'Montserrat',
+                          ),
+                      items: (["ALL"] + inventoryCategories)
+                          .map<DropdownMenuItem<String>>(
+                        (String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 8.0),
+                              child: Text(
+                                value,
+                                maxLines: 1,
+                                textAlign: TextAlign.start,
                               ),
-                            );
-                          },
-                        ).toList(),
-                        onChanged: (String value) {
-                          if (value != "ALL") {
-                            setState(() {
-                              dropdownValue = value;
-                              print(inventory);
-                            });
-                            inventory = sortInventoryByCategory(inventoryData,
-                                category: value);
-                            print(inventory.length);
-                          } else {
-                            setState(() {
-                              dropdownValue = value;
-                              inventory = inventoryData..shuffle();
-                            });
-                          }
+                            ),
+                          );
                         },
-                      ),
+                      ).toList(),
+                      onChanged: (String value) {
+                        if (value != "ALL") {
+                          setState(() {
+                            dropdownValue = value;
+                            print(inventory);
+                          });
+                          inventory = sortInventoryByCategory(inventoryData,
+                              category: value);
+                          print(inventory.length);
+                        } else {
+                          setState(() {
+                            dropdownValue = value;
+                            inventory = inventoryData..shuffle();
+                          });
+                        }
+                      },
                     ),
                   ),
                 ),
@@ -177,17 +211,28 @@ class _InventoryScreenState extends State<InventoryScreen> {
                             );
                           } else if (snapshot.connectionState ==
                                   ConnectionState.done &&
-                              snapshot.hasData &&
-                              snapshot.data != []) {
+                              inventory != null &&
+                              inventory.isNotEmpty) {
                             //setCategory(snapshot.data);
                             return ListView.builder(
                               itemCount: inventory.length ?? 0,
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                     onLongPress: () async {
-                                      await _confirmInventoryDelete(
-                                          inventory[index].id,
-                                          inventory[index].title);
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible: true,
+                                        builder: (context) {
+                                          return DeleteDialog(
+                                              title:
+                                                  "Are sure you want to delete ${inventory[index].title}?",
+                                              onDelete: () async {
+                                                await deleteInventory(
+                                                  inventory[index].id,
+                                                );
+                                              });
+                                        },
+                                      );
                                     },
                                     child: _buildInventory(
                                         inventory[index], index));
@@ -326,101 +371,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
             ],
           ),
         ));
-  }
-
-  _confirmInventoryDelete(String id, String title) {
-    return showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            // contentPadding: EdgeInsets.all(20),
-            // insetPadding: EdgeInsets.all(20),
-            title: Text(
-              "Are sure you want to delete $title ?",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.w500),
-            ),
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                SizedBox(
-                  width: 90,
-                  height: 48,
-                  child: FlatButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    color: Colors.blue[50],
-                    child: Text(
-                      'cancel',
-                      style: TextStyle(
-                          fontSize: 13,
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                SizedBox(
-                  width: 90,
-                  height: 48,
-                  child: FlatButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)),
-                    onPressed: () async {
-                      setState(() {
-                        loading = true;
-                      });
-                      var resp = await _apiService.deleteInventoryItem(id: id);
-                      if (resp == 'false') {
-                        setState(() {
-                          loading = false;
-                        });
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => InventoryScreen()),
-                            (route) => false);
-                        // OR
-                        // Navigator.pop(context, true);
-                        Fluttertoast.showToast(msg: 'an error occured');
-                      } else {
-                        setState(() {
-                          loading = false;
-                        });
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => InventoryScreen()),
-                            (route) => false);
-                        // OR
-                        // Navigator.pop(context, true);
-                        Fluttertoast.showToast(msg: 'item deleted');
-                        print('successful');
-                      }
-                    },
-                    color: Colors.red,
-                    child: Text(
-                      'delete',
-                      style: TextStyle(
-                          fontSize: 13,
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          );
-        });
   }
 }
 
