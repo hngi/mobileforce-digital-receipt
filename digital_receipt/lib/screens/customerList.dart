@@ -109,45 +109,42 @@ class _CustomerListState extends State<CustomerList> {
                 child: Text("Sort By"),
               ),
               Container(
-                width: 150,
+       
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(
                     color: Color(0xff25CCB3),
                   ),
                 ),
-                child: SizedBox(
-                  height: 40,
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton(
-                      value: dropdownValue,
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton(
+                    value: dropdownValue,
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
                           fontFamily: 'Montserrat',
                         ),
-                      underline: Divider(),
-                      items: <String>[
-                        "Last Upadated",
-                        "A to Z",
-                        "Z to A",
-                      ].map<DropdownMenuItem<String>>(
-                        (String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 8.0),
-                              child: Text(
-                                value,
-                                textAlign: TextAlign.start,
-                              ),
+                    underline: Divider(),
+                    items: <String>[
+                      "Last Upadated",
+                      "A to Z",
+                      "Z to A",
+                    ].map<DropdownMenuItem<String>>(
+                      (String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              value,
+                              textAlign: TextAlign.start,
                             ),
-                          );
-                        },
-                      ).toList(),
-                      onChanged: (String value) {
-                        setState(() => dropdownValue = value);
-                        // No logic Implemented
+                          ),
+                        );
                       },
-                    ),
+                    ).toList(),
+                    onChanged: (String value) {
+                      setState(() => dropdownValue = value);
+                      // No logic Implemented
+                    },
                   ),
                 ),
               ),
@@ -231,11 +228,14 @@ class _CustomerListState extends State<CustomerList> {
                               child: Text(
                                 "You don't have any customer!",
                                 textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.subtitle2.copyWith(
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 16,
-                                  letterSpacing: 0.3,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle2
+                                    .copyWith(
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 16,
+                                      letterSpacing: 0.3,
+                                    ),
                               ),
                             ),
                             SizedBox(
