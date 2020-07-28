@@ -226,12 +226,11 @@ class ApiService {
         } else if (res.length < 100 && connectivityResult) {
           await hiveDb.addDraft(res);
 
-          // return hiveDb.getDraft();
-          return res;
+          return hiveDb.getDraft();
+          //return res;
         } else {
           print('res: 9');
-          // return hiveDb.getDraft();
-          return res;
+          return hiveDb.getDraft();
         }
       } else {
         return null;
@@ -273,17 +272,18 @@ class ApiService {
         if (res.length >= 100) {
           List temp = response.data["data"].getRange(0, 99).toList();
           await hiveDb.addReceiptHistory(temp);
-          // return hiveDb.getReceiptHistory();
-          return res;
+
+          res = res.map((e) {
+            Receipt temp = Receipt.fromJson(e);
+            return temp;
+          });
+          return List<Receipt>.from(res);
         } else if (response.data["data"].length < 100) {
-          //print('we::: ${response.data["data"][14]}');
           await hiveDb.addReceiptHistory(response.data["data"]);
-          //await hiveDb.getReceiptHistory();
-          return res;
-          // return hiveDb.getReceiptHistory();
+
+          return hiveDb.getReceiptHistory();
         } else {
-          // return hiveDb.getReceiptHistory();
-          return res;
+          return hiveDb.getReceiptHistory();
         }
 
         //return issued_receipts;
@@ -629,11 +629,13 @@ class ApiService {
         },
       );
 
-      dynamic res = jsonDecode(response.body);
-
-      res = res['data'] as List;
+      dynamic res;
 
       if (response.statusCode == 200) {
+        dynamic res = jsonDecode(response.body);
+        print(res);
+        res = res['data'] as List;
+
         print(response.statusCode);
         res = res.firstWhere(
           (e) => e['user'].toString() == userID,
@@ -807,31 +809,23 @@ class ApiService {
         );
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          // data["data"].forEach((notification) {
-          //   _allNotifications.add(NotificationModel.fromJson(notification));
-          // });
-          // return _allNotifications;
-          // checks if the length of history is larger than 100 and checks for internet
-          // print("notifications from api ${data['data']}");
+  
           var res = data["data"];
           if (res.length >= 100) {
             List temp = data["data"].getRange(0, 99).toList();
             await hiveDb.addNotification(temp);
 
-            // return hiveDb.getNotification();
             return res;
           } else if (data["data"].length < 100) {
             await hiveDb.addNotification(data["data"]);
 
-            // return hiveDb.getNotification();
-            return res;
+            return hiveDb.getNotification();
           } else {
-            // return hiveDb.getNotification();
-            return res;
+            return hiveDb.getNotification();
           }
         } else {
           print("All notifications status code ${response.statusCode}");
-          // return [];
+          return null;
         }
       }
     } else {
@@ -870,12 +864,12 @@ class ApiService {
           } else if (res.length < 100) {
             await hiveDb.addCustomer(res);
 
-            // return hiveDb.getCustomer();
-            return res;
+            return hiveDb.getCustomer();
+            //return res;
           } else {
             print('res: 9');
-            // return hiveDb.getCustomer();
-            return res;
+            return hiveDb.getCustomer();
+            //return res;
           }
         } else {
           var res = jsonDecode(response.body)['data'];
@@ -887,24 +881,6 @@ class ApiService {
     }
   }
 
-  Future getCurrency() async {
-    dynamic res = await http.get('https://restcountries.eu/rest/v2/all');
-
-    if (res.statusCode == 200) {
-      res = json.decode(res.body);
-      List val = res
-          .map(
-            (e) => Currency(
-              currencyName: e['currencies'][0]['name'].toString(),
-              currencySymbol: e['currencies'][0]['symbol'].toString(),
-              flag: e['flag'].toString(),
-            ),
-          )
-          .toList();
-      print(val.length);
-      return List<Currency>.from(val);
-    }
-  }
 
   Future getAllInventories() async {
     var connectivityResult = await Connected().checkInternet();
@@ -913,7 +889,6 @@ class ApiService {
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
-      List<Inventory> _inventories = [];
 
       var connectivityResult = await Connected().checkInternet();
       if (connectivityResult) {
@@ -926,26 +901,28 @@ class ApiService {
         if (response.statusCode == 200) {
           log(response.body);
           var data = jsonDecode(response.body)['data'];
-          /////
+          
           if (data.length >= 100) {
             List temp = data.getRange(0, 99).toList();
             await hiveDb.addInventory(temp);
 
-            // return hiveDb.getInventory();
-            return data;
+            List res = data.map((e) {
+              Inventory temp = Inventory.fromJson(e);
+              return temp;
+            }).toList();
+            print('data: $res');
+            return res;
           } else if (data.length < 100) {
             await hiveDb.addInventory(data);
 
-            // return hiveDb.getInventory();
-            return data;
+            return hiveDb.getInventory();
           } else {
             print('res: 9');
-            // return hiveDb.getInventory();
-            return data;
+            return hiveDb.getInventory();
           }
         } else {
           var res = jsonDecode(response.body)['data'];
-          return res;
+          return null;
         }
       }
     } else {
@@ -1238,7 +1215,7 @@ class ApiService {
   Future<List<Reminder>> getReminders() async {
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
-        print("token: $token");
+    print("token: $token");
     String url = '$_urlEndpoint/business/receipt/issued';
 
     final http.Response res = await http.get(url, headers: <String, String>{
@@ -1255,7 +1232,6 @@ class ApiService {
     }
   }
 
-  
   updatePartPaymentReminder({
     String id,
     String date,
@@ -1270,7 +1246,6 @@ class ApiService {
       var response = await http.put(
         uri,
         headers: {"token": token},
-      
       );
       print(response.body);
       if (response.statusCode == 200) {
@@ -1280,5 +1255,5 @@ class ApiService {
     } else {
       return 'false';
     }
-}
+  }
 }
