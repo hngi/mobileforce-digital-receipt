@@ -221,14 +221,17 @@ class ApiService {
           List temp = res.getRange(0, 99).toList();
           await hiveDb.addDraft(temp);
 
-          return hiveDb.getDraft();
+          // return hiveDb.getDraft();
+          return res;
         } else if (res.length < 100 && connectivityResult) {
           await hiveDb.addDraft(res);
 
-          return hiveDb.getDraft();
+          // return hiveDb.getDraft();
+          return res;
         } else {
           print('res: 9');
-          return hiveDb.getDraft();
+          // return hiveDb.getDraft();
+          return res;
         }
       } else {
         return null;
@@ -266,18 +269,21 @@ class ApiService {
 
       if (response.statusCode == 200) {
         //print(response.data["data"][14]);
-
-        if (response.data["data"].length >= 100) {
+        var res = response.data["data"];
+        if (res.length >= 100) {
           List temp = response.data["data"].getRange(0, 99).toList();
           await hiveDb.addReceiptHistory(temp);
-          return hiveDb.getReceiptHistory();
+          // return hiveDb.getReceiptHistory();
+          return res;
         } else if (response.data["data"].length < 100) {
           //print('we::: ${response.data["data"][14]}');
           await hiveDb.addReceiptHistory(response.data["data"]);
           //await hiveDb.getReceiptHistory();
-          return hiveDb.getReceiptHistory();
+          return res;
+          // return hiveDb.getReceiptHistory();
         } else {
-          return hiveDb.getReceiptHistory();
+          // return hiveDb.getReceiptHistory();
+          return res;
         }
 
         //return issued_receipts;
@@ -801,19 +807,27 @@ class ApiService {
         );
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          print('data:: $data');
-
-          if (data["data"].length >= 100) {
+          // data["data"].forEach((notification) {
+          //   _allNotifications.add(NotificationModel.fromJson(notification));
+          // });
+          // return _allNotifications;
+          // checks if the length of history is larger than 100 and checks for internet
+          // print("notifications from api ${data['data']}");
+          var res = data["data"];
+          if (res.length >= 100) {
             List temp = data["data"].getRange(0, 99).toList();
             await hiveDb.addNotification(temp);
 
-            return hiveDb.getNotification();
+            // return hiveDb.getNotification();
+            return res;
           } else if (data["data"].length < 100) {
             await hiveDb.addNotification(data["data"]);
 
-            return hiveDb.getNotification();
+            // return hiveDb.getNotification();
+            return res;
           } else {
-            return hiveDb.getNotification();
+            // return hiveDb.getNotification();
+            return res;
           }
         } else {
           print("All notifications status code ${response.statusCode}");
@@ -851,14 +865,17 @@ class ApiService {
             List temp = res.getRange(0, 99).toList();
             await hiveDb.addCustomer(temp);
 
-            return hiveDb.getCustomer();
+            // return hiveDb.getCustomer();
+            return res;
           } else if (res.length < 100) {
             await hiveDb.addCustomer(res);
 
-            return hiveDb.getCustomer();
+            // return hiveDb.getCustomer();
+            return res;
           } else {
             print('res: 9');
-            return hiveDb.getCustomer();
+            // return hiveDb.getCustomer();
+            return res;
           }
         } else {
           var res = jsonDecode(response.body)['data'];
@@ -914,14 +931,17 @@ class ApiService {
             List temp = data.getRange(0, 99).toList();
             await hiveDb.addInventory(temp);
 
-            return hiveDb.getInventory();
+            // return hiveDb.getInventory();
+            return data;
           } else if (data.length < 100) {
             await hiveDb.addInventory(data);
 
-            return hiveDb.getInventory();
+            // return hiveDb.getInventory();
+            return data;
           } else {
             print('res: 9');
-            return hiveDb.getInventory();
+            // return hiveDb.getInventory();
+            return data;
           }
         } else {
           var res = jsonDecode(response.body)['data'];
@@ -947,8 +967,9 @@ class ApiService {
         var data = json.decode(res.body);
         print(data);
         await hiveDb.addDashboardInfo(data);
-        var val = await hiveDb.getDashboardInfo();
-        return val;
+        // var val = await hiveDb.getDashboardInfo();
+        // return val;
+        return data;
       } else {
         return null;
       }
