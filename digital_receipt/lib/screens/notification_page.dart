@@ -12,7 +12,7 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   // int _notificationLength = 12;
   ApiService _apiService = ApiService();
-  List allNotification = [];
+  dynamic allNotification = [];
   @override
   void initState() {
     super.initState();

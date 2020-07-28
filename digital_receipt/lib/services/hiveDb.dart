@@ -4,6 +4,7 @@ import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 
 class HiveDb extends ChangeNotifier {
@@ -19,6 +20,7 @@ class HiveDb extends ChangeNotifier {
     var customerBox = await Hive.openBox('customer');
     var customer = customerBox.get('customer');
     if (customerBox != null) {
+      Fluttertoast.showToast(msg: 'Hive Active');
       return jsonDecode(customer);
     }
   }
@@ -41,6 +43,7 @@ class HiveDb extends ChangeNotifier {
         return temp;
       });
       //print(res);
+      Fluttertoast.showToast(msg: 'Hive Active');
       return List<Receipt>.from(res);
     }
     return null;
@@ -57,6 +60,7 @@ class HiveDb extends ChangeNotifier {
     // print('dfdf');
     var draftBox = await Hive.openBox('draft');
     var draft = draftBox.get('draft');
+    Fluttertoast.showToast(msg: 'Hive Active');
     return json.decode(draft);
   }
 
@@ -71,6 +75,7 @@ class HiveDb extends ChangeNotifier {
     // print('dfdf');
     var draftBox = await Hive.openBox('dashboard_info');
     var draft = draftBox.get('dashboard_info');
+    Fluttertoast.showToast(msg: 'Hive Active');
     return json.decode(draft);
   }
 
@@ -84,11 +89,12 @@ class HiveDb extends ChangeNotifier {
   Future getAnalyticData() async {
     var analyticBox = await Hive.openBox('analytics');
     var analyticData = analyticBox.get('analytics');
+    Fluttertoast.showToast(msg: 'Hive Active');
     return json.decode(analyticData);
   }
 
   /* FOR NOTIFICATION PAGE */
-  Future<void> addNotification(List notification) async {
+  Future<void> addNotification(dynamic notification) async {
     var notificationBox = await Hive.openBox('notification');
     var res = json.encode(notification);
 
@@ -98,6 +104,7 @@ class HiveDb extends ChangeNotifier {
   Future getNotification() async {
     var notificationBox = await Hive.openBox('notification');
     var notificationData = notificationBox.get('notification');
+    Fluttertoast.showToast(msg: 'Hive Active');
     return json.decode(notificationData);
   }
 
@@ -119,6 +126,7 @@ class HiveDb extends ChangeNotifier {
         return temp;
       });
      // print(res);
+     Fluttertoast.showToast(msg: 'Hive Active');
       return List<Inventory>.from(res);
     }
     return null;

@@ -37,7 +37,7 @@ class SignatureScreen extends StatefulWidget {
 
 class _SignatureScreenState extends State<SignatureScreen> {
   final SignatureController _controller = SignatureController(
-    penStrokeWidth: 5,
+    penStrokeWidth: 2,
     penColor: Colors.black,
     exportBackgroundColor: Colors.white,
   );
