@@ -55,7 +55,7 @@ class MainDrawer extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 //TODO: Change this back to UpgradeScreen()
-                                builder: (context) => Setup()));
+                                builder: (context) => AccountPage()));
                       },
                       child: Row(
                         children: <Widget>[
