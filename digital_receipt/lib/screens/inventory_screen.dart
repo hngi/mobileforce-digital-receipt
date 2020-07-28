@@ -55,7 +55,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
       });
       Navigator.pop(context);
       setCategory();
-      
+
       Fluttertoast.showToast(msg: 'item deleted');
       setState(() {
         inventFuture = _apiService.getAllInventories();
@@ -67,16 +67,18 @@ class _InventoryScreenState extends State<InventoryScreen> {
     currency = await SharedPreferenceService().getStringValuesSF('Currency');
     List<Inventory> val = await inventFuture;
     List<String> temp = [];
-    await Future.forEach(val, (Inventory e) {
-      temp.add(e.category);
-    });
+    if (val != null) {
+      await Future.forEach(val, (Inventory e) {
+        temp.add(e.category);
+      });
+    }
 
     setState(() {
       inventoryCategories = temp.toSet().toList();
       inventory = val;
       inventoryData = val;
     });
-    print('inventory ${inventory.isEmpty}');
+    // print('inventory ${inventory.isEmpty}');
   }
 
   @override
@@ -152,6 +154,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
                     child: DropdownButton(
                       value: dropdownValue,
                       underline: Divider(),
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontFamily: 'Montserrat',
+                          ),
                       items: (["ALL"] + inventoryCategories)
                           .map<DropdownMenuItem<String>>(
                         (String value) {
@@ -214,13 +219,13 @@ class _InventoryScreenState extends State<InventoryScreen> {
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                     onLongPress: () async {
-                                      
                                       showDialog(
                                         context: context,
                                         barrierDismissible: true,
                                         builder: (context) {
                                           return DeleteDialog(
-                                              title: "Are sure you want to delete ${inventory[index].title}?",
+                                              title:
+                                                  "Are sure you want to delete ${inventory[index].title}?",
                                               onDelete: () async {
                                                 await deleteInventory(
                                                   inventory[index].id,

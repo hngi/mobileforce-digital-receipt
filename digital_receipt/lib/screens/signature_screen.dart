@@ -55,86 +55,81 @@ class _SignatureScreenState extends State<SignatureScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // List<T> map<T>(List list, Function handler) {
-    //   List<T> result = [];
-    //   for (var i = 0; i < list.length; i++) {
-    //     result.add(handler(i, list[i]));
-    //   }
-    //   return result;
-    // }
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      body: Container(
-        padding: EdgeInsets.all(16.0),
-        child: Wrap(
-          children: <Widget>[
-            SizedBox(
-              height: 14,
-            ),
-            Text('Append your signature',
-                style: Theme.of(context).textTheme.headline5),
-            SizedBox(
-              height: 5,
-            ),
-            Text('Provide your signature on the grey area below',
-                style: Theme.of(context).textTheme.subtitle2),
-            SizedBox(
-              height: 24,
-            ),
-            // Container(
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: <Widget>[
-            //       // Row(
-            //       //   children: map<Widget>([0, 1, 2, 3], (index, url) {
-            //       //     print(index);
-            //       //     return GestureDetector(
-            //       //       onTap: () {
-            //       //         widget.carouselController.animateToPage(index);
-            //       //       },
-            //       //       child: Row(
-            //       //         children: <Widget>[
-            //       //           Container(
-            //       //             height: 2,
-            //       //             width: 10,
-            //       //             decoration: BoxDecoration(
-            //       //                 borderRadius: BorderRadius.circular(5),
-            //       //                 color: widget.carouselIndex.index == index
-            //       //                     ? Theme.of(context).accentColor
-            //       //                     : Theme.of(context).disabledColor,
-            //       //                 boxShadow: [
-            //       //                   BoxShadow(
-            //       //                       offset: Offset(0, 3),
-            //       //                       blurRadius: 6,
-            //       //                       color: Color.fromRGBO(0, 0, 0, 0.16))
-            //       //                 ]),
-            //       //           ),
-            //       //           index != 3 ? SizedBox(width: 10) : SizedBox.shrink()
-            //       //         ],
-            //       //       ),
-            //       //     );
-            //       //   }),
-            //       // ),
-            //     ],
-            //   ),
-            // ),
-            // SizedBox(
-            //   height: 24,
-            // ),
+      body: SafeArea(
+              child: Container(
+          padding: EdgeInsets.all(16.0),
+          child: Wrap(
+            children: <Widget>[
+              SizedBox(
+                height: 14,
+              ),
+              Text('Append your signature',
+                  style: Theme.of(context).textTheme.headline5),
+              SizedBox(
+                height: 5,
+              ),
+              Text('Provide your signature on the grey area below',
+                  style: Theme.of(context).textTheme.subtitle2),
+              SizedBox(
+                height: 24,
+              ),
+              // Container(
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: <Widget>[
+              //       // Row(
+              //       //   children: map<Widget>([0, 1, 2, 3], (index, url) {
+              //       //     print(index);
+              //       //     return GestureDetector(
+              //       //       onTap: () {
+              //       //         widget.carouselController.animateToPage(index);
+              //       //       },
+              //       //       child: Row(
+              //       //         children: <Widget>[
+              //       //           Container(
+              //       //             height: 2,
+              //       //             width: 10,
+              //       //             decoration: BoxDecoration(
+              //       //                 borderRadius: BorderRadius.circular(5),
+              //       //                 color: widget.carouselIndex.index == index
+              //       //                     ? Theme.of(context).accentColor
+              //       //                     : Theme.of(context).disabledColor,
+              //       //                 boxShadow: [
+              //       //                   BoxShadow(
+              //       //                       offset: Offset(0, 3),
+              //       //                       blurRadius: 6,
+              //       //                       color: Color.fromRGBO(0, 0, 0, 0.16))
+              //       //                 ]),
+              //       //           ),
+              //       //           index != 3 ? SizedBox(width: 10) : SizedBox.shrink()
+              //       //         ],
+              //       //       ),
+              //       //     );
+              //       //   }),
+              //       // ),
+              //     ],
+              //   ),
+              // ),
+              // SizedBox(
+              //   height: 24,
+              // ),
 
-            // SignatureCanvas(key: signatureCanvasKey),
-            //SIGNATURE CANVAS
-            Signature(
-              key: signatureCanvasKey,
-              controller: _controller,
-              height: 350,
-              backgroundColor: Colors.blueGrey[100],
-            ),
-            SizedBox(
-              height: 24,
-            ),
-          ],
+              // SignatureCanvas(key: signatureCanvasKey),
+              //SIGNATURE CANVAS
+              Signature(
+                key: signatureCanvasKey,
+                controller: _controller,
+                height: 350,
+                backgroundColor: Colors.blueGrey[100],
+              ),
+              SizedBox(
+                height: 24,
+              ),
+            ],
+          ),
         ),
       ),
       persistentFooterButtons: <Widget>[

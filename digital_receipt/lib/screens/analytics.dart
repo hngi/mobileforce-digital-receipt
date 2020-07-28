@@ -109,7 +109,7 @@ class _AnalyticsState extends State<Analytics> {
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
               child: Column(
                 children: <Widget>[
-                  _buildTopContent(totalSales: '₦ 0'),
+                  _buildTopContent(totalSales: '0'),
                   Expanded(
                     child: Container(
                       margin: EdgeInsets.all(30),

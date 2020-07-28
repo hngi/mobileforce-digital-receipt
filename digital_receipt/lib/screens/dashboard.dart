@@ -198,39 +198,6 @@ class _DashBoardState extends State<DashBoard> {
       child: Column(
         children: <Widget>[
           _buildInfo(),
-                Padding(
-                            padding: const EdgeInsets.only(top: 20.0, bottom: 15),
-                            child: FutureBuilder(
-                              future: _apiService.getPromotion(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<dynamic> snapshot) {
-                                print("snapshot data for dashboard");
-                                print(snapshot.data);
-                                if (snapshot.hasData) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Fluttertoast.showToast(
-                                          msg: "app updated");
-                                    },
-                                    child: Container(
-                                      height: 100,
-                                      width: MediaQuery.of(context).size.width,
-                                      padding: EdgeInsets.all(10.0),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5.0),
-                                          image: DecorationImage(
-                                              image: NetworkImage(
-                                                  snapshot.data['imageUrl']),
-                                              fit: BoxFit.cover)),
-                                    ),
-                                  );
-                                } else {
-                                  return SizedBox.shrink();
-                                }
-                              },
-                            ),
-                          ),
           SizedBox(
             height: 24.0,
           ),
@@ -261,14 +228,13 @@ class _DashBoardState extends State<DashBoard> {
                         Text(
                           'Nothing to see here. Click the plus icon to create a receipt',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Color.fromRGBO(0, 0, 0, 0.6),
-                            fontSize: 16,
-                            letterSpacing: 0.03,
-                            fontWeight: FontWeight.normal,
-                            fontFamily: 'Montserrat',
-                            height: 1.43,
-                          ),
+                          style: Theme.of(context).textTheme.subtitle2.copyWith(
+                                fontSize: 16,
+                                letterSpacing: 0.03,
+                                fontWeight: FontWeight.normal,
+                                fontFamily: 'Montserrat',
+                                height: 1.43,
+                              ),
                         )
                       ],
                     ),
@@ -303,7 +269,48 @@ class _DashBoardState extends State<DashBoard> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
+                          SizedBox(
+                            width: double.infinity,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 0.0, bottom: 15),
+                              child: FutureBuilder(
+                                future: _apiService.getPromotion(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<dynamic> snapshot) {
+                                  print("snapshot data for dashboard");
+                                  print(snapshot.data);
+                                  if (snapshot.hasData) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Fluttertoast.showToast(
+                                            msg: "app updated");
+                                      },
+                                      child: Container(
+                                        height: 100,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        padding: EdgeInsets.all(10.0),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5.0),
+                                            image: DecorationImage(
+                                                image: NetworkImage(
+                                                    snapshot.data['imageUrl']),
+                                                fit: BoxFit.cover)),
+                                      ),
+                                    );
+                                  } else {
+                                    return SizedBox.shrink();
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
                           buildGridView(recNo, deptIssued, amnt),
+                          SizedBox(
+                            height: 20,
+                          )
                         ],
                       ),
                     ),
@@ -363,7 +370,7 @@ class _DashBoardState extends State<DashBoard> {
       height: 130,
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7.0),
+        borderRadius: BorderRadius.circular(5.0),
         color: Theme.of(context).primaryColor,
       ),
       child: Row(
@@ -441,7 +448,7 @@ class _DashBoardState extends State<DashBoard> {
     return Container(
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(7.0),
+        borderRadius: BorderRadius.circular(5.0),
       ),
       child: Card(
         margin: EdgeInsets.only(left: 5.0),

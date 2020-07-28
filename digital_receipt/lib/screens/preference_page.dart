@@ -68,7 +68,9 @@ class _PreferencePageState extends State<PreferencePage> {
                     activeColor: Color(0xFF25CCB3),
                     contentPadding: const EdgeInsets.all(0),
                     value: _isDark,
-                    title: Text('Dark Mode'),
+                    title: Text('Dark Mode', style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          fontFamily: 'Montserrat',
+                        ),),
                     onChanged: (val) {
                       ThemeProvider.controllerOf(context).nextTheme();
                     },
@@ -77,13 +79,18 @@ class _PreferencePageState extends State<PreferencePage> {
                       activeColor: Color(0xFF25CCB3),
                       contentPadding: const EdgeInsets.all(0),
                       value: _currentAutoLogoutStatus,
-                      title: Text('Enable Auto Logout'),
+                      title: Text(
+                        'Enable Auto Logout',
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          fontFamily: 'Montserrat',
+                        ),
+                      ),
                       onChanged: (value) {
                         _sharedPreferenceService.addBoolToSF(
                             "AUTO_LOGOUT", value);
                         getCurrentAutoLogoutStatus();
                       }),
-                  ExportOptionButton(),
+                  // ExportOptionButton(),
                 ],
               ),
             )

@@ -943,18 +943,6 @@ class ApiService {
             // return hiveDb.getInventory();
             return data;
           }
-          print('data: $data');
-          try {
-            //log(response.body);
-            data.forEach((inventory) {
-              _inventories.add(Inventory.fromJson(inventory));
-            });
-            log(_inventories.toString());
-          } catch (e) {
-            print(e);
-          }
-          print(_inventories);
-          return _inventories;
         } else {
           var res = jsonDecode(response.body)['data'];
           return res;
