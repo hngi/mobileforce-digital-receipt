@@ -44,13 +44,13 @@ void main() async {
 
     // runApp(MyApp(),);
     runApp(
-      // DevicePreview(
-      // builder: (BuildContext context) =>
-      // */
+      DevicePreview(
+      builder: (BuildContext context) =>
+
       MyApp(),
-      // enabled: kReleaseMode,
-      /* 
-    ) */
+      enabled: kReleaseMode,
+      
+    )
       // )
     );
   } catch (e) {

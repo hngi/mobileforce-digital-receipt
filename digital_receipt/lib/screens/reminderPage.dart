@@ -122,12 +122,11 @@ class _ReminderPageState extends State<ReminderPage> {
                     child: Text(
                       "You don't have any reminder!",
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        fontSize: 16,
-                        letterSpacing: 0.3,
-                        color: Color.fromRGBO(0, 0, 0, 0.87),
-                      ),
+                      style: Theme.of(context).textTheme.subtitle2.copyWith(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 16,
+                            letterSpacing: 0.3,
+                          ),
                     ),
                   ),
                   SizedBox(

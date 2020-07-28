@@ -453,47 +453,60 @@ Widget ReceiptScreenLayout(
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 0, 0, 15),
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                (Provider.of<Receipt>(context, listen: false)
-                                        .sellerName
-                                        .split(" ")[0])
-                                    .toLowerCase(),
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 27,
-                                  letterSpacing: 0.03,
-                                  fontFamily: 'Southampton',
-                                  fontWeight: FontWeight.w300,
-                                  height: 1.43,
-                                ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 15),
+                              child: Column(
+                                children: <Widget>[
+                                  Text(
+                                    (Provider.of<Receipt>(context,
+                                                listen: false)
+                                            .sellerName
+                                            .split(" ")[0])
+                                        .toLowerCase(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 27,
+                                      letterSpacing: 0.03,
+                                      fontFamily: 'Southampton',
+                                      fontWeight: FontWeight.w300,
+                                      height: 1.43,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 2,
+                                  ),
+                                  Container(
+                                    height: 1,
+                                    color: Color(0xFFE3E3E3),
+                                    width: 107,
+                                  ),
+                                  SizedBox(
+                                    height: 2,
+                                  ),
+                                  Text(
+                                    'Signature',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 13,
+                                      letterSpacing: 0.03,
+                                      fontWeight: FontWeight.w300,
+                                      height: 1.43,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              SizedBox(
-                                height: 2,
-                              ),
-                              Container(
-                                height: 1,
-                                color: Color(0xFFE3E3E3),
-                                width: 107,
-                              ),
-                              SizedBox(
-                                height: 2,
-                              ),
-                              Text(
-                                'Signature',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 13,
-                                  letterSpacing: 0.03,
-                                  fontWeight: FontWeight.w300,
-                                  height: 1.43,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 10, 15),
+                              child: kLogo1,
+                              height: 35,
+                              width: 100,
+                            )
+                          ],
                         )
                       ],
                     ))
@@ -591,9 +604,6 @@ Future<void> shareFile(Uint8List receiptPdf) async {
     print('error: $e');
   }
 }
-
-
-
 
 class DashedSeparator extends StatelessWidget {
   final double height;

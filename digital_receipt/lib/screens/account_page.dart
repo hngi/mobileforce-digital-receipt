@@ -1,12 +1,8 @@
 import 'dart:convert';
-import 'dart:ffi';
-import 'package:digital_receipt/screens/no_internet_connection.dart';
-import 'package:digital_receipt/screens/signature_screen.dart';
-import 'package:digital_receipt/utils/connected.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';import 'package:digital_receipt/utils/connected.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/screens/change_password_screen.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';
-import 'package:digital_receipt/screens/upgrade_screen.dart';
 import "package:flutter/material.dart";
 import 'dart:async';
 import '../providers/business.dart';
@@ -309,28 +305,7 @@ class _AccountPageState extends State<AccountPage> {
               SizedBox(
                 height: 47,
               ),
-              RawMaterialButton(
-                onPressed: () {
-                  var updateSignature = true;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      
-                      builder: (context) => SignatureScreen.update(updateSignature: updateSignature),
-                    ),
-                  );
-                },
-                highlightColor: Colors.transparent,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text('Change Signature',
-                        style: Theme.of(context).textTheme.headline6.copyWith(
-                            fontSize: 17, fontWeight: FontWeight.bold)),
-                    Icon(Icons.keyboard_arrow_right)
-                  ],
-                ),
-              ),
+              
               SizedBox(
                 height: 47,
               ),

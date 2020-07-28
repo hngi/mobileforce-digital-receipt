@@ -801,12 +801,7 @@ class ApiService {
         );
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          // data["data"].forEach((notification) {
-          //   _allNotifications.add(NotificationModel.fromJson(notification));
-          // });
-          // return _allNotifications;
-          // checks if the length of history is larger than 100 and checks for internet
-          // print("notifications from api ${data['data']}");
+          print('data:: $data');
 
           if (data["data"].length >= 100) {
             List temp = data["data"].getRange(0, 99).toList();
@@ -826,8 +821,7 @@ class ApiService {
         }
       }
     } else {
-      return hiveDb.getCustomer() ?? Future.error('No network Connection');
-      ;
+      return hiveDb.getNotification() ?? Future.error('No network Connection');
     }
   }
 
@@ -929,18 +923,6 @@ class ApiService {
             print('res: 9');
             return hiveDb.getInventory();
           }
-          print('data: $data');
-          try {
-            //log(response.body);
-            data.forEach((inventory) {
-              _inventories.add(Inventory.fromJson(inventory));
-            });
-            log(_inventories.toString());
-          } catch (e) {
-            print(e);
-          }
-          print(_inventories);
-          return _inventories;
         } else {
           var res = jsonDecode(response.body)['data'];
           return res;
