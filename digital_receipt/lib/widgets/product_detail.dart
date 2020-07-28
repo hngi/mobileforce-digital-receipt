@@ -46,6 +46,8 @@ class _ProductDetailState extends State<ProductDetail> {
 
   Unit unitValue;
 
+  String _quantityValue = '1';
+
   List<Unit> units = [
     Unit(fullName: 'Gram', singular: 'g', plural: 'g'),
     Unit(fullName: 'Meter', singular: 'm', plural: 'm'),
@@ -60,6 +62,8 @@ class _ProductDetailState extends State<ProductDetail> {
   ];
   List<Inventory> inventories;
   Inventory selectedInventory;
+
+  int selectedQuantity;
 
   setCurrency() async {
     currency = await SharedPreferenceService().getStringValuesSF('Currency');
@@ -111,6 +115,7 @@ class _ProductDetailState extends State<ProductDetail> {
     print('enven:: ${selectedInventory.category}');
     setState(() {
       cartegoryName = selectedInventory?.category ?? '';
+      selectedQuantity = selectedInventory.quantity;
     });
     productDescController.text = selectedInventory.title;
     quantityController.text = '1';
@@ -295,6 +300,11 @@ class _ProductDetailState extends State<ProductDetail> {
                                   from: _quantityFocus, to: _unitPriceFocus),
                               keyboardType: TextInputType.number,
                               controller: quantityController,
+                              onChanged: (val) {
+                                setState(() {
+                                  _quantityValue = val;
+                                });
+                              },
                             ),
                           ),
                         ],
@@ -381,6 +391,84 @@ class _ProductDetailState extends State<ProductDetail> {
       );
       return;
     }
+    if (_quantityValue == null || double.parse(_quantityValue) <= 0) {
+      Fluttertoast.showToast(
+        msg: "Add quantity",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
+    }
+    if (unitPriceController.text == null ||
+        double.parse(unitPriceController.text) <= 0) {
+      Fluttertoast.showToast(
+        msg: "Add price",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
+    }
+    if (taxController.text == null || double.parse(taxController.text) < 0) {
+      Fluttertoast.showToast(
+        msg: "Add tax",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
+    }
+    if (discountController.text == null ||
+        double.parse(discountController.text) < 0) {
+      Fluttertoast.showToast(
+        msg: "Add price",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
+    }
+    print('ddfdf: ${quantityController.text}');
+    //print('ddfdf: ${product.quantity}');
+    if (selectedQuantity != null &&
+        double.parse(quantityController.text) > selectedQuantity?.toDouble()) {
+      Fluttertoast.showToast(
+        msg: "There are less items of products in inventory",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
+    } else if (selectedQuantity == null &&
+        double.parse(quantityController.text) > product.quantity) {
+      Fluttertoast.showToast(
+        msg: "There are less items of products in inventory",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
+    }
+    
     try {
       widget.onSubmit(
         Product(
@@ -411,6 +499,7 @@ class _ProductDetailState extends State<ProductDetail> {
         unitPriceController..text = "";
         taxController..text = "";
         discountController..text = ""; */
+        selectedQuantity = selectedQuantity - int.parse(_quantityValue);
       });
       Future.delayed(Duration(seconds: 1), () {
         setState(() {
@@ -491,11 +580,14 @@ class InventoryDialog extends StatelessWidget {
                               Text(
                                 "You have not added any inventory item!",
                                 textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.subtitle2.copyWith(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 16,
-                                  letterSpacing: 0.3,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle2
+                                    .copyWith(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                      letterSpacing: 0.3,
+                                    ),
                               ),
                               SizedBox(
                                 height: 20,

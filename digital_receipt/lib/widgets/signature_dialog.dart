@@ -8,7 +8,7 @@ import 'package:signature/signature.dart';
 import 'package:flutter/rendering.dart';
 
 final SignatureController _controller = SignatureController(
-  penStrokeWidth: 5,
+  penStrokeWidth: 2,
   penColor: Colors.black,
   exportBackgroundColor: Colors.white,
 );
@@ -57,9 +57,7 @@ class SignatureDialogState extends State<SignatureDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                 SizedBox(
-                  height: 15,
-                ),
+                SizedBox(),
                 Text(
                   'Append your signature',
                   style: Theme.of(context).textTheme.headline5.copyWith(
@@ -83,17 +81,25 @@ class SignatureDialogState extends State<SignatureDialog> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                    /*   DashedSeparator(
+                      /*   DashedSeparator(
                         color: Colors.grey,
                       ), */
-                      Signature(
-                        key: signatureCanvasKey,
-                        controller: _controller,
-                        height: 350,
-                        width: (MediaQuery.of(context).size.width * 0.75) - 20,
-                        backgroundColor: Colors.white,
+
+                      ConstrainedBox(
+                        //size: Size(double.infinity, double.maxFinite),
+                        constraints: BoxConstraints(
+
+                        ),
+                        child: Signature(
+                          key: signatureCanvasKey,
+                          controller: _controller,
+                          height: MediaQuery.of(context).size.height * 0.75 -114,
+                          width:
+                              (MediaQuery.of(context).size.width * 0.75) - 20,
+                          backgroundColor: Colors.white,
+                        ),
                       ),
-                     /*  DashedSeparator(
+                      /*  DashedSeparator(
                         color: Colors.grey,
                       ), */
                     ],
