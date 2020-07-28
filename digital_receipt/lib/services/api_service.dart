@@ -906,7 +906,7 @@ class ApiService {
     }
   }
 
-  Future getAllInventories() async {
+  Future<List<Inventory>> getAllInventories() async {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
       var uri = "$_urlEndpoint/business/inventory/all";
@@ -925,19 +925,22 @@ class ApiService {
         );
         if (response.statusCode == 200) {
           log(response.body);
-          var data = jsonDecode(response.body)['data'];
+          List data = jsonDecode(response.body)['data'];
+          data.forEach((entry) {
+              _inventories.add(Inventory.fromJson(entry));
+            });
           /////
           if (data.length >= 100) {
             List temp = data.getRange(0, 99).toList();
             await hiveDb.addInventory(temp);
 
             // return hiveDb.getInventory();
-            return data;
+            return _inventories;
           } else if (data.length < 100) {
             await hiveDb.addInventory(data);
 
             // return hiveDb.getInventory();
-            return data;
+            return _inventories;
           } else {
             print('res: 9');
             // return hiveDb.getInventory();
@@ -1238,7 +1241,7 @@ class ApiService {
   Future<List<Reminder>> getReminders() async {
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
-        print("token: $token");
+    print("token: $token");
     String url = '$_urlEndpoint/business/receipt/issued';
 
     final http.Response res = await http.get(url, headers: <String, String>{
@@ -1255,7 +1258,6 @@ class ApiService {
     }
   }
 
-  
   updatePartPaymentReminder({
     String id,
     String date,
@@ -1270,7 +1272,6 @@ class ApiService {
       var response = await http.put(
         uri,
         headers: {"token": token},
-      
       );
       print(response.body);
       if (response.statusCode == 200) {
@@ -1280,5 +1281,5 @@ class ApiService {
     } else {
       return 'false';
     }
-}
+  }
 }

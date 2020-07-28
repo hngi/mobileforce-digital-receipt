@@ -297,7 +297,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
               height: 6,
             ),
             Text(
-              label == 'UNIT PRICE' ? '$currency$value' : '$value',
+              label == 'UNIT PRICE' ? '${currency ?? 'N'} $value' : '$value',
             ),
           ],
         ),
