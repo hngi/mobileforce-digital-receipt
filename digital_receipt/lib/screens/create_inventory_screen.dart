@@ -151,6 +151,13 @@ class _CreateInventoryState extends State<CreateInventory> {
                   if (value.isEmpty) {
                     return 'quantity empty';
                   }
+
+                  if (double.tryParse(value) == null) {
+                    return 'An actual number(digit) is needed';
+                  }
+                  if (double.tryParse(value).isNegative) {
+                    return 'A negative value is no aloweed';
+                  }
                   return null;
                 },
                 onSaved: (String value) {
@@ -170,7 +177,7 @@ class _CreateInventoryState extends State<CreateInventory> {
         // backgroundColor: Colors.teal[50],
         appBar: AppBar(
           //backgroundColor: Color(0xff226EBE),
-         
+
           title: Text(
             "Inventory",
             style: TextStyle(
@@ -257,6 +264,13 @@ class _CreateInventoryState extends State<CreateInventory> {
                               if (value.isEmpty) {
                                 return 'Unit Price empty';
                               }
+
+                              if (double.tryParse(value) == null) {
+                                return 'An actual number(digit) is needed';
+                              }
+                              if (double.tryParse(value).isNegative) {
+                                return 'A negative value is no aloweed';
+                              }
                               return null;
                             },
                             onSaved: (String value) {
@@ -273,6 +287,13 @@ class _CreateInventoryState extends State<CreateInventory> {
                               if (value.isEmpty) {
                                 return 'Discount empty';
                               }
+
+                              if (double.tryParse(value) == null) {
+                                return 'An actual number(digit) is needed';
+                              }
+                              if (double.tryParse(value).isNegative) {
+                                return 'A negative value is no aloweed';
+                              }
                               return null;
                             },
                             onSaved: (String value) {
@@ -286,6 +307,13 @@ class _CreateInventoryState extends State<CreateInventory> {
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'Tax empty';
+                              }
+
+                              if (double.tryParse(value) == null) {
+                                return 'An actual number(digit) is needed';
+                              }
+                              if (double.tryParse(value).isNegative) {
+                                return 'A negative value is no aloweed';
                               }
                               return null;
                             },

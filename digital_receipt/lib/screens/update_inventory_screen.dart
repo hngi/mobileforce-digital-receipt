@@ -268,6 +268,12 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                               if (value.isEmpty) {
                                 return 'Unit Price empty';
                               }
+                              if (double.tryParse(value) == null) {
+                                return 'An actual number(digit) is needed';
+                              }
+                              if (double.tryParse(value).isNegative) {
+                                return 'A negative value is no aloweed';
+                              }
                               return null;
                             },
                             onSaved: (String value) {
@@ -285,6 +291,12 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                               if (value.isEmpty) {
                                 return 'Discount empty';
                               }
+                              if (double.tryParse(value) == null) {
+                                return 'An actual number(digit) is needed';
+                              }
+                              if (double.tryParse(value).isNegative) {
+                                return 'A negative value is no aloweed';
+                              }
                               return null;
                             },
                             onSaved: (String value) {
@@ -299,6 +311,12 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'Tax empty';
+                              }
+                              if (double.tryParse(value) == null) {
+                                return 'An actual number(digit) is needed';
+                              }
+                              if (double.tryParse(value).isNegative) {
+                                return 'A negative value is no aloweed';
                               }
                               return null;
                             },
