@@ -8,7 +8,7 @@ import 'package:signature/signature.dart';
 import 'package:flutter/rendering.dart';
 
 final SignatureController _controller = SignatureController(
-  penStrokeWidth: 5,
+  penStrokeWidth: 2,
   penColor: Colors.black,
   exportBackgroundColor: Colors.white,
 );

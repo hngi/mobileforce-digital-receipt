@@ -468,19 +468,7 @@ class _ProductDetailState extends State<ProductDetail> {
       );
       return;
     }
-    if (double.parse(quantityController.text) > selectedQuantity?.toDouble() ||
-        double.parse(quantityController.text) > product.quantity) {
-      Fluttertoast.showToast(
-        msg: "There are less items of products in inventory",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-      return;
-    }
+    
     try {
       widget.onSubmit(
         Product(
