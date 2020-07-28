@@ -65,18 +65,18 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
   setCategory() async {
     currency = await SharedPreferenceService().getStringValuesSF('Currency');
-    List<Inventory> val = await inventFuture;
+    List<dynamic> val = await inventFuture;
     List<String> temp = [];
     if (val != null) {
-      await Future.forEach(val, (Inventory e) {
+      await Future.forEach(val, (e) {
         temp.add(e.category);
       });
     }
 
     setState(() {
       inventoryCategories = temp.toSet().toList();
-      inventory = val;
-      inventoryData = val;
+      inventory = List.from(val) ;
+      inventoryData = List.from(val);
     });
     // print('inventory ${inventory.isEmpty}');
   }

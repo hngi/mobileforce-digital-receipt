@@ -92,12 +92,9 @@ class _DraftsState extends State<Drafts> {
         child: FutureBuilder(
             future: draftFuture, // receipts from API
             builder: (context, snapshot) {
-              //draftData = snapshot.data;
-              print('Sna[hot:: ${snapshot.data}');
-              print('Sna[hot:: ${snapshot.connectionState}');
+
               if (snapshot.connectionState == ConnectionState.waiting) {
-                print('here');
-                //print('Sna[hot:: ${snapshot.data}');
+
                 return Center(
                   child: CircularProgressIndicator(
                     strokeWidth: 1.5,
