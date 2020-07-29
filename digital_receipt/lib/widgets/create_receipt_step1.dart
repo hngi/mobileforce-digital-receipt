@@ -248,7 +248,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                     ),
                   );
                 }),
-            Row(
+           /*  Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
@@ -268,7 +268,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                   },
                 ),
               ],
-            ),
+            ), */
             _partPayment
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

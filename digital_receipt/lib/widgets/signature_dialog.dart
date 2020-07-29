@@ -30,7 +30,7 @@ class SignatureDialogState extends State<SignatureDialog> {
     var data = await _controller.toPngBytes();
     String encode = base64Encode(data.buffer.asUint8List());
 
-      print(encode);
+    print(encode);
     var res = await ApiService().updateSignature(encode);
     if (res != null) {
       Navigator.pop(context);
@@ -89,9 +89,7 @@ class SignatureDialogState extends State<SignatureDialog> {
                         color: Colors.grey,
                       ), */
 
-                      ConstrainedBox(
-                        //size: Size(double.infinity, double.maxFinite),
-                        constraints: BoxConstraints(),
+                      Flexible(
                         child: Signature(
                           key: signatureCanvasKey,
                           controller: _controller,

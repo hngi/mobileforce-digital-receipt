@@ -65,6 +65,7 @@ class Receipt extends ChangeNotifier {
     this.issuedDate,
     this.customerName,
     this.category,
+    this.signature,
     this.totalAmount,
     this.fonts,
     this.customer,
@@ -92,6 +93,7 @@ class Receipt extends ChangeNotifier {
       receiptId: json["id"] == null ? null : json["id"],
       receiptNo: json["receipt_number"] == null ? null : json["receipt_number"],
       issuedDate: json["date"] == null ? null : json["date"],
+      signature: json["signature"] == null ? null : json["signature"],
       customerName:
           json["customer"]["name"] == null ? null : json["customer"]["name"],
       category: json["platform"] == null

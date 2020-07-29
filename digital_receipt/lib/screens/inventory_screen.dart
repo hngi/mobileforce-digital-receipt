@@ -84,10 +84,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
   @override
   void didChangeDependencies() {
     print('object');
-    inventFuture = Future.delayed(Duration(seconds: 2), () async {
-      var res = await _apiService.getAllInventories();
-      return res;
+    setState(() {
+      inventFuture = _apiService.getAllInventories();
     });
+
     //getInventory();
     super.didChangeDependencies();
   }
@@ -118,10 +118,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 ),
               );
               setState(() {
-                inventFuture = Future.delayed(Duration(seconds: 2), () async {
-                  var res = await _apiService.getAllInventories();
-                  return res;
-                });
+                inventFuture = _apiService.getAllInventories();
               });
               setCategory();
               // print("Data from pop $data");
@@ -314,11 +311,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
               ),
             ),
           );
+
           setState(() {
-            inventFuture = Future.delayed(Duration(seconds: 2), () async {
-              var res = await _apiService.getAllInventories();
-              return res;
-            });
+            inventFuture = _apiService.getAllInventories();
           });
           setCategory();
         },
