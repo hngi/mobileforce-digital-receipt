@@ -75,7 +75,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
     setState(() {
       inventoryCategories = temp.toSet().toList();
-      inventory = List.from(val) ;
+      inventory = List.from(val);
       inventoryData = List.from(val);
     });
     // print('inventory ${inventory.isEmpty}');
@@ -112,7 +112,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
         floatingActionButton: SafeArea(
           child: FloatingActionButton(
             onPressed: () async {
-              var data = await Navigator.of(context).push(
+              await Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => CreateInventory(),
                 ),
@@ -124,7 +124,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 });
               });
               setCategory();
-              print("Data from pop $data");
+              // print("Data from pop $data");
             },
             child: Icon(
               Icons.add,
@@ -305,14 +305,23 @@ class _InventoryScreenState extends State<InventoryScreen> {
     }
 
     return GestureDetector(
-        onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => UpdateInventory(
-                  inventory: inventory,
-                ),
+        onTap: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UpdateInventory(
+                inventory: inventory,
               ),
             ),
+          );
+          setState(() {
+            inventFuture = Future.delayed(Duration(seconds: 2), () async {
+              var res = await _apiService.getAllInventories();
+              return res;
+            });
+          });
+          setCategory();
+        },
         child: Padding(
           padding: const EdgeInsets.only(bottom: 15),
           child: Column(

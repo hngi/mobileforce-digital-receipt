@@ -92,9 +92,7 @@ class _DraftsState extends State<Drafts> {
         child: FutureBuilder(
             future: draftFuture, // receipts from API
             builder: (context, snapshot) {
-
               if (snapshot.connectionState == ConnectionState.waiting) {
-
                 return Center(
                   child: CircularProgressIndicator(
                     strokeWidth: 1.5,
@@ -239,7 +237,7 @@ class _DraftsState extends State<Drafts> {
                   Container(
                     width: 250,
                     child: Text(
-                      receipt.products.first.productDesc,
+                      receipt?.products?.first?.productDesc ?? '',
                       maxLines: 2,
                     ),
                   ),

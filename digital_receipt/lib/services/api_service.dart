@@ -371,8 +371,6 @@ class ApiService {
           uri,
           headers: <String, String>{
             "token": token,
-            // HttpHeaders.contentTypeHeader: 'application/json',
-            // HttpHeaders.acceptHeader: 'application/json',
           },
           body: {
             "phone_number": phoneNumber,
@@ -434,6 +432,47 @@ class ApiService {
     }
   }
 
+  Future updateSignature(String signature) async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/info/update';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      String businessId =
+          await _sharedPreferenceService.getStringValuesSF('Business_ID');
+      print(businessId);
+
+      print(
+        """
+     signature: $signature
+      """,
+      );
+
+      try {
+        var response = await http.put(
+          uri,
+          headers: <String, String>{
+            "token": token,
+          },
+          body: {
+            "signature": signature,
+            "businessId": businessId,
+          },
+        );
+        print(jsonDecode(response.body));
+        //print(response.body);
+        if (response.statusCode == 200) {
+          return jsonDecode(response.body);
+        }
+        return null;
+      } catch (e) {
+        throw (e);
+      }
+    } else {
+      return null;
+    }
+  }
+
   Future<bool> setUpBusiness({
     String token,
     String phoneNumber,
@@ -441,6 +480,8 @@ class ApiService {
     String address,
     String slogan,
     String logo,
+    String signature,
+    String currency,
   }) async {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
@@ -453,6 +494,12 @@ class ApiService {
       if (slogan != null) {
         request.fields['slogan'] = slogan;
       }
+      if (signature != null) {
+        request.fields['signature'] = signature;
+      }
+      if (currency != null) {
+        request.fields['currency'] = currency;
+      }
 
       request.headers['token'] = token;
       if (logo != null) {
@@ -462,15 +509,15 @@ class ApiService {
       }
 
       var response = await request.send();
-      print('code: ${response.statusCode}');
       var res = await response.stream.bytesToString();
-      // print(res);
+      print(res);
       if (response.statusCode == 200) {
         var businessId = jsonDecode(res)['id'];
         //set the token to null
         print('iddddd: $businessId');
         await _sharedPreferenceService.addStringToSF('Business_ID', businessId);
         await _sharedPreferenceService.addStringToSF('LOGO', logo);
+
         return true;
       }
       return false;
@@ -607,7 +654,8 @@ class ApiService {
 
   //Fetch users from db;
   Future<AccountData> fetchAndSetUser() async {
-    var url = "$_urlEndpoint/business/info/all";
+    print('innn');
+    var url = "$_urlEndpoint/business/user/all";
 
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
@@ -631,20 +679,27 @@ class ApiService {
 
       dynamic res;
 
-      if (response.statusCode == 200) {
+      if (response != null &&
+          response.statusCode == 200 &&
+          jsonDecode(response.body)['data'].runtimeType != String) {
         dynamic res = jsonDecode(response.body);
-        print(res);
+
+        print('jhjhjre: ${jsonDecode(response.body)['data'].runtimeType}');
         res = res['data'] as List;
 
-        print(response.statusCode);
         res = res.firstWhere(
           (e) => e['user'].toString() == userID,
           orElse: () {
             print('object');
           },
         );
-
         if (res != null) {
+          await _sharedPreferenceService.addStringToSF(
+              'ISSUER_SIGNATURE', res['signature']);
+
+          await _sharedPreferenceService.addStringToSF(
+              'Currency', res['currency']);
+
           await _sharedPreferenceService.addStringToSF(
               'Business_ID', res['id']);
           return AccountData(
@@ -659,32 +714,11 @@ class ApiService {
             email: email,
           );
         } else {
-          var result =
-              await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
-          var res = jsonDecode(result);
-          return AccountData(
-            id: res['id'] ?? '',
-            name: res['name'] ?? '',
-            phone: res['phone'] ?? '',
-            address: res['address'] ?? '',
-            slogan: res['slogan'] ?? '',
-            logo: 'https://degeit-receipt.herokuapp.com${res['logo']}' ?? '',
-            email: email,
-          );
+          print(jsonDecode(response.body));
+          return null;
         }
       } else {
-        var result =
-            await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
-        var res = jsonDecode(result);
-        return AccountData(
-          id: res['id'] ?? '',
-          name: res['name'] ?? '',
-          phone: res['phone'] ?? '',
-          address: res['address'] ?? '',
-          slogan: res['slogan'] ?? '',
-          logo: 'https://degeit-receipt.herokuapp.com${res['logo']}' ?? '',
-          email: email,
-        );
+        return null;
       }
     } else {
       var result =
@@ -809,7 +843,7 @@ class ApiService {
         );
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-  
+
           var res = data["data"];
           if (res.length >= 100) {
             List temp = data["data"].getRange(0, 99).toList();
@@ -881,14 +915,12 @@ class ApiService {
     }
   }
 
-
   Future getAllInventories() async {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
       var uri = "$_urlEndpoint/business/inventory/all";
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
-
 
       var connectivityResult = await Connected().checkInternet();
       if (connectivityResult) {
@@ -901,7 +933,7 @@ class ApiService {
         if (response.statusCode == 200) {
           log(response.body);
           var data = jsonDecode(response.body)['data'];
-          
+
           if (data.length >= 100) {
             List temp = data.getRange(0, 99).toList();
             await hiveDb.addInventory(temp);

@@ -166,11 +166,9 @@ Widget ReceiptScreenLayout(
     }
   }
 
-  final ApiService _apiService = ApiService();
   final AccountData businessInfo =
       Provider.of<Business>(context, listen: false).accountData;
 
-  bool _loading = false;
   return Column(children: <Widget>[
     SizedBox(
       height: 14,
@@ -544,8 +542,8 @@ Widget ReceiptScreenLayout(
                                         // ),
                                         Image.memory(
                                           base64Decode(issuerSignature),
-                                          width: 100,
-                                          height: 90,
+                                          width: 70,
+                                          height: 50,
                                         ),
                                         SizedBox(
                                           height: 2,

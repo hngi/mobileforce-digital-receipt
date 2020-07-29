@@ -11,8 +11,8 @@ import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 import '../utils/connected.dart';
+import 'package:digital_receipt/screens/setup.dart';
 import '../services/api_service.dart';
-import '../utils/connected.dart';
 import 'no_internet_connection.dart';
 import 'signupScreen.dart';
 
@@ -305,12 +305,31 @@ class _LogInScreenState extends State<LogInScreen> {
             textColor: Colors.white,
             fontSize: 16.0);
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(),
-          ),
-        );
+             Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+
+       /*  var checkBusiness =
+            await _sharedPreferenceService.getStringValuesSF("BUSINESS_INFO");
+
+        if (checkBusiness != null) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Setup(),
+            ),
+          );
+        } */
       } else {
         setState(() {
           isLoading = false;
