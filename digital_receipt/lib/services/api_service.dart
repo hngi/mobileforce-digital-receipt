@@ -652,6 +652,47 @@ class ApiService {
     }
   }
 
+  Future uploadSignature(String signature, String receiptId) async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/receipt/upload/signature';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      String businessId =
+          await _sharedPreferenceService.getStringValuesSF('Business_ID');
+      print(businessId);
+
+      print(
+        """
+     signature: $signature
+      """,
+      );
+
+      try {
+        var response = await http.put(
+          uri,
+          headers: <String, String>{
+            "token": token,
+          },
+          body: {
+            "signature": signature,
+            "receiptId": receiptId,
+          },
+        );
+        print(jsonDecode(response.body));
+
+        if (response.statusCode == 200) {
+          return jsonDecode(response.body);
+        }
+        return null;
+      } catch (e) {
+        throw (e);
+      }
+    } else {
+      return null;
+    }
+  }
+
   //Fetch users from db;
   Future<AccountData> fetchAndSetUser() async {
     print('innn');

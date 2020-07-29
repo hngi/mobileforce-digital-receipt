@@ -9,6 +9,7 @@ import 'package:digital_receipt/screens/generate_pdf.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/email_service.dart';
+import '../services/shared_preference_service.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
@@ -119,6 +120,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
               },
               logo,
               currency,
+              widget.receipt,
               () {
                 setState(() {
                   _loading = false;
@@ -138,6 +140,7 @@ Widget ReceiptScreenLayout(
     Function loadingStart,
     String logo,
     String currency,
+    Receipt receipt,
     Function loadingStop,
     String issuerSignature]) {
   Future sendMail() async {
@@ -642,7 +645,14 @@ Widget ReceiptScreenLayout(
           loadingStop();
           return;
         }
+        print('sign: $issuerSignature');
+        var upload = await ApiService().uploadSignature(issuerSignature,
+            Provider.of<Receipt>(context, listen: false).receiptId);
 
+        if (upload == null) {
+          loadingStop();
+          return;
+        }
         var res = await Provider.of<Receipt>(context, listen: false)
             .updatedReceipt(
                 Provider.of<Receipt>(context, listen: false).receiptId);
