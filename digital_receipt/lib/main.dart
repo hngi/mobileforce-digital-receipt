@@ -279,20 +279,20 @@ class _ScreenControllerState extends State<ScreenController> {
     return FutureBuilder(
         future: _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN"),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-      // await _pushNotificationService.initialise();
-      print('snapshots: ${snapshot.data}');
+          // await _pushNotificationService.initialise();
+          print('snapshots: ${snapshot.data}');
 
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return Scaffold();
-        // TODO Reverse if-condition to show OnBoarding
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Scaffold();
+            // TODO Reverse if-condition to show OnBoarding
 
-      } else if (snapshot.data == 'empty' || _currentAutoLogoutStatus) {
-        return LogInScreen();
-      } else if (snapshot.hasData && snapshot.data != null) {
-        return HomePage();
-      } else {
-        return OnboardingPage();
-      }
-    });
+          } else if (snapshot.data == 'empty' || _currentAutoLogoutStatus) {
+            return LogInScreen();
+          } else if (snapshot.hasData && snapshot.data != null) {
+            return HomePage();
+          } else {
+            return OnboardingPage();
+          }
+        });
   }
 }

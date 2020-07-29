@@ -284,7 +284,7 @@ class _SetupState extends State<Setup> {
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder: (context) => SignatureDialog(),
+                        builder: (context) => SignatureDialog(from: 'setup',),
                       );
                     },
                     shape: RoundedRectangleBorder(
