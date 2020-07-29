@@ -332,6 +332,7 @@ class ApiService {
         _sharedPreferenceService.addStringToSF("USER_ID", null);
         _sharedPreferenceService.addStringToSF('BUSINESS_INFO', null);
         _sharedPreferenceService.addStringToSF("REGISTRATION_ID", null);
+        _sharedPreferenceService.addStringToSF("ISSUER_SIGNATURE", null);
         print('done');
 
         return true;
@@ -462,6 +463,7 @@ class ApiService {
         print(jsonDecode(response.body));
         //print(response.body);
         if (response.statusCode == 200) {
+          print(jsonDecode(response.body));
           return jsonDecode(response.body);
         }
         return null;
