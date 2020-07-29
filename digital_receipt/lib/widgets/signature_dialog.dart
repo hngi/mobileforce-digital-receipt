@@ -6,6 +6,7 @@ import '../screens/receipt_screen.dart';
 import 'dart:ui' as ui;
 import 'package:signature/signature.dart';
 import 'package:flutter/rendering.dart';
+import '../services/api_service.dart';
 
 final SignatureController _controller = SignatureController(
   penStrokeWidth: 2,
@@ -28,12 +29,15 @@ class SignatureDialogState extends State<SignatureDialog> {
   saveImage(BuildContext context) async {
     var data = await _controller.toPngBytes();
     String encode = base64Encode(data.buffer.asUint8List());
-    _preferenceService.addStringToSF("ISSUER_SIGNATURE", encode);
-    print(encode);
-    Navigator.pop(context);
-    await Fluttertoast.showToast(
-        msg: "Signature saved", toastLength: Toast.LENGTH_LONG);
-    _controller.clear();
+
+      print(encode);
+    var res = await ApiService().updateSignature(encode);
+    if (res != null) {
+      Navigator.pop(context);
+      await Fluttertoast.showToast(
+          msg: "Signature saved", toastLength: Toast.LENGTH_LONG);
+      _controller.clear();
+    }
   }
 
   @override
@@ -87,13 +91,12 @@ class SignatureDialogState extends State<SignatureDialog> {
 
                       ConstrainedBox(
                         //size: Size(double.infinity, double.maxFinite),
-                        constraints: BoxConstraints(
-
-                        ),
+                        constraints: BoxConstraints(),
                         child: Signature(
                           key: signatureCanvasKey,
                           controller: _controller,
-                          height: MediaQuery.of(context).size.height * 0.75 -114,
+                          height:
+                              MediaQuery.of(context).size.height * 0.75 - 114,
                           width:
                               (MediaQuery.of(context).size.width * 0.75) - 20,
                           backgroundColor: Colors.white,

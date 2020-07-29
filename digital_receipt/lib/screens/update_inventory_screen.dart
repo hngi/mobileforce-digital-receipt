@@ -11,7 +11,7 @@ import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import 'package:wc_form_validators/wc_form_validators.dart';
 import 'no_internet_connection.dart';
 
 class UpdateInventory extends StatefulWidget {
@@ -116,7 +116,7 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                     .textTheme
                     .headline6
                     .copyWith(fontWeight: FontWeight.normal),
-                underline: Divider(),
+                underline: SizedBox.shrink(),
                 items: units.map(
                   (Unit unit) {
                     return DropdownMenuItem<Unit>(
@@ -148,12 +148,10 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                     _changeFocus(from: _quantityFocus, to: _unitPriceFocus),
                 keyboardType: TextInputType.number,
                 controller: quantityController,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'quantity empty';
-                  }
-                  return null;
-                },
+                validator: Validators.compose([
+                  Validators.required('Quantity is empty'),
+                  Validators.min(1, 'Quantity must be more than zero'),
+                ]),
                 onSaved: (String value) {
                   quantity = value;
                 },
@@ -264,12 +262,11 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                             label: 'Unit price',
                             keyboardType: TextInputType.number,
                             initialValue: widget.inventory.unitPrice.toString(),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Unit Price empty';
-                              }
-                              return null;
-                            },
+                            validator: Validators.compose([
+                              Validators.required('Unit Price is empty'),
+                              Validators.min(
+                                  1, 'Unit Price must be more than zero'),
+                            ]),
                             onSaved: (String value) {
                               unitPrice = value;
                             },
@@ -281,12 +278,11 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                             label: 'Discount',
                             keyboardType: TextInputType.number,
                             initialValue: widget.inventory.discount.toString(),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Discount empty';
-                              }
-                              return null;
-                            },
+                            validator: Validators.compose([
+                              Validators.required('Discount is empty'),
+                              Validators.min(0,
+                                  'Discount must be greater than or equal to zero'),
+                            ]),
                             onSaved: (String value) {
                               discount = value;
                             },
@@ -296,12 +292,11 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                             label: 'Tax',
                             keyboardType: TextInputType.number,
                             initialValue: widget.inventory.tax.toString(),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Tax empty';
-                              }
-                              return null;
-                            },
+                            validator: Validators.compose([
+                              Validators.required('Tax is empty'),
+                              Validators.min(0,
+                                  'Tax must be greater than or equal to zero'),
+                            ]),
                             onSaved: (String value) {
                               tax = value;
                             },
@@ -321,7 +316,7 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                               loading = true;
                             });
                             var connected = await Connected().checkInternet();
-                            if (!connected) {
+                             if (!connected) {
                               await showDialog(
                                 context: context,
                                 builder: (context) {
@@ -374,10 +369,7 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                                 backgroundColor: Colors.grey[700],
                                 textColor: Colors.white,
                               );
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => InventoryScreen()));
+                              Navigator.pop(context);
                             } else {
                               setState(() {
                                 loading = false;

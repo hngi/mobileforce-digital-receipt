@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-
+import 'setup.dart';
 import 'package:digital_receipt/models/account.dart';
-import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/providers/business.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
@@ -12,12 +10,9 @@ import 'package:digital_receipt/utils/check_login.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:random_color/random_color.dart';
-import '../services/email_service.dart';
 import '../utils/connected.dart';
 import '../constant.dart';
 import 'login_screen.dart';
@@ -51,9 +46,9 @@ class _DashBoardState extends State<DashBoard> {
   @override
   void initState() {
     dashboardFuture = _apiService.getIssuedReceipt2();
+    callFetch();
     setCurrency();
     isLogin(context);
-    callFetch();
     super.initState();
   }
 
@@ -135,14 +130,22 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   callFetch() async {
+    print('in');
     var business = Provider.of<Business>(context, listen: false);
     var res = await _apiService.fetchAndSetUser();
+    //print(res);
     if (res != null) {
       // print('res:::: ${res.phone}');
       business.setAccountData = res;
       var val = business.toJson();
       _sharedPreferenceService.addStringToSF('BUSINESS_INFO', jsonEncode(val));
       //print('val:: $val');
+    } else if (res == null) {
+      print(res);
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) => Setup()),
+          (route) => false);
     }
   }
 

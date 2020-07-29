@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:digital_receipt/screens/no_internet_connection.dart';import 'package:digital_receipt/utils/connected.dart';
+import 'package:digital_receipt/screens/no_internet_connection.dart';
+import 'package:digital_receipt/utils/connected.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/screens/change_password_screen.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';
@@ -15,6 +16,7 @@ import '../services/api_service.dart';
 import '../services/shared_preference_service.dart';
 import '../models/account.dart';
 import 'login_screen.dart';
+import 'setup.dart';
 
 final SharedPreferenceService _sharedPreferenceService =
     SharedPreferenceService();
@@ -31,7 +33,6 @@ class _AccountPageState extends State<AccountPage> {
   // String _platformVersion = 'Unknown';
   // List<IAPItem> _items = [];
   // List<PurchasedItem> _purchases = [];
-  
 
   final String username = "Geek Tutor";
   String label;
@@ -86,6 +87,7 @@ class _AccountPageState extends State<AccountPage> {
     setState(() {
       localLogo = logo;
     });
+    print('jhjjn: $res');
     if (res != null) {
       Provider.of<Business>(context, listen: false).setAccountData = res;
       var val = Provider.of<Business>(context, listen: false).toJson();
@@ -96,7 +98,11 @@ class _AccountPageState extends State<AccountPage> {
       setState(() {
         localLogo = logo;
       });
-      print(val);
+    } else if (res == null) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) => Setup()),
+          (route) => false);
     }
   }
 
@@ -106,7 +112,6 @@ class _AccountPageState extends State<AccountPage> {
     // initPlatformState();
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -305,7 +310,7 @@ class _AccountPageState extends State<AccountPage> {
               SizedBox(
                 height: 47,
               ),
-              
+
               SizedBox(
                 height: 47,
               ),

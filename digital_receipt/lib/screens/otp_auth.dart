@@ -107,7 +107,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                       style: Theme.of(context)
                           .textTheme
                           .subtitle2
-                          .copyWith(fontSize: 17)),
+                          .copyWith(fontSize: 14)),
                   textAlign: TextAlign.left,
                 ),
               ),

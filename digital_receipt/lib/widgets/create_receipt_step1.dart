@@ -64,7 +64,7 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
 
   getInventories() async {
     print('here');
-    currency = await SharedPreferenceService().getStringValuesSF('Currency');
+    currency = await SharedPreferenceService().getStringValuesSF('Currency') ?? '';
     try {
        Provider.of<Inventory>(context, listen: false).setInventoryList =
           await ApiService().getAllInventories();
@@ -241,8 +241,8 @@ class _CreateReceiptStep1State extends State<CreateReceiptStep1> {
                         );
                       },
                       title: thisProduct.productDesc,
-                      amount: currency +
-                          '${Utils.formatNumber(thisProduct.amount) ?? Utils.formatNumber(thisProduct.unitPrice * thisProduct.quantity)}',
+                      amount: 
+                          ' $currency${Utils.formatNumber(thisProduct.amount) ?? Utils.formatNumber(thisProduct.unitPrice * thisProduct.quantity)}',
                       // '${}',
                       index: index,
                     ),

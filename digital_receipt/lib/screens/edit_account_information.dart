@@ -153,16 +153,8 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
           SizedBox(
             height: 10,
           ),
-          RawMaterialButton(
+         /*  RawMaterialButton(
             onPressed: () {
-              var updateSignature = true;
-            /*   Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      SignatureScreen.update(updateSignature: updateSignature),
-                ),
-              ); */
               showDialog(
                 context: context,
                 builder: (context) => SignatureDialog(),
@@ -183,7 +175,7 @@ class _EditAccountInfoFormState extends State<EditAccountInfoForm> {
               ],
             ),
           ),
-          SizedBox(height: 100),
+           */SizedBox(height: 100),
           AppSolidButton(
             isLoading: loading,
             text: 'Update',

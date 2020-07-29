@@ -46,7 +46,7 @@ class Product {
         "name": productDesc,
         "quantity": quantity,
         "unit_price": unitPrice,
-        "category_name": categoryName,
+        "category_name": categoryName.isNotEmpty ? categoryName : 'kdnfhajdvagdvj',
         "tax_amount": tax,
         "discount": discount,
         "unit": unit
