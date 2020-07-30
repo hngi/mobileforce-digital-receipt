@@ -3,19 +3,13 @@ import 'package:digital_receipt/screens/about.dart';
 import 'package:digital_receipt/screens/analytics.dart';
 import 'package:digital_receipt/screens/drafts.dart';
 import 'package:digital_receipt/screens/inventory_screen.dart';
-import 'package:digital_receipt/screens/notification_page.dart';
-import 'package:digital_receipt/screens/receipt_screen.dart';
-import 'package:digital_receipt/screens/setup.dart';
-import 'package:digital_receipt/screens/reminderPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
-
-import '../screens/upgrade_screen.dart';
 import '../screens/customerList.dart';
 import '../screens/preference_page.dart';
 import '../screens/receipt_history.dart';
 import '../screens/account_page.dart';
+import '../screens/setup.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
@@ -193,7 +187,8 @@ class MainDrawer extends StatelessWidget {
                       ),
                     ),
                   ),
-                 */  SizedBox(
+                 */
+                  SizedBox(
                     height: 50.0,
                     width: double.maxFinite,
                     child: FlatButton(

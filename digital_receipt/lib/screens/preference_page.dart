@@ -1,9 +1,6 @@
-import 'package:digital_receipt/providers/app_state.dart';
 import 'package:digital_receipt/utils/theme_manager.dart';
 import 'package:digital_receipt/widgets/signature_dialog.dart';
 import 'package:flutter/material.dart';
-
-import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../services/shared_preference_service.dart';
 

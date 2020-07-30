@@ -1,26 +1,10 @@
-import 'dart:io';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 import 'dart:math' as math;
-import 'package:digital_receipt/models/account.dart';
-import 'package:digital_receipt/models/receipt.dart';
-import 'package:digital_receipt/providers/business.dart';
-import 'package:digital_receipt/screens/generate_pdf.dart';
-import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
-import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
-import 'package:digital_receipt/widgets/receipt_item.dart';
-import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_mailer/flutter_mailer.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
-import 'package:provider/provider.dart';
-import 'package:pdf/widgets.dart' as pw;
 import '../constant.dart';
-import 'package:intl/intl.dart';
+
 
 class ReceiptScreenFromCustomer1 extends StatefulWidget {
   const ReceiptScreenFromCustomer1({

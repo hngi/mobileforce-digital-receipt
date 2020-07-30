@@ -3,7 +3,6 @@ import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/widgets/contact_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../widgets/create_receipt_step0.dart';
 
 class CustomerDropdown extends StatelessWidget {
   const CustomerDropdown({

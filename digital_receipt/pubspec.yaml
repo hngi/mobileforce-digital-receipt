@@ -26,12 +26,10 @@ dependencies:
 
   flutter_slidable: ^0.5.4
   http:
-  sqflite: ^1.3.1
   path_provider: ^1.6.11
   dio: ^3.0.9
   fluttertoast: ^4.0.1
   device_info: ^0.4.2+4
-  flutter_email_sender: ^3.0.1
   firebase_core: ^0.4.5
   firebase_auth: ^0.16.1
   firebase_messaging: ^6.0.16
@@ -40,13 +38,10 @@ dependencies:
   cupertino_icons: ^0.1.3
   carousel_slider: ^2.1.0
   flutter_mailer: ^0.5.1
-  currency_pickers: ^1.0.6
   contacts_service: ^0.4.6
 
   flutter_svg: ^0.17.4
-
   flutter_country_picker: ^0.1.6
-
   image_picker: ^0.6.7+2
   permission_handler: ^5.0.1+1
   wc_form_validators: ^0.1.1
@@ -59,7 +54,6 @@ dependencies:
   hive: ^1.4.1+1
   hive_flutter: ^0.3.0+2
   google_sign_in: ^4.5.1
-  flutter_colorpicker: ^0.3.4
   rxdart: ^0.24.1
   in_app_purchase: any
   signature: any
@@ -69,7 +63,6 @@ dependencies:
   pdf: ^1.9.0
   flutter_full_pdf_viewer: ^1.0.6
   esys_flutter_share: ^1.0.2
-
   provider: ^4.1.3
   intl: ^0.16.1
 
@@ -84,9 +77,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
@@ -96,7 +86,6 @@ flutter:
     - assets/BACKGROUND.jpg
     - assets/gmail.png
     - assets/images/
-      # For receipt generation
     - assets/fonts/Montserrat/
 
   # An image asset can refer to one or more resolution-specific "variants", see

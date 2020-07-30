@@ -1,9 +1,5 @@
-import 'dart:io';
-
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:contacts_service/contacts_service.dart';
-import 'package:digital_receipt/widgets/button_loading_indicator.dart';
-
 import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
@@ -16,10 +12,8 @@ import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../constant.dart';
 import 'app_drop_selector.dart';
-import 'currency_dropdown.dart';
+
 
 class CreateReceiptStep0 extends StatefulWidget {
   const CreateReceiptStep0(

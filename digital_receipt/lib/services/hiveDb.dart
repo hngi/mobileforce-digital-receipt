@@ -1,10 +1,7 @@
 import 'dart:convert';
-
-import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 
 class HiveDb extends ChangeNotifier {

@@ -1,9 +1,8 @@
 import 'dart:developer' as dev;
-import 'dart:math';
-
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/widgets/app_card.dart';
 import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +13,7 @@ import '../constant.dart';
 final ApiService _apiService = ApiService();
 final numberFormat = new NumberFormat();
 final dateFormat = DateFormat('dd-MM-yyyy');
+String currency = '';
 
 class CustomerDetailScreen extends StatefulWidget {
   final Customer customer;
@@ -25,6 +25,16 @@ class CustomerDetailScreen extends StatefulWidget {
 }
 
 class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
+  setCurrency() async {
+    currency = await SharedPreferenceService().getStringValuesSF('Currency');
+  }
+
+  @override
+  void initState() {
+    setCurrency();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -220,7 +230,7 @@ Widget _buildReceiptCard(BuildContext context, Receipt receipt) {
           Container(
             width: 250,
             child: Text(
-              receipt.descriptions,
+              receipt?.products?.first?.productDesc ?? '',
               maxLines: 2,
             ),
           ),
@@ -230,7 +240,7 @@ Widget _buildReceiptCard(BuildContext context, Receipt receipt) {
           Align(
             alignment: Alignment.bottomRight,
             child: Text(
-              'Total:\t\t ${numberFormat.format(double.parse(receipt.totalAmount))}',
+              'Total:\t\t $currency${numberFormat.format(double.parse(receipt.totalAmount))}',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),

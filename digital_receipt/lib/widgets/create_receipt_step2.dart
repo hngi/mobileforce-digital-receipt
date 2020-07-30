@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'dart:math';
 import 'dart:io';
-
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
@@ -18,7 +16,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'button_loading_indicator.dart';
 import 'package:digital_receipt/services/api_service.dart';
 
 class CreateReceiptStep2 extends StatefulWidget {

@@ -1,18 +1,15 @@
 import 'package:contacts_service/contacts_service.dart';
 import 'package:digital_receipt/constant.dart';
-import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/widgets/contact_card.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
-import '../widgets/create_receipt_step0.dart';
 
 class ContactDropdown extends StatefulWidget {
   const ContactDropdown({
     this.contacts,
     this.onSubmit,
   });
-  final List contacts;  
+  final List contacts;
   final Function onSubmit;
 
   @override
@@ -20,8 +17,8 @@ class ContactDropdown extends StatefulWidget {
 }
 
 class _ContactDropdownState extends State<ContactDropdown> {
-  List<Contact> contacts = [];
-  List<Contact> tempContactList = [];
+  List<Contact> contacts;
+  List<Contact> tempContactList;
   Future contactFuture;
   getContact() async {
     if (await Permission.contacts.request().isGranted) {
@@ -109,13 +106,12 @@ class _ContactDropdownState extends State<ContactDropdown> {
                                 ),
                               ),
                             );
-                          } else if (
-                              contacts.isNotEmpty) {
+                          } else if (contacts != null && contacts.isNotEmpty) {
                             print(contacts);
                             return Expanded(
                               child: ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: contacts.length,
+                                itemCount: contacts?.length,
                                 itemBuilder: (context, index) {
                                   return InkWell(
                                     onTap: () {
@@ -123,11 +119,18 @@ class _ContactDropdownState extends State<ContactDropdown> {
                                       Navigator.pop(context);
                                     },
                                     child: ContactCard(
-                                      receiptTitle: contacts[index].displayName,
+                                      receiptTitle:
+                                          contacts[index]?.displayName ?? '',
                                       subtitle: contacts[index]
-                                          .phones
-                                          .toList()[0]
-                                          .value,
+                                              ?.phones
+                                              ?.toList()
+                                              .isNotEmpty
+                                          ? contacts[index]
+                                              ?.phones
+                                              ?.toList()
+                                              ?.first
+                                              ?.value
+                                          : '',
                                     ),
                                   );
                                 },
