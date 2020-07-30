@@ -19,9 +19,7 @@ final kOneUpperCaseRegex = RegExp(r'^(?=.*?[A-Z]).{8,}$');
 
 final kOneLowerCaseRegex = RegExp(r'^(?=.*?[a-z]).{8,}$');
 
-const kUrlEndpoint = kReleaseMode
-    ? "http://degeitreceipt.pythonanywhere.com/v1"
-    : "http://degeittest.pythonanywhere.com/v1";
+const kUrlEndpoint = "http://degeittest.pythonanywhere.com/v1";
 
 SvgPicture kTopCard(color) {
   return SvgPicture.string(

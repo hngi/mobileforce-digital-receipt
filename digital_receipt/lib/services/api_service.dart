@@ -31,9 +31,7 @@ final HiveDb hiveDb = HiveDb();
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
-  static String _urlEndpoint = kReleaseMode
-      ? "http://degeitreceipt.pythonanywhere.com/v1"
-      : "http://degeittest.pythonanywhere.com/v1";
+  static String _urlEndpoint = "http://degeittest.pythonanywhere.com/v1";
   // http://degeittest.pythonanywhere.com/v1
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static SharedPreferenceService _sharedPreferenceService =
@@ -751,9 +749,7 @@ class ApiService {
             phone: res['phone_number'],
             address: res['address'],
             slogan: res['slogan'],
-            logo: kReleaseMode
-                ? 'http://degeitreceipt.pythonanywhere.com${res['logo']}'
-                : "http://degeittest.pythonanywhere.com${res['logo']}",
+            logo: "http://degeittest.pythonanywhere.com${res['logo']}",
             email: email,
           );
         } else {
