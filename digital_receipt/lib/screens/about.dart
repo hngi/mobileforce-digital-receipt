@@ -88,12 +88,14 @@ class _AboutState extends State<About> {
                 context: context,
                 applicationIcon: Center(
                   child: Container(
-                      height: 50,
-                      width: 150,
-                      color: Colors.white,
-                      margin: EdgeInsets.all(10),
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: kLogo1),
+                    height: 50,
+                    width: 150,
+                    margin: EdgeInsets.all(10),
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: Theme.of(context).brightness == Brightness.dark
+                        ? kLogoWithTextDark
+                        : kLogoWithTextLight,
+                  ),
                 )),
           ),
           ListTile(

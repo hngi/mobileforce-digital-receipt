@@ -82,8 +82,9 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                   height: 50.0 + 20,
                   width: 134.0 + 20,
                   padding: EdgeInsets.all(10),
-                  color: LightMode.backgroundColor,
-                  child: kLogo1,
+                  child: Theme.of(context).brightness == Brightness.dark
+                      ? kLogoWithTextDark
+                      : kLogoWithTextLight,
                 ),
               ),
               Padding(
