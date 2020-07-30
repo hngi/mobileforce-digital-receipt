@@ -42,6 +42,7 @@ class _SetupState extends State<Setup> {
   bool isLoading = false;
   var status;
   String selectedCurrency;
+  String selectedCurrencySymbol;
 
   Future getImage() async {
     PermissionStatus status = await Permission.storage.status;
@@ -127,6 +128,7 @@ class _SetupState extends State<Setup> {
                         var currency =
                             format.simpleCurrencySymbol(country.currencyISO);
 
+                        selectedCurrencySymbol = currency;
                         print(format.simpleCurrencySymbol(country.currencyISO));
 
                         _sharedPreferenceService.addStringToSF(
@@ -282,7 +284,7 @@ class _SetupState extends State<Setup> {
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder: (context) => SignatureDialog(),
+                        builder: (context) => SignatureDialog(from: 'setup',),
                       );
                     },
                     shape: RoundedRectangleBorder(
@@ -336,13 +338,15 @@ class _SetupState extends State<Setup> {
                       print(_image);
 
                       var result = await _apiService.setUpBusiness(
-                        token: token,
-                        phoneNumber: phoneNumber,
-                        name: businessName,
-                        address: address,
-                        slogan: slogan,
-                        logo: _image,
-                      );
+                          token: token,
+                          phoneNumber: phoneNumber,
+                          name: businessName,
+                          address: address,
+                          slogan: slogan,
+                          logo: _image,
+                          currency: selectedCurrencySymbol,
+                          signature: await _sharedPreferenceService
+                              .getStringValuesSF("ISSUER_SIGNATURE"));
 
                       if (result != null) {
                         setState(() {
@@ -350,19 +354,20 @@ class _SetupState extends State<Setup> {
                         });
                       }
                       if (result == true) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomePage(),
-                          ),
-                        );
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(),
+                            ),
+                            (route) => false);
+
                         Fluttertoast.showToast(
                           msg: "Your business has successfully been set up",
                           toastLength: Toast.LENGTH_LONG,
                           gravity: ToastGravity.BOTTOM,
                           timeInSecForIosWeb: 1,
                           backgroundColor: Colors.green,
-                          textColor: Colors.black,
+                          textColor: Colors.white,
                           fontSize: 16.0,
                         );
                       } else {

@@ -12,8 +12,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'app_drop_selector.dart';
 import 'contact_card.dart';
+import 'package:wc_form_validators/wc_form_validators.dart';
 
 String currency = '';
+final _productDetailsKey = GlobalKey<FormState>();
 
 class ProductDetail extends StatefulWidget {
   final Function(Product) onSubmit;
@@ -46,6 +48,8 @@ class _ProductDetailState extends State<ProductDetail> {
 
   Unit unitValue;
 
+  String _quantityValue = '1';
+
   List<Unit> units = [
     Unit(fullName: 'Gram', singular: 'g', plural: 'g'),
     Unit(fullName: 'Meter', singular: 'm', plural: 'm'),
@@ -60,6 +64,8 @@ class _ProductDetailState extends State<ProductDetail> {
   ];
   List<Inventory> inventories;
   Inventory selectedInventory;
+
+  int selectedQuantity;
 
   setCurrency() async {
     currency = await SharedPreferenceService().getStringValuesSF('Currency');
@@ -111,6 +117,7 @@ class _ProductDetailState extends State<ProductDetail> {
     print('enven:: ${selectedInventory.category}');
     setState(() {
       cartegoryName = selectedInventory?.category ?? '';
+      selectedQuantity = selectedInventory.quantity;
     });
     productDescController.text = selectedInventory.title;
     quantityController.text = '1';
@@ -167,196 +174,223 @@ class _ProductDetailState extends State<ProductDetail> {
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(21.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 9),
-                      product == null
-                          ? AppDropSelector(
-                              onTap: () async {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return InventoryDialog(
-                                      inventories: inventories,
-                                      onSubmit: (Inventory inventory) {
-                                        setState(() {
-                                          selectedInventory = inventory;
-                                        });
-                                      },
-                                    );
-                                  },
-                                );
-                              },
-                              text: selectedInventory != null
-                                  ? selectedInventory.title
-                                  : 'Select from Inventory',
-                            )
-                          : SizedBox.shrink(),
-                      SizedBox(
-                        height: 7,
-                      ),
-                      product == null
-                          ? Text(
-                              'Or, enter Product information',
-                            )
-                          : SizedBox.shrink(),
-                      SizedBox(height: 7),
-                      SizedBox(height: 9),
-                      Text(
-                        'Description',
-                      ),
-                      SizedBox(height: 5),
-                      AppTextFormField(
+                  child: Form(
+                    key: _productDetailsKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(height: 9),
+                        product == null
+                            ? AppDropSelector(
+                                onTap: () async {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return InventoryDialog(
+                                        inventories: inventories,
+                                        onSubmit: (Inventory inventory) {
+                                          setState(() {
+                                            selectedInventory = inventory;
+                                          });
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
+                                text: selectedInventory != null
+                                    ? selectedInventory.title
+                                    : 'Select from Inventory',
+                              )
+                            : SizedBox.shrink(),
+                        SizedBox(
+                          height: 7,
+                        ),
+                        product == null
+                            ? Text(
+                                'Or, enter Product information',
+                              )
+                            : SizedBox.shrink(),
+                        SizedBox(height: 7),
+                        SizedBox(height: 9),
+                        Text(
+                          'Description',
+                        ),
+                        SizedBox(height: 5),
+                        AppTextFormField(
                           focusNode: _productDescFocus,
                           textInputAction: TextInputAction.next,
                           onFieldSubmitted: (value) => _changeFocus(
                               from: _productDescFocus,
                               to: _quantityDropdownFocus),
                           controller: productDescController,
-                          validator: (val) {
-                            if (val.length < 1) {
-                              return "minimum length is 1 character";
-                            }
-                            return "";
-                          }),
-                      SizedBox(height: 22),
-                      Text(
-                        'Quantity',
-                      ),
-                      SizedBox(height: 5),
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                color: _quantityDropdownFocus.hasFocus
-                                    ? Theme.of(context)
-                                        .inputDecorationTheme
-                                        .focusedBorder
-                                        .borderSide
-                                        .color
-                                    : Theme.of(context)
-                                        .inputDecorationTheme
-                                        .enabledBorder
-                                        .borderSide
-                                        .color,
-                              ),
-                            ),
-                            child: DropdownButton<Unit>(
-                              focusColor: kPrimaryColor,
-                              focusNode: _quantityDropdownFocus,
-                              value: unitValue,
-                              hint: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Unit',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline6
-                                      .copyWith(fontWeight: FontWeight.normal),
+                          validator: Validators.compose([
+                            Validators.required('Description is empty'),
+                          ]),
+                        ),
+                        SizedBox(height: 22),
+                        Text(
+                          'Quantity',
+                        ),
+                        SizedBox(height: 5),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: _quantityDropdownFocus.hasFocus
+                                      ? Theme.of(context)
+                                          .inputDecorationTheme
+                                          .focusedBorder
+                                          .borderSide
+                                          .color
+                                      : Theme.of(context)
+                                          .inputDecorationTheme
+                                          .enabledBorder
+                                          .borderSide
+                                          .color,
                                 ),
                               ),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline6
-                                  .copyWith(fontWeight: FontWeight.normal),
-                              underline: SizedBox.shrink(),
-                              items: units.map(
-                                (Unit unit) {
-                                  return DropdownMenuItem<Unit>(
-                                    value: unit,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 8.0),
-                                      child: Text(
-                                        unit.fullName,
-                                        textAlign: TextAlign.start,
+                              child: DropdownButton<Unit>(
+                                focusColor: kPrimaryColor,
+                                focusNode: _quantityDropdownFocus,
+                                value: unitValue,
+                                hint: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Unit',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline6
+                                        .copyWith(
+                                            fontWeight: FontWeight.normal),
+                                  ),
+                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6
+                                    .copyWith(fontWeight: FontWeight.normal),
+                                underline: SizedBox.shrink(),
+                                items: units.map(
+                                  (Unit unit) {
+                                    return DropdownMenuItem<Unit>(
+                                      value: unit,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          unit.fullName,
+                                          textAlign: TextAlign.start,
+                                        ),
                                       ),
-                                    ),
-                                  );
+                                    );
+                                  },
+                                ).toList(),
+                                onChanged: (Unit value) {
+                                  // print(value);
+                                  setState(() => unitValue = value);
+                                  _changeFocus(
+                                      from: _quantityDropdownFocus,
+                                      to: _quantityFocus);
                                 },
-                              ).toList(),
-                              onChanged: (Unit value) {
-                                // print(value);
-                                setState(() => unitValue = value);
-                                _changeFocus(
-                                    from: _quantityDropdownFocus,
-                                    to: _quantityFocus);
-                              },
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: AppTextFormField(
-                              focusNode: _quantityFocus,
-                              textInputAction: TextInputAction.next,
-                              onFieldSubmitted: (value) => _changeFocus(
-                                  from: _quantityFocus, to: _unitPriceFocus),
-                              keyboardType: TextInputType.number,
-                              controller: quantityController,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 22),
-                      Text(
-                        'Unit price',
-                      ),
-                      SizedBox(height: 5),
-                      AppTextFormField(
-                        focusNode: _unitPriceFocus,
-                        textInputAction: TextInputAction.next,
-                        onFieldSubmitted: (value) =>
-                            _changeFocus(from: _unitPriceFocus, to: _taxFocus),
-                        keyboardType: TextInputType.number,
-                        controller: unitPriceController,
-                      ),
-                      SizedBox(height: 22),
-                      Text(
-                        'Tax',
-                      ),
-                      SizedBox(height: 5),
-                      AppTextFormField(
-                        focusNode: _taxFocus,
-                        textInputAction: TextInputAction.next,
-                        onFieldSubmitted: (value) =>
-                            _changeFocus(from: _taxFocus, to: _discountFocus),
-                        keyboardType: TextInputType.number,
-                        controller: taxController,
-                      ),
-                      SizedBox(height: 22),
-                      Text(
-                        'Discount',
-                      ),
-                      SizedBox(height: 5),
-                      AppTextFormField(
-                        focusNode: _discountFocus,
-                        textInputAction: TextInputAction.done,
-                        onFieldSubmitted: (value) {
-                          _discountFocus.unfocus();
-                          submitForm();
-                        },
-                        keyboardType: TextInputType.number,
-                        controller: discountController,
-                      ),
-                      productAdded
-                          ? Center(
-                              child: Text(
-                                product == null
-                                    ? 'Product added'
-                                    : 'Product edited',
                               ),
-                            )
-                          : SizedBox(),
-                      SizedBox(height: 20),
-                      AppSolidButton(
-                        text: 'Add',
-                        onPressed: () {
-                          submitForm();
-                        },
-                      ),
-                    ],
+                            ),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: AppTextFormField(
+                                focusNode: _quantityFocus,
+                                textInputAction: TextInputAction.next,
+                                onFieldSubmitted: (value) => _changeFocus(
+                                    from: _quantityFocus, to: _unitPriceFocus),
+                                keyboardType: TextInputType.number,
+                                controller: quantityController,
+                                validator: Validators.compose([
+                                  Validators.required('Quantity is empty'),
+                                  Validators.min(
+                                      1, 'Quantity must be more than zero'),
+                                ]),
+                                onChanged: (val) {
+                                  setState(() {
+                                    _quantityValue = val;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 22),
+                        Text(
+                          'Unit price',
+                        ),
+                        SizedBox(height: 5),
+                        AppTextFormField(
+                          focusNode: _unitPriceFocus,
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (value) => _changeFocus(
+                              from: _unitPriceFocus, to: _taxFocus),
+                          keyboardType: TextInputType.number,
+                          controller: unitPriceController,
+                          validator: Validators.compose([
+                            Validators.required('Unit Price is empty'),
+                            Validators.min(
+                                1, 'Unit Price must be more than zero'),
+                          ]),
+                        ),
+                        SizedBox(height: 22),
+                        Text(
+                          'Tax',
+                        ),
+                        SizedBox(height: 5),
+                        AppTextFormField(
+                          focusNode: _taxFocus,
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (value) =>
+                              _changeFocus(from: _taxFocus, to: _discountFocus),
+                          keyboardType: TextInputType.number,
+                          controller: taxController,
+                          validator: Validators.compose([
+                            Validators.required('Tax is empty'),
+                            Validators.min(
+                                0, 'Tax must be greater than or equal to zero'),
+                          ]),
+                        ),
+                        SizedBox(height: 22),
+                        Text(
+                          'Discount',
+                        ),
+                        SizedBox(height: 5),
+                        AppTextFormField(
+                          focusNode: _discountFocus,
+                          textInputAction: TextInputAction.done,
+                          onFieldSubmitted: (value) {
+                            _discountFocus.unfocus();
+                            submitForm();
+                          },
+                          validator: Validators.compose([
+                            Validators.required('Discount is empty'),
+                            Validators.min(0,
+                                'Discount must be greater than or equal to zero'),
+                          ]),
+                          keyboardType: TextInputType.number,
+                          controller: discountController,
+                        ),
+                        productAdded
+                            ? Center(
+                                child: Text(
+                                  product == null
+                                      ? 'Product added'
+                                      : 'Product edited',
+                                ),
+                              )
+                            : SizedBox(),
+                        SizedBox(height: 20),
+                        AppSolidButton(
+                          text: 'Add',
+                          onPressed: () {
+                            submitForm();
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -368,58 +402,93 @@ class _ProductDetailState extends State<ProductDetail> {
   }
 
   void submitForm() {
-    FocusScope.of(context).unfocus();
-    if (unitValue == null) {
-      Fluttertoast.showToast(
-        msg: "Add quantity unit",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-      return;
-    }
-    try {
-      widget.onSubmit(
-        Product(
-          id: productDescController.text.substring(1, 4) +
-              (Random().nextInt(99) + 10).toString(),
-          productDesc: productDescController.text.toUpperCase(),
-          quantity: double.parse(quantityController.text),
-          unitPrice: double.parse(unitPriceController.text),
-          categoryName: cartegoryName ?? '',
-          unit: unitValue.getShortName(int.parse(quantityController.text)),
-          amount: (double.parse(quantityController.text) *
-                  double.parse(unitPriceController.text)) +
-              (double.parse(taxController.text)) -
-              (double.parse(discountController.text) /
-                  100 *
-                  (double.parse(quantityController.text) *
-                      double.parse(unitPriceController.text))),
-          tax: double.parse(taxController.text),
-          discount: double.parse(discountController.text),
-        ),
-      );
-      setState(() {
-        productAdded = true;
-        /* unitValue = null;
+    if (_productDetailsKey.currentState.validate()) {
+      _productDetailsKey.currentState.save();
+
+      FocusScope.of(context).unfocus();
+      if (unitValue == null) {
+        Fluttertoast.showToast(
+          msg: "Add quantity unit",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        return;
+      }
+
+      if (selectedQuantity != null &&
+          double.parse(quantityController.text) >
+              selectedQuantity?.toDouble()) {
+        Fluttertoast.showToast(
+          msg: "There are less items of products in inventory",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        return;
+      } else if (product != null &&
+          double.parse(quantityController.text) > product.quantity) {
+        Fluttertoast.showToast(
+          msg: "There are less items of products in inventory",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        return;
+      }
+
+      try {
+        widget.onSubmit(
+          Product(
+            id: productDescController.text.substring(1, 4) +
+                (Random().nextInt(99) + 10).toString(),
+            productDesc: productDescController.text.toUpperCase(),
+            quantity: double.parse(quantityController.text),
+            unitPrice: double.parse(unitPriceController.text),
+            categoryName: cartegoryName ?? '',
+            unit: unitValue.getShortName(int.parse(quantityController.text)),
+            amount: (double.parse(quantityController.text) *
+                    double.parse(unitPriceController.text)) +
+                (double.parse(taxController.text)) -
+                (double.parse(discountController.text) /
+                    100 *
+                    (double.parse(quantityController.text) *
+                        double.parse(unitPriceController.text))),
+            tax: double.parse(taxController.text),
+            discount: double.parse(discountController.text),
+          ),
+        );
+        setState(() {
+          productAdded = true;
+          /* unitValue = null;
         selectedInventory = null;
         productDescController..text = "";
         quantityController..text = "";
         unitPriceController..text = "";
         taxController..text = "";
         discountController..text = ""; */
-      });
-      Future.delayed(Duration(seconds: 1), () {
-        setState(() {
-          productAdded = false;
-          product = null;
+          if (selectedQuantity != null) {
+            selectedQuantity = selectedQuantity - int.parse(_quantityValue);
+          }
         });
-      });
-    } catch (e) {
-      print(e);
+        Future.delayed(Duration(seconds: 1), () {
+          setState(() {
+            productAdded = false;
+            product = null;
+          });
+        });
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -491,11 +560,14 @@ class InventoryDialog extends StatelessWidget {
                               Text(
                                 "You have not added any inventory item!",
                                 textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.subtitle2.copyWith(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 16,
-                                  letterSpacing: 0.3,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle2
+                                    .copyWith(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                      letterSpacing: 0.3,
+                                    ),
                               ),
                               SizedBox(
                                 height: 20,

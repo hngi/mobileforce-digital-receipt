@@ -6,9 +6,10 @@ import '../screens/receipt_screen.dart';
 import 'dart:ui' as ui;
 import 'package:signature/signature.dart';
 import 'package:flutter/rendering.dart';
+import '../services/api_service.dart';
 
 final SignatureController _controller = SignatureController(
-  penStrokeWidth: 5,
+  penStrokeWidth: 2,
   penColor: Colors.black,
   exportBackgroundColor: Colors.white,
 );
@@ -16,6 +17,8 @@ final SignatureController _controller = SignatureController(
 GlobalKey<_SignatureCanvasState> signatureCanvasKey = GlobalKey();
 
 class SignatureDialog extends StatefulWidget {
+  const SignatureDialog({this.from});
+  final String from;
   @override
   SignatureDialogState createState() => SignatureDialogState();
 }
@@ -28,12 +31,21 @@ class SignatureDialogState extends State<SignatureDialog> {
   saveImage(BuildContext context) async {
     var data = await _controller.toPngBytes();
     String encode = base64Encode(data.buffer.asUint8List());
-    _preferenceService.addStringToSF("ISSUER_SIGNATURE", encode);
-    print(encode);
-    Navigator.pop(context);
-    await Fluttertoast.showToast(
-        msg: "Signature saved", toastLength: Toast.LENGTH_LONG);
-    _controller.clear();
+    if (widget.from == 'setup') {
+      await SharedPreferenceService().addStringToSF('ISSUER_SIGNATURE', encode);
+      Navigator.pop(context);
+      return;
+    }
+
+    var res = await ApiService().updateSignature(encode);
+    print('reshvh: $res');
+    if (res != null) {
+      await SharedPreferenceService().addStringToSF('ISSUER_SIGNATURE', encode);
+      Navigator.pop(context);
+      await Fluttertoast.showToast(
+          msg: "Signature saved", toastLength: Toast.LENGTH_LONG);
+      _controller.clear();
+    }
   }
 
   @override
@@ -57,9 +69,7 @@ class SignatureDialogState extends State<SignatureDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                 SizedBox(
-                  height: 15,
-                ),
+                SizedBox(),
                 Text(
                   'Append your signature',
                   style: Theme.of(context).textTheme.headline5.copyWith(
@@ -83,17 +93,22 @@ class SignatureDialogState extends State<SignatureDialog> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                    /*   DashedSeparator(
+                      /*   DashedSeparator(
                         color: Colors.grey,
                       ), */
-                      Signature(
-                        key: signatureCanvasKey,
-                        controller: _controller,
-                        height: 350,
-                        width: (MediaQuery.of(context).size.width * 0.75) - 20,
-                        backgroundColor: Colors.white,
+
+                      Flexible(
+                        child: Signature(
+                          key: signatureCanvasKey,
+                          controller: _controller,
+                          height:
+                              MediaQuery.of(context).size.height * 0.75 - 114,
+                          width:
+                              (MediaQuery.of(context).size.width * 0.75) - 20,
+                          backgroundColor: Colors.white,
+                        ),
                       ),
-                     /*  DashedSeparator(
+                      /*  DashedSeparator(
                         color: Colors.grey,
                       ), */
                     ],

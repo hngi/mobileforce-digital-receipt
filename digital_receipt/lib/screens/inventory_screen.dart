@@ -65,18 +65,18 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
   setCategory() async {
     currency = await SharedPreferenceService().getStringValuesSF('Currency');
-    List<Inventory> val = await inventFuture;
+    List<dynamic> val = await inventFuture;
     List<String> temp = [];
     if (val != null) {
-      await Future.forEach(val, (Inventory e) {
+      await Future.forEach(val, (e) {
         temp.add(e.category);
       });
     }
 
     setState(() {
       inventoryCategories = temp.toSet().toList();
-      inventory = val;
-      inventoryData = val;
+      inventory = List.from(val);
+      inventoryData = List.from(val);
     });
     // print('inventory ${inventory.isEmpty}');
   }
@@ -84,10 +84,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
   @override
   void didChangeDependencies() {
     print('object');
-    inventFuture = Future.delayed(Duration(seconds: 2), () async {
-      var res = await _apiService.getAllInventories();
-      return res;
+    setState(() {
+      inventFuture = _apiService.getAllInventories();
     });
+
     //getInventory();
     super.didChangeDependencies();
   }
@@ -112,19 +112,16 @@ class _InventoryScreenState extends State<InventoryScreen> {
         floatingActionButton: SafeArea(
           child: FloatingActionButton(
             onPressed: () async {
-              var data = await Navigator.of(context).push(
+              await Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => CreateInventory(),
                 ),
               );
               setState(() {
-                inventFuture = Future.delayed(Duration(seconds: 2), () async {
-                  var res = await _apiService.getAllInventories();
-                  return res;
-                });
+                inventFuture = _apiService.getAllInventories();
               });
               setCategory();
-              print("Data from pop $data");
+              // print("Data from pop $data");
             },
             child: Icon(
               Icons.add,
@@ -305,14 +302,21 @@ class _InventoryScreenState extends State<InventoryScreen> {
     }
 
     return GestureDetector(
-        onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => UpdateInventory(
-                  inventory: inventory,
-                ),
+        onTap: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UpdateInventory(
+                inventory: inventory,
               ),
             ),
+          );
+
+          setState(() {
+            inventFuture = _apiService.getAllInventories();
+          });
+          setCategory();
+        },
         child: Padding(
           padding: const EdgeInsets.only(bottom: 15),
           child: Column(

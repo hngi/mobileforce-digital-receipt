@@ -59,6 +59,7 @@ class AppTextFormField extends StatelessWidget {
       validator: validator,
       onSaved: onSaved,
       onTap: onTap,
+      
       decoration: InputDecoration(
         hintText: hintText,
         suffixIcon: suffixIcon,

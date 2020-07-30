@@ -341,7 +341,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                   Container(
                     width: 250,
                     child: Text(
-                      receipt.products.first.productDesc,
+                      receipt.products.first.productDesc ?? '',
                       maxLines: 2,
                     ),
                   ),

@@ -7,7 +7,7 @@ import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import 'package:wc_form_validators/wc_form_validators.dart';
 import '../constant.dart';
 import 'no_internet_connection.dart';
 
@@ -145,14 +145,15 @@ class _CreateInventoryState extends State<CreateInventory> {
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (value) =>
                     _changeFocus(from: _quantityFocus, to: _unitPriceFocus),
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.numberWithOptions(
+                  decimal: true,
+                  signed: true,
+                ),
                 controller: quantityController,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'quantity empty';
-                  }
-                  return null;
-                },
+                validator: Validators.compose([
+                  Validators.required('Quantity is empty'),
+                  Validators.min(1, 'Quantity must be more than zero'),
+                ]),
                 onSaved: (String value) {
                   quantity = value;
                 },
@@ -170,7 +171,7 @@ class _CreateInventoryState extends State<CreateInventory> {
         // backgroundColor: Colors.teal[50],
         appBar: AppBar(
           //backgroundColor: Color(0xff226EBE),
-         
+
           title: Text(
             "Inventory",
             style: TextStyle(
@@ -253,12 +254,11 @@ class _CreateInventoryState extends State<CreateInventory> {
                           AppTextFormField(
                             label: 'Unit price',
                             keyboardType: TextInputType.number,
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Unit Price empty';
-                              }
-                              return null;
-                            },
+                            validator: Validators.compose([
+                              Validators.required('Unit Price is empty'),
+                              Validators.min(
+                                  1, 'Unit Price must be more than zero'),
+                            ]),
                             onSaved: (String value) {
                               unitPrice = value;
                             },
@@ -269,12 +269,11 @@ class _CreateInventoryState extends State<CreateInventory> {
                           AppTextFormField(
                             label: 'Discount',
                             keyboardType: TextInputType.number,
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Discount empty';
-                              }
-                              return null;
-                            },
+                           validator: Validators.compose([
+                              Validators.required('Discount is empty'),
+                              Validators.min(
+                                  0, 'Discount must be greater than or equal to zero'),
+                            ]),
                             onSaved: (String value) {
                               discount = value;
                             },
@@ -283,12 +282,10 @@ class _CreateInventoryState extends State<CreateInventory> {
                           AppTextFormField(
                             label: 'Tax',
                             keyboardType: TextInputType.number,
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Tax empty';
-                              }
-                              return null;
-                            },
+                            validator: Validators.compose([
+                              Validators.required('Tax is empty'),
+                              Validators.min(0, 'Tax must be greater than or equal to zero'),
+                            ]),
                             onSaved: (String value) {
                               tax = value;
                             },
@@ -332,14 +329,28 @@ class _CreateInventoryState extends State<CreateInventory> {
                             setState(() {
                               isLoading = false;
                             });
-
                             return;
                           }
+                          print(quantityController.text);
+                          if (double.parse(quantityController.text) <= 0) {
+                            Fluttertoast.showToast(
+                              msg: "Quantity must be greater than zero",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 16.0,
+                            );
+                            setState(() {
+                              isLoading = false;
+                            });
+                            return;
+                          }
+
                           setState(() {
                             isLoading = true;
                           });
-                          print("quantity  unit is $unitValue");
-                          print(tax);
                           var resp = await _apiService.addInventory(
                             category.toUpperCase(),
                             item.toUpperCase(),

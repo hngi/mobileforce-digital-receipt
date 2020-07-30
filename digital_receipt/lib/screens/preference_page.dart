@@ -1,7 +1,8 @@
 import 'package:digital_receipt/providers/app_state.dart';
 import 'package:digital_receipt/utils/theme_manager.dart';
-import 'package:digital_receipt/widgets/export_option.dart';
+import 'package:digital_receipt/widgets/signature_dialog.dart';
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 import '../services/shared_preference_service.dart';
@@ -68,9 +69,12 @@ class _PreferencePageState extends State<PreferencePage> {
                     activeColor: Color(0xFF25CCB3),
                     contentPadding: const EdgeInsets.all(0),
                     value: _isDark,
-                    title: Text('Dark Mode', style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontFamily: 'Montserrat',
-                        ),),
+                    title: Text(
+                      'Dark Mode',
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontFamily: 'Montserrat',
+                          ),
+                    ),
                     onChanged: (val) {
                       ThemeProvider.controllerOf(context).nextTheme();
                     },
@@ -82,14 +86,32 @@ class _PreferencePageState extends State<PreferencePage> {
                       title: Text(
                         'Enable Auto Logout',
                         style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontFamily: 'Montserrat',
-                        ),
+                              fontFamily: 'Montserrat',
+                            ),
                       ),
                       onChanged: (value) {
                         _sharedPreferenceService.addBoolToSF(
                             "AUTO_LOGOUT", value);
                         getCurrentAutoLogoutStatus();
                       }),
+                  ListTile(
+                    title: Text(
+                      'Change Signature',
+                      style: Theme.of(context).textTheme.headline6.copyWith(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w400,
+                          ),
+                    ),
+                    onTap: () {
+                      
+                      showDialog(
+                        context: context,
+                        builder: (context) => SignatureDialog(),
+                      );
+                    },
+                    contentPadding: const EdgeInsets.all(0),
+                    trailing: Icon(Icons.keyboard_arrow_right),
+                  )
                   // ExportOptionButton(),
                 ],
               ),

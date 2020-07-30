@@ -46,10 +46,10 @@ void main() async {
     // runApp(MyApp(),);
     runApp(DevicePreview(
       builder: (BuildContext context) => MyApp(),
-      enabled: kReleaseMode,
+      enabled: !kReleaseMode,
     )
-        // )
-        );
+      // )
+    );
   } catch (e) {
     print("error occurd in main: $e");
   }
@@ -279,10 +279,7 @@ class _ScreenControllerState extends State<ScreenController> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Future.wait([
-          _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN"),
-          _sharedPreferenceService.getStringValuesSF("BUSINESS_INFO")
-        ]),
+        future: _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN"),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // await _pushNotificationService.initialise();
           print('snapshots: ${snapshot.data}');
@@ -291,14 +288,10 @@ class _ScreenControllerState extends State<ScreenController> {
             return Scaffold();
             // TODO Reverse if-condition to show OnBoarding
 
-          } else if (snapshot.data[0] == 'empty' || _currentAutoLogoutStatus) {
+          } else if (snapshot.data == 'empty' || _currentAutoLogoutStatus) {
             return LogInScreen();
-          } else if (snapshot.hasData &&
-              snapshot.data[0] != null &&
-              snapshot.data[1] != null) {
+          } else if (snapshot.hasData && snapshot.data != null) {
             return HomePage();
-          } else if (snapshot.data[0] != null && snapshot.data[1] == null) {
-            return Setup();
           } else {
             return OnboardingPage();
           }

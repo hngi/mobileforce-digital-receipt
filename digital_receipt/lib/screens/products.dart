@@ -1,5 +1,3 @@
-import 'dart:wasm';
-
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';

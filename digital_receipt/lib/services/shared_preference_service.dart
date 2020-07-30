@@ -27,7 +27,7 @@ class SharedPreferenceService {
     }
   }
 
-  addStringToSF(String name, String value) async {
+  Future addStringToSF(String name, String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(name, value);
   }

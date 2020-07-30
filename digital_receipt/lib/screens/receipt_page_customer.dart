@@ -1,10 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'dart:convert';
 import 'package:digital_receipt/models/account.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/providers/business.dart';
-import 'package:digital_receipt/screens/generate_pdf.dart';
+import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
@@ -23,6 +24,7 @@ import '../constant.dart';
 import 'package:intl/intl.dart';
 
 final pdf = pw.Document();
+String signature = '';
 
 class ReceiptScreenFromCustomer extends StatefulWidget {
   final Receipt receipt;
@@ -55,6 +57,8 @@ class _ReceiptScreenFromCustomerState extends State<ReceiptScreenFromCustomer> {
 
   init() async {
     var val = await SharedPreferenceService().getStringValuesSF('LOGO');
+    signature =
+        await SharedPreferenceService().getStringValuesSF('ISSUER_SIGNATURE');
     setState(() {
       logo = val;
     });
@@ -461,21 +465,20 @@ Widget ReceiptScreenLayout(
                               padding: const EdgeInsets.fromLTRB(10, 0, 0, 15),
                               child: Column(
                                 children: <Widget>[
-                                  Text(
-                                    (Provider.of<Receipt>(context,
-                                                listen: false)
-                                            .sellerName
-                                            .split(" ")[0])
-                                        .toLowerCase(),
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 27,
-                                      letterSpacing: 0.03,
-                                      fontFamily: 'Southampton',
-                                      fontWeight: FontWeight.w300,
-                                      height: 1.43,
-                                    ),
-                                  ),
+                                  from == null
+                                      ? Image.memory(
+                                          base64Decode(signature),
+                                          width: 70,
+                                          height: 50,
+                                        )
+                                      : Image.memory(
+                                          base64Decode(Provider.of<Receipt>(
+                                                  context,
+                                                  listen: false)
+                                              .signature),
+                                          width: 70,
+                                          height: 50,
+                                        ),
                                   SizedBox(
                                     height: 2,
                                   ),
@@ -546,7 +549,16 @@ Widget ReceiptScreenLayout(
             loadingStop();
             return;
           }
+
           if (from == null) {
+            print('sign: $signature');
+            var upload = await ApiService().uploadSignature(signature,
+                Provider.of<Receipt>(context, listen: false).receiptId);
+
+            if (upload == null) {
+              loadingStop();
+              return;
+            }
             var res = await Provider.of<Receipt>(context, listen: false)
                 .updatedReceipt(
                     Provider.of<Receipt>(context, listen: false).receiptId);
