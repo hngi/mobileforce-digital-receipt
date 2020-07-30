@@ -93,8 +93,9 @@ class _LogInScreenState extends State<LogInScreen> {
                       height: 50.0 + 20,
                       width: 134.0 + 20,
                       padding: EdgeInsets.all(10),
-                      color: LightMode.backgroundColor,
-                      child: kLogo1,
+                      child: Theme.of(context).brightness == Brightness.dark
+                          ? kLogoWithTextDark
+                          : kLogoWithTextLight,
                     ),
                   ),
                   SizedBox(
@@ -197,7 +198,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         textAlign: TextAlign.center,
                         text: TextSpan(
                             text: "Don't have an account?",
-                            style: Theme.of(context).textTheme.subtitle2,
+                            style: Theme.of(context).textTheme.bodyText2,
                             children: [
                               TextSpan(
                                 text: '  Sign up',

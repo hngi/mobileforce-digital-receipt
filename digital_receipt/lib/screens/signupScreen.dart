@@ -86,7 +86,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     width: 134.0 + 20,
                     padding: EdgeInsets.all(10),
                     color: LightMode.backgroundColor,
-                    child: kLogo1,
+                    child: Theme.of(context).brightness == Brightness.dark
+                        ? kLogoWithTextDark
+                        : kLogoWithTextLight,
                   ),
                 ),
                 SizedBox(height: 40.0),
@@ -195,7 +197,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       text: 'By signing in you agree to our \n',
-                      style: Theme.of(context).textTheme.subtitle2,
+                      style: Theme.of(context).textTheme.bodyText2,
                       children: [
                         TextSpan(
                           text: 'terms of service',
@@ -213,6 +215,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         TextSpan(
                           text: ' and ',
+                          style: Theme.of(context).textTheme.bodyText2,
                         ),
                         TextSpan(
                           text: 'privacy policy',
