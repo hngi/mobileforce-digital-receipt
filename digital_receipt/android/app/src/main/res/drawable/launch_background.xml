@@ -4,9 +4,7 @@
     <item android:drawable="@android:color/white" />
 
     <!-- You can insert your own image assets here -->
-    <item>
-        <bitmap
-            android:gravity="fill"
-            android:src="@drawable/splash"/>
-    </item>
+    <item
+        android:drawable="@drawable/splash_screen"
+        android:gravity="center"/>
 </layer-list>

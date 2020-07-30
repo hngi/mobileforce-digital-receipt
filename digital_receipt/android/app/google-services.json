@@ -1,40 +1,55 @@
 {
-    "project_info": {
-      "project_number": "210818850493",
-      "firebase_url": "https://digitalreceipts-6825c.firebaseio.com",
-      "project_id": "digitalreceipts-6825c",
-      "storage_bucket": "digitalreceipts-6825c.appspot.com"
-    },
-    "client": [
-      {
-        "client_info": {
-          "mobilesdk_app_id": "1:210818850493:android:4644027e0238fc5bfea1d4",
-          "android_client_info": {
-            "package_name": "com.example.digital_receipt"
+  "project_info": {
+    "project_number": "210818850493",
+    "firebase_url": "https://digitalreceipts-6825c.firebaseio.com",
+    "project_id": "digitalreceipts-6825c",
+    "storage_bucket": "digitalreceipts-6825c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210818850493:android:4644027e0238fc5bfea1d4",
+        "android_client_info": {
+          "package_name": "com.example.digital_receipt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "210818850493-mpbh96cm03q196h59vlsiev0d72apu8i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.digital_receipt",
+            "certificate_hash": "2b357132c87af1d4e365921aea9843210453c6b7"
           }
         },
-        "oauth_client": [
-          {
-            "client_id": "210818850493-2e1viupls0jdbi37gq1v7ciunht2k4o6.apps.googleusercontent.com",
-            "client_type": 3
-          }
-        ],
-        "api_key": [
-          {
-            "current_key": "AIzaSyDmfuGK3EMVHGvk5hx0LZGSBb2Q-oT2tAA"
-          }
-        ],
-        "services": {
-          "appinvite_service": {
-            "other_platform_oauth_client": [
-              {
-                "client_id": "210818850493-2e1viupls0jdbi37gq1v7ciunht2k4o6.apps.googleusercontent.com",
-                "client_type": 3
+        {
+          "client_id": "210818850493-2e1viupls0jdbi37gq1v7ciunht2k4o6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmfuGK3EMVHGvk5hx0LZGSBb2Q-oT2tAA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "210818850493-u30r8tj9iaoudr12r48h77okra6pfcnh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "210818850493-9p8h4u66l13avoifh6ihnp6ij5dl9h98.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.digitalReceipt"
               }
-            ]
-          }
+            }
+          ]
         }
       }
-    ],
-    "configuration_version": "1"
-  }
+    }
+  ],
+  "configuration_version": "1"
+}
