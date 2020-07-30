@@ -1,17 +1,11 @@
-import 'dart:io';
-import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/screens/home_page.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import '../widgets/signature_dialog.dart';
-
 import 'package:digital_receipt/widgets/app_drop_selector.dart';
-
 import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:digital_receipt/widgets/app_text_form_field.dart';
-
-import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:digital_receipt/widgets/currency_dropdown.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_country_picker/flutter_country_picker.dart';

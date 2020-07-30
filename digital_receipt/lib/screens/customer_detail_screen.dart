@@ -1,6 +1,4 @@
 import 'dart:developer' as dev;
-import 'dart:math';
-
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/services/api_service.dart';

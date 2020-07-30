@@ -1,17 +1,10 @@
-import 'dart:io';
 import 'package:digital_receipt/models/currency.dart';
-import 'package:digital_receipt/services/hiveDb.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/models/customer.dart';
-import 'package:digital_receipt/models/product.dart';
-import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 import 'dart:convert';

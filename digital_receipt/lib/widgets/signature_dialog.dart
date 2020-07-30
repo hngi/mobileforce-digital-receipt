@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../screens/receipt_screen.dart';
 import 'dart:ui' as ui;
 import 'package:signature/signature.dart';
 import 'package:flutter/rendering.dart';

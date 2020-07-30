@@ -1,10 +1,8 @@
 import 'package:digital_receipt/screens/no_internet_connection.dart';
-import 'package:digital_receipt/screens/signature_screen.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:digital_receipt/widgets/app_text_form_field.dart';
-import 'package:digital_receipt/widgets/signature_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';

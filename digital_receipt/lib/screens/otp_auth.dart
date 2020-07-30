@@ -8,16 +8,13 @@ import 'package:digital_receipt/screens/setup.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
-import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:digital_receipt/widgets/loading.dart';
-
 import '../colors.dart';
-import 'home_page.dart';
+
 
 class PinCodeVerificationScreen extends StatefulWidget {
   String otp;

@@ -1,13 +1,9 @@
 import 'dart:convert';
-
 import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:digital_receipt/widgets/app_text_form_field.dart';
-import 'package:digital_receipt/widgets/button_loading_indicator.dart'
-    as loader;
 import 'package:digital_receipt/utils/connected.dart';
-import 'package:digital_receipt/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
@@ -33,7 +29,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         body: SafeArea(
       child: isLoading == true
           ? Center(
-              child: CircularProgressIndicator( strokeWidth: 1.5,),
+              child: CircularProgressIndicator(
+                strokeWidth: 1.5,
+              ),
             )
           : SingleChildScrollView(
               child: Padding(

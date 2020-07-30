@@ -1,19 +1,9 @@
-import 'dart:async';
-
 import 'package:digital_receipt/screens/dashboard.dart';
-import 'package:digital_receipt/screens/login_screen.dart';
-import 'package:digital_receipt/screens/no_internet_connection.dart';
-import 'package:digital_receipt/screens/second_screen.dart';
 import 'package:digital_receipt/services/notification.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
-import 'package:digital_receipt/utils/check_login.dart';
-import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/main_drawer.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'create_receipt_page.dart';
 
 AppNotification appNotification = AppNotification();

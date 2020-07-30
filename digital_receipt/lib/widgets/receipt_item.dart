@@ -1,5 +1,4 @@
 import 'package:digital_receipt/models/receipt.dart';
-import 'package:digital_receipt/screens/receipt_screen.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

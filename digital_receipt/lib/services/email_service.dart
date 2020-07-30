@@ -1,10 +1,7 @@
-
-
-import 'package:digital_receipt/models/receipt.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
-import 'package:provider/provider.dart';
+
 
 final MailOptions mailOptions = MailOptions();
 

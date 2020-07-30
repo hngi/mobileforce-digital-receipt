@@ -1,22 +1,17 @@
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/screens/customer_detail_screen.dart';
-
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/email_service.dart';
-import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/app_card.dart';
 import 'package:digital_receipt/widgets/app_text_form_field.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:hive/hive.dart';
 import '../widgets/delete_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
-
 import 'no_internet_connection.dart';
 
 // import 'customerDetails/customerDetail.dart';
