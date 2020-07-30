@@ -568,10 +568,7 @@ Widget ReceiptScreenLayout(
                                 : SizedBox.fromSize(),
                             Container(
                               padding: const EdgeInsets.fromLTRB(0, 0, 10, 15),
-                              child: Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? kLogoWithTextDark
-                                  : kLogoWithTextLight,
+                              child: kLogoWithTextDark,
                               height: 35,
                               width: 100,
                             )

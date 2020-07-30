@@ -9,6 +9,7 @@ import '../screens/customerList.dart';
 import '../screens/preference_page.dart';
 import '../screens/receipt_history.dart';
 import '../screens/account_page.dart';
+import '../screens/setup.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
@@ -186,7 +187,8 @@ class MainDrawer extends StatelessWidget {
                       ),
                     ),
                   ),
-                 */  SizedBox(
+                 */
+                  SizedBox(
                     height: 50.0,
                     width: double.maxFinite,
                     child: FlatButton(

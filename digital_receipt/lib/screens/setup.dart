@@ -38,6 +38,10 @@ class _SetupState extends State<Setup> {
   String selectedCurrency;
   String selectedCurrencySymbol;
 
+  clearSignature() async {
+    await _sharedPreferenceService.addStringToSF('ISSUER_SIGNATURE', null);
+  }
+
   Future getImage() async {
     PermissionStatus status = await Permission.storage.status;
     //print(status);
@@ -63,114 +67,10 @@ class _SetupState extends State<Setup> {
 
   final _setupKey = GlobalKey<FormState>();
 
-  Widget _buildBusinesssName(formLabel) {
-    return AppTextFormField(
-      label: formLabel,
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Business name empty';
-        }
-        return null;
-      },
-      onSaved: (String value) {
-        businessName = value;
-      },
-    );
-  }
-
-  Widget _buildSlogan(formLabel) {
-    return AppTextFormField(
-      label: formLabel,
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Business slogan empty';
-        }
-        return null;
-      },
-      onSaved: (String value) {
-        slogan = value;
-      },
-    );
-  }
-
-  Widget _buildCurrency(formLabel) {
-    return Column(
-      children: <Widget>[
-        Container(
-          alignment: Alignment.bottomLeft,
-          child: Text(
-            formLabel,
-          ),
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        AppDropSelector(
-            onTap: () async {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CurrencyDropdown(
-                    currency: Country.ALL,
-                    onSubmit: (Country country) {
-                      setState(() {
-                        selectedCurrency = country.currency;
-
-                        var format = NumberFormat.compactSimpleCurrency(
-                            locale: 'en_US', name: country.isoCode);
-
-                        var currency =
-                            format.simpleCurrencySymbol(country.currencyISO);
-
-                        selectedCurrencySymbol = currency;
-                        print(format.simpleCurrencySymbol(country.currencyISO));
-
-                        _sharedPreferenceService.addStringToSF(
-                            'Currency', currency);
-                      });
-                    },
-                  );
-                },
-              );
-            },
-            text: selectedCurrency != null ? selectedCurrency : formLabel),
-      ],
-    );
-  }
-
-  Widget _buildPhoneNumber(formLabel) {
-    return AppTextFormField(
-      label: formLabel,
-      keyboardType: TextInputType.number,
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Phone number empty';
-        }
-        return null;
-      },
-      onSaved: (String value) {
-        phoneNumber = value;
-      },
-    );
-  }
-
-  Widget _buildAddress(formLabel) {
-    return Column(
-      children: <Widget>[
-        AppTextFormField(
-          label: formLabel,
-          validator: (value) {
-            if (value.isEmpty) {
-              return 'Address empty';
-            }
-            return null;
-          },
-          onSaved: (String value) {
-            address = value;
-          },
-        )
-      ],
-    );
+  @override
+  void initState() {
+    clearSignature();
+    super.initState();
   }
 
   @override
@@ -278,7 +178,9 @@ class _SetupState extends State<Setup> {
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder: (context) => SignatureDialog(from: 'setup',),
+                        builder: (context) => SignatureDialog(
+                          from: 'setup',
+                        ),
                       );
                     },
                     shape: RoundedRectangleBorder(
@@ -307,6 +209,31 @@ class _SetupState extends State<Setup> {
                   text: 'Proceed',
                   isLoading: isLoading,
                   onPressed: () async {
+                    if (selectedCurrency == null) {
+                      Fluttertoast.showToast(
+                        msg: "Select a currency",
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0,
+                      );
+                      return;
+                    } else if (await _sharedPreferenceService
+                            .getStringValuesSF("ISSUER_SIGNATURE") ==
+                        null) {
+                      Fluttertoast.showToast(
+                        msg: "Upload your signature",
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0,
+                      );
+                      return;
+                    }
                     if (_setupKey.currentState.validate()) {
                       _setupKey.currentState.save();
 
@@ -384,5 +311,116 @@ class _SetupState extends State<Setup> {
         ),
       ),
     ));
+  }
+
+  Widget _buildBusinesssName(formLabel) {
+    return AppTextFormField(
+      label: formLabel,
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Business name empty';
+        }
+        return null;
+      },
+      onSaved: (String value) {
+        businessName = value;
+      },
+    );
+  }
+
+  Widget _buildSlogan(formLabel) {
+    return AppTextFormField(
+      label: formLabel,
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Business slogan empty';
+        }
+        return null;
+      },
+      onSaved: (String value) {
+        slogan = value;
+      },
+    );
+  }
+
+  Widget _buildCurrency(formLabel) {
+    return Column(
+      children: <Widget>[
+        Container(
+          alignment: Alignment.bottomLeft,
+          child: Text(
+            formLabel,
+          ),
+        ),
+        SizedBox(
+          height: 5,
+        ),
+        AppDropSelector(
+          onTap: () async {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CurrencyDropdown(
+                  currency: Country.ALL,
+                  onSubmit: (Country country) {
+                    setState(() {
+                      selectedCurrency = country.currency;
+
+                      var format = NumberFormat.compactSimpleCurrency(
+                          locale: 'en_US', name: country.isoCode);
+
+                      var currency =
+                          format.simpleCurrencySymbol(country.currencyISO);
+
+                      selectedCurrencySymbol = currency;
+                      print(format.simpleCurrencySymbol(country.currencyISO));
+
+                      _sharedPreferenceService.addStringToSF(
+                          'Currency', currency);
+                    });
+                  },
+                );
+              },
+            );
+          },
+          text: selectedCurrency != null ? selectedCurrency : formLabel,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPhoneNumber(formLabel) {
+    return AppTextFormField(
+      label: formLabel,
+      keyboardType: TextInputType.number,
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Phone number empty';
+        }
+        return null;
+      },
+      onSaved: (String value) {
+        phoneNumber = value;
+      },
+    );
+  }
+
+  Widget _buildAddress(formLabel) {
+    return Column(
+      children: <Widget>[
+        AppTextFormField(
+          label: formLabel,
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Address empty';
+            }
+            return null;
+          },
+          onSaved: (String value) {
+            address = value;
+          },
+        )
+      ],
+    );
   }
 }
