@@ -31,7 +31,9 @@ class MainDrawer extends StatelessWidget {
                       child: SizedBox(
                         width: 136,
                         height: 47,
-                        child: kLogo,
+                        child: Theme.of(context).brightness == Brightness.dark
+                            ? kLogoWithTextDark
+                            : kLogoWithTextLight,
                       ),
                     ),
                   ),

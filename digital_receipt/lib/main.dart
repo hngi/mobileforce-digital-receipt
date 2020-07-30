@@ -1,4 +1,5 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:digital_receipt/colors.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/screens/home_page.dart';
@@ -40,8 +41,8 @@ void main() async {
       builder: (BuildContext context) => MyApp(),
       enabled: kReleaseMode,
     )
-        // )
-        );
+      // )
+    );
   } catch (e) {
     print("error occurd in main: $e");
   }
@@ -153,6 +154,7 @@ class _MyAppState extends State<MyApp> {
           child: Builder(
             builder: (themeContext) => MaterialApp(
               title: 'Degeit',
+              color: LightMode.primaryColor,
               theme: ThemeProvider.themeOf(themeContext).data,
               debugShowCheckedModeBanner: false,
               home: ScreenController(),
