@@ -1,21 +1,21 @@
-import 'dart:convert';
-
 import 'package:digital_receipt/models/currency.dart';
-import 'package:digital_receipt/models/customer.dart';
-import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
-import 'package:digital_receipt/services/hiveDb.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
+import 'package:digital_receipt/widgets/app_card.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+import '../widgets/delete_dialog.dart';
 import '../constant.dart';
 import '../models/receipt.dart';
 import '../services/api_service.dart';
+import '../services/shared_preference_service.dart';
 import 'receipt_page_customer.dart';
 
-/// This code displays only the UI
+final numberFormat = new NumberFormat();
+final dateFormat = DateFormat('dd-MM-yyyy');
+
 class Drafts extends StatefulWidget {
   @override
   _DraftsState createState() => _DraftsState();
@@ -24,8 +24,25 @@ class Drafts extends StatefulWidget {
 class _DraftsState extends State<Drafts> {
   ApiService _apiService = ApiService();
   var draftData;
+  String currency = '';
+  Future draftFuture;
+
+  setCurrency() async {
+    currency = await SharedPreferenceService().getStringValuesSF('Currency');
+  }
+
+  setDraft() async {
+    draftFuture = _apiService.getDraft();
+    var res = await draftFuture;
+    setState(() {
+      draftData = res;
+    });
+  }
+
   @override
   void initState() {
+    setCurrency();
+    setDraft();
     super.initState();
   }
 
@@ -48,7 +65,8 @@ class _DraftsState extends State<Drafts> {
       body: RefreshIndicator(
         onRefresh: () async {
           refreshDraft() async {
-            var val = await _apiService.getDraft();
+            draftFuture = _apiService.getDraft();
+            var val = await draftFuture;
             setState(() {
               draftData = val;
             });
@@ -72,14 +90,9 @@ class _DraftsState extends State<Drafts> {
           // });
         },
         child: FutureBuilder(
-            future: _apiService.getDraft(), // receipts from API
+            future: draftFuture, // receipts from API
             builder: (context, snapshot) {
-              draftData = snapshot.data;
-              print('Sna[hot:: ${snapshot.data}');
-              print('Sna[hot:: ${snapshot.connectionState}');
               if (snapshot.connectionState == ConnectionState.waiting) {
-                print('here');
-                //print('Sna[hot:: ${snapshot.data}');
                 return Center(
                   child: CircularProgressIndicator(
                     strokeWidth: 1.5,
@@ -98,27 +111,43 @@ class _DraftsState extends State<Drafts> {
                   itemCount: draftData.length,
                   itemBuilder: (context, index) {
                     Receipt receipt = Receipt.fromJson(draftData[index]);
-                    DateTime date =
-                        DateFormat('yyyy-mm-dd').parse(receipt.issuedDate);
-                    return GestureDetector(
-                      onTap: () {
-                        setReceipt(
-                            snapshot: draftData[index], context: context);
-                        // print(Provider.of<Receipt>(context, listen: false));
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    ReceiptScreenFromCustomer()));
-                      },
-                      child: receiptCard(
-                          receiptNo: receipt.receiptNo,
-                          total: receipt.totalAmount,
-                          date: "${date.day}/${date.month}/${date.year}",
-                          receiptTitle: receipt.customerName,
-                          subtitle: receipt.products[0].productDesc,
-                          currency: receipt.currency),
-                    );
+                    return Dismissible(
+                        confirmDismiss: (DismissDirection direction) async {
+                          return await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return DeleteDialog(
+                                title:
+                                    'Are you sure you wish to delete this item?',
+                                onDelete: () async {
+                                  Navigator.of(context).pop(true);
+                                  String response = await _apiService
+                                      .deleteDraft(id: receipt.receiptId);
+                                  if (response == 'true') {
+                                    setState(() {
+                                      draftData.removeAt(index);
+                                    });
+                                    Fluttertoast.showToast(
+                                      msg: 'Draft deleted successfully',
+                                      fontSize: 12,
+                                      toastLength: Toast.LENGTH_LONG,
+                                      backgroundColor: Colors.red,
+                                    );
+                                  } else {
+                                    Fluttertoast.showToast(
+                                      msg: 'Sorry an error occured try again',
+                                      fontSize: 12,
+                                      toastLength: Toast.LENGTH_LONG,
+                                      backgroundColor: Colors.red,
+                                    );
+                                  }
+                                },
+                              );
+                            },
+                          );
+                        },
+                        key: Key(receipt.receiptId),
+                        child: _buildReceiptCard(receipt, index, setDraft));
                   },
                 );
               } else {
@@ -138,12 +167,7 @@ class _DraftsState extends State<Drafts> {
                         child: Text(
                           "There are no draft receipts created!",
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                            fontSize: 16,
-                            letterSpacing: 0.3,
-                            color: Color.fromRGBO(0, 0, 0, 0.87),
-                          ),
+                          style: Theme.of(context).textTheme.headline6,
                         ),
                       ),
                       SizedBox(
@@ -161,6 +185,80 @@ class _DraftsState extends State<Drafts> {
 
               // }
             }),
+      ),
+    );
+  }
+
+  Widget _buildReceiptCard(Receipt receipt, index, dynamic onDone) {
+    return GestureDetector(
+      onTap: () async {
+        setReceipt(snapshot: draftData[index], context: context);
+        await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    ReceiptScreenFromCustomer()));
+        await onDone();
+      },
+      child: Column(
+        children: <Widget>[
+          AppCard(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Receipt No: ${receipt.receiptNo}',
+                        style: Theme.of(context).textTheme.subtitle2,
+                      ),
+                      Text(
+                        dateFormat.format(DateTime.parse(receipt.issuedDate)),
+                        style: Theme.of(context).textTheme.subtitle2,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  Text(
+                    receipt.customerName,
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                  ),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Container(
+                    width: 250,
+                    child: Text(
+                      receipt?.products?.first?.productDesc ?? '',
+                      maxLines: 2,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 4.0,
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      'Total:\t\t $currency${numberFormat.format(double.parse(receipt.totalAmount))}',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+        ],
       ),
     );
   }

@@ -17,25 +17,11 @@ class DateTimeInputTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       focusNode: focusNode,
-      readOnly: true,
       style: TextStyle(
-        color: Color(0xFF2B2B2B),
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        fontFamily: 'Montserrat',
+        fontFamily: 'Montserrat'
       ),
+      readOnly: true,
       onTap: onTap,
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.all(15),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide(
-            color: Color(0xFFC8C8C8),
-            width: 1,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(),
-      ),
     );
   }
 }

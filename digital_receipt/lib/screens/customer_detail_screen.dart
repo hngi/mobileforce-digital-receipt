@@ -1,28 +1,40 @@
 import 'dart:developer' as dev;
-import 'dart:math';
-
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/services/shared_preference_service.dart';
+import 'package:digital_receipt/widgets/app_card.dart';
+import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../constant.dart';
 
 final ApiService _apiService = ApiService();
-final numberFormat = new NumberFormat("\u20A6#,##0.#", "en_US");
+final numberFormat = new NumberFormat();
 final dateFormat = DateFormat('dd-MM-yyyy');
+String currency = '';
 
-class CustomerDetail extends StatefulWidget {
+class CustomerDetailScreen extends StatefulWidget {
   final Customer customer;
 
-  CustomerDetail({Key key, this.customer}) : super(key: key);
+  CustomerDetailScreen({Key key, this.customer}) : super(key: key);
 
   @override
-  _CustomerDetailState createState() => _CustomerDetailState();
+  _CustomerDetailScreenState createState() => _CustomerDetailScreenState();
 }
 
-class _CustomerDetailState extends State<CustomerDetail> {
+class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
+  setCurrency() async {
+    currency = await SharedPreferenceService().getStringValuesSF('Currency');
+  }
+
+  @override
+  void initState() {
+    setCurrency();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -31,15 +43,7 @@ class _CustomerDetailState extends State<CustomerDetail> {
         appBar: AppBar(
           title: Text(
             'Customer List',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Montserrat',
-              letterSpacing: 0.03,
-            ),
           ),
-          backgroundColor: Color(0xFF0B57A7),
         ),
         body: Column(
           children: <Widget>[
@@ -49,14 +53,18 @@ class _CustomerDetailState extends State<CustomerDetail> {
                 left: 16,
                 right: 16,
               ),
-              child: TabBar(
-                labelColor: Colors.grey[700],
+              /*
+              labelColor: Colors.grey[700],
                 unselectedLabelColor: Colors.black,
                 labelStyle: TextStyle(
                   fontFamily: 'Montserrat',
                   fontSize: 16,
                 ),
-                indicatorColor: Color(0xFF0B57A7),
+                indicatorColor: Theme.of(context).primaryColor,
+              */
+              child: TabBar(
+                indicatorColor: Theme.of(context).tabBarTheme.labelColor,
+                unselectedLabelColor: Theme.of(context).disabledColor,
                 tabs: [
                   Tab(
                     text: 'Full Details',
@@ -101,36 +109,10 @@ class DetailTab extends StatelessWidget {
       {String label, String initialValue, bool readOnly = true}) {
     return Container(
       padding: EdgeInsets.only(bottom: 24.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(label),
-          SizedBox(
-            height: 8.0,
-          ),
-          TextFormField(
-            initialValue: initialValue,
-            readOnly: readOnly,
-            style: TextStyle(
-              color: Color(0xFF2B2B2B),
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Montserrat',
-            ),
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(15),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-                borderSide: BorderSide(
-                  color: Color(0xFFC8C8C8),
-                  width: 1,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(),
-              errorStyle: TextStyle(height: 0.5),
-            ),
-          ),
-        ],
+      child: AppTextFormField(
+        label: label,
+        initialValue: initialValue,
+        readOnly: readOnly,
       ),
     );
   }
@@ -184,7 +166,7 @@ class ReceiptTab extends StatelessWidget {
             );
           } else if (snapshot.hasData) {
             // If contains Data
-            content = _buildReceiptList(snapshot.data);
+            content = _buildReceiptList(context, snapshot.data);
           } else {
             // If Something went wrong
             content = _buildLoadingState();
@@ -201,28 +183,21 @@ customerName: 'Carole Froschauer',
 description: 'Cryptocurrency course, intro to after effects',
 totalAmount: '80,000',
 ),*/
-Widget _buildReceiptList(List<Receipt> customerReceiptList) => ListView.builder(
+Widget _buildReceiptList(
+        BuildContext context, List<Receipt> customerReceiptList) =>
+    ListView.builder(
       itemCount: customerReceiptList.length,
       padding: EdgeInsets.fromLTRB(16.0, 0, 16, 0),
       itemBuilder: (_, index) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: _buildReceiptCard(customerReceiptList[index]),
+        child: _buildReceiptCard(context, customerReceiptList[index]),
       ),
     );
 
-Container _buildReceiptCard(Receipt receipt) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Color(0xFF539C30),
-      borderRadius: BorderRadius.circular(5.0),
-    ),
-    child: Container(
-      margin: EdgeInsets.only(left: 5.0),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Color(0xFFE3EAF1),
-        borderRadius: BorderRadius.circular(5.0),
-      ),
+Widget _buildReceiptCard(BuildContext context, Receipt receipt) {
+  return AppCard(
+    child: Padding(
+      padding: const EdgeInsets.all(10.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,11 +207,11 @@ Container _buildReceiptCard(Receipt receipt) {
             children: <Widget>[
               Text(
                 'Receipt No: ${receipt.receiptNo}',
-                style: TextStyle(color: Colors.grey[600]),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               Text(
                 dateFormat.format(DateTime.parse(receipt.issuedDate)),
-                style: TextStyle(color: Colors.grey[600]),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
             ],
           ),
@@ -245,10 +220,9 @@ Container _buildReceiptCard(Receipt receipt) {
           ),
           Text(
             receipt.customerName,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 14.0,
-            ),
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
           ),
           SizedBox(
             height: 5.0,
@@ -256,7 +230,7 @@ Container _buildReceiptCard(Receipt receipt) {
           Container(
             width: 250,
             child: Text(
-              receipt.descriptions,
+              receipt?.products?.first?.productDesc ?? '',
               maxLines: 2,
             ),
           ),
@@ -266,7 +240,7 @@ Container _buildReceiptCard(Receipt receipt) {
           Align(
             alignment: Alignment.bottomRight,
             child: Text(
-              'Total:\t\t ${numberFormat.format(double.parse(receipt.totalAmount))}',
+              'Total:\t\t $currency${numberFormat.format(double.parse(receipt.totalAmount))}',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),

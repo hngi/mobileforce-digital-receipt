@@ -3,7 +3,6 @@ import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
-import 'package:digital_receipt/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
@@ -44,10 +43,7 @@ class _ResetPasswordState extends State<ResetPassword> {
               //color: Colors.white,
             ),
           ),
-          leading: new IconButton(
-            icon: new Icon(Icons.arrow_back),
-            onPressed: () {},
-          ),
+          
         ),
         body: ListView(
           children: <Widget>[

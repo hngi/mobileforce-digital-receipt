@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'package:digital_receipt/constant.dart';
-import 'package:digital_receipt/screens/home_page.dart';
 import 'package:flutter/material.dart';
 
 //nav variable to accesss the current state of the navigator
@@ -25,7 +23,7 @@ class NoInternetState extends State<NoInternet> {
             height: MediaQuery.of(context).size.height * 0.75,
             width: MediaQuery.of(context).size.width * 0.75,
             decoration: BoxDecoration(
-              color: Color(0xFFF2F8FF),
+              color: Theme.of(context).dialogBackgroundColor,
               borderRadius: BorderRadius.circular(5),
             ),
             child: Padding(
@@ -45,21 +43,13 @@ class NoInternetState extends State<NoInternet> {
                   ),
                   Text(
                     'NO INTERNET',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                      color: Colors.black87,
-                      // fontFamily: 'Montserrat',
-                    ),
+                    style: Theme.of(context).textTheme.headline6,
                   ),
                   Text(
-                      'Whoops, You have awoken the Egg monster. Please check your connection.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black54,
-                        height: 1.43,
-                      )),
+                    'Whoops, You have awoken the Egg monster. Please check your connection.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
                 ],
               ),
             ),

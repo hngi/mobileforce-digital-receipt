@@ -1,7 +1,9 @@
-
+import 'package:digital_receipt/colors.dart';
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/screens/forgot_password.dart';
 import 'package:digital_receipt/screens/home_page.dart';
+import 'package:digital_receipt/widgets/app_solid_button.dart';
+import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,8 +11,8 @@ import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/widgets/button_loading_indicator.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 import '../utils/connected.dart';
+import 'package:digital_receipt/screens/setup.dart';
 import '../services/api_service.dart';
-import '../utils/connected.dart';
 import 'no_internet_connection.dart';
 import 'signupScreen.dart';
 
@@ -84,70 +86,38 @@ class _LogInScreenState extends State<LogInScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(
-                    height: 34,
+                    height: 24,
                   ),
-                  Container(
-                    alignment: Alignment.center,
-                    height: 50,
-                    child: kLogo1,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    'Log In',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Montserrat',
-                      letterSpacing: 0.03,
+                  Center(
+                    child: Container(
+                      height: 50.0 + 20,
+                      width: 134.0 + 20,
+                      padding: EdgeInsets.all(10),
+                      child: Theme.of(context).brightness == Brightness.dark
+                          ? kLogoWithTextDark
+                          : kLogoWithTextLight,
                     ),
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text('Log In', style: Theme.of(context).textTheme.headline5),
                   SizedBox(
                     height: 5,
                   ),
                   Text(
                     'Welcome to degeit',
-                    style: TextStyle(
-                      color: Color(0xFF0C0C0C),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w300,
-                      fontFamily: 'Montserrat',
-                    ),
+                    style: Theme.of(context).textTheme.subtitle2,
                   ),
                   SizedBox(
                     height: 30,
-                  ),
-                  Text(
-                    'Email Address',
-                    style: TextStyle(
-                      color: Color(0xFF0C0C0C),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w300,
-                      fontFamily: 'Montserrat',
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5,
                   ),
                   _futureEMAILText,
                   SizedBox(
                     height: 20,
                   ),
-                  Text(
-                    'Password',
-                    style: TextStyle(
-                      color: Color(0xFF0C0C0C),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w300,
-                      fontFamily: 'Montserrat',
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  TextFormField(
+                  AppTextFormField(
+                    label: 'Password',
                     focusNode: _passwordFocus,
                     onFieldSubmitted: (value) {
                       _passwordFocus.unfocus();
@@ -167,35 +137,15 @@ class _LogInScreenState extends State<LogInScreen> {
                       Validators.patternRegExp(kOneSpecialCharRegex,
                           'Special Character eg.(\$\ % # & @ _ ^)')
                     ]),
-                    style: TextStyle(
-                      color: Color(0xFF2B2B2B),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Montserrat',
-                    ),
-                    decoration: InputDecoration(
-                      errorMaxLines: 2,
-                      suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _passwordObscureText = !_passwordObscureText;
-                            });
-                          },
-                          icon: _passwordObscureText
-                              ? Icon(Icons.visibility_off)
-                              : Icon(Icons.remove_red_eye),
-                          color: Color(0xFFC8C8C8)),
-                      contentPadding: EdgeInsets.all(15),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                        borderSide: BorderSide(
-                          color: Color(0xFFC8C8C8),
-                          width: 1,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(),
-                      errorStyle: TextStyle(height: 0.5),
-                    ),
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _passwordObscureText = !_passwordObscureText;
+                          });
+                        },
+                        icon: _passwordObscureText
+                            ? Icon(Icons.visibility_off)
+                            : Icon(Icons.remove_red_eye)),
                     obscureText: _passwordObscureText,
                   ),
                   SizedBox(
@@ -227,29 +177,10 @@ class _LogInScreenState extends State<LogInScreen> {
                   SizedBox(
                     width: double.infinity,
                     height: 45,
-                    child: FlatButton(
+                    child: AppSolidButton(
+                      text: 'Log In',
+                      isLoading: isLoading,
                       onPressed: () async => login(),
-                      padding: EdgeInsets.all(10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: isLoading
-                          ? ButtonLoadingIndicator(
-                              color: Colors.white,
-                              width: 20,
-                              height: 20,
-                            )
-                          : Text(
-                              'Log In',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Montserrat',
-                                fontSize: 16,
-                                letterSpacing: 0.3,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                      color: Color(0xFF0B57A7),
                     ),
                   ),
                   SizedBox(
@@ -267,13 +198,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         textAlign: TextAlign.center,
                         text: TextSpan(
                             text: "Don't have an account?",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              letterSpacing: 0.02,
-                              fontWeight: FontWeight.w300,
-                              fontFamily: 'Montserrat',
-                            ),
+                            style: Theme.of(context).textTheme.bodyText2,
                             children: [
                               TextSpan(
                                 text: '  Sign up',
@@ -381,12 +306,31 @@ class _LogInScreenState extends State<LogInScreen> {
             textColor: Colors.white,
             fontSize: 16.0);
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(),
-          ),
-        );
+             Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+
+       /*  var checkBusiness =
+            await _sharedPreferenceService.getStringValuesSF("BUSINESS_INFO");
+
+        if (checkBusiness != null) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Setup(),
+            ),
+          );
+        } */
       } else {
         setState(() {
           isLoading = false;
@@ -503,7 +447,8 @@ class _LogInScreenState extends State<LogInScreen> {
   Widget _builldTextFormFiled(String text) {
     WidgetsBinding.instance
         .addPostFrameCallback((_) => _emailController.text = text);
-    return TextFormField(
+    return AppTextFormField(
+      label: 'Email Address',
       focusNode: _emailFocus,
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) =>
@@ -513,26 +458,8 @@ class _LogInScreenState extends State<LogInScreen> {
         Validators.required('Input Email Address'),
         Validators.email('Invalid Email Address'),
       ]),
-      style: TextStyle(
-        color: Color(0xFF2B2B2B),
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        fontFamily: 'Montserrat',
-      ),
       keyboardType: TextInputType.emailAddress,
-      decoration: InputDecoration(
-        hintText: text,
-        contentPadding: EdgeInsets.all(15),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide(
-            color: Color(0xFFC8C8C8),
-            width: 1,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(),
-        errorStyle: TextStyle(height: 0.5),
-      ),
+      hintText: text,
     );
   }
 }

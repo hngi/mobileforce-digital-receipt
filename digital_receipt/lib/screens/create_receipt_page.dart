@@ -6,9 +6,8 @@ import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/widgets/create_receipt_step2.dart';
 import 'package:digital_receipt/widgets/create_receipt_step0.dart';
 import 'package:digital_receipt/widgets/create_receipt_step1.dart';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
 
 class CreateReceiptPage extends StatefulWidget {
   const CreateReceiptPage({Key key, this.issuedCustomerReceipt})
@@ -109,7 +108,7 @@ class ProductItem extends StatelessWidget {
       children: <Widget>[
         InkWell(
           child: Ink(
-            color: Color(0xFFEBF1F8),
+            color: Theme.of(context).cardColor,
             child: Container(
               padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
@@ -120,34 +119,25 @@ class ProductItem extends StatelessWidget {
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: TextStyle(
-                            fontFamily: 'Montserrat',
-                            fontWeight: FontWeight.normal,
-                            letterSpacing: 0.3,
-                            fontSize: 16,
-                            color: Colors.black,
-                          ),
-                          softWrap: true,
-                        ),
-                      ),
-                      Text(
-                        amount,
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
+                  child: DefaultTextStyle(
+                    style: Theme.of(context).textTheme.headline6.copyWith(
                           fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 16,
-                          color: Colors.black,
                         ),
-                      ),
-                    ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            title,
+                            softWrap: true,
+                          ),
+                        ),
+                        Text(
+                          amount,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -158,13 +148,6 @@ class ProductItem extends StatelessWidget {
         index == 0
             ? Text(
                 'Tap to edit. Swipe to delete',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 14,
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                ),
               )
             : SizedBox.shrink(),
         SizedBox(height: 25),

@@ -1,17 +1,21 @@
 import 'dart:math';
-
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/product.dart';
 import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
-import 'package:digital_receipt/widgets/app_textfield.dart';
-import 'package:digital_receipt/widgets/submit_button.dart';
+import 'package:digital_receipt/widgets/app_text_form_field.dart';
+import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-
+import 'app_drop_selector.dart';
 import 'contact_card.dart';
+import 'package:wc_form_validators/wc_form_validators.dart';
+
+String currency = '';
+final _productDetailsKey = GlobalKey<FormState>();
 
 class ProductDetail extends StatefulWidget {
   final Function(Product) onSubmit;
@@ -40,7 +44,11 @@ class _ProductDetailState extends State<ProductDetail> {
   bool productAdded = false;
   Product product;
 
+  var cartegoryName;
+
   Unit unitValue;
+
+  String _quantityValue = '1';
 
   List<Unit> units = [
     Unit(fullName: 'Gram', singular: 'g', plural: 'g'),
@@ -57,11 +65,20 @@ class _ProductDetailState extends State<ProductDetail> {
   List<Inventory> inventories;
   Inventory selectedInventory;
 
+  int selectedQuantity;
+
+  setCurrency() async {
+    currency = await SharedPreferenceService().getStringValuesSF('Currency');
+  }
+
   @override
   void initState() {
+    setCurrency();
     ApiService().getAllInventories();
+
     product = widget.product;
     if (product != null) {
+      // print('veee ${product.categoryName}');
       productDescController.text = product.productDesc;
       quantityController.text = product.quantity.round().toString();
       unitPriceController.text = product.unitPrice.round().toString();
@@ -97,6 +114,11 @@ class _ProductDetailState extends State<ProductDetail> {
   }
 
   fillWithInventory() {
+    print('enven:: ${selectedInventory.category}');
+    setState(() {
+      cartegoryName = selectedInventory?.category ?? '';
+      selectedQuantity = selectedInventory.quantity;
+    });
     productDescController.text = selectedInventory.title;
     quantityController.text = '1';
     unitPriceController.text = selectedInventory.unitPrice.round().toString();
@@ -125,7 +147,7 @@ class _ProductDetailState extends State<ProductDetail> {
       backgroundColor: Colors.transparent,
       body: Container(
         decoration: BoxDecoration(
-            color: Color(0xFFFFFFFFF),
+            color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10), topRight: Radius.circular(10))),
         child: Column(
@@ -152,265 +174,223 @@ class _ProductDetailState extends State<ProductDetail> {
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(21.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 9),
-
-                     product == null
-
-                          ? GestureDetector(
-                              onTap: () async {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return InventoryDialog(
-                                      inventories: inventories,
-                                      onSubmit: (Inventory inventory) {
-                                        setState(() {
-                                          selectedInventory = inventory;
-                                        });
-                                      },
-                                    );
-                                  },
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Color.fromRGBO(0, 0, 0, 0.12),
-                                      width: 1.5,
-                                    ),
-                                    borderRadius: BorderRadius.circular(5.0)),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 13, vertical: 14),
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(
-                                      selectedInventory != null
-                                          ? selectedInventory.title
-                                          : 'Select from Inventory',
-                                      style: TextStyle(
-                                        fontFamily: 'Montserrat',
-                                        fontWeight: FontWeight.w500,
-                                        letterSpacing: 0.3,
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Icon(Icons.arrow_drop_down),
-                                  ],
-                                ),
-                              ),
-                            )
-                          : SizedBox.shrink(),
-                      SizedBox(
-                        height: 7,
-                      ),
-                      product == null
-                          ? Text(
-                              'Or, enter Product information',
-                              style: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.normal,
-                                letterSpacing: 0.3,
-                                fontSize: 14,
-                                color: Color.fromRGBO(0, 0, 0, 0.6),
-                              ),
-                            )
-                          : SizedBox.shrink(),
-                      SizedBox(height: 7),
-                      SizedBox(height: 9),
-                      Text(
-                        'Description',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 13,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
+                  child: Form(
+                    key: _productDetailsKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(height: 9),
+                        product == null
+                            ? AppDropSelector(
+                                onTap: () async {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return InventoryDialog(
+                                        inventories: inventories,
+                                        onSubmit: (Inventory inventory) {
+                                          setState(() {
+                                            selectedInventory = inventory;
+                                          });
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
+                                text: selectedInventory != null
+                                    ? selectedInventory.title
+                                    : 'Select from Inventory',
+                              )
+                            : SizedBox.shrink(),
+                        SizedBox(
+                          height: 7,
                         ),
-                      ),
-                      SizedBox(height: 5),
-                      AppTextFieldForm(
+                        product == null
+                            ? Text(
+                                'Or, enter Product information',
+                              )
+                            : SizedBox.shrink(),
+                        SizedBox(height: 7),
+                        SizedBox(height: 9),
+                        Text(
+                          'Description',
+                        ),
+                        SizedBox(height: 5),
+                        AppTextFormField(
                           focusNode: _productDescFocus,
                           textInputAction: TextInputAction.next,
                           onFieldSubmitted: (value) => _changeFocus(
                               from: _productDescFocus,
                               to: _quantityDropdownFocus),
                           controller: productDescController,
-                          validator: (val) {
-                            if (val.length < 1) {
-                              return "minimum length is 1 character";
-                            }
-                            return "";
-                          }),
-                      SizedBox(height: 22),
-                      Text(
-                        'Quantity',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 13,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
+                          validator: Validators.compose([
+                            Validators.required('Description is empty'),
+                          ]),
                         ),
-                      ),
-                      SizedBox(height: 5),
-                      Row( 
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                color: _quantityDropdownFocus.hasFocus
-                                    ? Colors.black
-                                    : Color.fromRGBO(0, 0, 0, 0.12),
+                        SizedBox(height: 22),
+                        Text(
+                          'Quantity',
+                        ),
+                        SizedBox(height: 5),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: _quantityDropdownFocus.hasFocus
+                                      ? Theme.of(context)
+                                          .inputDecorationTheme
+                                          .focusedBorder
+                                          .borderSide
+                                          .color
+                                      : Theme.of(context)
+                                          .inputDecorationTheme
+                                          .enabledBorder
+                                          .borderSide
+                                          .color,
+                                ),
                               ),
-                            ),
-                            child: DropdownButton<Unit>(
-                              focusColor: kPrimaryColor,
-                              focusNode: _quantityDropdownFocus,
-                              value: unitValue,
-                              hint: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Unit',
-                                  style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    fontWeight: FontWeight.normal,
-                                    letterSpacing: 0.3,
-                                    fontSize: 16,
-                                    color: Color(0xFF1B1B1B),
+                              child: DropdownButton<Unit>(
+                                focusColor: kPrimaryColor,
+                                focusNode: _quantityDropdownFocus,
+                                value: unitValue,
+                                hint: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Unit',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline6
+                                        .copyWith(
+                                            fontWeight: FontWeight.normal),
                                   ),
                                 ),
-                              ),
-                              underline: Divider(),
-                              items: units.map(
-                                (Unit unit) {
-                                  return DropdownMenuItem<Unit>(
-                                    value: unit,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 8.0),
-                                      child: Text(
-                                        unit.fullName,
-                                        textAlign: TextAlign.start,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6
+                                    .copyWith(fontWeight: FontWeight.normal),
+                                underline: SizedBox.shrink(),
+                                items: units.map(
+                                  (Unit unit) {
+                                    return DropdownMenuItem<Unit>(
+                                      value: unit,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          unit.fullName,
+                                          textAlign: TextAlign.start,
+                                        ),
                                       ),
-                                    ),
-                                  );
+                                    );
+                                  },
+                                ).toList(),
+                                onChanged: (Unit value) {
+                                  // print(value);
+                                  setState(() => unitValue = value);
+                                  _changeFocus(
+                                      from: _quantityDropdownFocus,
+                                      to: _quantityFocus);
                                 },
-                              ).toList(),
-                              onChanged: (Unit value) {
-                                print(value);
-                                setState(() => unitValue = value);
-                                _changeFocus(
-                                    from: _quantityDropdownFocus,
-                                    to: _quantityFocus);
-                              },
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: AppTextFieldForm(
-                              focusNode: _quantityFocus,
-                              textInputAction: TextInputAction.next,
-                              onFieldSubmitted: (value) => _changeFocus(
-                                  from: _quantityFocus, to: _unitPriceFocus),
-                              keyboardType: TextInputType.number,
-                              controller: quantityController,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 22),
-                      Text(
-                        'Unit price',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 13,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      AppTextFieldForm(
-                        focusNode: _unitPriceFocus,
-                        textInputAction: TextInputAction.next,
-                        onFieldSubmitted: (value) =>
-                            _changeFocus(from: _unitPriceFocus, to: _taxFocus),
-                        keyboardType: TextInputType.number,
-                        controller: unitPriceController,
-                      ),
-                      SizedBox(height: 22),
-                      Text(
-                        'Tax',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 13,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      AppTextFieldForm(
-                        focusNode: _taxFocus,
-                        textInputAction: TextInputAction.next,
-                        onFieldSubmitted: (value) =>
-                            _changeFocus(from: _taxFocus, to: _discountFocus),
-                        keyboardType: TextInputType.number,
-                        controller: taxController,
-                      ),
-                      SizedBox(height: 22),
-                      Text(
-                        'Discount',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal,
-                          letterSpacing: 0.3,
-                          fontSize: 13,
-                          color: Color.fromRGBO(0, 0, 0, 0.6),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      AppTextFieldForm(
-                        focusNode: _discountFocus,
-                        textInputAction: TextInputAction.done,
-                        onFieldSubmitted: (value) {
-                          _discountFocus.unfocus();
-                          submitForm();
-                        },
-                        keyboardType: TextInputType.number,
-                        controller: discountController,
-                      ),
-                      productAdded
-                          ? Center(
-                              child: Text(
-                                product == null
-                                    ? 'Product added'
-                                    : 'Product edited',
-                                style: TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontWeight: FontWeight.normal,
-                                  letterSpacing: 0.3,
-                                  fontSize: 13,
-                                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                                ),
                               ),
-                            )
-                          : SizedBox(),
-                      SizedBox(height: 20),
-                      SubmitButton(
-                        title: 'Add',
-                        backgroundColor: Color(0xFF0B57A7),
-                        onPressed: () {
-                          submitForm();
-                        },
-                        textColor: Colors.white,
-                      ),
-                    ],
+                            ),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: AppTextFormField(
+                                focusNode: _quantityFocus,
+                                textInputAction: TextInputAction.next,
+                                onFieldSubmitted: (value) => _changeFocus(
+                                    from: _quantityFocus, to: _unitPriceFocus),
+                                keyboardType: TextInputType.number,
+                                controller: quantityController,
+                                validator: Validators.compose([
+                                  Validators.required('Quantity is empty'),
+                                  Validators.min(
+                                      1, 'Quantity must be more than zero'),
+                                ]),
+                                onChanged: (val) {
+                                  setState(() {
+                                    _quantityValue = val;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 22),
+                        Text(
+                          'Unit price',
+                        ),
+                        SizedBox(height: 5),
+                        AppTextFormField(
+                          focusNode: _unitPriceFocus,
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (value) => _changeFocus(
+                              from: _unitPriceFocus, to: _taxFocus),
+                          keyboardType: TextInputType.number,
+                          controller: unitPriceController,
+                          validator: Validators.compose([
+                            Validators.required('Unit Price is empty'),
+                            Validators.min(
+                                1, 'Unit Price must be more than zero'),
+                          ]),
+                        ),
+                        SizedBox(height: 22),
+                        Text(
+                          'Tax',
+                        ),
+                        SizedBox(height: 5),
+                        AppTextFormField(
+                          focusNode: _taxFocus,
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (value) =>
+                              _changeFocus(from: _taxFocus, to: _discountFocus),
+                          keyboardType: TextInputType.number,
+                          controller: taxController,
+                          validator: Validators.compose([
+                            Validators.required('Tax is empty'),
+                            Validators.min(
+                                0, 'Tax must be greater than or equal to zero'),
+                          ]),
+                        ),
+                        SizedBox(height: 22),
+                        Text(
+                          'Discount',
+                        ),
+                        SizedBox(height: 5),
+                        AppTextFormField(
+                          focusNode: _discountFocus,
+                          textInputAction: TextInputAction.done,
+                          onFieldSubmitted: (value) {
+                            _discountFocus.unfocus();
+                            submitForm();
+                          },
+                          validator: Validators.compose([
+                            Validators.required('Discount is empty'),
+                            Validators.min(0,
+                                'Discount must be greater than or equal to zero'),
+                          ]),
+                          keyboardType: TextInputType.number,
+                          controller: discountController,
+                        ),
+                        productAdded
+                            ? Center(
+                                child: Text(
+                                  product == null
+                                      ? 'Product added'
+                                      : 'Product edited',
+                                ),
+                              )
+                            : SizedBox(),
+                        SizedBox(height: 20),
+                        AppSolidButton(
+                          text: 'Add',
+                          onPressed: () {
+                            submitForm();
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -422,57 +402,93 @@ class _ProductDetailState extends State<ProductDetail> {
   }
 
   void submitForm() {
-    FocusScope.of(context).unfocus();
-    if (unitValue == null) {
-      Fluttertoast.showToast(
-        msg: "Add quantity unit",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-      return;
-    }
-    try {
-      widget.onSubmit(
-        Product(
-          id: productDescController.text.substring(1, 4) +
-              (Random().nextInt(99) + 10).toString(),
-          productDesc: productDescController.text.toUpperCase(),
-          quantity: double.parse(quantityController.text),
-          unitPrice: double.parse(unitPriceController.text),
-          unit: unitValue.getShortName(int.parse(quantityController.text)),
-          amount: (double.parse(quantityController.text) *
-                  double.parse(unitPriceController.text)) +
-              (double.parse(taxController.text)) -
-              (double.parse(discountController.text) /
-                  100 *
-                  (double.parse(quantityController.text) *
-                      double.parse(unitPriceController.text))),
-          tax: double.parse(taxController.text),
-          discount: double.parse(discountController.text),
-        ),
-      );
-      setState(() {
-        productAdded = true;
-        unitValue = null;
+    if (_productDetailsKey.currentState.validate()) {
+      _productDetailsKey.currentState.save();
+
+      FocusScope.of(context).unfocus();
+      if (unitValue == null) {
+        Fluttertoast.showToast(
+          msg: "Add quantity unit",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        return;
+      }
+
+      if (selectedQuantity != null &&
+          double.parse(quantityController.text) >
+              selectedQuantity?.toDouble()) {
+        Fluttertoast.showToast(
+          msg: "There are less items of products in inventory",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        return;
+      } else if (product != null &&
+          double.parse(quantityController.text) > product.quantity) {
+        Fluttertoast.showToast(
+          msg: "There are less items of products in inventory",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        return;
+      }
+
+      try {
+        widget.onSubmit(
+          Product(
+            id: productDescController.text.substring(1, 4) +
+                (Random().nextInt(99) + 10).toString(),
+            productDesc: productDescController.text.toUpperCase(),
+            quantity: double.parse(quantityController.text),
+            unitPrice: double.parse(unitPriceController.text),
+            categoryName: cartegoryName ?? '',
+            unit: unitValue.getShortName(int.parse(quantityController.text)),
+            amount: (double.parse(quantityController.text) *
+                    double.parse(unitPriceController.text)) +
+                (double.parse(taxController.text)) -
+                (double.parse(discountController.text) /
+                    100 *
+                    (double.parse(quantityController.text) *
+                        double.parse(unitPriceController.text))),
+            tax: double.parse(taxController.text),
+            discount: double.parse(discountController.text),
+          ),
+        );
+        setState(() {
+          productAdded = true;
+          /* unitValue = null;
         selectedInventory = null;
         productDescController..text = "";
         quantityController..text = "";
         unitPriceController..text = "";
         taxController..text = "";
-        discountController..text = "";
-      });
-      Future.delayed(Duration(seconds: 1), () {
-        setState(() {
-          productAdded = false;
-          product = null;
+        discountController..text = ""; */
+          if (selectedQuantity != null) {
+            selectedQuantity = selectedQuantity - int.parse(_quantityValue);
+          }
         });
-      });
-    } catch (e) {
-      print(e);
+        Future.delayed(Duration(seconds: 1), () {
+          setState(() {
+            productAdded = false;
+            product = null;
+          });
+        });
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -509,44 +525,25 @@ class InventoryDialog extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: Color(0xFFF2F8FF),
-                ),
+                    borderRadius: BorderRadius.circular(5),
+                    color: Theme.of(context).dialogBackgroundColor),
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width - 32,
                 child: Column(
                   children: <Widget>[
                     TextFormField(
                       onChanged: (val) {
-                        print(val);
+                        //print(val);
                         Provider.of<Inventory>(context, listen: false)
                             .searchInventoryList(val);
                       },
                       decoration: InputDecoration(
                         hintText: "Search inventory",
-                        hintStyle: TextStyle(
-                            color: Color.fromRGBO(0, 0, 0, 0.38),
-                            fontFamily: 'Montserrat'),
                         prefixIcon: IconButton(
                           icon: Icon(Icons.search),
-                          color: Color.fromRGBO(0, 0, 0, 0.38),
                           onPressed: () {},
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(
-                            color: Color.fromRGBO(0, 0, 0, 0.12),
-                            width: 1,
-                          ),
-                        ),
                         contentPadding: EdgeInsets.all(15),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(
-                            color: Color(0xFFC8C8C8),
-                            width: 1.5,
-                          ),
-                        ),
                       ),
                     ),
                     SizedBox(height: 20),
@@ -563,12 +560,14 @@ class InventoryDialog extends StatelessWidget {
                               Text(
                                 "You have not added any inventory item!",
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 16,
-                                  letterSpacing: 0.3,
-                                  color: Color.fromRGBO(0, 0, 0, 0.87),
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle2
+                                    .copyWith(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                      letterSpacing: 0.3,
+                                    ),
                               ),
                               SizedBox(
                                 height: 20,
@@ -588,7 +587,7 @@ class InventoryDialog extends StatelessWidget {
                                   child: ContactCard(
                                     receiptTitle: inventories[index].title,
                                     subtitle:
-                                        'UNIT PRICE: N ${Utils.formatNumber(inventories[index].unitPrice.round().toDouble() ?? 0)}',
+                                        'UNIT PRICE:  $currency${Utils.formatNumber(inventories[index].unitPrice.round().toDouble() ?? 0)}',
                                   ),
                                 );
                               },

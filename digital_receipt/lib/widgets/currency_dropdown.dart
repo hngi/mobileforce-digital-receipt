@@ -1,19 +1,26 @@
-import 'package:digital_receipt/constant.dart';
-import 'package:digital_receipt/models/currency.dart';
-import 'package:digital_receipt/models/customer.dart';
-import 'package:digital_receipt/widgets/contact_card.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../widgets/create_receipt_step0.dart';
+import 'package:flutter_country_picker/flutter_country_picker.dart';
 
-class CurrencyDropdown extends StatelessWidget {
+class CurrencyDropdown extends StatefulWidget {
   const CurrencyDropdown({
     this.currency,
     this.onSubmit,
   });
-  final List currency;
+  final List<Country> currency;
   final Function onSubmit;
-  // List<Currency> currency = Currency.currencyList();
+
+  @override
+  _CurrencyDropdownState createState() => _CurrencyDropdownState();
+}
+
+class _CurrencyDropdownState extends State<CurrencyDropdown> {
+  List<Country> searchList = [];
+  @override
+  void initState() {
+    searchList = widget.currency;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -33,7 +40,7 @@ class CurrencyDropdown extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
-                  color: Color(0xFFF2F8FF),
+                  color: Theme.of(context).dialogBackgroundColor,
                 ),
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width - 32,
@@ -44,51 +51,56 @@ class CurrencyDropdown extends StatelessWidget {
                         //print('jhj');
                         searchCurrencyList(val);
                       },
+                      style: TextStyle(
+                        fontFamily: 'Montserrat'
+                      ),
                       decoration: InputDecoration(
                         hintText: "Search currency",
-                        hintStyle: TextStyle(
-                            color: Color.fromRGBO(0, 0, 0, 0.38),
-                            fontFamily: 'Montserrat'),
                         prefixIcon: IconButton(
                           icon: Icon(Icons.search),
-                          color: Color.fromRGBO(0, 0, 0, 0.38),
                           onPressed: () {},
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(
-                            color: Color.fromRGBO(0, 0, 0, 0.12),
-                            width: 1,
-                          ),
-                        ),
                         contentPadding: EdgeInsets.all(15),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(
-                            color: Color(0xFFC8C8C8),
-                            width: 1.5,
-                          ),
-                        ),
                       ),
                     ),
                     SizedBox(height: 20),
                     Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: currency.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              onSubmit(currency[index]);
-                              Navigator.pop(context);
-                            },
-                            child: ListTile(
-                              leading: Text(currency[index].flag),
-                              title: Text(currency[index].currencyName),
+                      child: searchList.isNotEmpty
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: searchList.length,
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                  onTap: () {
+                                    widget.onSubmit(searchList[index]);
+                                    Navigator.pop(context);
+                                  },
+                                  child: ListTile(
+                                    leading: Image.asset(
+                                      searchList[index].asset,
+                                      package: "flutter_country_picker",
+                                      height: 35,
+                                      width: 46,
+                                    ),
+                                    title: Text(
+                                      searchList[index].currency +
+                                          ' (${searchList[index].currencyISO})',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style:
+                                          TextStyle(fontFamily: 'Montserrat'),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : Center(
+                              child: Text(
+                                "Currency not found",
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.headline6,
+                              ),
                             ),
-                          );
-                        },
-                      ),
                     ),
                   ],
                 ),
@@ -99,12 +111,15 @@ class CurrencyDropdown extends StatelessWidget {
       ),
     );
   }
-      searchCurrencyList(String val) {
-    //print(_customerList[0].name.contains(val));
-    currency
-        .where((e) => e.name.toLowerCase().contains(val.toLowerCase()))
-        .toList();
-    print('ok: $currency');
-    // print('kkk: $tempCustomerLi');
+
+  searchCurrencyList(String val) {
+    setState(() {
+      searchList = widget.currency
+          .where((e) =>
+              e.name.toLowerCase().contains(val.toLowerCase()) ||
+              e.currencyISO.toLowerCase().contains(val.toLowerCase()) ||
+              e.currency.toLowerCase().contains(val.toLowerCase()))
+          .toList();
+    });
   }
 }

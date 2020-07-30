@@ -1,9 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-class AppTextFieldForm extends StatelessWidget {
-  const AppTextFieldForm(
-      {this.hintText,
+class AppTextFormField extends StatelessWidget {
+  const AppTextFormField(
+      {this.readOnly = false,
+      this.onChanged,
+      this.initialValue,
+      this.label,
+      this.hintText,
       this.keyboardType,
       this.obscureText,
       this.controller,
@@ -16,7 +20,8 @@ class AppTextFieldForm extends StatelessWidget {
       this.focusNode,
       this.textInputAction,
       this.onFieldSubmitted,
-      this.suffixIcon});
+      this.suffixIcon,
+      this.prefixIcon});
 
   final String hintText;
   final TextInputType keyboardType;
@@ -32,45 +37,56 @@ class AppTextFieldForm extends StatelessWidget {
   final TextInputAction textInputAction;
   final Function onFieldSubmitted;
   final Widget suffixIcon;
+  final Widget prefixIcon;
+  final String label;
+  final String initialValue;
+  final Function onChanged;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    TextFormField textFormField = TextFormField(
+      readOnly: readOnly,
+      onChanged: onChanged,
+      initialValue: initialValue,
       controller: controller != null ? controller : null,
       focusNode: focusNode,
       textInputAction: textInputAction,
       onFieldSubmitted: onFieldSubmitted,
-      style: TextStyle(
-        height: height,
-        color: Color(0xFF2B2B2B),
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        fontFamily: 'Montserrat',
-      ),
+      style: Theme.of(context).textTheme.bodyText2.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
       validator: validator,
       onSaved: onSaved,
       onTap: onTap,
+      
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.all(15),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide(
-            color: Color.fromRGBO(0, 0, 0, 0.12),
-            width: borderWidth == null ? 1 : borderWidth,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(),
         hintText: hintText,
         suffixIcon: suffixIcon,
-        hintStyle: TextStyle(
-          color: hintColor == null ? Color(0xFF979797) : hintColor,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          fontFamily: 'Montserrat',
+        prefixIcon: prefixIcon,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: BorderSide(
+           // color: Color(0xFFC8C8C8),
+            width: 1,
+          ),
         ),
       ),
       keyboardType: keyboardType != null ? keyboardType : null,
       obscureText: obscureText != null ? obscureText : false,
     );
+
+    return label == null
+        ? textFormField
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(label),
+              SizedBox(
+                height: 5.0,
+              ),
+              textFormField
+            ],
+          );
   }
 }

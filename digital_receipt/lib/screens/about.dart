@@ -9,9 +9,12 @@ class About extends StatefulWidget {
 }
 
 class _AboutState extends State<About> {
-  PackageInfo packageInfo =  PackageInfo();
+  PackageInfo packageInfo;
 
   setPackage() async {
+    setState(() {
+      packageInfo = PackageInfo();
+    });
     var val = await PackageInfo.fromPlatform();
     setState(() {
       packageInfo = val;
@@ -62,7 +65,7 @@ class _AboutState extends State<About> {
               ),
             ),
             subtitle: Text(
-              packageInfo?.buildNumber,
+              packageInfo?.buildNumber ?? '',
               style: TextStyle(
                 fontFamily: 'Montserrat',
               ),
@@ -83,7 +86,17 @@ class _AboutState extends State<About> {
             ),
             onTap: () => showLicensePage(
                 context: context,
-                applicationIcon: SizedBox(height: 30, child: kLogo1)),
+                applicationIcon: Center(
+                  child: Container(
+                    height: 50,
+                    width: 150,
+                    margin: EdgeInsets.all(10),
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: Theme.of(context).brightness == Brightness.dark
+                        ? kLogoWithTextDark
+                        : kLogoWithTextLight,
+                  ),
+                )),
           ),
           ListTile(
               title: Text(
@@ -103,7 +116,7 @@ class _AboutState extends State<About> {
                 ),
               ),
               onTap: () {
-               // _launchURL('https://flutter.dev');
+                 _launchURL('https://degeit.flycricket.io/terms.html');
               }
 
               //subtitle: Text(packageInfo?.buildNumber),

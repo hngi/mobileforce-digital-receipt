@@ -2,14 +2,17 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/inventory.dart';
 import 'package:digital_receipt/models/notification.dart';
+import 'package:digital_receipt/models/reminder.dart';
 import 'package:digital_receipt/utils/connected.dart';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,7 +31,10 @@ final HiveDb hiveDb = HiveDb();
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
-  static String _urlEndpoint = "http://degeitreceipt.pythonanywhere.com/v1";
+  static String _urlEndpoint = kReleaseMode
+      ? "http://degeitreceipt.pythonanywhere.com/v1"
+      : "http://degeittest.pythonanywhere.com/v1";
+  // http://degeittest.pythonanywhere.com/v1
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();
@@ -48,6 +54,7 @@ class ApiService {
   );
 
   Future<String> loginUser(String email_address, String password) async {
+    await _sharedPreferenceService.addStringToSF("REGISTRATION_ID", null);
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -74,8 +81,17 @@ class ApiService {
         //print(password);
         //print(fcmToken);
         //print(deviceType);
+
+        print('''
+        
+            "password": '$password',
+            "email_address": '$email_address',
+            "deviceType": $deviceType,
+            "registration_id": $fcmToken,
+          
+        ''');
         Response response = await _dio.post(
-          "/user/login",
+          "/user/login/",
           data: {
             "password": '$password',
             "email_address": '$email_address',
@@ -90,19 +106,25 @@ class ApiService {
             // headers: {"Authorization": basicAuth},
           ),
         );
+        // print(fcmToken);
 
-        if (response.data["status"] == 200) {
+        print(response.statusCode);
+        print(response.data);
+        if (response.statusCode == 200) {
           print(response.data["status"]);
 
-          userId = response.data["data"]["_id"];
-          print(userId);
+          userId = response.data["user"]["id"].toString();
+          // print('fef $userId');
           // userID = userId;
-          auth_token = response.data["data"]["auth_token"];
+          auth_token = response.data["token"];
 
           //Save details to Shared Preference
-          _sharedPreferenceService.addStringToSF("USER_ID", userId);
-          _sharedPreferenceService.addStringToSF("AUTH_TOKEN", auth_token);
-          _sharedPreferenceService.addStringToSF("EMAIL", email_address);
+          await _sharedPreferenceService.addStringToSF("USER_ID", userId);
+          await _sharedPreferenceService.addStringToSF(
+              "REGISTRATION_ID", fcmToken);
+          await _sharedPreferenceService.addStringToSF(
+              "AUTH_TOKEN", auth_token);
+          await _sharedPreferenceService.addStringToSF("EMAIL", email_address);
           //
           //print("token :");
           //print(auth_token);
@@ -173,19 +195,23 @@ class ApiService {
         return client;
       };
 
-      String auth_token =
+      String token =
           await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
-      Response response = await _dio.get(
+      Response response = await _dio
+          .get(
         "/business/receipt/draft",
         options: Options(
           followRedirects: false,
           validateStatus: (status) {
             return status < 500;
           },
-          headers: {"token": auth_token},
+          headers: {"token": token},
         ),
-      );
-
+      )
+          .timeout(Duration(seconds: 8), onTimeout: () {
+        return null;
+      });
+      // print('bty: ${response.data}');
       if (response.statusCode == 200) {
         var res = response.data["data"] as List;
         //print('res:::::: $res');
@@ -195,11 +221,13 @@ class ApiService {
           List temp = res.getRange(0, 99).toList();
           await hiveDb.addDraft(temp);
 
-          return hiveDb.getDraft();
+          // return hiveDb.getDraft();
+          return res;
         } else if (res.length < 100 && connectivityResult) {
           await hiveDb.addDraft(res);
 
           return hiveDb.getDraft();
+          //return res;
         } else {
           print('res: 9');
           return hiveDb.getDraft();
@@ -239,24 +267,20 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        /*  print(response.data["data"]);
-        List<Receipt> issued_receipts = [];
-        await Future.forEach(response.data["data"], (data) {
-          Receipt receipt = Receipt.fromJson(data);
-          issued_receipts.add(receipt);
-        });
-        print(issued_receipts); */
-        /*   response.data["data"].forEach((data) {
-          
-        }); */
-
-        if (response.data["data"].length >= 100) {
+        //print(response.data["data"][14]);
+        var res = response.data["data"];
+        if (res.length >= 100) {
           List temp = response.data["data"].getRange(0, 99).toList();
           await hiveDb.addReceiptHistory(temp);
-          return hiveDb.getReceiptHistory();
+
+          res = res.map((e) {
+            Receipt temp = Receipt.fromJson(e);
+            return temp;
+          });
+          return List<Receipt>.from(res);
         } else if (response.data["data"].length < 100) {
           await hiveDb.addReceiptHistory(response.data["data"]);
-          //await hiveDb.getReceiptHistory();
+
           return hiveDb.getReceiptHistory();
         } else {
           return hiveDb.getReceiptHistory();
@@ -274,15 +298,13 @@ class ApiService {
   Future<String> signinUser(String email, String password, String name) async {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
-      var uri = '$_urlEndpoint/user/register';
+      var uri = '$_urlEndpoint/user/register/';
       var response = await http.post(
         uri,
-        body: {
-          "email_address": "$email",
-          "password": "$password",
-          "name": "$name"
-        },
+        body: {"email": "$email", "password": "$password", "username": "$name"},
       );
+      print(uri);
+      print(response.statusCode);
       print(response.body);
       if (response.statusCode == 200) {
         return "true";
@@ -309,6 +331,8 @@ class ApiService {
         _sharedPreferenceService.addStringToSF("AUTH_TOKEN", 'empty');
         _sharedPreferenceService.addStringToSF("USER_ID", null);
         _sharedPreferenceService.addStringToSF('BUSINESS_INFO', null);
+        _sharedPreferenceService.addStringToSF("REGISTRATION_ID", null);
+        _sharedPreferenceService.addStringToSF("ISSUER_SIGNATURE", null);
         print('done');
 
         return true;
@@ -337,7 +361,7 @@ class ApiService {
       print(
         """
       name: $name,
-      number: $phoneNumber,
+      phone_number: $phoneNumber,
       address: $address,
       slogan: $slogan
       """,
@@ -348,11 +372,9 @@ class ApiService {
           uri,
           headers: <String, String>{
             "token": token,
-            // HttpHeaders.contentTypeHeader: 'application/json',
-            // HttpHeaders.acceptHeader: 'application/json',
           },
           body: {
-            "phoneNumber": phoneNumber,
+            "phone_number": phoneNumber,
             "name": name,
             "address": address,
             "slogan": slogan,
@@ -392,7 +414,7 @@ class ApiService {
       var res = await response.stream.bytesToString();
       print(res);
       Fluttertoast.showToast(
-        msg: 'Message sent successfully',
+        msg: 'Business information has been updated',
         fontSize: 12,
         toastLength: Toast.LENGTH_LONG,
         backgroundColor: Colors.green,
@@ -411,6 +433,48 @@ class ApiService {
     }
   }
 
+  Future updateSignature(String signature) async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/info/update';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      String businessId =
+          await _sharedPreferenceService.getStringValuesSF('Business_ID');
+      print(businessId);
+
+      print(
+        """
+     signature: $signature
+      """,
+      );
+
+      try {
+        var response = await http.put(
+          uri,
+          headers: <String, String>{
+            "token": token,
+          },
+          body: {
+            "signature": signature,
+            "businessId": businessId,
+          },
+        );
+        print(jsonDecode(response.body));
+        //print(response.body);
+        if (response.statusCode == 200) {
+          print(jsonDecode(response.body));
+          return jsonDecode(response.body);
+        }
+        return null;
+      } catch (e) {
+        throw (e);
+      }
+    } else {
+      return null;
+    }
+  }
+
   Future<bool> setUpBusiness({
     String token,
     String phoneNumber,
@@ -418,6 +482,8 @@ class ApiService {
     String address,
     String slogan,
     String logo,
+    String signature,
+    String currency,
   }) async {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
@@ -430,6 +496,12 @@ class ApiService {
       if (slogan != null) {
         request.fields['slogan'] = slogan;
       }
+      if (signature != null) {
+        request.fields['signature'] = signature;
+      }
+      if (currency != null) {
+        request.fields['currency'] = currency;
+      }
 
       request.headers['token'] = token;
       if (logo != null) {
@@ -439,14 +511,15 @@ class ApiService {
       }
 
       var response = await request.send();
-      print('code: ${response.statusCode}');
       var res = await response.stream.bytesToString();
       print(res);
       if (response.statusCode == 200) {
         var businessId = jsonDecode(res)['id'];
         //set the token to null
+        print('iddddd: $businessId');
         await _sharedPreferenceService.addStringToSF('Business_ID', businessId);
         await _sharedPreferenceService.addStringToSF('LOGO', logo);
+
         return true;
       }
       return false;
@@ -581,14 +654,58 @@ class ApiService {
     }
   }
 
+  Future uploadSignature(String signature, String receiptId) async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/receipt/upload/signature';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      String businessId =
+          await _sharedPreferenceService.getStringValuesSF('Business_ID');
+      print(businessId);
+
+      print(
+        """
+     signature: $signature
+      """,
+      );
+
+      try {
+        var response = await http.put(
+          uri,
+          headers: <String, String>{
+            "token": token,
+          },
+          body: {
+            "signature": signature,
+            "receiptId": receiptId,
+          },
+        );
+        print(jsonDecode(response.body));
+
+        if (response.statusCode == 200) {
+          return jsonDecode(response.body);
+        }
+        return null;
+      } catch (e) {
+        throw (e);
+      }
+    } else {
+      return null;
+    }
+  }
+
   //Fetch users from db;
   Future<AccountData> fetchAndSetUser() async {
-    var url = "$_urlEndpoint/business/info/all";
+    print('innn');
+    var url = "$_urlEndpoint/business/user/all";
 
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
     String userID = await _sharedPreferenceService.getStringValuesSF('USER_ID');
+
+    print('userID: $userID');
 
     var email = await _sharedPreferenceService.getStringValuesSF('EMAIL');
 
@@ -603,20 +720,29 @@ class ApiService {
         },
       );
 
-      dynamic res = jsonDecode(response.body);
+      dynamic res;
 
-      res = res['data'] as List;
+      if (response != null &&
+          response.statusCode == 200 &&
+          jsonDecode(response.body)['data'].runtimeType != String) {
+        dynamic res = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
-        print(response.statusCode);
+        print('jhjhjre: ${jsonDecode(response.body)['data'].runtimeType}');
+        res = res['data'] as List;
+
         res = res.firstWhere(
-          (e) => e['user'] == userID,
+          (e) => e['user'].toString() == userID,
           orElse: () {
             print('object');
           },
         );
         if (res != null) {
-          print('resid: {res}');
+          await _sharedPreferenceService.addStringToSF(
+              'ISSUER_SIGNATURE', res['signature']);
+
+          await _sharedPreferenceService.addStringToSF(
+              'Currency', res['currency']);
+
           await _sharedPreferenceService.addStringToSF(
               'Business_ID', res['id']);
           return AccountData(
@@ -625,36 +751,17 @@ class ApiService {
             phone: res['phone_number'],
             address: res['address'],
             slogan: res['slogan'],
-            logo: 'http://degeitreceipt.pythonanywhere.com${res['logo']}',
+            logo: kReleaseMode
+                ? 'http://degeitreceipt.pythonanywhere.com${res['logo']}'
+                : "http://degeittest.pythonanywhere.com${res['logo']}",
             email: email,
           );
         } else {
-          var result =
-              await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
-          var res = jsonDecode(result);
-          return AccountData(
-            id: res['id'] ?? '',
-            name: res['name'] ?? '',
-            phone: res['phone'] ?? '',
-            address: res['address'] ?? '',
-            slogan: res['slogan'] ?? '',
-            logo: 'https://degeit-receipt.herokuapp.com${res['logo']}' ?? '',
-            email: email,
-          );
+          print(jsonDecode(response.body));
+          return null;
         }
       } else {
-        var result =
-            await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
-        var res = jsonDecode(result);
-        return AccountData(
-          id: res['id'] ?? '',
-          name: res['name'] ?? '',
-          phone: res['phone'] ?? '',
-          address: res['address'] ?? '',
-          slogan: res['slogan'] ?? '',
-          logo: 'https://degeit-receipt.herokuapp.com${res['logo']}' ?? '',
-          email: email,
-        );
+        return null;
       }
     } else {
       var result =
@@ -761,15 +868,15 @@ class ApiService {
 
   /// Returns a list of notifications
   /// if there are no notifications it returns an empty list
-  Future<List<NotificationModel>> getAllNotifications() async {
-    var connectivityResult = await Connected().checkInternet();
+  Future getAllNotifications() async {
+    var connectivityResult = await (Connected().checkInternet());
     if (connectivityResult) {
       var uri = "$_urlEndpoint/user/notification/all";
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
       print(token);
-      List<NotificationModel> _allNotifications = [];
-      var connectivityResult = await Connected().checkInternet();
+      var connectivityResult = await (Connected().checkInternet());
+      // List<NotificationModel> _allNotifications = [];
       if (connectivityResult) {
         var response = await http.get(
           Uri.encodeFull(uri),
@@ -779,18 +886,27 @@ class ApiService {
         );
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          data["data"].forEach((notification) {
-            _allNotifications.add(NotificationModel.fromJson(notification));
-          });
-          return _allNotifications;
+
+          var res = data["data"];
+          if (res.length >= 100) {
+            List temp = data["data"].getRange(0, 99).toList();
+            await hiveDb.addNotification(temp);
+
+            return res;
+          } else if (data["data"].length < 100) {
+            await hiveDb.addNotification(data["data"]);
+
+            return hiveDb.getNotification();
+          } else {
+            return hiveDb.getNotification();
+          }
         } else {
           print("All notifications status code ${response.statusCode}");
-          return [];
+          return null;
         }
       }
-      return [];
     } else {
-      return [];
+      return hiveDb.getNotification() ?? Future.error('No network Connection');
     }
   }
 
@@ -814,19 +930,23 @@ class ApiService {
         if (response.statusCode == 200) {
           // var res = response.data["data"] as List;
           var res = jsonDecode(response.body)['data'];
+          print(res);
           // checks if the length of history is larger than 100 and checks for internet
           if (res.length >= 100) {
             List temp = res.getRange(0, 99).toList();
             await hiveDb.addCustomer(temp);
 
-            return hiveDb.getCustomer();
+            // return hiveDb.getCustomer();
+            return res;
           } else if (res.length < 100) {
             await hiveDb.addCustomer(res);
 
             return hiveDb.getCustomer();
+            //return res;
           } else {
             print('res: 9');
             return hiveDb.getCustomer();
+            //return res;
           }
         } else {
           var res = jsonDecode(response.body)['data'];
@@ -845,8 +965,6 @@ class ApiService {
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
-      List<Inventory> _inventories = [];
-
       var connectivityResult = await Connected().checkInternet();
       if (connectivityResult) {
         var response = await http.get(
@@ -858,12 +976,17 @@ class ApiService {
         if (response.statusCode == 200) {
           log(response.body);
           var data = jsonDecode(response.body)['data'];
-          /////
+
           if (data.length >= 100) {
             List temp = data.getRange(0, 99).toList();
             await hiveDb.addInventory(temp);
 
-            return hiveDb.getInventory();
+            List res = data.map((e) {
+              Inventory temp = Inventory.fromJson(e);
+              return temp;
+            }).toList();
+            print('data: $res');
+            return res;
           } else if (data.length < 100) {
             await hiveDb.addInventory(data);
 
@@ -872,21 +995,9 @@ class ApiService {
             print('res: 9');
             return hiveDb.getInventory();
           }
-          print('data: $data');
-          try {
-            //log(response.body);
-            data.forEach((inventory) {
-              _inventories.add(Inventory.fromJson(inventory));
-            });
-            log(_inventories.toString());
-          } catch (e) {
-            print(e);
-          }
-          print(_inventories);
-          return _inventories;
         } else {
           var res = jsonDecode(response.body)['data'];
-          return res;
+          return null;
         }
       }
     } else {
@@ -903,13 +1014,14 @@ class ApiService {
       final http.Response res = await http.get(url, headers: <String, String>{
         "token": token,
       }).catchError((err) => print(err));
-
+      print(res.statusCode);
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
-        //print(data);
+        print(data);
         await hiveDb.addDashboardInfo(data);
-        var val = await hiveDb.getDashboardInfo();
-        return val;
+        // var val = await hiveDb.getDashboardInfo();
+        // return val;
+        return data;
       } else {
         return null;
       }
@@ -946,13 +1058,14 @@ class ApiService {
   ) async {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
-      var uri = '$_urlEndpoint/user/forgot_password';
+      var uri = '$_urlEndpoint/user/forgot_password/';
 
       var response = await http.put(
         uri,
         body: {"email_address": "$email", "password": "$newPassword"},
       );
       print(response.body);
+      print(response.statusCode);
       if (response.statusCode == 200) {
         return 'true';
       }
@@ -1114,6 +1227,98 @@ class ApiService {
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
       print(token);
       var response = await http.delete(
+        uri,
+        headers: {"token": token},
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        return 'true';
+      }
+      return 'false';
+    } else {
+      return 'false';
+    }
+  }
+
+  Future<String> deleteDraft({
+    String id,
+  }) async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/receipt/$id';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      print(token);
+      var response = await http.delete(
+        uri,
+        headers: {"token": token},
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        return 'true';
+      }
+      return 'false';
+    } else {
+      return 'false';
+    }
+  }
+
+  getPromotion() async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/promotions';
+      var response = await http.get(
+        uri,
+      );
+      String versionNumber =
+          await _sharedPreferenceService.getStringValuesSF("VERSION");
+      String isPromotion = "false";
+      var res = json.decode(response.body);
+      print("promotion response ");
+      print(res['data']["id"]);
+      if (response.statusCode == 200 &&
+          res['data']['versionNumber'] != versionNumber &&
+          isPromotion == 'false') {
+        return res['data'];
+      }
+      return null;
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<Reminder>> getReminders() async {
+    String token =
+        await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    print("token: $token");
+    String url = '$_urlEndpoint/business/receipt/issued';
+
+    final http.Response res = await http.get(url, headers: <String, String>{
+      "token": token,
+    }).catchError((err) => print(err));
+    print(res.statusCode);
+    if (res.statusCode == 200) {
+      var responseData = json.decode(res.body);
+      print("Reminder data");
+      print(responseData['data']);
+      return formatReminderResponse(responseData);
+    } else {
+      return null;
+    }
+  }
+
+  updatePartPaymentReminder({
+    String id,
+    String date,
+    String time,
+  }) async {
+    var connectivityResult = await Connected().checkInternet();
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/receipt/partpayment/$id';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      print(token);
+      var response = await http.put(
         uri,
         headers: {"token": token},
       );

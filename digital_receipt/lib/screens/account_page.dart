@@ -1,12 +1,9 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:digital_receipt/screens/change_password_screen.dart';
 import 'package:digital_receipt/screens/edit_account_information.dart';
-import 'package:digital_receipt/screens/upgrade_screen.dart';
-import 'package:digital_receipt/utils/customtext.dart';
 import "package:flutter/material.dart";
 import 'dart:async';
 import '../providers/business.dart';
@@ -19,6 +16,7 @@ import '../services/api_service.dart';
 import '../services/shared_preference_service.dart';
 import '../models/account.dart';
 import 'login_screen.dart';
+import 'setup.dart';
 
 final SharedPreferenceService _sharedPreferenceService =
     SharedPreferenceService();
@@ -31,6 +29,11 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  // static const String iapId = 'android.test.purchaseed';
+  // String _platformVersion = 'Unknown';
+  // List<IAPItem> _items = [];
+  // List<PurchasedItem> _purchases = [];
+
   final String username = "Geek Tutor";
   String label;
   bool _loading = false;
@@ -84,6 +87,7 @@ class _AccountPageState extends State<AccountPage> {
     setState(() {
       localLogo = logo;
     });
+    print('jhjjn: $res');
     if (res != null) {
       Provider.of<Business>(context, listen: false).setAccountData = res;
       var val = Provider.of<Business>(context, listen: false).toJson();
@@ -94,13 +98,18 @@ class _AccountPageState extends State<AccountPage> {
       setState(() {
         localLogo = logo;
       });
-      print(val);
+    } else if (res == null) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) => Setup()),
+          (route) => false);
     }
   }
 
   @override
   void initState() {
     callFetch();
+    // initPlatformState();
     super.initState();
   }
 
@@ -126,7 +135,7 @@ class _AccountPageState extends State<AccountPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
 ////////////////////////////////
-              ///please do no delet this comment #Francis
+              ///please do no delete this comment #Francis
 /////////////////////////////////////////////
               // Center(
               //   child: GestureDetector(
@@ -172,7 +181,7 @@ class _AccountPageState extends State<AccountPage> {
               //   ),
               // ),
 ////////////////////////////////
-              ///please do no delet this comment #Francis
+              ///please do no delete this comment #Francis
 /////////////////////////////////////////////
               SizedBox(
                 height: 45,
@@ -224,7 +233,7 @@ class _AccountPageState extends State<AccountPage> {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: CustomText.display1,
+                  style: Theme.of(context).textTheme.headline5,
                 ),
               ),
               SizedBox(
@@ -291,11 +300,17 @@ class _AccountPageState extends State<AccountPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text('Change Password', style: CustomText.display3),
+                    Text('Change Password',
+                        style: Theme.of(context).textTheme.headline6.copyWith(
+                            fontSize: 17, fontWeight: FontWeight.bold)),
                     Icon(Icons.keyboard_arrow_right)
                   ],
                 ),
               ),
+              SizedBox(
+                height: 47,
+              ),
+
               SizedBox(
                 height: 47,
               ),
@@ -416,23 +431,14 @@ class InformationData extends StatelessWidget {
           children: <Widget>[
             Text(
               '$label : ',
-              style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  height: 1.43,
-                  letterSpacing: 0.03),
+              style: Theme.of(context).textTheme.headline6,
             ),
             Expanded(
               child: Text(
                 '$detail',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontWeight: FontWeight.normal,
-                  color: Colors.black,
-                  fontSize: 15,
-                ),
+                style: Theme.of(context).textTheme.headline6,
               ),
             )
           ],
@@ -442,7 +448,7 @@ class InformationData extends StatelessWidget {
         ),
         Container(
           height: 1,
-          color: Color.fromRGBO(0, 0, 0, 0.12),
+          color: Theme.of(context).disabledColor,
         ),
       ],
     );

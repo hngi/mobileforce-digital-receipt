@@ -1,5 +1,7 @@
-import 'package:digital_receipt/widgets/export_option.dart';
+import 'package:digital_receipt/utils/theme_manager.dart';
+import 'package:digital_receipt/widgets/signature_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:theme_provider/theme_provider.dart';
 import '../services/shared_preference_service.dart';
 
 class PreferencePage extends StatefulWidget {
@@ -8,7 +10,7 @@ class PreferencePage extends StatefulWidget {
 }
 
 class _PreferencePageState extends State<PreferencePage> {
-  bool _dark;
+  bool _isDark = false;
   bool _currentAutoLogoutStatus = false;
 
   getCurrentAutoLogoutStatus() async {
@@ -22,14 +24,10 @@ class _PreferencePageState extends State<PreferencePage> {
   @override
   void initState() {
     super.initState();
-    _dark = false;
+    _isDark = false;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getCurrentAutoLogoutStatus();
     });
-  }
-
-  Brightness _getBrightness() {
-    return _dark ? Brightness.dark : Brightness.light;
   }
 
   static SharedPreferenceService _sharedPreferenceService =
@@ -37,12 +35,13 @@ class _PreferencePageState extends State<PreferencePage> {
 
   @override
   Widget build(BuildContext context) {
+    _isDark = ThemeProvider.controllerOf(context).currentThemeId ==
+            ThemeManager.darkTheme
+        ? true
+        : false;
     return Scaffold(
       //backgroundColor: Color(0xFFF2F8FF),
-      appBar: AppBar(
-          //backgroundColor: Color(0xFFF2F8FF),
-          ),
-
+      appBar: AppBar(),
       body: SafeArea(
         child: Stack(
           fit: StackFit.expand,
@@ -63,31 +62,54 @@ class _PreferencePageState extends State<PreferencePage> {
                     padding: EdgeInsets.fromLTRB(0, 16.0, 0, 16.0),
                     //alignment: FractionalOffset(0.5, 2.0),
                   ),
-                  // SwitchListTile(
-                  //   activeColor: Color(0xFF25CCB3),
-                  //   contentPadding: const EdgeInsets.all(0),
-                  //   value: false,
-                  //   title: Text('Dark Mode'),
-                  //   onChanged: (val) {},
-                  // ),
-                  // SwitchListTile(
-                  //   activeColor: Color(0xFF25CCB3),
-                  //   contentPadding: const EdgeInsets.all(0),
-                  //   value: false,
-                  //   title: Text('Push Notifications'),
-                  //   onChanged: (val) {},
-                  // ),
+                  SwitchListTile(
+                    activeColor: Color(0xFF25CCB3),
+                    contentPadding: const EdgeInsets.all(0),
+                    value: _isDark,
+                    title: Text(
+                      'Dark Mode',
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontFamily: 'Montserrat',
+                          ),
+                    ),
+                    onChanged: (val) {
+                      ThemeProvider.controllerOf(context).nextTheme();
+                    },
+                  ),
                   SwitchListTile(
                       activeColor: Color(0xFF25CCB3),
                       contentPadding: const EdgeInsets.all(0),
                       value: _currentAutoLogoutStatus,
-                      title: Text('Enable Auto Logout'),
+                      title: Text(
+                        'Enable Auto Logout',
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              fontFamily: 'Montserrat',
+                            ),
+                      ),
                       onChanged: (value) {
                         _sharedPreferenceService.addBoolToSF(
                             "AUTO_LOGOUT", value);
                         getCurrentAutoLogoutStatus();
                       }),
-                  ExportOptionButton(),
+                  ListTile(
+                    title: Text(
+                      'Change Signature',
+                      style: Theme.of(context).textTheme.headline6.copyWith(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w400,
+                          ),
+                    ),
+                    onTap: () {
+                      
+                      showDialog(
+                        context: context,
+                        builder: (context) => SignatureDialog(),
+                      );
+                    },
+                    contentPadding: const EdgeInsets.all(0),
+                    trailing: Icon(Icons.keyboard_arrow_right),
+                  )
+                  // ExportOptionButton(),
                 ],
               ),
             )

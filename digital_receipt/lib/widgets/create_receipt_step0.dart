@@ -1,21 +1,19 @@
-import 'dart:io';
-
 import 'package:carousel_slider/carousel_controller.dart';
-import 'package:digital_receipt/widgets/button_loading_indicator.dart';
-import 'package:fluttercontactpicker/fluttercontactpicker.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:digital_receipt/models/currency.dart';
 import 'package:digital_receipt/models/customer.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/services/CarouselIndex.dart';
 import 'package:digital_receipt/services/api_service.dart';
-import 'package:digital_receipt/widgets/app_textfield.dart';
+import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:digital_receipt/widgets/customer_dropdown.dart';
-import 'package:digital_receipt/widgets/submit_button.dart';
+import 'package:digital_receipt/widgets/contact_dropdown.dart';
+import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'app_drop_selector.dart';
 
-import 'currency_dropdown.dart';
 
 class CreateReceiptStep0 extends StatefulWidget {
   const CreateReceiptStep0(
@@ -54,12 +52,12 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
 
   ReceiptCategory selectedCategory;
   Customer selectedCustomer;
-  Currency selectedCurrency = Currency.currencyList().elementAt(0);
+  //Currency selectedCurrency = Currency.currencyList().elementAt(0);
 
   // Needed to decide weather to create a new customer or not
   List<Customer> customers = [];
 
-  List<Currency> currency = Currency.currencyList();
+  //List<Currency> currency = Currency.currencyList();
 
   String _customerName, _customerEmail, _customerAddress, _customerPNumber;
 
@@ -99,11 +97,11 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
   @override
   Widget build(BuildContext context) {
     bool isPickingContact = false;
-    Function getContactFromPhone = () async {
+    /* Function getContactFromPhone = () async {
       setState(() {
         isPickingContact = true;
-      });
-      if (await FlutterContactPicker.hasPermission()) {
+      }); */
+    /*  if (await FlutterContactPicker.hasPermission()) {
         final PhoneContact contact =
             await FlutterContactPicker.pickPhoneContact();
         setState(() {
@@ -111,16 +109,12 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
           _pNumberController.text = contact.phoneNumber.number;
         });
       } else {
-        final granted = await FlutterContactPicker.requestPermission();
-        showDialog(
-            context: context,
-            child: AlertDialog(
-                title: const Text('Granted: '), content: Text('$granted')));
-      }
-      setState(() {
+        final granted = await FlutterContactPicker.requestPermission(); */
+
+    /* setState(() {
         isPickingContact = false;
       });
-    };
+    }; */
     // SendReceiptService srs = Provider.of<SendReceiptService>(context);
     return SingleChildScrollView(
       child: Padding(
@@ -133,28 +127,14 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               SizedBox(
                 height: 14,
               ),
-              Text(
-                'Create a receipt',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.3,
-                  fontSize: 22,
-                  color: Colors.black,
-                ),
-              ),
+              Text('Create a receipt',
+                  style: Theme.of(context).textTheme.headline5),
               SizedBox(
                 height: 5,
               ),
               Text(
                 'Lets get started',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 14,
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(
                 height: 24,
@@ -163,7 +143,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Row(
-                    children: map<Widget>([1, 1, 2], (index, url) {
+                    children: map<Widget>([0, 1, 2], (index, url) {
                       print(index);
                       return GestureDetector(
                         onTap: () {
@@ -186,7 +166,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                                         color: Color.fromRGBO(0, 0, 0, 0.16))
                                   ]),
                             ),
-                            index != 2 ? SizedBox(width: 10) : SizedBox.shrink()
+                            index != 3 ? SizedBox(width: 10) : SizedBox.shrink()
                           ],
                         ),
                       );
@@ -197,28 +177,13 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               SizedBox(
                 height: 24,
               ),
-              Text(
-                'Category',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.3,
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-              ),
+              Text('Category', style: Theme.of(context).textTheme.headline6),
               SizedBox(
                 height: 5,
               ),
               Text(
                 'This helps you track your sales from different platforms',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.w300,
-                  letterSpacing: 0.3,
-                  fontSize: 12,
-                  color: Color(0xFF141414),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(
                 height: 15,
@@ -226,21 +191,15 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               DropdownButtonFormField(
                 hint: Text(
                   'Select category',
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.normal,
-                    letterSpacing: 0.3,
-                    fontSize: 16,
-                    color: Color(0xFF1B1B1B),
-                  ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      .copyWith(fontWeight: FontWeight.normal),
                 ),
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 16,
-                  color: Color(0xFF1B1B1B),
-                ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    .copyWith(fontWeight: FontWeight.normal),
                 items: [
                   DropdownMenuItem(
                     value: ReceiptCategory.WHATSAPP,
@@ -273,12 +232,12 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                   }
                   return null;
                 },
-                iconEnabledColor: Color.fromRGBO(0, 0, 0, 0.87),
                 onChanged: (value) {
                   print(value);
                   setState(() {
                     selectedCategory = value;
-                    Provider.of<Receipt>(context).setCategory(selectedCategory);
+                    Provider.of<Receipt>(context, listen: false)
+                        .setCategory(selectedCategory);
                   });
                 },
                 value: selectedCategory,
@@ -291,6 +250,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                       width: 1.5,
                     ),
                   ),
+                  border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(),
                   //hintText: hintText,
                   hintStyle: TextStyle(
@@ -306,77 +266,22 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
               Text(
                 'Customer information',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.3,
-                  fontSize: 16,
-                  color: Color(0xFF000000),
-                ),
+                style: Theme.of(context).textTheme.headline6,
               ),
               SizedBox(
                 height: 5,
               ),
               Text(
                 'This information is display on the receipt. If the customer is saved, select customer',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 14,
-                  color: Color(0xFF141414),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(
                 height: 10,
               ),
-/*
-              DropdownButtonFormField<Customer>(
-                value: selectedCustomer,
-                onChanged: (Customer value) {
-                  setState(() {
-                    selectedCustomer = value;
-                  });
-                },
-                validator: (value) {
-                  if (_nameController.text == null ||
-                      _nameController.text.isEmpty) {
-                    if (value == null) {
-                      return "Select a customer or enter a new one";
-                    }
-                  }
-                  return null;
-                },
-                items: customers.map((Customer customer) {
-                  return DropdownMenuItem<Customer>(
-                    value: customer.email != null ? customer : null,
-                    child: Text(
-                      customer.name,
-                    ),
-                  );
-                }).toList(),
-                iconEnabledColor: Color.fromRGBO(0, 0, 0, 0.87),
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(15),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                    borderSide: BorderSide(
-                      color: Color(0xFFC8C8C8),
-                      width: 1.5,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(),
-                  //hintText: hintText,
-                  hintStyle: TextStyle(
-                    color: Color(0xFF979797),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'Montserrat',
-                  ),
-                ),
-              ),
-*/
-              GestureDetector(
+              AppDropSelector(
+                text: selectedCustomer != null
+                    ? selectedCustomer.name
+                    : 'Select Customer',
                 onTap: () async {
                   showDialog(
                     context: context,
@@ -386,81 +291,69 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                         onSubmit: (customer) {
                           setState(() {
                             selectedCustomer = customer;
+                            _nameController.text = customer.name;
+                            _emailController.text = customer.email;
+                            _addressController.text = customer.address;
+                            _pNumberController.text = customer.phoneNumber;
                           });
                         },
                       );
                     },
                   );
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Color(0xFFC8C8C8),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0)),
-                  padding: EdgeInsets.symmetric(horizontal: 13, vertical: 14),
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        selectedCustomer != null
-                            ? selectedCustomer.name
-                            : 'Select Customer',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.3,
-                          fontSize: 16,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Spacer(),
-                      Icon(Icons.arrow_drop_down),
-                    ],
-                  ),
-                ),
               ),
               SizedBox(
                 height: 25,
               ),
               Text(
                 'Otherwise, enter customer information',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 14,
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(
                 height: 7,
               ),
               Text(
                 'Customer name',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 13,
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(height: 5),
-              AppTextFieldForm(
+              AppTextFormField(
                 focusNode: _nameFocus,
                 textInputAction: TextInputAction.next,
                 suffixIcon: IconButton(
-                  icon: isPickingContact
-                      ? ButtonLoadingIndicator(
-                          height: 20,
-                          width: 20,
-                        )
-                      : Icon(
-                          Icons.contacts,
-                          color: Colors.black26,
-                        ),
-                  onPressed: getContactFromPhone,
+                  // focusNode: _nameFocus,
+                  icon: Icon(
+                    Icons.contacts,
+                    color: Theme.of(context)
+                        .inputDecorationTheme
+                        .enabledBorder
+                        .borderSide
+                        .color,
+                  ),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => ContactDropdown(
+                              onSubmit: (Contact contact) {
+                                // selectedCustomer = contact;
+                                _nameController.text = contact.displayName;
+                                _emailController.text =
+                                    contact.emails.toList().isNotEmpty
+                                        ? contact.emails?.toList()[0].value
+                                        : '';
+                                _addressController.text =
+                                    contact.postalAddresses.toList().isNotEmpty
+                                        ? contact.postalAddresses
+                                            ?.toList()[0]
+                                            .street
+                                        : '';
+                                _pNumberController.text =
+                                    contact.phones.toList().isNotEmpty
+                                        ? contact.phones?.toList()[0].value
+                                        : '';
+                              },
+                            ));
+                  },
                 ),
                 onFieldSubmitted: (value) =>
                     _changeFocus(from: _nameFocus, to: _emailFocus),
@@ -470,8 +363,8 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     if (value.isEmpty) {
                       return "Enter customer name";
                     }
-                    if (value.length < 6) {
-                      return 'customer name must be more than 8 characters';
+                    if (value.length < 4) {
+                      return 'customer name must be more than 4 characters';
                     }
                   }
                   return null;
@@ -485,16 +378,10 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               SizedBox(height: 22),
               Text(
                 'Email address',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 13,
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(height: 5),
-              AppTextFieldForm(
+              AppTextFormField(
                 focusNode: _emailFocus,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (value) =>
@@ -524,16 +411,10 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
               Text(
                 'Address',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 13,
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(height: 5),
-              AppTextFieldForm(
+              AppTextFormField(
                 focusNode: _addressFocus,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (value) =>
@@ -562,16 +443,10 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               ),
               Text(
                 'Phone number',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.3,
-                  fontSize: 13,
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               SizedBox(height: 5),
-              AppTextFieldForm(
+              AppTextFormField(
                 focusNode: _pNumberFocus,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (value) => _pNumberFocus.unfocus(),
@@ -601,16 +476,10 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
-                    'Save to customer list',
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.normal,
-                      letterSpacing: 0.3,
-                      fontSize: 16,
-                      color: Color.fromRGBO(0, 0, 0, 1),
-                    ),
-                  ),
+                  Text('Save to customer list',
+                      style: Theme.of(context).textTheme.headline6.copyWith(
+                            fontWeight: FontWeight.normal,
+                          )),
                   Switch(
                     focusNode: _switchFocus,
                     value: Provider.of<Receipt>(context, listen: false)
@@ -627,7 +496,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
               SizedBox(
                 height: 25,
               ),
-              GestureDetector(
+              /* AppDropSelector(
                 onTap: () async {
                   showDialog(
                     context: context,
@@ -643,83 +512,16 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     },
                   );
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Color(0xFFC8C8C8),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0)),
-                  padding: EdgeInsets.symmetric(horizontal: 13, vertical: 14),
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        selectedCurrency != null
-                            ? selectedCurrency.currencyName
-                            : 'Select Currency',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.3,
-                          fontSize: 16,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Spacer(),
-                      Icon(Icons.arrow_drop_down),
-                    ],
-                  ),
-                ),
+                text: selectedCurrency != null
+                    ? selectedCurrency.currencyName
+                    : 'Select Currency',
               ),
-              // DropdownButtonFormField(
-              // items: Currency.currencyList().map<DropdownMenuItem<Currency>>((curr) => DropdownMenuItem(value: curr, child: Row(children: <Widget>[
-              //   Text(curr.flag),
-              //   SizedBox(width:7),
-              //   Text(curr.currencyName),
-              //   SizedBox(width:7),
-              //   Text(curr.currencySymbol),
-              // ],),
-              // )).toList(),
-              // onChanged: (Currency currency) {
-              //   _changeCurrency(currency);
-              //                   },
-              //                   iconDisabledColor: Color.fromRGBO(0, 0, 0, 0.87),
-              //                   decoration: InputDecoration(
-              //                     contentPadding: EdgeInsets.all(15),
-              //                     enabledBorder: OutlineInputBorder(
-              //                       borderRadius: BorderRadius.circular(5),
-              //                       borderSide: BorderSide(
-              //                         color: Color(0xFFC8C8C8),
-              //                         width: 1.5,
-              //                       ),
-              //                     ),
-              //                     focusedBorder: OutlineInputBorder(),
-              //                     //hintText: hintText,
-              //                     hintStyle: TextStyle(
-              //                       color: Color(0xFF979797),
-              //                       fontSize: 14,
-              //                       fontWeight: FontWeight.w500,
-              //                       fontFamily: 'Montserrat',
-              //                     ),
-              //                   ),
-              //                   hint: Text(
-              //                     'Select currency',
-              //                     style: TextStyle(
-              //                       fontFamily: 'Montserrat',
-              //                       fontWeight: FontWeight.w500,
-              //                       letterSpacing: 0.3,
-              //                       fontSize: 14,
-              //                       color: Color(0xFF1B1B1B),
-              //                     ),
-              //                   ),
-              //                 ),
               SizedBox(
                 height: 45,
-              ),
-              SubmitButton(
-                title: 'Next',
-                textColor: Colors.white,
-                backgroundColor: Color(0xFF0B57A7),
+              ), */
+              AppSolidButton(
+                text: 'Next',
+                backgroundColor: Theme.of(context).buttonColor,
                 onPressed: () {
                   FocusScope.of(context).unfocus();
 
@@ -728,8 +530,8 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
 
                     Provider.of<Receipt>(context, listen: false)
                         .setCategory(selectedCategory);
-                    Provider.of<Receipt>(context, listen: false)
-                        .setCurrency(selectedCurrency);
+                   /*  Provider.of<Receipt>(context, listen: false)
+                        .setCurrency(selectedCurrency); */
 
                     if (selectedCustomer == null) {
                       Provider.of<Receipt>(context, listen: false).setCustomer(
@@ -746,7 +548,7 @@ class _CreateReceiptStep0State extends State<CreateReceiptStep0> {
                     }
 
                     print(Provider.of<Receipt>(context, listen: false));
-                    widget.carouselController.animateToPage(1);
+                    widget.carouselController.nextPage();
                   }
                 },
               )

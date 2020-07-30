@@ -1,14 +1,11 @@
-import 'dart:convert';
-
-import 'package:digital_receipt/models/product.dart';
-import 'package:digital_receipt/models/receipt.dart';
-import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/models/receipt.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
+import 'package:digital_receipt/widgets/app_card.dart';
 import 'package:intl/intl.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:flutter/material.dart';
+import '../services/shared_preference_service.dart';
 import 'package:random_color/random_color.dart';
 import 'package:digital_receipt/services/hiveDb.dart';
 
@@ -23,9 +20,10 @@ class Analytics extends StatefulWidget {
   _AnalyticsState createState() => _AnalyticsState();
 }
 
-class _AnalyticsState extends State<Analytics> {
-  final numberFormat = new NumberFormat("₦#,##0.#", "en_US");
+String currency = '';
 
+class _AnalyticsState extends State<Analytics> {
+  final numberFormat = new NumberFormat();
   // Future<AnalyticsData> generateContent() async {
   //   List<Receipt> issuedReceipts = await _apiService.getIssuedReceipts();
   //   if (issuedReceipts != null && issuedReceipts.length > 0) {
@@ -80,19 +78,23 @@ class _AnalyticsState extends State<Analytics> {
     }
   }
 
+  setCurrency() async {
+    currency = await SharedPreferenceService().getStringValuesSF('Currency');
+  }
+
+  @override
+  void initState() {
+    setCurrency();
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'Analytics',
-          style: TextStyle(
-            fontFamily: 'Montserrat',
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.3,
-            fontSize: 16,
-            //color: Colors.white,
-          ),
         ),
       ),
       body: FutureBuilder<AnalyticsData>(
@@ -107,7 +109,7 @@ class _AnalyticsState extends State<Analytics> {
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
               child: Column(
                 children: <Widget>[
-                  _buildTopContent(totalSales: '₦ 0'),
+                  _buildTopContent(totalSales: '0'),
                   Expanded(
                     child: Container(
                       margin: EdgeInsets.all(30),
@@ -133,20 +135,16 @@ class _AnalyticsState extends State<Analytics> {
 
   Widget _buildTopContent({@required String totalSales}) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        AnalyticsCard(totalSales),
+        AnalyticsCard('$currency$totalSales'),
         SizedBox(
           height: 20,
         ),
         Text(
           'Sales via categories',
-          style: TextStyle(
-            color: Color(0xFF0C0C0C),
-            fontSize: 16,
-            fontWeight: FontWeight.w300,
-            fontFamily: 'Montserrat',
-          ),
+          style: Theme.of(context).textTheme.headline6,
         ),
         SizedBox(
           height: 20,
@@ -155,45 +153,35 @@ class _AnalyticsState extends State<Analytics> {
     );
   }
 
-  Container buildCard(String title, String subTitle, Color sideColor) {
-    return Container(
-      decoration: BoxDecoration(
-        color: sideColor,
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      child: Container(
-        margin: EdgeInsets.only(left: 5.0),
-        decoration: BoxDecoration(
-          color: Color(0xFFE3EAF1),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: 50),
-            Text(
-              '$title',
+  Widget buildCard(
+      String title, String currency, String subTitle, Color sideColor) {
+    return AppCard(
+      liningColor: sideColor,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            '$title',
+            style: TextStyle(
+              fontSize: 18.0,
+            ),
+          ),
+          SizedBox(
+            height: 8.0,
+          ),
+          FittedBox(
+            fit: BoxFit.fitWidth,
+            child: Text(
+              '$currency$subTitle',
+              textScaleFactor: 0.8,
               style: TextStyle(
-                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                fontSize: 28.0,
               ),
             ),
-            SizedBox(
-              height: 8.0,
-            ),
-            FittedBox(
-              fit: BoxFit.fitWidth,
-              child: Text(
-                '₦$subTitle',
-                textScaleFactor: 0.8,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 28.0,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -203,7 +191,7 @@ class _AnalyticsState extends State<Analytics> {
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
       child: Column(
         children: <Widget>[
-          _buildTopContent(totalSales: '₦ ------'),
+          _buildTopContent(totalSales: '------'),
           Expanded(
             child: Center(
               child: CircularProgressIndicator(
@@ -220,8 +208,8 @@ class _AnalyticsState extends State<Analytics> {
     List<Widget> items = [];
     RandomColor _color = RandomColor();
     data.gridItems.forEach((key, value) {
-    //print(value);
-      items.add(buildCard(key, Utils.formatNumber(value),
+      //print(value);
+      items.add(buildCard(key, currency, Utils.formatNumber(value),
           _color.randomColor(colorBrightness: ColorBrightness.light)));
     });
     return SingleChildScrollView(
@@ -230,22 +218,7 @@ class _AnalyticsState extends State<Analytics> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            AnalyticsCard(data.totalSales),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              'Sales via categories',
-              style: TextStyle(
-                color: Color(0xFF0C0C0C),
-                fontSize: 16,
-                fontWeight: FontWeight.w300,
-                fontFamily: 'Montserrat',
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
+            _buildTopContent(totalSales: data.totalSales),
             GridView.count(
                 crossAxisSpacing: 16.0,
                 mainAxisSpacing: 16.0,
