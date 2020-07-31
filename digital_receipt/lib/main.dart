@@ -36,13 +36,14 @@ void main() async {
     final appDocumentDir = await getApplicationDocumentsDirectory();
     Hive.init(appDocumentDir.path);
 
-    // runApp(MyApp(),);
-    runApp(DevicePreview(
+    runApp(
+      MyApp(),
+    );
+    /* runApp(DevicePreview(
       builder: (BuildContext context) => MyApp(),
       enabled: kReleaseMode,
     )
-      // )
-    );
+    ); */
   } catch (e) {
     print("error occurd in main: $e");
   }
@@ -178,13 +179,11 @@ class ScreenController extends StatefulWidget {
 class _ScreenControllerState extends State<ScreenController> {
   final SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();
-  
+
   ApiService _apiService = ApiService();
 
   //Initializing SQL Database.
-  initSharedPreferenceDb() async {
- 
-  }
+  initSharedPreferenceDb() async {}
 
   bool _currentAutoLogoutStatus;
 
@@ -248,7 +247,6 @@ class _ScreenControllerState extends State<ScreenController> {
           date: message["data"]["date"],
           isRead: message["data"]["isRead"],
         );
-       
       },
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
@@ -261,7 +259,7 @@ class _ScreenControllerState extends State<ScreenController> {
           date: message["data"]["date"],
           isRead: message["data"]["isRead"],
         );
- 
+
         //INSERTING NOTIFICATION TO SQFLITE DB
       },
     );
