@@ -2,6 +2,7 @@ import 'package:digital_receipt/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class About extends StatefulWidget {
   @override
@@ -94,7 +95,8 @@ class _AboutState extends State<About> {
                     padding: EdgeInsets.symmetric(vertical: 10),
                     child: Theme.of(context).brightness == Brightness.dark
                         ? kLogoWithTextDark
-                        : kLogoWithTextLight,
+                        : SvgPicture.asset(
+                                  'assets/images/degeit_logo.svg'),
                   ),
                 )),
           ),

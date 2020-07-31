@@ -358,14 +358,14 @@ class _DashBoardState extends State<DashBoard> {
           subtitle: '$currency${Utils.formatNumber(amnt)}',
           color: _getRandomColor(),
         ),
-        /*  FlatButton(
+         FlatButton(
           onPressed: () async {
             //var t = DateTime.now().timeZoneName;
             print(await SharedPreferenceService()
                 .getStringValuesSF('AUTH_TOKEN'));
           },
           child: Text('Test'),
-        ), */
+        ),
       ],
     );
   }

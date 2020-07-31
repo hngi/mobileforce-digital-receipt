@@ -218,7 +218,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                 initialData: <Receipt>[],
                 future: receiptFuture, // receipts from API
                 builder: (context, snapshot) {
-                  //print(snapshot.data[5]);
+                  print('dnnd: ${snapshot.data}');
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
                       child: CircularProgressIndicator(
@@ -263,12 +263,7 @@ class _ReceiptHistoryState extends State<ReceiptHistory> {
                             child: Text(
                               "There are no issued receipts created!",
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w300,
-                                fontSize: 16,
-                                letterSpacing: 0.3,
-                                color: Color.fromRGBO(0, 0, 0, 0.87),
-                              ),
+                              style: Theme.of(context).textTheme.headline6,
                             ),
                           ),
                           SizedBox(

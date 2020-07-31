@@ -131,6 +131,8 @@ class ProductItem extends StatelessWidget {
                           child: Text(
                             title,
                             softWrap: true,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         Text(

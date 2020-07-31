@@ -98,7 +98,8 @@ class _ContactDropdownState extends State<ContactDropdown> {
                         future: contactFuture,
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
+                                  ConnectionState.waiting &&
+                              contacts == null) {
                             return Expanded(
                               child: Center(
                                 child: CircularProgressIndicator(
@@ -106,7 +107,10 @@ class _ContactDropdownState extends State<ContactDropdown> {
                                 ),
                               ),
                             );
-                          } else if (contacts != null && contacts.isNotEmpty) {
+                          } else if (snapshot.connectionState ==
+                                  ConnectionState.done &&
+                              contacts != null &&
+                              contacts.isNotEmpty) {
                             print(contacts);
                             return Expanded(
                               child: ListView.builder(

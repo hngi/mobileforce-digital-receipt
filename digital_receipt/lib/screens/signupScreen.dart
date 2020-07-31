@@ -1,10 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:digital_receipt/widgets/app_text_form_field.dart';
-
-import '../colors.dart';
 import 'package:flutter/gestures.dart';
 import 'package:digital_receipt/screens/otp_auth.dart';
 import 'package:digital_receipt/screens/setup.dart';
@@ -29,7 +26,7 @@ class _SignupScreenState extends State<SignupScreen> {
   bool isLoading = false;
   LoadingIndicator _loadingIndicator = LoadingIndicator(isLoading: false);
 
-   _launchURL(String url) async {
+  _launchURL(String url) async {
     //const url = url;
     if (await canLaunch(url)) {
       await launch(
@@ -42,7 +39,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   bool passwordVisible = false;
   var _formKey = GlobalKey<FormState>();
-  var _email, _password, _name;
+  var _email, _password, _userName, _firstName, _lastName;
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn(
     clientId:
@@ -53,17 +50,21 @@ class _SignupScreenState extends State<SignupScreen> {
     ],
   );
 
-  final FocusNode _nameFocus = FocusNode();
+  final FocusNode _userNameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
+  final FocusNode _firstNameFocus = FocusNode();
+  final FocusNode _lastNameFocus = FocusNode();
 
   ApiService _apiService = ApiService();
 
   @override
   void dispose() {
-    _nameFocus.dispose();
+    _userNameFocus.dispose();
     _emailFocus.dispose();
     _passwordFocus.dispose();
+    _lastNameFocus.dispose();
+    _firstNameFocus.dispose();
     super.dispose();
   }
 
@@ -106,14 +107,14 @@ class _SignupScreenState extends State<SignupScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       AppTextFormField(
-                        label: 'Username',
-                        focusNode: _nameFocus,
+                        label: 'First name',
+                        focusNode: _firstNameFocus,
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (value) =>
-                            _changeFocus(from: _nameFocus, to: _emailFocus),
+                            _changeFocus(from: _firstNameFocus, to: _lastNameFocus),
                         keyboardType: TextInputType.text,
                         validator: Validators.compose([
-                          Validators.required('Input Name'),
+                          Validators.required('Input First name'),
                           Validators.patternRegExp(RegExp(r"^[A-Z a-z]+$"),
                               'Only alphabets are allowed'),
                           Validators.minLength(
@@ -121,7 +122,49 @@ class _SignupScreenState extends State<SignupScreen> {
                         ]),
                         onSaved: (value) {
                           setState(() {
-                            _name = value;
+                            _firstName = value;
+                          });
+                        },
+                      ),
+                      SizedBox(height: 22),
+                      AppTextFormField(
+                        label: 'Last name',
+                        focusNode: _lastNameFocus,
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (value) =>
+                            _changeFocus(from: _lastNameFocus, to: _userNameFocus),
+                        keyboardType: TextInputType.text,
+                        validator: Validators.compose([
+                          Validators.required('Input Last name'),
+                          Validators.patternRegExp(RegExp(r"^[A-Z a-z]+$"),
+                              'Only alphabets are allowed'),
+                          Validators.minLength(
+                              3, 'Minimum of 3 characters required for Name'),
+                        ]),
+                        onSaved: (value) {
+                          setState(() {
+                            _lastName = value;
+                          });
+                        },
+                      ),
+                      SizedBox(height: 22),
+                      AppTextFormField(
+                        label: 'Username',
+                        focusNode: _userNameFocus,
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (value) =>
+                            _changeFocus(from: _userNameFocus, to: _emailFocus),
+                        keyboardType: TextInputType.text,
+                        validator: Validators.compose([
+                          Validators.required('Input username'),
+                          /* Validators.patternRegExp(RegExp(r"^[A-Z a-z]+$"),
+                              'Only alphabets are allowed'), */
+                          Validators.minLength(
+                              3, 'Minimum of 3 characters required for Name'),
+                        ]),
+                        onSaved: (value) {
+                          setState(() {
+                            _userName = value;
                           });
                         },
                       ),
@@ -200,14 +243,15 @@ class _SignupScreenState extends State<SignupScreen> {
                       children: [
                         TextSpan(
                           text: 'terms of service',
-                          recognizer: TapGestureRecognizer()..onTap = (){
-                             _launchURL('https://degeit.flycricket.io/terms.html');
-                          },
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              _launchURL(
+                                  'https://degeit.flycricket.io/terms.html');
+                            },
                           style: TextStyle(
                             color: Color(0xFF25CCB3),
                             fontSize: 14,
                             letterSpacing: 0.02,
-                            
                             fontWeight: FontWeight.w300,
                             fontFamily: 'Montserrat',
                           ),
@@ -218,9 +262,11 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         TextSpan(
                           text: 'privacy policy',
-                           recognizer: TapGestureRecognizer()..onTap = (){
-                             _launchURL('https://degeit.flycricket.io/privacy.html');
-                          },
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              _launchURL(
+                                  'https://degeit.flycricket.io/privacy.html');
+                            },
                           style: TextStyle(
                             color: Color(0xFF25CCB3),
                             fontSize: 14,
@@ -353,7 +399,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }
 
     print('im res');
-    var response = await _apiService.otpVerification(_email, _password, _name);
+    var response = await _apiService.otpVerification(_email, _password, _userName);
     setState(() {
       isLoading = false;
       _loadingIndicator = LoadingIndicator(isLoading: false);
@@ -369,7 +415,9 @@ class _SignupScreenState extends State<SignupScreen> {
             otp: "$otp",
             email: "$_email",
             password: "$_password",
-            name: "$_name",
+            name: "$_userName",
+            firtName: "$_firstName",
+            lastName: "$_lastName",
           ),
         ),
       );

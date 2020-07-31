@@ -68,6 +68,7 @@ class _UpdateInventoryState extends State<UpdateInventory> {
 
   Widget _buildQuantity(formLabel) {
     quantityController.text = widget.inventory.quantity.toString();
+  
     return Column(
       children: <Widget>[
         Padding(padding: const EdgeInsets.all(3)),
@@ -121,6 +122,7 @@ class _UpdateInventoryState extends State<UpdateInventory> {
                   (Unit unit) {
                     return DropdownMenuItem<Unit>(
                       value: unit,
+                      
                       child: Padding(
                         padding: EdgeInsets.only(left: 8.0),
                         child: Text(
