@@ -8,7 +8,7 @@ import 'package:digital_receipt/providers/business.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/screens/no_internet_connection.dart';
 import 'package:digital_receipt/services/api_service.dart';
-import 'package:digital_receipt/services/shared_preference_service.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:digital_receipt/widgets/receipt_item.dart';
@@ -505,7 +505,8 @@ Widget ReceiptScreenLayout(
                             ),
                             Container(
                               padding: const EdgeInsets.fromLTRB(0, 0, 10, 15),
-                              child: kLogoWithTextLight,
+                              child:  SvgPicture.asset(
+                                  'assets/images/degeit_logo.svg'),
                               height: 35,
                               width: 100,
                             )

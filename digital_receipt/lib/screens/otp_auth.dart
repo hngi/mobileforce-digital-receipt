@@ -21,8 +21,10 @@ class PinCodeVerificationScreen extends StatefulWidget {
   String email;
   String name;
   String password;
+  String firtName;
+  String lastName;
   bool fp = false;
-  PinCodeVerificationScreen({this.otp, this.email, this.name, this.password});
+  PinCodeVerificationScreen({this.otp, this.email, this.name, this.password, this.firtName, this.lastName});
 
   PinCodeVerificationScreen.forgotPassword(
       {this.email, this.fp = true, this.otp});
@@ -393,7 +395,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
       });
       try {
         await _apiService.signinUser(
-            widget.email, widget.password, widget.name);
+            widget.email, widget.password, widget.name, widget.firtName, widget.lastName);
         await _apiService.loginUser(widget.email, widget.password);
         Fluttertoast.showToast(
             msg: "signup successful",

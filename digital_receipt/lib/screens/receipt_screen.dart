@@ -8,7 +8,6 @@ import 'package:digital_receipt/providers/business.dart';
 import 'package:digital_receipt/services/api_service.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../services/shared_preference_service.dart';
-import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:digital_receipt/utils/connected.dart';
 import 'package:digital_receipt/utils/receipt_util.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';

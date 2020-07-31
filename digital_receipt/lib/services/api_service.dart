@@ -31,8 +31,9 @@ final HiveDb hiveDb = HiveDb();
 
 class ApiService {
   static DeviceInfoService deviceInfoService = DeviceInfoService();
-  static String _urlEndpoint = "http://degeittest.pythonanywhere.com/v1";
-  // http://degeittest.pythonanywhere.com/v1
+  static String _urlEndpoint = kReleaseMode
+      ? "http://degeitreceipt.pythonanywhere.com/v1"
+      : "http://degeittest.pythonanywhere.com/v1";
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();
@@ -184,6 +185,7 @@ class ApiService {
   }
 
   Future getDraft() async {
+    var uri = '$_urlEndpoint/business/receipt/draft';
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -195,23 +197,17 @@ class ApiService {
 
       String token =
           await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
-      Response response = await _dio
-          .get(
-        "/business/receipt/draft",
-        options: Options(
-          followRedirects: false,
-          validateStatus: (status) {
-            return status < 500;
-          },
-          headers: {"token": token},
-        ),
-      )
-          .timeout(Duration(seconds: 8), onTimeout: () {
-        return null;
-      });
-      // print('bty: ${response.data}');
+
+      var response = await http.get(
+        Uri.encodeFull(uri),
+        headers: <String, String>{
+          'token': token,
+        },
+      );
+
+      // print('bty: ${response.daa}');
       if (response.statusCode == 200) {
-        var res = response.data["data"] as List;
+        var res = json.decode(response.body)["data"] as List;
         //print('res:::::: $res');
 
         // checks if the length of draft is larger than 100 and checks for internet
@@ -241,6 +237,7 @@ class ApiService {
   /// This function gets all issued receipts from the database.
   Future getIssued() async {
     var connectivityResult = await Connected().checkInternet();
+    var uri = "$_urlEndpoint/business/receipt/issued";
     if (connectivityResult) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -248,27 +245,21 @@ class ApiService {
             (X509Certificate cert, String host, int port) => true;
         return client;
       };
-
-      String auth_token =
+      String token =
           await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
-      Response response = await _dio.get(
-        "/business/receipt/issued",
-        options: Options(
-          followRedirects: false,
-          validateStatus: (status) {
-            return status < 500;
-          },
-          headers: {
-            "token": auth_token,
-          },
-        ),
+
+      var response = await http.get(
+        Uri.encodeFull(uri),
+        headers: <String, String>{
+          'token': token,
+        },
       );
 
       if (response.statusCode == 200) {
         //print(response.data["data"][14]);
-        var res = response.data["data"];
+        var res = json.decode(response.body)["data"];
         if (res.length >= 100) {
-          List temp = response.data["data"].getRange(0, 99).toList();
+          List temp = res.getRange(0, 99).toList();
           await hiveDb.addReceiptHistory(temp);
 
           res = res.map((e) {
@@ -276,8 +267,8 @@ class ApiService {
             return temp;
           });
           return List<Receipt>.from(res);
-        } else if (response.data["data"].length < 100) {
-          await hiveDb.addReceiptHistory(response.data["data"]);
+        } else if (res.length < 100) {
+          await hiveDb.addReceiptHistory(res);
 
           return hiveDb.getReceiptHistory();
         } else {
@@ -293,13 +284,20 @@ class ApiService {
     }
   }
 
-  Future<String> signinUser(String email, String password, String name) async {
+  Future<String> signinUser(String email, String password, String username,
+      String firstName, String lastName) async {
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
       var uri = '$_urlEndpoint/user/register/';
       var response = await http.post(
         uri,
-        body: {"email": "$email", "password": "$password", "username": "$name"},
+        body: {
+          "email": "$email",
+          "password": "$password",
+          "username": "$username",
+          "first_name": firstName, 
+          "last_name": lastName
+        },
       );
       print(uri);
       print(response.statusCode);
@@ -749,7 +747,7 @@ class ApiService {
             phone: res['phone_number'],
             address: res['address'],
             slogan: res['slogan'],
-            logo: "http://degeittest.pythonanywhere.com${res['logo']}",
+            logo: "http://degeitreceipt.pythonanywhere.com${res['logo']}",
             email: email,
           );
         } else {
