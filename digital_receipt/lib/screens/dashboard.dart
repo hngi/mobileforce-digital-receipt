@@ -330,7 +330,10 @@ class _DashBoardState extends State<DashBoard> {
   GridView buildGridView(recNo, int deptIssued, double amnt) {
     RandomColor _color = RandomColor();
     Color _getRandomColor() {
-      return _color.randomColor(colorBrightness: ColorBrightness.dark);
+      return _color.randomColor(
+          colorBrightness: Theme.of(context).brightness == Brightness.dark
+              ? ColorBrightness.light
+              : ColorBrightness.dark);
     }
 
     return GridView.count(
@@ -355,7 +358,7 @@ class _DashBoardState extends State<DashBoard> {
           subtitle: '$currency${Utils.formatNumber(amnt)}',
           color: _getRandomColor(),
         ),
-       /*  FlatButton(
+        /*  FlatButton(
           onPressed: () async {
             //var t = DateTime.now().timeZoneName;
             print(await SharedPreferenceService()
