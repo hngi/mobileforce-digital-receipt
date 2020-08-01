@@ -79,7 +79,6 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ApiService _apiService = ApiService();
     return Scaffold(
       appBar: AppBar(
         //  backgroundColor: Color(0xFF0b56a7),
@@ -136,31 +135,6 @@ Widget ReceiptScreenLayout(
     Receipt receipt,
     Function loadingStop,
     String issuerSignature]) {
-  Future sendMail() async {
-    final String dir = (await getApplicationDocumentsDirectory()).path;
-    final String path = '$dir/receipt.pdf';
-    MailOptions mailOptions = MailOptions();
-    mailOptions = MailOptions(
-      body: "Receipt issued",
-      subject: "new Receipt",
-      recipients: [
-        Provider.of<Receipt>(context, listen: false).customer.email.toString()
-      ],
-      isHTML: false,
-      attachments: [path],
-    );
-    String platformResponse;
-
-    try {
-      await FlutterMailer.send(mailOptions);
-      platformResponse = "success";
-      print(platformResponse);
-    } catch (e) {
-      platformResponse = "failed";
-      print(platformResponse);
-      print("error: $e");
-    }
-  }
 
   final AccountData businessInfo =
       Provider.of<Business>(context, listen: false).accountData;

@@ -34,25 +34,23 @@ class _AccountPageState extends State<AccountPage> {
   // List<IAPItem> _items = [];
   // List<PurchasedItem> _purchases = [];
 
-  final String username = "Geek Tutor";
   String label;
   bool _loading = false;
   String localLogo = '';
-  static String loading_text = "loading ...";
+  static String loadingText = "loading ...";
   var x = AccountData(
-      id: loading_text,
-      name: loading_text,
-      phone: loading_text,
-      address: loading_text,
-      slogan: loading_text,
-      logo: '',
-      email: loading_text);
+    id: loadingText,
+    name: loadingText,
+    phone: loadingText,
+    address: loadingText,
+    slogan: loadingText,
+    logo: '',
+    email: loadingText,
+  );
 
   String image;
 
   final picker = ImagePicker();
-
-  AccountData _accountData;
 
   Future getImage() async {
     var internet = await Connected().checkInternet();
@@ -87,7 +85,6 @@ class _AccountPageState extends State<AccountPage> {
     setState(() {
       localLogo = logo;
     });
-    print('jhjjn: $res');
     if (res != null) {
       Provider.of<Business>(context, listen: false).setAccountData = res;
       var val = Provider.of<Business>(context, listen: false).toJson();
@@ -109,7 +106,6 @@ class _AccountPageState extends State<AccountPage> {
   @override
   void initState() {
     callFetch();
-    // initPlatformState();
     super.initState();
   }
 
