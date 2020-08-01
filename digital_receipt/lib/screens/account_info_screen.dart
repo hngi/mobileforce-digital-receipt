@@ -2,6 +2,7 @@ import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:digital_receipt/widgets/create_receipt_step2.dart';
 import 'package:flutter/material.dart';
+import 'package:digital_receipt/constant.dart';
 
 class AccountInfoScreen extends StatefulWidget {
   @override
@@ -147,12 +148,7 @@ class BusinessCardRow extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: <Widget>[
-          Card(
-            child: SizedBox(
-              height: 180,
-              width: 293,
-            ),
-          ),
+          Card(child: BusinessCard0()),
           Card(
             child: SizedBox(
               height: 180,
@@ -173,6 +169,131 @@ class BusinessCardRow extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class BusinessCard0 extends StatefulWidget {
+  @override
+  _BusinessCard0State createState() => _BusinessCard0State();
+}
+
+class _BusinessCard0State extends State<BusinessCard0> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 180,
+      width: 293,
+      child: Stack(
+        children: <Widget>[
+          Positioned(
+            bottom: 30,
+            child: Image.asset('assets/images/Rectangle 86.png'),
+          ),
+          Positioned(
+            right: 0,
+            bottom: 30,
+            child: Image.asset('assets/images/Rectangle 87.png'),
+          ),
+          Container(
+            height: 180,
+            width: 293,
+            padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(
+                      width: 50,
+                      height: 20,
+                      child: Image.asset('assets/logos/logo.png'),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Text(
+                          'Chief Priest',
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                fontSize: 12,
+                              ),
+                        ),
+                        Text(
+                          'C.E.O',
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                fontSize: 12,
+                              ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                Text(
+                  'Degeit Technologies',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline5
+                      .copyWith(fontSize: 14, color: Color(0xFF0B57A7)),
+                ),
+                SizedBox(height: 5.0),
+                Text(
+                  'Dealers in all form of digital technologies',
+                  style: Theme.of(context).textTheme.bodyText2.copyWith(
+                        fontSize: 9,
+                      ),
+                ),
+                SizedBox(height: 20.0),
+                Row(
+                  children: <Widget>[
+                    Image.asset('assets/icons/locationIcon.png'),
+                    SizedBox(width: 7.0),
+                    Text(
+                      'No 16, IBB road, wuse zone 10, Abuja',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontSize: 11,
+                          ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10.0),
+                Row(
+                  children: <Widget>[
+                    Image.asset('assets/icons/phoneIcon.png'),
+                    SizedBox(width: 7.0),
+                    Text(
+                      '090 4433 9922, 080 2256 7343',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontSize: 11,
+                          ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10.0),
+                Row(
+                  children: <Widget>[
+                    Image.asset('assets/icons/messageIcon.png'),
+                    SizedBox(width: 7.0),
+                    Text(
+                      'Degeittech@yahoo.com',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontSize: 11,
+                          ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10.0),
+              ],
+            ),
+          )
+        ],
+      ),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          image:
+              DecorationImage(image: AssetImage('assets/images/Vector.png'))),
     );
   }
 }
