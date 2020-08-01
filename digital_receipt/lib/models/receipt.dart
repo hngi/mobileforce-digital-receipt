@@ -247,7 +247,7 @@ class Receipt extends ChangeNotifier {
           "date": convertToDateTime(),
           "font": fonts,
           "color": primaryColorHexCode,
-          "businessid":
+          "business_id":
         await _sharedPreferenceService.getStringValuesSF('Business_ID'),
           "preset": preset,
           "platform": category.toString(),

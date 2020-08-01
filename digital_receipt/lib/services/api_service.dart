@@ -154,8 +154,10 @@ class ApiService {
       try {
         String auth_token =
             await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
+        String businessId =
+            await _sharedPreferenceService.getStringValuesSF('Business_ID');
         Response response = await _dio.get(
-          "/business/receipt/draft",
+          "/business/receipt/draft/$businessId",
           options: Options(
             followRedirects: false,
             validateStatus: (status) {
@@ -711,6 +713,9 @@ class ApiService {
 
     var email = await _sharedPreferenceService.getStringValuesSF('EMAIL');
 
+    String businessId =
+        await _sharedPreferenceService.getStringValuesSF('Business_ID');
+
     var connectivityResult = await Connected().checkInternet();
 
     print(connectivityResult);
@@ -733,11 +738,12 @@ class ApiService {
         res = res['data'] as List;
 
         res = res.firstWhere(
-          (e) => e['user'].toString() == userID,
+          (e) => e['user'].toString() == userID && e['id'] == businessId,
           orElse: () {
             print('object');
           },
         );
+        print("dfdfdf: $res");
         if (res != null) {
           await _sharedPreferenceService.addStringToSF(
               'ISSUER_SIGNATURE', res['signature']);
@@ -825,9 +831,11 @@ class ApiService {
   }
 
   Future<List<Receipt>> getIssuedReceipts() async {
+    String businessId =
+        await _sharedPreferenceService.getStringValuesSF('Business_ID');
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
-      var uri = "$_urlEndpoint/business/receipt/issued";
+      var uri = "$_urlEndpoint/business/receipt/issued/$businessId";
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
       List<Receipt> _issuedReceipts = [];
@@ -1008,8 +1016,11 @@ class ApiService {
   Future<Map<String, dynamic>> getIssuedReceipt2() async {
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    String businessId =
+        await _sharedPreferenceService.getStringValuesSF('Business_ID');
+
     var connectivityResult = await Connected().checkInternet();
-    String url = '$_urlEndpoint/business/receipt/issued';
+    String url = '$_urlEndpoint/business/receipt/issued/$businessId';
     if (connectivityResult) {
       final http.Response res = await http.get(url, headers: <String, String>{
         "token": token,
@@ -1290,8 +1301,10 @@ class ApiService {
   Future<List<Reminder>> getReminders() async {
     String token =
         await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+    String businessId =
+        await _sharedPreferenceService.getStringValuesSF('Business_ID');
     print("token: $token");
-    String url = '$_urlEndpoint/business/receipt/issued';
+    String url = '$_urlEndpoint/business/receipt/issued/$businessId';
 
     final http.Response res = await http.get(url, headers: <String, String>{
       "token": token,
