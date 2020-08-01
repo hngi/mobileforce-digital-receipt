@@ -185,7 +185,10 @@ class ApiService {
   }
 
   Future getDraft() async {
-    var uri = '$_urlEndpoint/business/receipt/draft';
+    String businessId =
+        await _sharedPreferenceService.getStringValuesSF('Business_ID');
+    print('businessId $businessId');
+    var uri = '$_urlEndpoint/business/receipt/draft/$businessId';
     var connectivityResult = await Connected().checkInternet();
     if (connectivityResult) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -237,7 +240,10 @@ class ApiService {
   /// This function gets all issued receipts from the database.
   Future getIssued() async {
     var connectivityResult = await Connected().checkInternet();
-    var uri = "$_urlEndpoint/business/receipt/issued";
+    String businessId =
+        await _sharedPreferenceService.getStringValuesSF('Business_ID');
+    print('businessId $businessId');
+    var uri = "$_urlEndpoint/business/receipt/issued/$businessId";
     if (connectivityResult) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -295,7 +301,7 @@ class ApiService {
           "email": "$email",
           "password": "$password",
           "username": "$username",
-          "first_name": firstName, 
+          "first_name": firstName,
           "last_name": lastName
         },
       );
@@ -1324,5 +1330,27 @@ class ApiService {
     } else {
       return 'false';
     }
+  }
+
+  Future<List<AccountData>> getAllBusinessInfo() async {
+    var connectivityResult = await Connected().checkInternet();
+    List<AccountData> accountDataList = [];
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/user/all';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      print(token);
+      var response = await http.get(
+        uri,
+        headers: {"token": token},
+      );
+      var data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        data["data"].forEach((accountData) {
+          accountDataList.add(AccountData.fromJson(accountData));
+        });
+      }
+    }
+    return accountDataList;
   }
 }

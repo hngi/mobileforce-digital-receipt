@@ -1,3 +1,4 @@
+import 'package:digital_receipt/widgets/app_hollow_button.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:digital_receipt/widgets/create_receipt_step2.dart';
@@ -9,8 +10,10 @@ class AccountInfoScreen extends StatefulWidget {
 }
 
 class _AccountInfoScreenState extends State<AccountInfoScreen> {
-  TextEditingController _hexCodeController = TextEditingController()
+  final TextEditingController _hexCodeController = TextEditingController()
     ..text = "F14C4C";
+  final TextEditingController _businessDetailsController =
+      TextEditingController();
   final FocusNode _hexCodeFocus = FocusNode();
 
   @override
@@ -41,97 +44,98 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
               ),
               BusinessCardRow(),
               SizedBox(
-                height: 24,
+                height: 42,
               ),
-              SizedBox(
-                height: 20,
+              AppTextFormField(
+                label: 'Business details (not more than 40 words)',
+                controller: _businessDetailsController,
+                hintColor: Theme.of(context).textTheme.subtitle2.color,
+                borderWidth: 1.5,
               ),
-              Row(
-                children: <Widget>[
-                  Text(
-                    'Choose a color (optional)',
-                  ),
-                  SizedBox(width: 12),
-                  Text(_hexCodeController.text.toUpperCase()),
-                ],
+              SizedBox(height: 30),
+              Text(
+                'Choose Card colour',
+                style: Theme.of(context).textTheme.headline6,
               ),
               SizedBox(height: 20),
               SizedBox(
                 height: 33,
-                child: SizedBox(
-                  width: double.infinity,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        ColorButton(
-                          color: Colors.red,
-                          onPressed: () {
-                            setState(() {
-                              _hexCodeController.text = 'F14C4C';
-                            });
-                          },
-                        ),
-                        ColorButton(
-                          color: Color(0xFF539C30),
-                          onPressed: () {
-                            setState(() {
-                              _hexCodeController.text = '539C30';
-                            });
-                          },
-                        ),
-                        ColorButton(
-                          color: Color(0xFF2C33D5),
-                          onPressed: () {
-                            setState(() {
-                              _hexCodeController.text = '2C33D5';
-                            });
-                          },
-                        ),
-                        ColorButton(
-                          color: Color(0xFFE7D324),
-                          onPressed: () {
-                            setState(() {
-                              _hexCodeController.text = 'E7D324';
-                            });
-                          },
-                        ),
-                        ColorButton(
-                          color: Color(0xFFC022B1),
-                          onPressed: () {
-                            setState(() {
-                              _hexCodeController.text = 'C022B1';
-                            });
-                          },
-                        ),
-                      ],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    ColorButton(
+                      color: Colors.red,
+                      onPressed: () {
+                        setState(() {
+                          _hexCodeController.text = 'F14C4C';
+                        });
+                      },
                     ),
-                  ),
+                    ColorButton(
+                      color: Color(0xFF539C30),
+                      onPressed: () {
+                        setState(() {
+                          _hexCodeController.text = '539C30';
+                        });
+                      },
+                    ),
+                    ColorButton(
+                      color: Color(0xFF2C33D5),
+                      onPressed: () {
+                        setState(() {
+                          _hexCodeController.text = '2C33D5';
+                        });
+                      },
+                    ),
+                    ColorButton(
+                      color: Color(0xFFE7D324),
+                      onPressed: () {
+                        setState(() {
+                          _hexCodeController.text = 'E7D324';
+                        });
+                      },
+                    ),
+                    ColorButton(
+                      color: Color(0xFFC022B1),
+                      onPressed: () {
+                        setState(() {
+                          _hexCodeController.text = 'C022B1';
+                        });
+                      },
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 20),
-              SizedBox(height: 20),
+              SizedBox(height: 27),
               AppTextFormField(
                 focusNode: _hexCodeFocus,
+                label: 'Or enter brand Hex code',
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (value) => _hexCodeFocus.unfocus(),
                 controller: _hexCodeController,
                 hintText: 'Enter Brand color hex code',
                 hintColor: Theme.of(context).textTheme.subtitle2.color,
                 borderWidth: 1.5,
-                readOnly: true,
               ),
               SizedBox(height: 40),
-              AppSolidButton(
+              AppHollowButton(
                 height: 50,
                 //isLoading: isLoading,
-                text: 'Generate Receipt',
+                text: 'Download',
                 onPressed: () async {
                   // check the internet
                 },
               ),
-              // SizedBox(height: 25),
+              SizedBox(height: 22),
+              AppSolidButton(
+                height: 50,
+                //isLoading: isLoading,
+                text: 'Share',
+                onPressed: () async {
+                  // check the internet
+                },
+              ),
+              SizedBox(height: 22),
             ],
           ),
         ),
