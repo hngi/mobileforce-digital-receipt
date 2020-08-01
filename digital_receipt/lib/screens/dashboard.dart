@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:digital_receipt/screens/account_info_screen.dart';
+
 import 'setup.dart';
 import 'package:digital_receipt/models/account.dart';
 import 'package:digital_receipt/providers/business.dart';
@@ -358,7 +360,7 @@ class _DashBoardState extends State<DashBoard> {
           subtitle: '$currency${Utils.formatNumber(amnt)}',
           color: _getRandomColor(),
         ),
-         FlatButton(
+        FlatButton(
           onPressed: () async {
             //var t = DateTime.now().timeZoneName;
             print(await SharedPreferenceService()
@@ -370,82 +372,88 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
-  Container _buildInfo() {
+  Widget _buildInfo() {
     AccountData businessInfo = Provider.of<Business>(context).accountData;
-    return Container(
-      height: 130,
-      padding: EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5.0),
-        color: Theme.of(context).primaryColor,
-      ),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 3,
-            child: DefaultTextStyle(
-              style: Theme.of(context).textTheme.bodyText1,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    businessInfo.name,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    businessInfo.address,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    businessInfo.email,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    businessInfo.phone,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => AccountInfoScreen()));
+      },
+      child: Container(
+        height: 130,
+        padding: EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5.0),
+          color: Theme.of(context).primaryColor,
+        ),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 3,
+              child: DefaultTextStyle(
+                style: Theme.of(context).textTheme.bodyText1,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      businessInfo.name,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      businessInfo.address,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      businessInfo.email,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      businessInfo.phone,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          /* Expanded(
-            flex: 1,
-            child: Container(
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: FaIcon(
-                      FontAwesomeIcons.laptopHouse,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                  RichText(
-                    text: TextSpan(
-                      text: 'Geek',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
+            /* Expanded(
+              flex: 1,
+              child: Container(
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: FaIcon(
+                        FontAwesomeIcons.laptopHouse,
+                        color: Colors.white,
                       ),
-                      children: [
-                        TextSpan(text: 'Tutor'),
-                      ],
                     ),
-                  )
-                ],
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        text: 'Geek',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                        children: [
+                          TextSpan(text: 'Tutor'),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-          ) */
-        ],
+            ) */
+          ],
+        ),
       ),
     );
   }

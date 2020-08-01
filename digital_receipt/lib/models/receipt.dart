@@ -235,6 +235,7 @@ class Receipt extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> toJson() async => {
+    
         "customer": {
           "name": customer.name,
           "email": customer.email,
@@ -246,6 +247,8 @@ class Receipt extends ChangeNotifier {
           "date": convertToDateTime(),
           "font": fonts,
           "color": primaryColorHexCode,
+          "businessid":
+        await _sharedPreferenceService.getStringValuesSF('Business_ID'),
           "preset": preset,
           "platform": category.toString(),
           "paid_stamp": paidStamp,

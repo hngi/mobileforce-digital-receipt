@@ -247,7 +247,7 @@ class _DraftsState extends State<Drafts> {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: Text(
-                      'Total:\t\t $currency${numberFormat.format(double.parse(receipt.totalAmount))}',
+                      'Total:\t\t $currency${Utils.formatNumber(double.parse(receipt.totalAmount))}',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),

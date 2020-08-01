@@ -22,14 +22,13 @@ class SignatureDialog extends StatefulWidget {
   SignatureDialogState createState() => SignatureDialogState();
 }
 
-SharedPreferenceService _preferenceService = SharedPreferenceService();
-
 ui.Image signatureImage;
 
 class SignatureDialogState extends State<SignatureDialog> {
   saveImage(BuildContext context) async {
     var data = await _controller.toPngBytes();
     String encode = base64Encode(data.buffer.asUint8List());
+
     if (widget.from == 'setup') {
       await SharedPreferenceService().addStringToSF('ISSUER_SIGNATURE', encode);
       Navigator.pop(context);
@@ -37,7 +36,6 @@ class SignatureDialogState extends State<SignatureDialog> {
     }
 
     var res = await ApiService().updateSignature(encode);
-    print('reshvh: $res');
     if (res != null) {
       await SharedPreferenceService().addStringToSF('ISSUER_SIGNATURE', encode);
       Navigator.pop(context);
@@ -92,10 +90,6 @@ class SignatureDialogState extends State<SignatureDialog> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                      /*   DashedSeparator(
-                        color: Colors.grey,
-                      ), */
-
                       Flexible(
                         child: Signature(
                           key: signatureCanvasKey,
@@ -107,9 +101,6 @@ class SignatureDialogState extends State<SignatureDialog> {
                           backgroundColor: Colors.white,
                         ),
                       ),
-                      /*  DashedSeparator(
-                        color: Colors.grey,
-                      ), */
                     ],
                   ),
                 ),
