@@ -1,8 +1,11 @@
 import 'package:digital_receipt/constant.dart';
+import 'package:digital_receipt/models/account.dart';
 import 'package:digital_receipt/screens/about.dart';
 import 'package:digital_receipt/screens/analytics.dart';
 import 'package:digital_receipt/screens/drafts.dart';
 import 'package:digital_receipt/screens/inventory_screen.dart';
+import 'package:digital_receipt/services/api_service.dart';
+import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../screens/customerList.dart';
@@ -12,6 +15,9 @@ import '../screens/account_page.dart';
 import '../screens/setup.dart';
 
 class MainDrawer extends StatelessWidget {
+  final ApiService _apiService = ApiService();
+  final SharedPreferenceService _sharedPreferenceService =
+      SharedPreferenceService();
   @override
   Widget build(BuildContext context) {
     //print(MediaQuery.of(context).size.width);
@@ -39,6 +45,93 @@ class MainDrawer extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20.0),
+                  FutureBuilder<List<AccountData>>(
+                    future: _apiService.getAllBusinessInfo(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 1.5,
+                          ),
+                        );
+                      } else if (snapshot.connectionState ==
+                              ConnectionState.done &&
+                          snapshot.hasData &&
+                          snapshot.data.length > 0) {
+                        AccountData firstData = snapshot.data.first;
+                        snapshot.data.removeAt(0);
+                        return FlatButton(
+                          highlightColor: Colors.transparent,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AccountPage()));
+                          },
+                          child: Theme(
+                            data:
+                                ThemeData(unselectedWidgetColor: Colors.white),
+                            child: ExpansionTile(
+                              title: Text(
+                                firstData.name,
+                                style: TextStyle(
+                                  fontFamily: 'Montserrat',
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              children: snapshot.data
+                                      .map(
+                                        (account) => ListTile(
+                                          onTap: () async =>
+                                              await _sharedPreferenceService
+                                                  .addStringToSF('Business_ID',
+                                                      account.id),
+                                          title: Text(
+                                            account.name,
+                                            style: TextStyle(
+                                              fontFamily: 'Montserrat',
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.white,
+                                              letterSpacing: 0.5,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                      .toList() +
+                                  [
+                                    ListTile(
+                                      onTap: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => Setup())),
+                                      leading: Icon(
+                                        Icons.add,
+                                        color: Colors.white,
+                                      ),
+                                      title: Text(
+                                        'Add another business',
+                                        style: TextStyle(
+                                          fontFamily: 'Montserrat',
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                            ),
+                          ),
+                        );
+                      }
+                      return Container();
+                    },
+                  ),
+                  SizedBox(height: 20.0),
                   SizedBox(
                     height: 50.0,
                     width: double.maxFinite,
@@ -48,7 +141,6 @@ class MainDrawer extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                      
                                 builder: (context) => AccountPage()));
                       },
                       child: Row(

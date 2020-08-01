@@ -1331,4 +1331,26 @@ class ApiService {
       return 'false';
     }
   }
+
+  Future<List<AccountData>> getAllBusinessInfo() async {
+    var connectivityResult = await Connected().checkInternet();
+    List<AccountData> accountDataList = [];
+    if (connectivityResult) {
+      var uri = '$_urlEndpoint/business/user/all';
+      String token =
+          await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
+      print(token);
+      var response = await http.get(
+        uri,
+        headers: {"token": token},
+      );
+      var data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        data["data"].forEach((accountData) {
+          accountDataList.add(AccountData.fromJson(accountData));
+        });
+      }
+    }
+    return accountDataList;
+  }
 }
