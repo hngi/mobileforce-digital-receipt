@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/account.dart';
+import 'package:digital_receipt/providers/business.dart';
 import 'package:digital_receipt/screens/about.dart';
 import 'package:digital_receipt/screens/analytics.dart';
 import 'package:digital_receipt/screens/drafts.dart';
@@ -8,16 +11,49 @@ import 'package:digital_receipt/services/api_service.dart';
 import 'package:digital_receipt/services/shared_preference_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../screens/customerList.dart';
 import '../screens/preference_page.dart';
+import '../screens/home_page.dart';
 import '../screens/receipt_history.dart';
 import '../screens/account_page.dart';
 import '../screens/setup.dart';
 
-class MainDrawer extends StatelessWidget {
+class MainDrawer extends StatefulWidget {
+  @override
+  _MainDrawerState createState() => _MainDrawerState();
+}
+
+class _MainDrawerState extends State<MainDrawer> {
   final ApiService _apiService = ApiService();
+
   final SharedPreferenceService _sharedPreferenceService =
       SharedPreferenceService();
+
+  String selectedBusiness = '';
+  String selectedBusinessId = '';
+
+  List<AccountData> businesses = [];
+
+  setBusiness() async {
+    var businessId =
+        await _sharedPreferenceService.getStringValuesSF('Business_ID');
+
+    var temp = Provider.of<Business>(context, listen: false)
+        .userBusiness
+        .firstWhere((e) => e.id == businessId);
+    setState(() {
+      selectedBusiness = temp.name;
+      selectedBusinessId = temp.id;
+    });
+  }
+
+  @override
+  void initState() {
+    setBusiness();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     //print(MediaQuery.of(context).size.width);
@@ -45,91 +81,107 @@ class MainDrawer extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20.0),
-                  FutureBuilder<List<AccountData>>(
-                    future: _apiService.getAllBusinessInfo(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 1.5,
-                          ),
-                        );
-                      } else if (snapshot.connectionState ==
-                              ConnectionState.done &&
-                          snapshot.hasData &&
-                          snapshot.data.length > 0) {
-                        AccountData firstData = snapshot.data.first;
-                        snapshot.data.removeAt(0);
-                        return FlatButton(
-                          highlightColor: Colors.transparent,
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AccountPage()));
-                          },
-                          child: Theme(
-                            data:
-                                ThemeData(unselectedWidgetColor: Colors.white),
-                            child: ExpansionTile(
-                              title: Text(
-                                firstData.name,
-                                style: TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                              children: snapshot.data
-                                      .map(
-                                        (account) => ListTile(
-                                          onTap: () async =>
-                                              await _sharedPreferenceService
-                                                  .addStringToSF('Business_ID',
-                                                      account.id),
-                                          title: Text(
-                                            account.name,
-                                            style: TextStyle(
-                                              fontFamily: 'Montserrat',
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.white,
-                                              letterSpacing: 0.5,
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                      .toList() +
-                                  [
-                                    ListTile(
-                                      onTap: () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => Setup())),
-                                      leading: Icon(
-                                        Icons.add,
-                                        color: Colors.white,
-                                      ),
-                                      title: Text(
-                                        'Add another business',
-                                        style: TextStyle(
-                                          fontFamily: 'Montserrat',
-                                          fontSize: 14.0,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
-                                          letterSpacing: 0.5,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                            ),
-                          ),
-                        );
-                      }
-                      return Container();
+                  FlatButton(
+                    highlightColor: Colors.transparent,
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AccountPage()));
                     },
+                    child: Theme(
+                      data: ThemeData(unselectedWidgetColor: Colors.white),
+                      child: ExpansionTile(
+                        title: Text(
+                          selectedBusiness,
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                        children: Provider.of<Business>(context)
+                                .userBusiness
+                                .where(
+                                    (value) => value.id != selectedBusinessId)
+                                .map(
+                              (account) {
+                                return ListTile(
+                                  onTap: () async {
+                                    setState(() {
+                                      selectedBusiness = account.name;
+                                      selectedBusinessId = account.id;
+                                    });
+
+                                    var business = Provider.of<Business>(
+                                        context,
+                                        listen: false);
+
+                                    business.setAccountData = account;
+
+                                    var val = business.toJson();
+
+                                    var temp = business.userBusiness
+                                        .singleWhere((e) => e.id == account.id);
+                                    businesses.remove(temp);
+                                    businesses.insert(0, temp);
+                                    await _sharedPreferenceService
+                                        .addStringToSF(
+                                      'Business_ID',
+                                      account.id,
+                                    );
+
+                                    await _sharedPreferenceService
+                                        .addStringToSF(
+                                            'BUSINESS_INFO', jsonEncode(val));
+
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                HomePage()),
+                                        (route) => false);
+                                  },
+                                  title: Text(
+                                    account.name,
+                                    style: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ).toList() +
+                            
+                                [
+                                  ListTile(
+                                    onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Setup())),
+                                    leading: Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                    ),
+                                    title: Text(
+                                      'Add another business',
+                                      style: TextStyle(
+                                        fontFamily: 'Montserrat',
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                      ),
+                    ),
                   ),
                   SizedBox(height: 20.0),
                   SizedBox(

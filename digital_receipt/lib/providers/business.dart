@@ -3,6 +3,9 @@ import '../models/account.dart';
 
 class Business extends ChangeNotifier {
   static String loading_text = '...';
+  
+  List<AccountData> userBusiness = [];
+
   AccountData accountData = AccountData(
     id: loading_text,
     name: loading_text,
@@ -12,6 +15,7 @@ class Business extends ChangeNotifier {
     logo: '',
     email: loading_text,
   );
+
 
   set setAccountData(AccountData val) {
     accountData = val;
