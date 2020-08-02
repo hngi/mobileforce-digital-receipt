@@ -341,6 +341,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         ),
                         SizedBox(height: 5),
                         AppTextFormField(
+                          hintText: 'hint:tax in amount',
                           focusNode: _taxFocus,
                           textInputAction: TextInputAction.next,
                           onFieldSubmitted: (value) =>
@@ -359,6 +360,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         ),
                         SizedBox(height: 5),
                         AppTextFormField(
+                          hintText: "hint: discount in amount",
                           focusNode: _discountFocus,
                           textInputAction: TextInputAction.done,
                           onFieldSubmitted: (value) {
@@ -456,13 +458,11 @@ class _ProductDetailState extends State<ProductDetail> {
             unitPrice: double.parse(unitPriceController.text),
             categoryName: cartegoryName ?? '',
             unit: unitValue.getShortName(int.parse(quantityController.text)),
-            amount: (double.parse(quantityController.text) *
+            amount: ((double.parse(quantityController.text) *
                     double.parse(unitPriceController.text)) +
-                (double.parse(taxController.text)) -
-                (double.parse(discountController.text) /
-                    100 *
-                    (double.parse(quantityController.text) *
-                        double.parse(unitPriceController.text))),
+                (double.parse(taxController.text))) -
+                (double.parse(discountController.text)
+                    ),
             tax: double.parse(taxController.text),
             discount: double.parse(discountController.text),
           ),
