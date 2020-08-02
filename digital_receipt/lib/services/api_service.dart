@@ -740,7 +740,6 @@ class ApiService {
 
         res = await hiveDb.getBusiness();
 
-        print('jhjhjre: ${res[2]}');
 
         if (businessId == null) {
           res = res.firstWhere(
@@ -753,6 +752,8 @@ class ApiService {
             orElse: () {},
           );
         }
+        print('jhjhjre: $res');
+        print('jw455xe: ${res['phone_number']}');
 
         if (res != null) {
           await _sharedPreferenceService.addStringToSF(
