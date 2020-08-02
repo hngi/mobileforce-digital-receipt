@@ -348,10 +348,12 @@ class _InventoryScreenState extends State<InventoryScreen> {
                           ),
                           _buildColumnText(
                             label: "DISCOUNT",
-                            value: (inventory.discount).toString() + "%",
+                            currency: currency,
+                            value:(inventory.discount).toString(),
                             flex: 3,
                           ),
                           _buildColumnText(
+                            currency: currency,
                             label: "TAX",
                             value: inventory.tax.toString(),
                             flex: 2,

@@ -301,7 +301,7 @@ class Receipt extends ChangeNotifier {
     return response.statusCode;
   }
 
-  saveReceipt() async {
+    saveReceipt() async {
     var uri = "$_urlEndpoint/business/receipt/customize";
     var token = await _sharedPreferenceService.getStringValuesSF("AUTH_TOKEN");
     print(json.encode(await toJson()));

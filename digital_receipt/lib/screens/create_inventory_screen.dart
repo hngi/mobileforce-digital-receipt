@@ -266,6 +266,7 @@ class _CreateInventoryState extends State<CreateInventory> {
                           _buildQuantity('Quantity'),
                           SizedBox(height: 22),
                           AppTextFormField(
+                            hintText: "hint:discount in amount",
                             label: 'Discount',
                             keyboardType: TextInputType.number,
                            validator: Validators.compose([
@@ -279,6 +280,7 @@ class _CreateInventoryState extends State<CreateInventory> {
                           ),
                           SizedBox(height: 22),
                           AppTextFormField(
+                            hintText: "tax in amount",
                             label: 'Tax',
                             keyboardType: TextInputType.number,
                             validator: Validators.compose([
