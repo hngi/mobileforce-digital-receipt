@@ -40,6 +40,8 @@ class _AnalyticsState extends State<Analytics> {
     List<Receipt> issuedReceiptsDB = [];
 
     var connectivityResult = await Connected().checkInternet();
+    String businessId =
+        await SharedPreferenceService().getStringValuesSF('Business_ID');
     if (connectivityResult) {
       // gets receipts from API
       Map receiptsAPI = await _apiService.getIssuedReceipt2();
@@ -48,9 +50,9 @@ class _AnalyticsState extends State<Analytics> {
         issuedReceipts.add(Receipt.fromJson(receipt));
       });
       //  stores API/database data into local database
-      await hiveDb.addReceiptAnalytic(receiptsAPI['data']);
+      await hiveDb.addReceiptAnalytic(receiptsAPI['data'], businessId);
       //  gets data from local database
-      List receiptsFromDB = await hiveDb.getAnalyticData();
+      List receiptsFromDB = await hiveDb.getAnalyticData(businessId);
       // Convert local database data to a receipt
       receiptsFromDB.forEach((receipt) {
         issuedReceiptsDB.add(Receipt.fromJson(receipt));
@@ -59,7 +61,7 @@ class _AnalyticsState extends State<Analytics> {
       issuedReceipts = issuedReceiptsDB;
     } else {
       //  gets data from local database
-      List receiptsFromDB = await hiveDb.getAnalyticData();
+      List receiptsFromDB = await hiveDb.getAnalyticData(businessId);
       // Convert local database data to a receipt
       receiptsFromDB.forEach((receipt) {
         issuedReceipts.add(Receipt.fromJson(receipt));

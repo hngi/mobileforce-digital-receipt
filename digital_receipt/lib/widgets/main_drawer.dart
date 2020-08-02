@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import '../utils/connected.dart';
+import '../screens/no_internet_connection.dart';
 import 'package:digital_receipt/constant.dart';
 import 'package:digital_receipt/models/account.dart';
 import 'package:digital_receipt/providers/business.dart';
@@ -92,12 +93,13 @@ class _MainDrawerState extends State<MainDrawer> {
                     child: Theme(
                       data: ThemeData(unselectedWidgetColor: Colors.white),
                       child: ExpansionTile(
+                        backgroundColor: Colors.transparent,
                         title: Text(
                           selectedBusiness,
                           style: TextStyle(
                             fontFamily: 'Montserrat',
                             fontSize: 18.0,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                             color: Colors.white,
                             letterSpacing: 0.3,
                           ),
@@ -148,8 +150,8 @@ class _MainDrawerState extends State<MainDrawer> {
                                     account.name,
                                     style: TextStyle(
                                       fontFamily: 'Montserrat',
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w500,
                                       color: Colors.white,
                                       letterSpacing: 0.3,
                                     ),
@@ -157,33 +159,47 @@ class _MainDrawerState extends State<MainDrawer> {
                                 );
                               },
                             ).toList() +
-                            
-                                [
-                                  ListTile(
-                                    onTap: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Setup())),
-                                    leading: Icon(
-                                      Icons.add,
-                                      color: Colors.white,
+                            [
+                              ListTile(
+                                onTap: () async {
+                                   var connected = await Connected().checkInternet();
+                             if (!connected) {
+                              await showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return NoInternet();
+                                },
+                              );
+                             
+                              return;
+                            }
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Setup(),
                                     ),
-                                    title: Text(
-                                      'Add another business',
-                                      style: TextStyle(
-                                        fontFamily: 'Montserrat',
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                  )
-                                ],
+                                  );
+                                },
+                                leading: Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                ),
+                                title: Text(
+                                  'Add another business',
+                                  style: TextStyle(
+                                    fontFamily: 'Montserrat',
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              )
+                            ],
                       ),
                     ),
                   ),
-                  SizedBox(height: 20.0),
+                  // SizedBox(height: 10.0),
                   SizedBox(
                     height: 50.0,
                     width: double.maxFinite,

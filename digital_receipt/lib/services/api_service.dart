@@ -218,24 +218,24 @@ class ApiService {
         // checks if the length of draft is larger than 100 and checks for internet
         if (res.length >= 100 && connectivityResult) {
           List temp = res.getRange(0, 99).toList();
-          await hiveDb.addDraft(temp);
+          await hiveDb.addDraft(temp, businessId);
 
           // return hiveDb.getDraft();
           return res;
         } else if (res.length < 100 && connectivityResult) {
-          await hiveDb.addDraft(res);
+          await hiveDb.addDraft(res, businessId);
 
-          return hiveDb.getDraft();
+          return hiveDb.getDraft(businessId);
           //return res;
         } else {
           print('res: 9');
-          return hiveDb.getDraft();
+          return hiveDb.getDraft(businessId);
         }
       } else {
         return null;
       }
     } else {
-      return hiveDb.getDraft() ?? null;
+      return hiveDb.getDraft(businessId) ?? [];
     }
   }
 
@@ -268,7 +268,7 @@ class ApiService {
         var res = json.decode(response.body)["data"];
         if (res.length >= 100) {
           List temp = res.getRange(0, 99).toList();
-          await hiveDb.addReceiptHistory(temp);
+          await hiveDb.addReceiptHistory(temp, businessId);
 
           res = res.map((e) {
             Receipt temp = Receipt.fromJson(e);
@@ -276,11 +276,11 @@ class ApiService {
           });
           return List<Receipt>.from(res);
         } else if (res.length < 100) {
-          await hiveDb.addReceiptHistory(res);
+          await hiveDb.addReceiptHistory(res, businessId);
 
-          return hiveDb.getReceiptHistory();
+          return hiveDb.getReceiptHistory(businessId);
         } else {
-          return hiveDb.getReceiptHistory();
+          return hiveDb.getReceiptHistory(businessId);
         }
 
         //return issued_receipts;
@@ -288,7 +288,7 @@ class ApiService {
         return null;
       }
     } else {
-      return hiveDb.getReceiptHistory();
+      return hiveDb.getReceiptHistory(businessId);
     }
   }
 
@@ -734,15 +734,26 @@ class ApiService {
           jsonDecode(response.body)['data'].runtimeType != String) {
         dynamic res = jsonDecode(response.body);
 
-        print('jhjhjre: ${jsonDecode(response.body)['data'].runtimeType}');
         res = res['data'] as List;
 
-        res = res.firstWhere(
-          (e) => e['user'].toString() == userID && e['id'] == businessId,
-          orElse: () {
+        await hiveDb.addBusiness(res);
 
-          },
-        );
+        res = await hiveDb.getBusiness();
+
+
+        if (businessId == null) {
+          res = res.firstWhere(
+            (e) => e['user'].toString() == userID,
+            orElse: () {},
+          );
+        } else {
+          res = res.firstWhere(
+            (e) => e['user'].toString() == userID && e['id'] == businessId,
+            orElse: () {},
+          );
+        }
+        print('jhjhjre: $res');
+        print('jw455xe: ${res['phone_number']}');
 
         if (res != null) {
           await _sharedPreferenceService.addStringToSF(
@@ -770,16 +781,32 @@ class ApiService {
         return null;
       }
     } else {
-      var result =
+      dynamic val = await hiveDb.getBusiness();
+
+      if (businessId == null) {
+        val = val.firstWhere(
+          (e) => e['user'].toString() == userID,
+          orElse: () {},
+        );
+      } else {
+        val = val.firstWhere(
+          (e) => e['user'].toString() == userID && e['id'] == businessId,
+          orElse: () {},
+        );
+      }
+      print('vallll: $val');
+
+      /*  var result =
           await _sharedPreferenceService.getStringValuesSF('BUSINESS_INFO');
-      var res = jsonDecode(result);
+
+      var res = jsonDecode(result); */
       return AccountData(
-        id: res['id'] ?? '',
-        name: res['name'] ?? '',
-        phone: res['phone'] ?? '',
-        address: res['address'] ?? '',
-        slogan: res['slogan'] ?? '',
-        logo: 'https://degeit-receipt.herokuapp.com${res['logo']}' ?? '',
+        id: val['id'] ?? '',
+        name: val['name'] ?? '',
+        phone: val['phone'] ?? '',
+        address: val['address'] ?? '',
+        slogan: val['slogan'] ?? '',
+        logo: 'https://degeit-receipt.herokuapp.com${val['logo']}' ?? '',
         email: email,
       );
     }
@@ -878,6 +905,8 @@ class ApiService {
   /// if there are no notifications it returns an empty list
   Future getAllNotifications() async {
     var connectivityResult = await (Connected().checkInternet());
+    String businessId =
+        await _sharedPreferenceService.getStringValuesSF('Business_ID');
     if (connectivityResult) {
       var uri = "$_urlEndpoint/user/notification/all";
       String token =
@@ -898,15 +927,15 @@ class ApiService {
           var res = data["data"];
           if (res.length >= 100) {
             List temp = data["data"].getRange(0, 99).toList();
-            await hiveDb.addNotification(temp);
+            await hiveDb.addNotification(temp, businessId);
 
             return res;
           } else if (data["data"].length < 100) {
-            await hiveDb.addNotification(data["data"]);
+            await hiveDb.addNotification(data["data"], businessId);
 
-            return hiveDb.getNotification();
+            return hiveDb.getNotification(businessId);
           } else {
-            return hiveDb.getNotification();
+            return hiveDb.getNotification(businessId);
           }
         } else {
           print("All notifications status code ${response.statusCode}");
@@ -914,12 +943,15 @@ class ApiService {
         }
       }
     } else {
-      return hiveDb.getNotification() ?? Future.error('No network Connection');
+      return hiveDb.getNotification(businessId) ??
+          Future.error('No network Connection');
     }
   }
 
   Future getAllCustomers() async {
     var connectivityResult = await Connected().checkInternet();
+    String businessId =
+        await _sharedPreferenceService.getStringValuesSF('Business_ID');
     if (connectivityResult) {
       var uri = "$_urlEndpoint/customer/all";
       String token =
@@ -942,18 +974,18 @@ class ApiService {
           // checks if the length of history is larger than 100 and checks for internet
           if (res.length >= 100) {
             List temp = res.getRange(0, 99).toList();
-            await hiveDb.addCustomer(temp);
+            await hiveDb.addCustomer(temp, businessId);
 
             // return hiveDb.getCustomer();
             return res;
           } else if (res.length < 100) {
-            await hiveDb.addCustomer(res);
+            await hiveDb.addCustomer(res, businessId);
 
-            return hiveDb.getCustomer();
+            return hiveDb.getCustomer(businessId);
             //return res;
           } else {
             print('res: 9');
-            return hiveDb.getCustomer();
+            return hiveDb.getCustomer(businessId);
             //return res;
           }
         } else {
@@ -962,14 +994,16 @@ class ApiService {
         }
       }
     } else {
-      return hiveDb.getCustomer() ?? Future.error('No network Connection');
+      return hiveDb.getCustomer(businessId) ?? [];
     }
   }
 
   Future getAllInventories() async {
     var connectivityResult = await Connected().checkInternet();
+    String businessId =
+        await _sharedPreferenceService.getStringValuesSF('Business_ID');
     if (connectivityResult) {
-      var uri = "$_urlEndpoint/business/inventory/all";
+      var uri = "$_urlEndpoint/business/inventory/all/$businessId";
       String token =
           await _sharedPreferenceService.getStringValuesSF('AUTH_TOKEN');
 
@@ -987,7 +1021,7 @@ class ApiService {
 
           if (data.length >= 100) {
             List temp = data.getRange(0, 99).toList();
-            await hiveDb.addInventory(temp);
+            await hiveDb.addInventory(temp, businessId);
 
             List res = data.map((e) {
               Inventory temp = Inventory.fromJson(e);
@@ -996,12 +1030,12 @@ class ApiService {
             print('data: $res');
             return res;
           } else if (data.length < 100) {
-            await hiveDb.addInventory(data);
+            await hiveDb.addInventory(data, businessId);
 
-            return hiveDb.getInventory();
+            return hiveDb.getInventory(businessId);
           } else {
             print('res: 9');
-            return hiveDb.getInventory();
+            return hiveDb.getInventory(businessId);
           }
         } else {
           var res = jsonDecode(response.body)['data'];
@@ -1009,7 +1043,7 @@ class ApiService {
         }
       }
     } else {
-      return hiveDb.getInventory() ?? Future.error('No network Connection');
+      return hiveDb.getInventory(businessId) ?? [];
     }
   }
 
@@ -1029,7 +1063,7 @@ class ApiService {
       if (res.statusCode == 200) {
         var data = json.decode(res.body);
         print(data);
-        await hiveDb.addDashboardInfo(data);
+        await hiveDb.addDashboardInfo(data, businessId);
         // var val = await hiveDb.getDashboardInfo();
         // return val;
         return data;
@@ -1037,7 +1071,7 @@ class ApiService {
         return null;
       }
     } else {
-      var val = await hiveDb.getDashboardInfo();
+      var val = await hiveDb.getDashboardInfo(businessId);
       return val;
     }
   }
@@ -1138,6 +1172,8 @@ class ApiService {
     double tax,
   ) async {
     var connectivityResult = await Connected().checkInternet();
+    String businessId =
+        await _sharedPreferenceService.getStringValuesSF('Business_ID');
     if (connectivityResult) {
       var uri = '$_urlEndpoint/business/inventory/add';
       String token =
@@ -1151,6 +1187,7 @@ class ApiService {
           "quantity": "$quantity",
           "price": "$price",
           "unit": "$unit",
+          "business": businessId,
           "discount": "$discount",
           "tax_amount": "$tax",
         },
@@ -1359,11 +1396,25 @@ class ApiService {
       );
       var data = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        data["data"].forEach((accountData) {
-          accountDataList.add(AccountData.fromJson(accountData));
-        });
+        await hiveDb.addBusiness(data["data"]);
+
+        dynamic res = await hiveDb.getBusiness();
+        List temp = res
+            .map((accountData) => AccountData.fromJson(accountData))
+            .toList();
+
+        List<AccountData> val = List.from(temp);
+
+        return val;
       }
+      return null;
     }
-    return accountDataList;
+    dynamic res = await hiveDb.getBusiness();
+    List temp =
+        res.map((accountData) => AccountData.fromJson(accountData)).toList();
+
+    List<AccountData> val = List.from(temp);
+
+    return val;
   }
 }
