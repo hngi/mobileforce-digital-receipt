@@ -740,10 +740,10 @@ class ApiService {
         res = res.firstWhere(
           (e) => e['user'].toString() == userID && e['id'] == businessId,
           orElse: () {
-            print('object');
+
           },
         );
-        print("dfdfdf: $res");
+
         if (res != null) {
           await _sharedPreferenceService.addStringToSF(
               'ISSUER_SIGNATURE', res['signature']);
