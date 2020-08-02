@@ -45,9 +45,16 @@ class _DashBoardState extends State<DashBoard> {
   var promotionData;
   String currency = '';
 
+  setBusinesses() async {
+    var val = await _apiService.getAllBusinessInfo();
+
+    Provider.of<Business>(context, listen: false).userBusiness = val;
+  }
+
   @override
   void initState() {
     dashboardFuture = _apiService.getIssuedReceipt2();
+    setBusinesses();
     callFetch();
     setCurrency();
     isLogin(context);
@@ -397,24 +404,24 @@ class _DashBoardState extends State<DashBoard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      businessInfo.name,
+                      businessInfo?.name ?? '...',
                       style: Theme.of(context)
                           .textTheme
                           .bodyText1
                           .copyWith(fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      businessInfo.address,
+                      businessInfo?.address ?? '...',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      businessInfo.email,
+                      businessInfo?.email ?? '...',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      businessInfo.phone,
+                      businessInfo?.phone ?? '...',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
