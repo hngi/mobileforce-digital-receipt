@@ -6,116 +6,130 @@ import 'package:hive/hive.dart';
 
 class HiveDb extends ChangeNotifier {
   /* FOR Customer PAGE */
-  Future<void> addCustomer(List customer) async {
-    var customerBox = await Hive.openBox('customer');
+  Future<void> addCustomer(List customer, String businessId) async {
+    var customerBox = await Hive.openBox('$businessId customer');
     //print(customerBox);
     var res = json.encode(customer);
-    await customerBox.put('customer', res);
+    await customerBox.put('$businessId customer', res);
   }
 
-  getCustomer() async {
-    var customerBox = await Hive.openBox('customer');
-    var customer = customerBox.get('customer');
+  getCustomer(String businessId) async {
+    var customerBox = await Hive.openBox('$businessId customer');
+    var customer = customerBox.get('$businessId customer');
     if (customerBox != null) {
-   //   Fluttertoast.showToast(msg: 'Offline mode Active');
+
       return jsonDecode(customer);
     }
   }
 
   /* FOR ReeceiptHistory PAGE */
-  Future<void> addReceiptHistory(receipts) async {
-    var customerBox = await Hive.openBox('receipt_history');
-    //print(customerBox);
+  Future<void> addReceiptHistory(receipts, String businessId) async {
+    var customerBox = await Hive.openBox('$businessId receipt_history');
+
     var res = json.encode(receipts);
-    await customerBox.put('receipts', res);
+    await customerBox.put('$businessId receipts', res);
   }
 
-  Future getReceiptHistory() async {
-    var receiptHistory = await Hive.openBox('receipt_history');
-    var receipts = receiptHistory.get('receipts');
+  Future getReceiptHistory(String businessId) async {
+    var receiptHistory = await Hive.openBox('$businessId receipt_history');
+    var receipts = receiptHistory.get('$businessId receipts');
     if (receipts != null) {
       dynamic res = jsonDecode(receipts);
       res = res.map((e) {
         Receipt temp = Receipt.fromJson(e);
         return temp;
       });
-      //print(res);
-     // Fluttertoast.showToast(msg: 'Offline mode Active');
+
       return List<Receipt>.from(res);
     }
     return null;
   }
 
   /* FOR DRAFT PAGE */
-  Future<void> addDraft(List receipts) async {
-    var draftBox = await Hive.openBox('draft');
+  Future<void> addDraft(List receipts, String businessId) async {
+    var draftBox = await Hive.openBox('$businessId draft');
     var res = json.encode(receipts);
-    await draftBox.put('draft', res);
+    await draftBox.put('$businessId draft', res);
   }
 
-  Future getDraft() async {
+  Future getDraft( String businessId) async {
     // print('dfdf');
-    var draftBox = await Hive.openBox('draft');
-    var draft = draftBox.get('draft');
+    var draftBox = await Hive.openBox('$businessId draft');
+    var draft = draftBox.get('$businessId draft');
     //Fluttertoast.showToast(msg: 'Offline mode Active');
     return json.decode(draft);
   }
 
   /* FOR HOMESCREEN */
-  Future<void> addDashboardInfo(receipts) async {
-    var draftBox = await Hive.openBox('dashboard_info');
+  Future<void> addDashboardInfo(receipts, String businessId) async {
+    var draftBox = await Hive.openBox('$businessId dashboard_info');
     var res = json.encode(receipts);
-    await draftBox.put('dashboard_info', res);
+    await draftBox.put('$businessId dashboard_info', res);
   }
 
-  Future getDashboardInfo() async {
+  Future getDashboardInfo(String businessId) async {
     // print('dfdf');
-    var draftBox = await Hive.openBox('dashboard_info');
-    var draft = draftBox.get('dashboard_info');
+    var draftBox = await Hive.openBox('$businessId dashboard_info');
+    var draft = draftBox.get('$businessId dashboard_info');
    // Fluttertoast.showToast(msg: 'Offline mode Active');
     return json.decode(draft);
   }
 
   /* FOR ANALYTIC PAGE */
-  Future<void> addReceiptAnalytic(List receipts) async {
-    var analyticBox = await Hive.openBox('analytics');
+  Future<void> addReceiptAnalytic(List receipts, String businessId) async {
+    var analyticBox = await Hive.openBox('$businessId analytics');
     var res = json.encode(receipts);
-    await analyticBox.put('analytics', res);
+    await analyticBox.put('$businessId analytics', res);
   }
 
-  Future getAnalyticData() async {
-    var analyticBox = await Hive.openBox('analytics');
-    var analyticData = analyticBox.get('analytics');
+  Future getAnalyticData(String businessId) async {
+    var analyticBox = await Hive.openBox('$businessId analytics');
+    var analyticData = analyticBox.get('$businessId analytics');
     //Fluttertoast.showToast(msg: 'Offline mode Active');
     return json.decode(analyticData);
   }
 
   /* FOR NOTIFICATION PAGE */
-  Future<void> addNotification(dynamic notification) async {
-    var notificationBox = await Hive.openBox('notification');
+  Future<void> addNotification(dynamic notification, String businessId) async {
+    var notificationBox = await Hive.openBox('$businessId notification');
     var res = json.encode(notification);
 
-    await notificationBox.put('notification', res);
+    await notificationBox.put('$businessId notification', res);
   }
 
-  Future getNotification() async {
-    var notificationBox = await Hive.openBox('notification');
-    var notificationData = notificationBox.get('notification');
+  Future getNotification( String businessId) async {
+    var notificationBox = await Hive.openBox('$businessId notification');
+    var notificationData = notificationBox.get('$businessId notification');
     //Fluttertoast.showToast(msg: 'Offline mode Active');
     return json.decode(notificationData);
   }
 
-  /* FOR ReeceiptHistory PAGE */
-  Future<void> addInventory(inventories) async {
-    var inventoryBox = await Hive.openBox('inventories');
-    //print(customerBox);
-    var res = json.encode(inventories);
-    await inventoryBox.put('inventories', res);
+  /* FOR LIST I=OF BUSINESSES */
+  Future<void> addBusiness(dynamic business) async {
+    var businessBox = await Hive.openBox('business');
+    var res = json.encode(business);
+
+    await businessBox.put('business', res);
   }
 
-  Future getInventory() async {
-    var inventory = await Hive.openBox('inventories');
-    var inventories = inventory.get('inventories');
+  Future getBusiness() async {
+    var businessBox = await Hive.openBox('business');
+    var businessData = businessBox.get('business');
+  
+    return json.decode(businessData);
+  }
+
+  /* FOR ReeceiptHistory PAGE */
+  Future<void> addInventory(inventories, String businessId) async {
+    var inventoryBox = await Hive.openBox('$businessId inventories');
+    //print(customerBox);
+    var res = json.encode(inventories);
+    await inventoryBox.put('$businessId inventories', res);
+  }
+
+  Future getInventory(String businessId) async {
+    var inventory = await Hive.openBox('$businessId inventories');
+    var inventories = inventory.get('$businessId inventories');
     if (inventories != null) {
       dynamic res = jsonDecode(inventories);
       res = res.map((e) {
