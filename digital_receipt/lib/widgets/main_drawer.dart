@@ -112,6 +112,7 @@ class _MainDrawerState extends State<MainDrawer> {
                                   onTap: () async {
                                     setState(() {
                                       selectedBusiness = account.name;
+                                      selectedBusinessId = account.id;
                                     });
 
                                     var business = Provider.of<Business>(
@@ -155,8 +156,8 @@ class _MainDrawerState extends State<MainDrawer> {
                                   ),
                                 );
                               },
-                            ).toList() ??
-                            [] +
+                            ).toList() +
+                            
                                 [
                                   ListTile(
                                     onTap: () => Navigator.push(
