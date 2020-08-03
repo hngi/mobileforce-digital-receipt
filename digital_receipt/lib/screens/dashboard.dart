@@ -384,7 +384,7 @@ class _DashBoardState extends State<DashBoard> {
     return GestureDetector(
       onTap: () {
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => AccountInfoScreen()));
+            MaterialPageRoute(builder: (context) => AccountInfoScreen( businessInfo: businessInfo)));
       },
       child: Container(
         height: 130,

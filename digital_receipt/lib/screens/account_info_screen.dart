@@ -1,3 +1,5 @@
+import 'package:digital_receipt/models/account.dart';
+import 'package:digital_receipt/providers/business.dart';
 import 'package:digital_receipt/widgets/app_hollow_button.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:digital_receipt/widgets/app_text_form_field.dart';
@@ -6,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:digital_receipt/constant.dart';
 
 class AccountInfoScreen extends StatefulWidget {
+  AccountData businessInfo;
+  AccountInfoScreen({@required this.businessInfo});
+
   @override
   _AccountInfoScreenState createState() => _AccountInfoScreenState();
 }
@@ -16,7 +21,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
   final TextEditingController _businessDetailsController =
       TextEditingController();
   final FocusNode _hexCodeFocus = FocusNode();
-
+  String businessDetail;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +48,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
               SizedBox(
                 height: 24,
               ),
-              BusinessCardRow(),
+              bussinessRow(),
               SizedBox(
                 height: 42,
               ),
@@ -52,6 +57,11 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                 controller: _businessDetailsController,
                 hintColor: Theme.of(context).textTheme.subtitle2.color,
                 borderWidth: 1.5,
+                onChanged: (value) {
+                  setState(() {
+                    businessDetail = value;
+                  });
+                },
               ),
               SizedBox(height: 30),
               Text(
@@ -143,17 +153,14 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
       ),
     );
   }
-}
 
-class BusinessCardRow extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  Widget bussinessRow() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: <Widget>[
-          Card(child: BusinessCard0()),
-          Card(child: BusinessCard1()),
+          Card(child: businessCard0()),
+          Card(child: businessCard1()),
           Card(
             child: SizedBox(
               height: 180,
@@ -170,12 +177,10 @@ class BusinessCardRow extends StatelessWidget {
       ),
     );
   }
-}
 
-class BusinessCard0 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container( 
+  //business cards
+  Widget businessCard0() {
+    return Container(
       height: 180,
       width: 293,
       child: Stack(
@@ -210,7 +215,7 @@ class BusinessCard0 extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         Text(
-                          'Chief Priest',
+                          widget.businessInfo?.name ?? '...',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
                                 fontSize: 12,
                               ),
@@ -234,7 +239,7 @@ class BusinessCard0 extends StatelessWidget {
                 ),
                 SizedBox(height: 5.0),
                 Text(
-                  'Dealers in all form of digital technologies',
+                  businessDetail == null ? 'type in business details to change me': businessDetail,
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
                         fontSize: 9,
                       ),
@@ -245,7 +250,7 @@ class BusinessCard0 extends StatelessWidget {
                     Image.asset('assets/icons/locationIcon.png'),
                     SizedBox(width: 7.0),
                     Text(
-                      'No 16, IBB road, wuse zone 10, Abuja',
+                      widget.businessInfo?.address ?? '...',
                       style: Theme.of(context).textTheme.bodyText2.copyWith(
                             fontSize: 11,
                           ),
@@ -258,7 +263,7 @@ class BusinessCard0 extends StatelessWidget {
                     Image.asset('assets/icons/phoneIcon.png'),
                     SizedBox(width: 7.0),
                     Text(
-                      '090 4433 9922, 080 2256 7343',
+                      widget.businessInfo?.phone ?? '...',
                       style: Theme.of(context).textTheme.bodyText2.copyWith(
                             fontSize: 11,
                           ),
@@ -271,7 +276,7 @@ class BusinessCard0 extends StatelessWidget {
                     Image.asset('assets/icons/messageIcon.png'),
                     SizedBox(width: 7.0),
                     Text(
-                      'Degeittech@yahoo.com',
+                      widget.businessInfo?.email ?? '...',
                       style: Theme.of(context).textTheme.bodyText2.copyWith(
                             fontSize: 11,
                           ),
@@ -290,11 +295,8 @@ class BusinessCard0 extends StatelessWidget {
               DecorationImage(image: AssetImage('assets/images/Vector.png'))),
     );
   }
-}
 
-class BusinessCard1 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  Widget businessCard1() {
     return Container(
       height: 180,
       width: 293,
@@ -337,7 +339,7 @@ class BusinessCard1 extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           Text(
-                            'Chief Priest',
+                            widget.businessInfo?.name ?? '...',
                             style:
                                 Theme.of(context).textTheme.bodyText2.copyWith(
                                       fontSize: 12,
@@ -379,7 +381,7 @@ class BusinessCard1 extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15.0),
                   child: Text(
-                    'Dealers in all form of digital technologies',
+                    'type in business details to change me',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
                           fontSize: 9,
                         ),
@@ -394,7 +396,8 @@ class BusinessCard1 extends StatelessWidget {
                           bottomRight: Radius.circular(40)),
                       color: Color(0xFFF9F9F9)),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
                     child: Column(
                       children: <Widget>[
                         Row(
@@ -402,11 +405,13 @@ class BusinessCard1 extends StatelessWidget {
                             Image.asset('assets/icons/locationIcon.png'),
                             SizedBox(width: 7.0),
                             Text(
-                              'No 16, IBB road, wuse zone 10, Abuja',
-                              style:
-                                  Theme.of(context).textTheme.bodyText2.copyWith(
-                                        fontSize: 11,
-                                      ),
+                              widget.businessInfo?.address ?? '...',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                    fontSize: 11,
+                                  ),
                             ),
                           ],
                         ),
@@ -416,11 +421,13 @@ class BusinessCard1 extends StatelessWidget {
                             Image.asset('assets/icons/phoneIcon.png'),
                             SizedBox(width: 7.0),
                             Text(
-                              '090 4433 9922, 080 2256 7343',
-                              style:
-                                  Theme.of(context).textTheme.bodyText2.copyWith(
-                                        fontSize: 11,
-                                      ),
+                              widget.businessInfo?.phone ?? '...',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                    fontSize: 11,
+                                  ),
                             ),
                           ],
                         ),
@@ -430,11 +437,13 @@ class BusinessCard1 extends StatelessWidget {
                             Image.asset('assets/icons/messageIcon.png'),
                             SizedBox(width: 7.0),
                             Text(
-                              'Degeittech@yahoo.com',
-                              style:
-                                  Theme.of(context).textTheme.bodyText2.copyWith(
-                                        fontSize: 11,
-                                      ),
+                              widget.businessInfo?.email ?? '...',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                    fontSize: 11,
+                                  ),
                             ),
                           ],
                         ),
