@@ -175,7 +175,7 @@ class BusinessCardRow extends StatelessWidget {
 class BusinessCard0 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Container( 
       height: 180,
       width: 293,
       child: Stack(
@@ -322,7 +322,7 @@ class BusinessCard1 extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 0.0),
+                  padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 5.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
