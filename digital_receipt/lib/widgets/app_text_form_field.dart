@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 class AppTextFormField extends StatelessWidget {
   const AppTextFormField(
-      {this.readOnly = false,
+      {this.autofocus = false,
+      this.readOnly = false,
       this.onChanged,
       this.initialValue,
       this.label,
@@ -42,24 +43,26 @@ class AppTextFormField extends StatelessWidget {
   final String initialValue;
   final Function onChanged;
   final bool readOnly;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
     TextFormField textFormField = TextFormField(
       readOnly: readOnly,
+      autovalidate: true,
       onChanged: onChanged,
       initialValue: initialValue,
       controller: controller != null ? controller : null,
       focusNode: focusNode,
       textInputAction: textInputAction,
       onFieldSubmitted: onFieldSubmitted,
+      autofocus: autofocus,
       style: Theme.of(context).textTheme.bodyText2.copyWith(
             fontWeight: FontWeight.w600,
           ),
       validator: validator,
       onSaved: onSaved,
       onTap: onTap,
-      
       decoration: InputDecoration(
         hintText: hintText,
         suffixIcon: suffixIcon,
@@ -67,7 +70,7 @@ class AppTextFormField extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
           borderSide: BorderSide(
-           // color: Color(0xFFC8C8C8),
+            // color: Color(0xFFC8C8C8),
             width: 1,
           ),
         ),

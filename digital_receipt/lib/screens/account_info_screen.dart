@@ -1,11 +1,15 @@
 import 'package:digital_receipt/models/account.dart';
+import 'package:digital_receipt/models/brand_color.dart';
 import 'package:digital_receipt/providers/business.dart';
+import 'package:digital_receipt/utils/svg_builder.dart';
 import 'package:digital_receipt/widgets/app_hollow_button.dart';
 import 'package:digital_receipt/widgets/app_solid_button.dart';
 import 'package:digital_receipt/widgets/app_text_form_field.dart';
 import 'package:digital_receipt/widgets/create_receipt_step2.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt/constant.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:wc_form_validators/wc_form_validators.dart';
 
 class AccountInfoScreen extends StatefulWidget {
   AccountData businessInfo;
@@ -16,14 +20,16 @@ class AccountInfoScreen extends StatefulWidget {
 }
 
 class _AccountInfoScreenState extends State<AccountInfoScreen> {
-  final TextEditingController _hexCodeController = TextEditingController()
-    ..text = "F14C4C";
+  final BrandColor _brandColor = BrandColor()..hexCode = 'F14C4C';
+  final TextEditingController _hexCodeController = TextEditingController();
+  final GlobalKey<FormState> _hexFormKey = GlobalKey<FormState>();
   final TextEditingController _businessDetailsController =
       TextEditingController();
   final FocusNode _hexCodeFocus = FocusNode();
   String businessDetail;
   @override
   Widget build(BuildContext context) {
+    _hexCodeController.text = _brandColor.hexCode;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -78,7 +84,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                       color: Colors.red,
                       onPressed: () {
                         setState(() {
-                          _hexCodeController.text = 'F14C4C';
+                          _brandColor.hexCode = 'F14C4C';
                         });
                       },
                     ),
@@ -86,7 +92,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                       color: Color(0xFF539C30),
                       onPressed: () {
                         setState(() {
-                          _hexCodeController.text = '539C30';
+                          _brandColor.hexCode = '539C30';
                         });
                       },
                     ),
@@ -94,7 +100,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                       color: Color(0xFF2C33D5),
                       onPressed: () {
                         setState(() {
-                          _hexCodeController.text = '2C33D5';
+                          _brandColor.hexCode = '2C33D5';
                         });
                       },
                     ),
@@ -102,7 +108,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                       color: Color(0xFFE7D324),
                       onPressed: () {
                         setState(() {
-                          _hexCodeController.text = 'E7D324';
+                          _brandColor.hexCode = 'E7D324';
                         });
                       },
                     ),
@@ -110,7 +116,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                       color: Color(0xFFC022B1),
                       onPressed: () {
                         setState(() {
-                          _hexCodeController.text = 'C022B1';
+                          _brandColor.hexCode = 'C022B1';
                         });
                       },
                     ),
@@ -118,15 +124,29 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                 ),
               ),
               SizedBox(height: 27),
-              AppTextFormField(
-                focusNode: _hexCodeFocus,
-                label: 'Or enter brand Hex code',
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (value) => _hexCodeFocus.unfocus(),
-                controller: _hexCodeController,
-                hintText: 'Enter Brand color hex code',
-                hintColor: Theme.of(context).textTheme.subtitle2.color,
-                borderWidth: 1.5,
+              Form(
+                key: _hexFormKey,
+                child: AppTextFormField(
+                  focusNode: _hexCodeFocus,
+                  label: 'Or enter brand Hex code',
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (value) {
+                    _hexCodeFocus.unfocus();
+                    if (_hexFormKey.currentState.validate()) {
+                      setState(() {
+                        _brandColor.hexCode = value;
+                      });
+                    }
+                  },
+                  controller: _hexCodeController,
+                  validator: Validators.patternRegExp(
+                      RegExp(
+                          r'^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$'),
+                      'Invalid hex code'),
+                  hintText: 'Enter Brand color hex code',
+                  hintColor: Theme.of(context).textTheme.subtitle2.color,
+                  borderWidth: 1.5,
+                ),
               ),
               SizedBox(height: 40),
               AppHollowButton(
@@ -159,8 +179,12 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: <Widget>[
-          Card(child: businessCard0()),
-          Card(child: businessCard1()),
+//          Card(
+//              child:
+//                  businessCard0(themeHexCode: '#${_hexCodeController.text}')),
+          Card(child: businessCard0(themeHexCode: _brandColor.hexCode)),
+
+          Card(child: businessCard1(themeHexCode: _brandColor.hexCode)),
           Card(
             child: SizedBox(
               height: 180,
@@ -179,7 +203,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
   }
 
   //business cards
-  Widget businessCard0() {
+  Widget businessCard0({@required String themeHexCode}) {
     return Container(
       height: 180,
       width: 293,
@@ -187,12 +211,13 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
         children: <Widget>[
           Positioned(
             bottom: 30,
-            child: Image.asset('assets/images/Rectangle 86.png'),
+            //child: Image.asset('assets/images/Rectangle 86.png'),
+            child: SvgBuilder.businessCardLeftLiner(hexCode: themeHexCode),
           ),
           Positioned(
             right: 0,
             bottom: 30,
-            child: Image.asset('assets/images/Rectangle 87.png'),
+            child: SvgBuilder.businessCardRightLiner(hexCode: themeHexCode),
           ),
           Container(
             height: 180,
@@ -208,7 +233,8 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                     SizedBox(
                       width: 50,
                       height: 20,
-                      child: Image.asset('assets/logos/logo.png'),
+                      child: SvgPicture.asset(
+                          'assets/icons/logoWithTextNormal.svg'),
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,22 +258,23 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                 ),
                 Text(
                   'Degeit Technologies',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline5
-                      .copyWith(fontSize: 14, color: Color(0xFF0B57A7)),
+                  style: Theme.of(context).textTheme.headline5.copyWith(
+                      fontSize: 14, color: HexColor.fromHex(themeHexCode)),
                 ),
                 SizedBox(height: 5.0),
                 Text(
-                  businessDetail == null ? 'type in business details to change me': businessDetail,
+                  businessDetail == null
+                      ? 'type in business details to change me'
+                      : businessDetail,
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
                         fontSize: 9,
                       ),
                 ),
                 SizedBox(height: 20.0),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Image.asset('assets/icons/locationIcon.png'),
+                    SvgBuilder.locationIcon(hexCode: themeHexCode),
                     SizedBox(width: 7.0),
                     Text(
                       widget.businessInfo?.address ?? '...',
@@ -259,8 +286,9 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                 ),
                 SizedBox(height: 10.0),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Image.asset('assets/icons/phoneIcon.png'),
+                    SvgBuilder.phoneIcon(hexCode: themeHexCode),
                     SizedBox(width: 7.0),
                     Text(
                       widget.businessInfo?.phone ?? '...',
@@ -272,8 +300,9 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                 ),
                 SizedBox(height: 10.0),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Image.asset('assets/icons/messageIcon.png'),
+                    SvgBuilder.mailIcon(hexCode: themeHexCode),
                     SizedBox(width: 7.0),
                     Text(
                       widget.businessInfo?.email ?? '...',
@@ -296,7 +325,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
     );
   }
 
-  Widget businessCard1() {
+  Widget businessCard1({@required String themeHexCode}) {
     return Container(
       height: 180,
       width: 293,
@@ -307,14 +336,14 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
               child: Container(
             width: double.infinity,
             height: 5.0,
-            color: Color(0xFF0B57A7),
+            color: HexColor.fromHex(themeHexCode),
           )),
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
               width: double.infinity,
               height: 5.0,
-              color: Color(0xFF0B57A7),
+              color: HexColor.fromHex(themeHexCode),
             ),
           ),
           Container(
@@ -332,7 +361,8 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                       SizedBox(
                         width: 50,
                         height: 20,
-                        child: Image.asset('assets/logos/logo.png'),
+                        child: SvgPicture.asset(
+                            'assets/icons/logoWithTextNormal.svg'),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,7 +432,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            Image.asset('assets/icons/locationIcon.png'),
+                            SvgBuilder.locationIcon(hexCode: themeHexCode),
                             SizedBox(width: 7.0),
                             Text(
                               widget.businessInfo?.address ?? '...',
@@ -418,7 +448,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                         SizedBox(height: 10.0),
                         Row(
                           children: <Widget>[
-                            Image.asset('assets/icons/phoneIcon.png'),
+                            SvgBuilder.phoneIcon(hexCode: themeHexCode),
                             SizedBox(width: 7.0),
                             Text(
                               widget.businessInfo?.phone ?? '...',
@@ -434,7 +464,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                         SizedBox(height: 10.0),
                         Row(
                           children: <Widget>[
-                            Image.asset('assets/icons/messageIcon.png'),
+                            SvgBuilder.mailIcon(hexCode: themeHexCode),
                             SizedBox(width: 7.0),
                             Text(
                               widget.businessInfo?.email ?? '...',
